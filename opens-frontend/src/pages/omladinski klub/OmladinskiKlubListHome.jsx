@@ -1,8 +1,11 @@
-import React from 'react'
+import React from "react";
+import { OmladinskiKlubList } from "./OmladinskiKlubList";
 
 export const OmladinskiKlubListHome = () => {
   return (
-    <div>OmladinskiKlubListHome</div>
-  )
-}
+    <>
+      <OmladinskiKlubList />
+    </>
+  );
+};
 export default OmladinskiKlubListHome;

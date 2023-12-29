@@ -1,8 +1,11 @@
-import React from 'react'
+import React from "react";
+import CoworkingTabela from "./CoworkingTabela";
 
 export const CoworkingTabelaHome = () => {
   return (
-    <div>CoworkingTabelaHome</div>
-  )
-}
+    <>
+      <CoworkingTabela />
+    </>
+  );
+};
 export default CoworkingTabelaHome;
