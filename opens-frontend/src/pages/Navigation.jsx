@@ -15,6 +15,8 @@ import {
   OmladinskiKlubListHome,
   OmladinskiKlubTabelaHome,
 } from "./omladinski klub";
+import Registracija from "./korisnik/Registracija";
+import Login from "./korisnik/Login";
 
 export const Navigation = () => {
   return (
@@ -66,8 +68,8 @@ export const Navigation = () => {
             </NavDropdown>
           </Nav>
           <Nav className="justify-content-end">
-            <Nav.Link>Registracija</Nav.Link>
-            <Nav.Link>Login</Nav.Link>
+            <Nav.Link href="/registracija">Registracija</Nav.Link>
+            <Nav.Link href="/login">Login</Nav.Link>
             <Nav.Link>Logout</Nav.Link>
             <Nav.Link href="/profile">Profil</Nav.Link>
           </Nav>
@@ -88,6 +90,8 @@ export const Navigation = () => {
             path="/omladinski-tabela"
             element={<OmladinskiKlubTabelaHome />}
           />
+          <Route path="/registracija" element={<Registracija />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </>

@@ -54,3 +54,17 @@ td {
 .btn-table {
   float: right;
 }
+
+.checkbox {
+  margin: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btnReg {
+  margin: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
