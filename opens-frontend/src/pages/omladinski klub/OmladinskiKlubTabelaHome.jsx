@@ -1,8 +1,11 @@
-import React from 'react'
+import React from "react";
+import OmladinskiKlubTabela from "./OmladinskiKlubTabela";
 
 export const OmladinskiKlubTabelaHome = () => {
   return (
-    <div>OmladinskiKlubTabelaHome</div>
-  )
-}
+    <>
+      <OmladinskiKlubTabela />
+    </>
+  );
+};
 export default OmladinskiKlubTabelaHome;

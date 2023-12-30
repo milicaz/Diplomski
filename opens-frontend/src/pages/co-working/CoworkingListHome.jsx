@@ -1,8 +1,11 @@
-import React from 'react'
+import React from "react";
+import CoworkingList from "./CoworkingList";
 
 export const CoworkingListHome = () => {
   return (
-    <div>CoworkingListHome</div>
-  )
-}
+    <>
+      <CoworkingList />
+    </>
+  );
+};
 export default CoworkingListHome;
