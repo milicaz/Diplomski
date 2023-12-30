@@ -1,7 +1,12 @@
-import { Button, Form } from "react-bootstrap";
+import { startTransition } from "react";
+import { Button, Card, Form } from "react-bootstrap";
+import ReactGridLayout from "react-grid-layout";
 
 const Registracija = () => {
   return (
+    <Card> 
+    <Card.Header>Registracija</Card.Header>
+    <Card.Body>
     <Form>
       <Form.Group>
         <Form.Label>Ime i prezime</Form.Label>
@@ -27,7 +32,7 @@ const Registracija = () => {
         <Form.Label>Broj telefona</Form.Label>
         <Form.Control type="text" />
       </Form.Group>
-      <Form.Group className="checkbox">
+      <Form.Group className="checkbox-reg">
         {["checkbox"].map((type) => (
           <div key={`default-${type}`} className="mb-3">
             <Form.Check // prettier-ignore
@@ -39,10 +44,12 @@ const Registracija = () => {
           </div>
         ))}
       </Form.Group>
-      <Form.Group className="btnReg">
-        <Button variant="success">Registruj se</Button>
+      <Form.Group>
+        <Button className="btn-reg" variant="success">Registruj se</Button>
       </Form.Group>
     </Form>
+    </Card.Body>
+    </Card>
   );
 };
 

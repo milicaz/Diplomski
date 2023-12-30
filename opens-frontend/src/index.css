@@ -55,16 +55,29 @@ td {
   float: right;
 }
 
-.checkbox {
+ .checkbox-reg {
   margin: 1rem;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center;
+  align-items: center; */
 }
 
-.btnReg {
+.btn-reg {
   margin: 1rem;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center;
+  align-items: center; */
+} 
+.form-control {
+  width: 35%;
+  max-width: 40%;
 }
+
+/* .form-label {
+  display: flex;
+  justify-content: center;
+  align-content: center; 
+} */
+
+
+
