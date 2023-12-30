@@ -41,8 +41,33 @@ export const Navigation = () => {
                 Tabela poseta
               </NavDropdown.Item>
             </NavDropdown>
+            <NavDropdown title="Aktivnosti">
+              <NavDropdown.Item>
+                Tabela događaja
+              </NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown title="Pomoćne tabele">
+              <NavDropdown.Item>
+                Tip opreme
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                Mesto posete
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item>
+                Mesto događaja
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                Tip događaja
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                Prigradska naselja
+              </NavDropdown.Item>
+            </NavDropdown>
           </Nav>
           <Nav className="justify-content-end">
+            <Nav.Link>Registracija</Nav.Link>
+            <Nav.Link>Login</Nav.Link>
             <Nav.Link>Logout</Nav.Link>
             <Nav.Link href="/profile">Profil</Nav.Link>
           </Nav>
