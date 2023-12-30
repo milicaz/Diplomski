@@ -4,6 +4,13 @@ import { Button, Card, Col, ListGroup, Row, Tab } from "react-bootstrap";
 export const OmladinskiKlubList = () => {
   return (
     <>
+      <div className="table-title">
+        <div className="row mt-2 mb-3">
+          <div className="col center">
+            <h4>Omladinski klub</h4>
+          </div>
+        </div>
+      </div>
       <Tab.Container className="my-5" defaultActiveKey="#link1">
         <Row>
           <Col sm={4}>

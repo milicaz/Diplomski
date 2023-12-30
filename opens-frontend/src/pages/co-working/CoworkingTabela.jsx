@@ -1,31 +1,27 @@
 import React from "react";
-import { Form, InputGroup, Table } from "react-bootstrap";
+import { Col, Form, FormLabel, Row, Table } from "react-bootstrap";
 
 export const CoworkingTabela = () => {
   return (
     <>
       <div className="table-title">
-        <div className="row my-2">
-          <div className="col-md-4">
-            <InputGroup className="mb-3">
-              <Form.Control
-                aria-label="Default"
-                aria-describedby="inputGroup-sizing-default"
-              />
-              <InputGroup.Text id="inputGroup-sizing-default">
-                Default
-              </InputGroup.Text>
-            </InputGroup>
+        <div className="row mt-2 mb-3">
+          <div className="col center">
+            <h4>Tabela prisutnosti - Co-working prostor</h4>
           </div>
-          {/* <div className="col-md-4 center">
-            <h4>Mesta događaja</h4>
-          </div>
-          <div className="col-md-4">
-            <Button className="btn btn-success my-3" onClick={handleShow}>
-              <BsFillPlusCircleFill className="me-2" size="20" /> Dodaj
-            </Button>
-          </div> */}
         </div>
+      </div>
+      <div className="table-title">
+        <Row className="my-3">
+          <Form.Group as={Col}>
+            <FormLabel>Od</FormLabel>
+            <Form.Control type="date" />
+          </Form.Group>
+          <Form.Group as={Col}>
+            <FormLabel>Do</FormLabel>
+            <Form.Control type="date" />
+          </Form.Group>
+        </Row>
       </div>
       <Table hover>
         <thead>
