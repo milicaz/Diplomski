@@ -17,8 +17,6 @@ import {
 } from "./omladinski klub";
 import Registracija from "./korisnik/Registracija";
 import Login from "./korisnik/Login";
-import TipOpremeList from "./pomocne tabele/TipOpremeList";
-import TipOpremeHome from "./pomocne tabele/TipOpremeHome";
 
 export const Navigation = () => {
   return (
@@ -51,7 +49,7 @@ export const Navigation = () => {
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="Pomoćne tabele">
-              <NavDropdown.Item href="/tipOpreme">
+              <NavDropdown.Item>
                 Tip opreme
               </NavDropdown.Item>
               <NavDropdown.Item>
@@ -94,7 +92,7 @@ export const Navigation = () => {
           />
           <Route path="/registracija" element={<Registracija />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/tipOpreme" element={<TipOpremeHome />} />
+          {/* <Route path="/tipOpreme" element={<TipOpremeHome />} /> */}
         </Routes>
       </div>
     </>
