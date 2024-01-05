@@ -11,7 +11,7 @@ const MestoPosete = ({mestoPosete}) => {
                     <i className="react-icons" title="Edit">
                         <MdEdit />
                     </i>
-                </a>
+                </a>&nbsp;
                 <a href="#deleteMestoPosete" className="edit">
                     <i className="react-icons" title="Delete">
                         <MdDelete />

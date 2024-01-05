@@ -20,6 +20,7 @@ import Login from "./korisnik/Login";
 import TipOprHome from "./pomocne tabele/TipOprHome";
 import MestoPoseteHome from "./pomocne tabele/MestoPoseteHome";
 import MestoDogadjajaHome from "./pomocne tabele/MestoDogadjajaHome";
+import TipDogadjajaHome from "./pomocne tabele/TipDogadjajaHome";
 
 export const Navigation = () => {
   return (
@@ -62,7 +63,7 @@ export const Navigation = () => {
               <NavDropdown.Item href="/mestoDogadjaja">
                 Mesto događaja
               </NavDropdown.Item>
-              <NavDropdown.Item>
+              <NavDropdown.Item href="/tipDogadjaja">
                 Tip događaja
               </NavDropdown.Item>
               <NavDropdown.Item>
@@ -97,7 +98,8 @@ export const Navigation = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/tipOpreme" element={<TipOprHome />} />
           <Route path="/mestoPosete" element={<MestoPoseteHome />} />
-          <Route path="mestoDogadjaja" element={<MestoDogadjajaHome />} />
+          <Route path="/mestoDogadjaja" element={<MestoDogadjajaHome />} />
+          <Route path="/tipDogadjaja" element={<TipDogadjajaHome />} />
         </Routes>
       </div>
     </>
