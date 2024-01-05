@@ -18,6 +18,10 @@ import {
 import Registracija from "./korisnik/Registracija";
 import Login from "./korisnik/Login";
 import TipOprHome from "./pomocne tabele/TipOprHome";
+import MestoPoseteHome from "./pomocne tabele/MestoPoseteHome";
+import MestoDogadjajaHome from "./pomocne tabele/MestoDogadjajaHome";
+import TipDogadjajaHome from "./pomocne tabele/TipDogadjajaHome";
+import PrigradskaNaseljaHome from "./pomocne tabele/PrigradskaNaseljaHome";
 
 export const Navigation = () => {
   return (
@@ -53,17 +57,17 @@ export const Navigation = () => {
               <NavDropdown.Item href="/tipOpreme">
                 Tip opreme
               </NavDropdown.Item>
-              <NavDropdown.Item>
+              <NavDropdown.Item href="/mestoPosete">
                 Mesto posete
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item>
+              <NavDropdown.Item href="/mestoDogadjaja">
                 Mesto događaja
               </NavDropdown.Item>
-              <NavDropdown.Item>
+              <NavDropdown.Item href="/tipDogadjaja">
                 Tip događaja
               </NavDropdown.Item>
-              <NavDropdown.Item>
+              <NavDropdown.Item href="/prigradskaNaselja">
                 Prigradska naselja
               </NavDropdown.Item>
             </NavDropdown>
@@ -94,6 +98,10 @@ export const Navigation = () => {
           <Route path="/registracija" element={<Registracija />} />
           <Route path="/login" element={<Login />} />
           <Route path="/tipOpreme" element={<TipOprHome />} />
+          <Route path="/mestoPosete" element={<MestoPoseteHome />} />
+          <Route path="/mestoDogadjaja" element={<MestoDogadjajaHome />} />
+          <Route path="/tipDogadjaja" element={<TipDogadjajaHome />} />
+          <Route path="/prigradskaNaselja" element={<PrigradskaNaseljaHome />} />
         </Routes>
       </div>
     </>

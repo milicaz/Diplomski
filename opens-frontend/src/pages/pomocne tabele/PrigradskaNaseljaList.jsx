@@ -1,10 +1,10 @@
 import { useContext } from "react";
-import { MestoPoseteContext } from "./MestoPoseteContext";
+import { PrigradskaNaseljaContext } from "./PrigradskaNaseljaContext";
 import { Button } from "react-bootstrap";
-import MestoPosete from "./MestoPosete";
+import PrigradskaNaselja from "./PrigradskaNaselja";
 
-const MestoPoseteList = () => {
-  const { mestaPosete } = useContext(MestoPoseteContext);
+const PrigradskaNaseljaList = () => {
+  const { prigradskaNaselja } = useContext(PrigradskaNaseljaContext);
 
   return (
     <>
@@ -12,13 +12,13 @@ const MestoPoseteList = () => {
         <div className="row">
           <div className="col-sm-6">
             <h2>
-              <b>Mesto Posete</b>
+              <b>Prigradska Naselja</b>
             </h2>
           </div>
           <div className="col-sm-6">
             <Button className="btn btn-success" data-toggle="modal">
               <i className="material-icons">&#xE147;</i>
-              <span>Dodaj novo mesto posete</span>
+              <span>Dodaj novo prigradsko naselje</span>
             </Button>
           </div>
         </div>
@@ -27,14 +27,13 @@ const MestoPoseteList = () => {
         <thead>
           <tr>
             <th>Naziv</th>
-            <th>Ukupan broj mesta</th>
             <th>Akcije</th>
           </tr>
         </thead>
         <tbody>
-          {mestaPosete.map((mestoPosete) => (
-            <tr key={mestoPosete.id}>
-              <MestoPosete mestoPosete={mestoPosete} />
+          {prigradskaNaselja.map((prigradskoNaselje) => (
+            <tr key={prigradskoNaselje.id}>
+              <PrigradskaNaselja prigradskoNaselje={prigradskoNaselje} />
             </tr>
           ))}
         </tbody>
@@ -43,4 +42,4 @@ const MestoPoseteList = () => {
   );
 };
 
-export default MestoPoseteList;
+export default PrigradskaNaseljaList;

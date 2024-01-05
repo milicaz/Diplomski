@@ -1,18 +1,17 @@
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md"
 
-const MestoPosete = ({mestoPosete}) => {
+const MestoDogadjaja = ({mestoDogadjaja}) => {
 
     return (
         <>
-            <td>{mestoPosete.naziv}</td>
-            <td>{mestoPosete.ukupanBrojMesta}</td>
+            <td>{mestoDogadjaja.nazivSale}</td>
             <td>
-                <a href="#editMestoPosete" className="edit">
+                <a href="#editMestoDogadjaja" className="edit">
                     <i className="react-icons" title="Edit">
                         <MdEdit />
                     </i>
                 </a>&nbsp;
-                <a href="#deleteMestoPosete" className="edit">
+                <a href="#deleteMestoDogadjaja" className="delete">
                     <i className="react-icons" title="Delete">
                         <MdDelete />
                     </i>
@@ -22,4 +21,4 @@ const MestoPosete = ({mestoPosete}) => {
     )
 }
 
-export default MestoPosete;
+export default MestoDogadjaja;

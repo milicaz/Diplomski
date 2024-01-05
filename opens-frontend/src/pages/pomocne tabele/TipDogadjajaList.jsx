@@ -1,10 +1,10 @@
 import { useContext } from "react";
-import { MestoPoseteContext } from "./MestoPoseteContext";
+import { TipDogadjajaContext } from "./TipDogadjajaContext";
 import { Button } from "react-bootstrap";
-import MestoPosete from "./MestoPosete";
+import TipDogadjaja from "./TipDogadjaja";
 
-const MestoPoseteList = () => {
-  const { mestaPosete } = useContext(MestoPoseteContext);
+const TipDogadjajaList = () => {
+  const { tipoviDogadjaja } = useContext(TipDogadjajaContext);
 
   return (
     <>
@@ -12,13 +12,13 @@ const MestoPoseteList = () => {
         <div className="row">
           <div className="col-sm-6">
             <h2>
-              <b>Mesto Posete</b>
+              <b>Tip Događaja</b>
             </h2>
           </div>
           <div className="col-sm-6">
             <Button className="btn btn-success" data-toggle="modal">
               <i className="material-icons">&#xE147;</i>
-              <span>Dodaj novo mesto posete</span>
+              <span>Dodaj novi tip događaja</span>
             </Button>
           </div>
         </div>
@@ -27,14 +27,13 @@ const MestoPoseteList = () => {
         <thead>
           <tr>
             <th>Naziv</th>
-            <th>Ukupan broj mesta</th>
             <th>Akcije</th>
           </tr>
         </thead>
         <tbody>
-          {mestaPosete.map((mestoPosete) => (
-            <tr key={mestoPosete.id}>
-              <MestoPosete mestoPosete={mestoPosete} />
+          {tipoviDogadjaja.map((tipDogadjaja) => (
+            <tr key={tipDogadjaja.id}>
+              <TipDogadjaja tipDogadjaja={tipDogadjaja} />
             </tr>
           ))}
         </tbody>
@@ -43,4 +42,4 @@ const MestoPoseteList = () => {
   );
 };
 
-export default MestoPoseteList;
+export default TipDogadjajaList;
