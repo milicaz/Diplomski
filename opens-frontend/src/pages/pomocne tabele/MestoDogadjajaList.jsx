@@ -1,10 +1,17 @@
-import { useContext } from "react";
-import { MestoDogadjajaContext } from "./MestoDogadjajaContext";
+import { useContext, useState } from "react";
+import MestoDogadjajaContextProvider, { MestoDogadjajaContext } from "./MestoDogadjajaContext";
 import MestoDogadjaja from "./MestoDogadjaja";
-import { Button } from "react-bootstrap";
+import { Button, Modal, Row } from "react-bootstrap";
+import AddDogadjajForm from "./modal/AddDogadjajForm";
 
 const MestoDogadjajaList = () => {
   const { mestaDogadjaja } = useContext(MestoDogadjajaContext);
+
+  const [show, setShow] = useState(false);
+
+  const handleShow = () => setShow(true);
+
+  const handleClose = () => setShow(false);
 
   return (
     <>
@@ -16,7 +23,11 @@ const MestoDogadjajaList = () => {
             </h2>
           </div>
           <div className="col-sm-6">
-            <Button className="btn btn-success" data-toggle="modal">
+            <Button
+              onClick={handleShow}
+              className="btn btn-success"
+              data-toggle="modal"
+            >
               <i className="material-icons">&#xE147;</i>
               <span>Dodaj novo mesto događaja</span>
             </Button>
@@ -33,11 +44,28 @@ const MestoDogadjajaList = () => {
         <tbody>
           {mestaDogadjaja.map((mestoDogadjaja) => (
             <tr key={mestoDogadjaja.id}>
-              <MestoDogadjaja mestoDogadjaja = {mestoDogadjaja}/>
+              <MestoDogadjaja mestoDogadjaja={mestoDogadjaja} />
             </tr>
           ))}
         </tbody>
       </table>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Dodaj mesto događaja</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <AddDogadjajForm />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="success">
+            Dodaj
+          </Button>
+          <Button variant="danger" onClick={handleClose}>
+            Zatvori
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };
