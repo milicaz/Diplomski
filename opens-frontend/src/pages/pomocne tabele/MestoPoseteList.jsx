@@ -1,10 +1,17 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { MestoPoseteContext } from "./MestoPoseteContext";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import MestoPosete from "./MestoPosete";
+import AddMestoPoseteForm from "./modal/AddMestoPoseteForm";
 
 const MestoPoseteList = () => {
   const { mestaPosete } = useContext(MestoPoseteContext);
+
+  const [show, setShow] = useState(false);
+
+  const handleShow = () => setShow(true);
+
+  const handleClose = () => setShow(false);
 
   return (
     <>
@@ -16,7 +23,7 @@ const MestoPoseteList = () => {
             </h2>
           </div>
           <div className="col-sm-6">
-            <Button className="btn btn-success" data-toggle="modal">
+            <Button onClick={handleShow} className="btn btn-success" data-toggle="modal">
               <i className="material-icons">&#xE147;</i>
               <span>Dodaj novo mesto posete</span>
             </Button>
@@ -39,6 +46,23 @@ const MestoPoseteList = () => {
           ))}
         </tbody>
       </table>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Dodaj mesto posete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <AddMestoPoseteForm />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="success">
+            Dodaj
+          </Button>
+          <Button variant="danger" onClick={handleClose}>
+            Zatvori
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };
