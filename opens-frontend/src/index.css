@@ -80,6 +80,33 @@ box-shadow: 0 1px 1px rgba(0,0,0,.05);
   max-width: 40%;
 }
 
+/*Pagination */
+.pagination {
+  float: right;
+}
+
+.pagination li a:hover {
+	color: #666;
+}	
+.pagination li.active a, .pagination li.active a.page-link {
+	background: #03A9F4;
+}
+.pagination li.active a:hover {        
+	background: #0397d6;
+}
+.pagination li.disabled i {
+	color: #ccc;
+}
+.pagination li i {
+	font-size: 16px;
+	padding-top: 6px
+}
+.hint-text {
+	float: left;
+	margin-top: 10px;
+	font-size: 13px;
+}   
+
 /* Modal styles */
 .modal .modal-dialog {
 	max-width: 400px;

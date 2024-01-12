@@ -3,6 +3,7 @@ import { DogadjajContext } from "./DogadjajContext";
 import { Button, Modal } from "react-bootstrap";
 import Dogadjaj from "./Dogadjaj";
 import AddNoviDogadjajForm from "./modal/AddNoviDogadjajForm";
+import Pagination from "../Pagination";
 
 const DogadjajList = () => {
   const { dogadjaji } = useContext(DogadjajContext);
@@ -12,6 +13,18 @@ const DogadjajList = () => {
   const handleShow = () => setShow(true);
 
   const handleClose = () => setShow(false);
+
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const [dogadjajiPerPage] = useState(5)
+
+  const indexOfLastDogadjaj = currentPage * dogadjajiPerPage
+
+  const indexOfFirstDogadjaj = indexOfLastDogadjaj - dogadjajiPerPage
+
+  const currentDogadjaji = dogadjaji.slice(indexOfFirstDogadjaj, indexOfLastDogadjaj)
+
+  const totalPagesNumber = Math.ceil(dogadjaji.length / dogadjajiPerPage)
 
   return (
     <>
@@ -43,13 +56,15 @@ const DogadjajList = () => {
           </tr>
         </thead>
         <tbody>
-          {dogadjaji.map((dogadjaj) => (
+          {currentDogadjaji.map((dogadjaj) => (
             <tr key={dogadjaj.id}>
               <Dogadjaj dogadjaj={dogadjaj} />
             </tr>
           ))}
         </tbody>
       </table>
+
+      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} />
 
       <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>

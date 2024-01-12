@@ -1,0 +1,104 @@
+import { useEffect, useState } from "react";
+
+const Pagination = ({pages, setCurrentPage}) => {
+
+  const numOfPages = [];
+
+  const [currentButton, setCurrentButton] = useState(1);
+
+  for (let i = 1; i <= pages; i++) {
+    numOfPages.push(i);
+  }
+
+  useEffect( () => {
+
+    setCurrentPage(currentButton)
+
+  }, [currentButton, setCurrentPage])
+
+  return (
+    <div className="clearfix">
+      <div className="hint-text">
+        Prikazuje se <b>5</b> od <b>25</b> unosa
+      </div>
+      <ul className="pagination">
+        <li className="` ${currentButton === 1 ? 'page-item disabled' : 'page-item'}`">
+          <a
+            href="#!"
+            className="page-link"
+            onClick={() =>
+              setCurrentButton((prev) => (prev === 1 ? prev : prev - 1))
+            }
+          >
+            Prethodna
+          </a>
+        </li>
+
+        {numOfPages.map((page, index) => {
+          return (
+            <li
+              key={index}
+              className="` ${currentButton === page ? 'page-item active' : 'page-item'}`"
+            >
+              <a href="#!" className="page-link" onClick={() => setCurrentButton(page)}>
+                {page}
+              </a>
+            </li>
+          );
+        })}
+
+        <li className="` ${currentButton === numOfPages.length ? 'page-item disabled' : 'page-item'}`">
+          <a
+            href="#!"
+            className="page-link"
+            onClick={() =>
+              setCurrentButton((next) =>
+                next === numOfPages.length ? next : next + 1
+              )
+            }
+          >
+            Sledeća
+          </a>
+        </li>
+      </ul>
+    </div>
+  );
+};
+
+export default Pagination;
+
+{
+  /* <li className="page-item disabled">
+            <a href="#!" className="page-link">Previous</a>
+        </li>
+        <li className="page-item">
+          <a href="#!" className="page-link">
+            1
+          </a>
+        </li>
+        <li className="page-item">
+          <a href="#!" className="page-link">
+            2
+          </a>
+        </li>
+        <li className="page-item active">
+          <a href="#!" className="page-link">
+            3
+          </a>
+        </li>
+        <li className="page-item">
+          <a href="#!" className="page-link">
+            4
+          </a>
+        </li>
+        <li className="page-item">
+          <a href="#!" className="page-link">
+            5
+          </a>
+        </li>
+        <li className="page-item">
+          <a href="#!" className="page-link">
+            Next
+          </a>
+        </li> */
+}

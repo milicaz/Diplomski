@@ -3,6 +3,7 @@ import { MestoPoseteContext } from "./MestoPoseteContext";
 import { Button, Modal } from "react-bootstrap";
 import MestoPosete from "./MestoPosete";
 import AddMestoPoseteForm from "./modal/AddMestoPoseteForm";
+import Pagination from "../Pagination";
 
 const MestoPoseteList = () => {
   const { mestaPosete } = useContext(MestoPoseteContext);
@@ -12,6 +13,18 @@ const MestoPoseteList = () => {
   const handleShow = () => setShow(true);
 
   const handleClose = () => setShow(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [mestaPosetePerPage] = useState(5);
+
+  const indexOfLastMestoPosete = currentPage * mestaPosetePerPage;
+
+  const indexOfFirstMestoPosete = indexOfLastMestoPosete - mestaPosetePerPage;
+
+  const currentMestaPosete = mestaPosete.slice(indexOfFirstMestoPosete, indexOfLastMestoPosete);
+
+  const totalPagesNumber = Math.ceil(mestaPosete.length / mestaPosetePerPage);
 
   return (
     <>
@@ -39,13 +52,15 @@ const MestoPoseteList = () => {
           </tr>
         </thead>
         <tbody>
-          {mestaPosete.map((mestoPosete) => (
+          {currentMestaPosete.map((mestoPosete) => (
             <tr key={mestoPosete.id}>
               <MestoPosete mestoPosete={mestoPosete} />
             </tr>
           ))}
         </tbody>
       </table>
+
+      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

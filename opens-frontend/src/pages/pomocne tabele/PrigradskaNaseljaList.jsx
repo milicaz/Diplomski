@@ -3,6 +3,7 @@ import { PrigradskaNaseljaContext } from "./PrigradskaNaseljaContext";
 import { Button, Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
 import PrigradskaNaselja from "./PrigradskaNaselja";
 import AddDogadjajForm from "./modal/AddDogadjajForm";
+import Pagination from "../Pagination";
 
 const PrigradskaNaseljaList = () => {
   const { prigradskaNaselja } = useContext(PrigradskaNaseljaContext);
@@ -12,6 +13,18 @@ const PrigradskaNaseljaList = () => {
   const handleShow = () => setShow(true);
 
   const handleClose = () => setShow(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [naseljaPerPage] = useState(5);
+
+  const indexOfLastNaselje = currentPage * naseljaPerPage;
+
+  const indexOfFirstNaselje = indexOfLastNaselje - naseljaPerPage;
+
+  const currentNaselja = prigradskaNaselja.slice(indexOfFirstNaselje, indexOfLastNaselje);
+
+  const totalPagesNumber = Math.ceil(prigradskaNaselja.length / naseljaPerPage);
 
   return (
     <>
@@ -38,13 +51,15 @@ const PrigradskaNaseljaList = () => {
           </tr>
         </thead>
         <tbody>
-          {prigradskaNaselja.map((prigradskoNaselje) => (
+          {currentNaselja.map((prigradskoNaselje) => (
             <tr key={prigradskoNaselje.id}>
               <PrigradskaNaselja prigradskoNaselje={prigradskoNaselje} />
             </tr>
           ))}
         </tbody>
       </table>
+
+      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

@@ -3,6 +3,7 @@ import { TipDogadjajaContext } from "./TipDogadjajaContext";
 import { Button, Modal } from "react-bootstrap";
 import TipDogadjaja from "./TipDogadjaja";
 import AddDogadjajForm from "./modal/AddDogadjajForm";
+import Pagination from "../Pagination";
 
 const TipDogadjajaList = () => {
   const { tipoviDogadjaja } = useContext(TipDogadjajaContext);
@@ -12,6 +13,18 @@ const TipDogadjajaList = () => {
   const handleShow = () => setShow(true);
 
   const handleClose = () => setShow(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [tipDogadjajaPerPage] = useState(5);
+
+  const indexOfLastTipDogadjaja = currentPage * tipDogadjajaPerPage;
+
+  const indexOfFirstTipDogadjaja = indexOfLastTipDogadjaja - tipDogadjajaPerPage;
+
+  const currentTipoviDogadjaja = tipoviDogadjaja.slice(indexOfFirstTipDogadjaja, indexOfLastTipDogadjaja);
+
+  const totalPagesNumber = Math.ceil(tipoviDogadjaja.length / tipDogadjajaPerPage)
 
   return (
     <>
@@ -38,13 +51,15 @@ const TipDogadjajaList = () => {
           </tr>
         </thead>
         <tbody>
-          {tipoviDogadjaja.map((tipDogadjaja) => (
+          {currentTipoviDogadjaja.map((tipDogadjaja) => (
             <tr key={tipDogadjaja.id}>
               <TipDogadjaja tipDogadjaja={tipDogadjaja} />
             </tr>
           ))}
         </tbody>
       </table>
+
+      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

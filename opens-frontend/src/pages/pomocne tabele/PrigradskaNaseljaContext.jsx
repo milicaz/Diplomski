@@ -8,7 +8,9 @@ const PrigradskaNaseljaContextProvider = (props) => {
         {id:'1', naziv: 'Temerin'},
         {id:'2', naziv: 'Veternik'},
         {id:'3', naziv: 'Futog'},
-        {id:'4', naziv: 'Rumenka'}
+        {id:'4', naziv: 'Rumenka'},
+        {id:'5', naziv: 'Sremski Karlovci'},
+        {id:'6', naziv: 'Petrovaradin'}
     ])
 
     return (

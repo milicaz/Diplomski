@@ -3,6 +3,7 @@ import TipOpr from "./TipOpr";
 import { TipOprContext } from "./TipOprContext";
 import { Button, Modal } from "react-bootstrap";
 import AddTipOpremeForm from "./modal/AddTipOpremeForm";
+import Pagination from "../Pagination";
 
 const TipOprList = () => {
 
@@ -13,6 +14,18 @@ const TipOprList = () => {
   const handleShow = () => setShow(true);
 
   const handleClose = () => setShow(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [tipPerPage] = useState(5);
+
+  const indexOfLastTip = currentPage * tipPerPage;
+
+  const indexOfFirstTip = indexOfLastTip - tipPerPage;
+
+  const currentTipovi = tipoviOpreme.slice(indexOfFirstTip, indexOfLastTip);
+
+  const totalPagesNumber = Math.ceil(tipoviOpreme.length / tipPerPage);
 
   return (
     <>
@@ -40,13 +53,15 @@ const TipOprList = () => {
           </tr>
         </thead>
         <tbody>
-          {tipoviOpreme.map(tipOpreme => (
+          {currentTipovi.map(tipOpreme => (
             <tr key={tipOpreme.id}>
               <TipOpr tipOpreme={tipOpreme} />
             </tr>
           ))}
         </tbody>
       </table>
+
+      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

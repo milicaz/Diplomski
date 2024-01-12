@@ -3,6 +3,7 @@ import MestoDogadjajaContextProvider, { MestoDogadjajaContext } from "./MestoDog
 import MestoDogadjaja from "./MestoDogadjaja";
 import { Button, Modal, Row } from "react-bootstrap";
 import AddDogadjajForm from "./modal/AddDogadjajForm";
+import Pagination from "../Pagination";
 
 const MestoDogadjajaList = () => {
   const { mestaDogadjaja } = useContext(MestoDogadjajaContext);
@@ -12,6 +13,18 @@ const MestoDogadjajaList = () => {
   const handleShow = () => setShow(true);
 
   const handleClose = () => setShow(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [mestaDogadjajaPerPage] = useState(5);
+
+  const indexOfLastMestoDogadjaja = currentPage * mestaDogadjajaPerPage
+
+  const indexOfFirstMestoDogadjaja = indexOfLastMestoDogadjaja - mestaDogadjajaPerPage
+
+  const currentMestaDogadjaja = mestaDogadjaja.slice(indexOfFirstMestoDogadjaja, indexOfLastMestoDogadjaja)
+
+  const totalPagesNumber = Math.ceil(mestaDogadjaja.length / mestaDogadjajaPerPage)
 
   return (
     <>
@@ -42,13 +55,15 @@ const MestoDogadjajaList = () => {
           </tr>
         </thead>
         <tbody>
-          {mestaDogadjaja.map((mestoDogadjaja) => (
+          {currentMestaDogadjaja.map((mestoDogadjaja) => (
             <tr key={mestoDogadjaja.id}>
               <MestoDogadjaja mestoDogadjaja={mestoDogadjaja} />
             </tr>
           ))}
         </tbody>
       </table>
+
+      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
