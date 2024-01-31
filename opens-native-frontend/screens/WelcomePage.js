@@ -3,6 +3,7 @@ import { Button, Image, Pressable, Text, View } from "react-native";
 export default function WelcomePage({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
+
       <View>
         <Image
           source={require("../assets/opens.png")}
@@ -20,6 +21,7 @@ export default function WelcomePage({ navigation }) {
           }}
         />
       </View>
+
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Button title="Registracija" onPress={() => navigation.navigate("Registracija")} />
         <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -30,6 +32,12 @@ export default function WelcomePage({ navigation }) {
             </Text>
           </Pressable>
         </View>
+      </View>
+
+      <View style={{ paddingHorizontal: 22, position: "absolute", width: "100%" }}>
+        <Pressable onPress={() => navigation.navigate("Main")}>
+          <Text style={{ fontSize: 16, marginLeft: 4 }}>Home screen</Text>
+        </Pressable>
       </View>
     </View>
   );
