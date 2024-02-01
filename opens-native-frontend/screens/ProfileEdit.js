@@ -113,7 +113,7 @@ export default function ProfileEdit({ navigation }) {
               paddingLeft: 8,
             }}
           >
-            <TextInput
+            <TextInput keyboardType='email-address'
               value={email}
               onChangeText={(value) => setEmail(value)}
               editable={true}
@@ -167,7 +167,7 @@ export default function ProfileEdit({ navigation }) {
               paddingLeft: 8,
             }}
           >
-            <TextInput
+            <TextInput keyboardType='numeric'
               value={phone}
               onChangeText={(value) => setPhone(value)}
               editable={true}
@@ -194,7 +194,7 @@ export default function ProfileEdit({ navigation }) {
               paddingLeft: 8,
             }}
           >
-            <TextInput
+            <TextInput keyboardType='numeric'
               value={yearBirth}
               onChangeText={(value) => setYearBirth(value)}
               editable={true}
