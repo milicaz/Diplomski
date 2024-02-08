@@ -1,6 +1,6 @@
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
-import { Button, Platform, Pressable, Text, TextInput, View } from "react-native";
+import { Button, Platform, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import DatePicker from "react-native-datepicker";
 export default function Registracija() {
 
@@ -42,6 +42,11 @@ export default function Registracija() {
     } else {
       toogleDatepicker();
     }
+
+    const confirmIOSDate = () => {
+      setDate(date);
+      toogleDatepicker();
+    }
   }
 
   return (
@@ -66,9 +71,21 @@ export default function Registracija() {
         {showPicker && (
           <RNDateTimePicker mode = "date" display = "default" value={date} onChange={onChange} />
         )}
+
+        {showPicker && Platform.OS === "ios" && (
+          <View style = {{ flexDirection: "row", justifyContent: "space-around" }}>
+            <TouchableOpacity style = {{backgroundColor: "#11182711", paddingHorizontal:20}} onPress={toogleDatepicker}>
+              <Text style = {{fontSize: 14, fontWeight: "500", color: "#fff"}}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style = {{backgroundColor: "#11182711", paddingHorizontal:20}} onPress={confirmIOSDate}>
+              <Text style = {{fontSize: 14, fontWeight: "500", color: "#fff"}}>Confirm</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {!showPicker && (
           <Pressable onPress={toogleDatepicker}>
-          <TextInput style = {{height: 50, color: "black"}} placeholder="Datum rodjenja" editable = {false} value={getDate()} onChangeText={setDate} />
+          <TextInput style = {{height: 50, color: "black"}} placeholder="Datum rodjenja" editable = {false} value={getDate()} onChangeText={setDate} onPressIn={toogleDatepicker} />
         </Pressable>
         )}
         
