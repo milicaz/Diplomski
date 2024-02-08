@@ -1,8 +1,20 @@
+import { AntDesign } from "@expo/vector-icons";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import { useState } from "react";
-import { Button, Platform, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Fragment, useState } from "react";
+import { Button, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import DatePicker from "react-native-datepicker";
+import { Dropdown } from "react-native-element-dropdown";
+import SearchableDropDown from "react-native-searchable-dropdown";
 export default function Registracija() {
+
+  const [value, setValue] = useState(null);
+  const [isFocus, setIsFocus] = useState(false);
+
+  const data = [
+    {label: 'Musko', value: '1'},
+    {label: 'Zensko', value: '2'},
+    {label: 'Ostalo', value: '3'}
+  ]
 
   // State variable to hold the password 
   const [password, setPassword] = useState(''); 
@@ -50,7 +62,18 @@ export default function Registracija() {
     const confirmIOSDate = () => {
       setDate(date);
       toogleDatepicker();
-    }
+    };
+
+    const renderLabel = () => {
+      if(value || isFocus) {
+        return (
+          <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+            Dropdown label
+          </Text>
+        )
+      }
+    };
+
   }
 
   return (
@@ -63,7 +86,36 @@ export default function Registracija() {
         <TextInput style = {{height: 50, color: "black"}} placeholder="Prezime" />
       </View>
       <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-        <TextInput style = {{height: 50, color: "black"}} placeholder="Rod" />
+        <Dropdown
+          style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={data}
+          search
+          maxHeight={300}
+          labelField="label"
+          valueField="value"
+          placeholder={!isFocus ? 'Select item' : '...'}
+          searchPlaceholder="Search..."
+          value={value}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onChange={item => {
+            setValue(item.value);
+            setIsFocus(false);
+          }}
+          renderLeftIcon={() => (
+            <AntDesign
+              style={styles.icon}
+              color={isFocus ? 'blue' : 'black'}
+              name="Safety"
+              size={20}
+            />
+          )}
+        />
+        {/* <TextInput style = {{height: 50, color: "black"}} placeholder="Rod" /> */}
       </View>
       <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <TextInput style = {{height: 50, color: "black"}} placeholder="Email" />
@@ -106,3 +158,43 @@ export default function Registracija() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    padding: 16,
+  },
+  dropdown: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  label: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+  },
+});
