@@ -20,8 +20,12 @@ export default function Registracija() {
 
   const getDate = () => {
     let tempDate = date.toString().split(' ');
+    let mesec = `${tempDate[1]}`
+    if(mesec === "Jan"){
+      mesec = '01'
+    }
     return date !== ''
-      ? `${tempDate[0]} ${tempDate[1]} ${tempDate[2]} ${tempDate[3]}`
+      ? `${mesec}.${tempDate[2]}.${tempDate[3]}.`
       : '';
   };
 
