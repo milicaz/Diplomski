@@ -1,7 +1,7 @@
 import { AntDesign } from "@expo/vector-icons";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { Fragment, useState } from "react";
-import { Button, Platform, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import DatePicker from "react-native-datepicker";
 import { Dropdown } from "react-native-element-dropdown";
 import SearchableDropDown from "react-native-searchable-dropdown";
@@ -13,7 +13,7 @@ export default function Registracija() {
   const data = [
     {label: 'Musko', value: '1'},
     {label: 'Zensko', value: '2'},
-    {label: 'Ostalo', value: '3'}
+    {label: 'Drugo', value: '3'}
   ]
 
   // State variable to hold the password 
@@ -77,6 +77,7 @@ export default function Registracija() {
   }
 
   return (
+    <ScrollView>
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text style={{ fontWeight: "bold", fontSize: 50, marginBottom: 40 }}>Registracija</Text>
       <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
@@ -87,17 +88,12 @@ export default function Registracija() {
       </View>
       <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <Dropdown
-          style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
-          iconStyle={styles.iconStyle}
           data={data}
           search
           maxHeight={300}
           labelField="label"
           valueField="value"
-          placeholder={!isFocus ? 'Select item' : '...'}
+          placeholder={!isFocus ? 'Rod' : '...'}
           searchPlaceholder="Search..."
           value={value}
           onFocus={() => setIsFocus(true)}
@@ -106,14 +102,6 @@ export default function Registracija() {
             setValue(item.value);
             setIsFocus(false);
           }}
-          renderLeftIcon={() => (
-            <AntDesign
-              style={styles.icon}
-              color={isFocus ? 'blue' : 'black'}
-              name="Safety"
-              size={20}
-            />
-          )}
         />
         {/* <TextInput style = {{height: 50, color: "black"}} placeholder="Rod" /> */}
       </View>
@@ -149,52 +137,19 @@ export default function Registracija() {
       <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <TextInput style = {{height: 50, color: "black"}} placeholder="Mesto Boravista" />
       </View>
-      <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-        <TextInput style = {{height: 50, color: "black"}} placeholder="Broj telefona" />
-      </View>
+        <View style = {{flexDirection:"row", width: "80%"}}>
+          <View style = {{flex: 1, borderWidth: 2, borderRadius: 25, height: 50, justifyContent: "center", marginBottom: 20, padding: 20}}>
+            <TextInput style = {{ height: 50, color:"black", }} keyboardType="numeric" placeholder="+381" />
+          </View>
+          <View style={{flex: 4, borderWidth: 2, borderRadius: 25, height: 50, justifyContent: "center", marginBottom: 20, padding: 20}}>
+            <TextInput style = {{height: 50, color: "black"}} keyboardType="numeric" placeholder="0631234567" />
+          </View>
+          </View>
       <View style= {{width:"50%", margin:10}}>
         <Button title="Registracija"></Button>
       </View>
     </View>
+    </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    padding: 16,
-  },
-  dropdown: {
-    height: 50,
-    borderColor: 'gray',
-    borderWidth: 0.5,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-  },
-  icon: {
-    marginRight: 5,
-  },
-  label: {
-    position: 'absolute',
-    backgroundColor: 'white',
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
-    fontSize: 14,
-  },
-  placeholderStyle: {
-    fontSize: 16,
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-  },
-  iconStyle: {
-    width: 20,
-    height: 20,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
-  },
-});
