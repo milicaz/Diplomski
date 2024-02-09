@@ -18,6 +18,10 @@ export default function Dostupnost() {
         Alert.alert('Sony je zauzet.')
     }
 
+    const headphonesAlert = () => {
+        Alert.alert('Broj dostuonih slusalica je 5.')
+    }
+
     return(
         
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center"}}>
@@ -44,6 +48,14 @@ export default function Dostupnost() {
                 </View>
                 <View style = {{flex: 4}}>
                     <Button title = "Broj dostupnih miseva" color= "#5f9ea0" onPress={misAlert} />
+                </View>
+            </View>
+            <View style = {{flexDirection:"row", width: "80%", marginBottom: 20}}>
+                <View style = {{flex: 1}}>
+                    <Image source = {require("../assets/headphones.png")} style={{ height: 45, width: 45}}/>
+                </View>
+                <View style = {{flex : 4}}>
+                    <Button title = "Broj dostupnih slusalica" color= "#5f9ea0" onPress={headphonesAlert} />
                 </View>
             </View>
             <View style = {{flexDirection:"row", width: "80%", marginBottom: 20}}>
