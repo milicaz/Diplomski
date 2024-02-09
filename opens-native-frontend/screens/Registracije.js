@@ -81,6 +81,12 @@ export default function Registracija() {
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text style={{ fontWeight: "bold", fontSize: 50, marginBottom: 40 }}>Registracija</Text>
       <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+        <TextInput style = {{height: 50, color: "black"}} placeholder="Email" />
+      </View>
+      <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+        <TextInput style = {{height: 50, color: "black"}} placeholder="Lozinka" />
+      </View>
+      <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <TextInput style = {{height: 50, color: "black"}} placeholder="Ime" />
       </View>
       <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
@@ -104,12 +110,6 @@ export default function Registracija() {
           }}
         />
         {/* <TextInput style = {{height: 50, color: "black"}} placeholder="Rod" /> */}
-      </View>
-      <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-        <TextInput style = {{height: 50, color: "black"}} placeholder="Email" />
-      </View>
-      <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-        <TextInput style = {{height: 50, color: "black"}} placeholder="Lozinka" />
       </View>
       <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         {showPicker && (

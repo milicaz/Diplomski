@@ -5,6 +5,7 @@ import COLORS from '../constants/colors';
 import Home from '../screens/Home';
 import Profile from '../screens/Profile';
 import QrCode from '../screens/QrCode';
+import Dostupnost from '../screens/Dostupnost';
 
 const Tab = createBottomTabNavigator();
 
@@ -59,6 +60,20 @@ export default function BottomTabNavigation() {
                         return (
                             <Image
                                 source={focused ? require("../assets/icons/user.png") : require("../assets/icons/user-outline.png")}
+                                resizeMode='contain'
+                                style={{ height: 24, width: 24, tintColor: focused ? COLORS.primary : COLORS.black }} />
+                        )
+                    }
+                }}
+            />
+            <Tab.Screen
+                name='Dostupnost'
+                component={Dostupnost}
+                options={{
+                    tabBarIcon: ({ focused }) => {
+                        return (
+                            <Image
+                                source={focused ? require("../assets/icons/search.png") : require("../assets/icons/search.png")}
                                 resizeMode='contain'
                                 style={{ height: 24, width: 24, tintColor: focused ? COLORS.primary : COLORS.black }} />
                         )
