@@ -19,7 +19,7 @@ export default function Dostupnost() {
     }
 
     const headphonesAlert = () => {
-        Alert.alert('Broj dostuonih slusalica je 5.')
+        Alert.alert('Broj dostupnih slusalica je 5.')
     }
 
     return(

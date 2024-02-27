@@ -8,6 +8,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -30,14 +33,96 @@ public class Dogadjaj {
 	@Column(name = "kraj_dogadjaja")
 	private LocalTime krajDogadjaja;
 	
-	@Column(name = "mesto")
+	@OneToOne
+	@JoinColumn(name = "mesto_dogadjaja_id")
 	private MestoDogadjaja mesto;
 	
-	@Column(name = "vrsta")
+	@OneToOne
+	@JoinColumn(name = "vrsta_dogadjaja_id")
 	private TipDogadjaja vrsta;
 	
-	
-	
-	
+	@ManyToOne
+	@JoinColumn(name = "organizacija_id", nullable = false)
+	private Organizacija organizacija;
+
+	public Dogadjaj() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Dogadjaj(String naziv, LocalDate datum, LocalTime pocetakDogadjaja, LocalTime krajDogadjaja,
+			MestoDogadjaja mesto, TipDogadjaja vrsta) {
+		super();
+		this.naziv = naziv;
+		this.datum = datum;
+		this.pocetakDogadjaja = pocetakDogadjaja;
+		this.krajDogadjaja = krajDogadjaja;
+		this.mesto = mesto;
+		this.vrsta = vrsta;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNaziv() {
+		return naziv;
+	}
+
+	public void setNaziv(String naziv) {
+		this.naziv = naziv;
+	}
+
+	public LocalDate getDatum() {
+		return datum;
+	}
+
+	public void setDatum(LocalDate datum) {
+		this.datum = datum;
+	}
+
+	public LocalTime getPocetakDogadjaja() {
+		return pocetakDogadjaja;
+	}
+
+	public void setPocetakDogadjaja(LocalTime pocetakDogadjaja) {
+		this.pocetakDogadjaja = pocetakDogadjaja;
+	}
+
+	public LocalTime getKrajDogadjaja() {
+		return krajDogadjaja;
+	}
+
+	public void setKrajDogadjaja(LocalTime krajDogadjaja) {
+		this.krajDogadjaja = krajDogadjaja;
+	}
+
+	public MestoDogadjaja getMesto() {
+		return mesto;
+	}
+
+	public void setMesto(MestoDogadjaja mesto) {
+		this.mesto = mesto;
+	}
+
+	public TipDogadjaja getVrsta() {
+		return vrsta;
+	}
+
+	public void setVrsta(TipDogadjaja vrsta) {
+		this.vrsta = vrsta;
+	}
+
+	public Organizacija getOrganizacija() {
+		return organizacija;
+	}
+
+	public void setOrganizacija(Organizacija organizacija) {
+		this.organizacija = organizacija;
+	}
 
 }

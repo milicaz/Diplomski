@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,13 +24,17 @@ public class Logo {
 	private String tip;
 	
 	@Column(name = "pic_byte")
-	private Byte[] picByte;
+	private byte[] picByte;
+	
+	@ManyToOne
+	@JoinColumn(name = "organizacija_id", nullable = false)
+	private Organizacija organizacija;
 
 	public Logo() {
 		super();
 	}
 
-	public Logo(String naziv, String tip, Byte[] picByte) {
+	public Logo(String naziv, String tip, byte[] picByte) {
 		super();
 		this.naziv = naziv;
 		this.tip = tip;
@@ -59,12 +65,21 @@ public class Logo {
 		this.tip = tip;
 	}
 
-	public Byte[] getPicByte() {
+	public byte[] getPicByte() {
 		return picByte;
 	}
 
-	public void setPicByte(Byte[] picByte) {
+	public void setPicByte(byte[] picByte) {
 		this.picByte = picByte;
 	}
+
+	public Organizacija getOrganizacija() {
+		return organizacija;
+	}
+
+	public void setOrganizacija(Organizacija organizacija) {
+		this.organizacija = organizacija;
+	}
+	
 
 }
