@@ -40,9 +40,6 @@ public class Organizacija {
 	private String link;
 	
 	@OneToMany(mappedBy = "organizacija")
-	private Set<Logo> logos;
-	
-	@OneToMany(mappedBy = "organizacija")
 	private Set<Dogadjaj> dogadjaji;
 
 	public Organizacija() {
@@ -51,7 +48,7 @@ public class Organizacija {
 	}
 
 	public Organizacija(String naziv, String odgovornaOsoba, String brojTelefona, String email, String delatnost,
-			String opis, String link, Set<Logo> logos, Set<Dogadjaj> dogadjaji) {
+			String opis, String link, Set<Dogadjaj> dogadjaji) {
 		super();
 		this.naziv = naziv;
 		this.odgovornaOsoba = odgovornaOsoba;
@@ -60,7 +57,6 @@ public class Organizacija {
 		this.delatnost = delatnost;
 		this.opis = opis;
 		this.link = link;
-		this.logos = logos;
 		this.dogadjaji = dogadjaji;
 	}
 
@@ -126,14 +122,6 @@ public class Organizacija {
 
 	public void setLink(String link) {
 		this.link = link;
-	}
-
-	public Set<Logo> getLogos() {
-		return logos;
-	}
-
-	public void setLogos(Set<Logo> logos) {
-		this.logos = logos;
 	}
 
 	public Set<Dogadjaj> getDogadjaji() {

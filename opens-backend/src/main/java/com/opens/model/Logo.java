@@ -25,10 +25,6 @@ public class Logo {
 	
 	@Column(name = "pic_byte")
 	private byte[] picByte;
-	
-	@ManyToOne
-	@JoinColumn(name = "organizacija_id", nullable = false)
-	private Organizacija organizacija;
 
 	public Logo() {
 		super();
@@ -72,14 +68,5 @@ public class Logo {
 	public void setPicByte(byte[] picByte) {
 		this.picByte = picByte;
 	}
-
-	public Organizacija getOrganizacija() {
-		return organizacija;
-	}
-
-	public void setOrganizacija(Organizacija organizacija) {
-		this.organizacija = organizacija;
-	}
-	
 
 }
