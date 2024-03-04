@@ -9,16 +9,23 @@ import {
 import { Route, Routes } from "react-router-dom";
 import { opensImage } from "../assets";
 import { Home } from "./Home";
+import DogadjajHome from "./aktivnosti/DogadjajHome";
 import { CoworkingListHome, CoworkingTabelaHome } from "./co-working";
+import Login from "./korisnik/Login";
 import { Profile } from "./korisnik/Profile";
+import Registracija from "./korisnik/Registracija";
 import {
   OmladinskiKlubListHome,
   OmladinskiKlubTabelaHome,
 } from "./omladinski klub";
-import Registracija from "./korisnik/Registracija";
-import Login from "./korisnik/Login";
-import DogadjajHome from "./aktivnosti/DogadjajHome";
-import { MestoDogadjajaHome, MestoPoseteHome, PrigradskaNaseljaHome, TipDogadjajaHome, TipOprHome } from "./pomocne tabele";
+import {
+  MestoDogadjajaHome,
+  MestoPoseteHome,
+  OpremaHome,
+  PrigradskaNaseljaHome,
+  TipDogadjajaHome,
+  TipOprHome,
+} from "./pomocne tabele";
 
 export const Navigation = () => {
   return (
@@ -46,17 +53,14 @@ export const Navigation = () => {
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="Aktivnosti">
-              <NavDropdown.Item>
-                Trenutno
-              </NavDropdown.Item>
+              <NavDropdown.Item>Trenutno</NavDropdown.Item>
               <NavDropdown.Item href="/dogadjaj">
                 Tabela događaja
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="Šifarnik">
-              <NavDropdown.Item href="/tipOpreme">
-                Tip opreme
-              </NavDropdown.Item>
+              <NavDropdown.Item href="/tipOpreme">Tip opreme</NavDropdown.Item>
+              <NavDropdown.Item href="/oprema">Oprema</NavDropdown.Item>
               <NavDropdown.Item href="/mestoPosete">
                 Mesto posete
               </NavDropdown.Item>
@@ -98,10 +102,14 @@ export const Navigation = () => {
           <Route path="/registracija" element={<Registracija />} />
           <Route path="/login" element={<Login />} />
           <Route path="/tipOpreme" element={<TipOprHome />} />
+          <Route path="/oprema" element={<OpremaHome />} />
           <Route path="/mestoPosete" element={<MestoPoseteHome />} />
           <Route path="/mestoDogadjaja" element={<MestoDogadjajaHome />} />
           <Route path="/tipDogadjaja" element={<TipDogadjajaHome />} />
-          <Route path="/prigradskaNaselja" element={<PrigradskaNaseljaHome />} />
+          <Route
+            path="/prigradskaNaselja"
+            element={<PrigradskaNaseljaHome />}
+          />
           <Route path="/dogadjaj" element={<DogadjajHome />} />
         </Routes>
       </div>

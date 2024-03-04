@@ -66,7 +66,7 @@ const PrigradskaNaseljaList = () => {
         </tbody>
       </table>
 
-      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} />
+      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} array={prigradskaNaselja} />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

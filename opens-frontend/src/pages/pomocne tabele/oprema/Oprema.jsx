@@ -1,12 +1,12 @@
-import { useContext, useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import React, { useContext, useEffect, useState } from "react";
+import { OpremaContext } from "./OpremaContext";
 import { MdDelete, MdEdit } from "react-icons/md";
-import { MestoPoseteContext } from "./MestoPoseteContext";
-import DeleteMestoPoseteForm from "./modal/DeleteMestoPoseteForm";
-import EditMestoPoseteForm from "./modal/EditMestoPoseteForm";
+import { Button, Modal } from "react-bootstrap";
+import EditOpremaForm from "./modal/EditOpremaForm";
+import DeleteOpremaForm from "./modal/DeleteOpremaForm";
 
-const MestoPosete = ({ mestoPosete }) => {
-  const { deleteMestoPosete } = useContext(MestoPoseteContext);
+export const Oprema = ({ oprema }) => {
+  const { deleteOpremu } = useContext(OpremaContext);
 
   //za prikazivanje modalnog dijaloga
   const [showEdit, setShowEdit] = useState(false);
@@ -20,12 +20,12 @@ const MestoPosete = ({ mestoPosete }) => {
   useEffect(() => {
     handleCloseEdit();
     handleCloseDelete();
-  }, [mestoPosete]);
+  }, [oprema]);
 
   return (
     <>
-      <td>{mestoPosete.nazivMesta}</td>
-      <td>{mestoPosete.ukupanBrojMesta}</td>
+      <td>{oprema.tipOpreme.naziv}</td>
+      <td>{oprema.serijskiBroj}</td>
       <td>
         <button className="btn text-warning btn-act" onClick={handleShowEdit}>
           <MdEdit />
@@ -37,24 +37,29 @@ const MestoPosete = ({ mestoPosete }) => {
 
       <Modal show={showEdit} onHide={handleCloseEdit} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Izmena mesta posete</Modal.Title>
+          <Modal.Title>Izmena opreme</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <EditMestoPoseteForm updatedMestoPosete={mestoPosete} />
+          <EditOpremaForm updatedOprema={oprema} />
         </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseEdit}>
+            Zatvori
+          </Button>
+        </Modal.Footer>
       </Modal>
 
       <Modal show={showDelete} onHide={handleCloseDelete} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Brisanje mesta posete</Modal.Title>
+          <Modal.Title>Brisanje opreme</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <DeleteMestoPoseteForm mestoPosete={mestoPosete} />
+          <DeleteOpremaForm oprema={oprema} />
         </Modal.Body>
         <Modal.Footer>
           <Button
             className="btn btn-danger"
-            onClick={() => deleteMestoPosete(mestoPosete.id)}
+            onClick={() => deleteOpremu(oprema.id)}
           >
             Obriši
           </Button>
@@ -66,5 +71,4 @@ const MestoPosete = ({ mestoPosete }) => {
     </>
   );
 };
-
-export default MestoPosete;
+export default Oprema;

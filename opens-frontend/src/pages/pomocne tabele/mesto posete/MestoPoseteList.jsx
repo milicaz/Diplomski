@@ -1,34 +1,37 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { FaSquarePlus } from "react-icons/fa6";
 import Pagination from "../../Pagination";
-
 import MestoPosete from "./MestoPosete";
 import { MestoPoseteContext } from "./MestoPoseteContext";
 import AddMestoPoseteForm from "./modal/AddMestoPoseteForm";
 
 const MestoPoseteList = () => {
-  const { mestaPosete } = useContext(MestoPoseteContext);
+  const { sortedMestaPosete } = useContext(MestoPoseteContext);
 
+  //za prikazivanje modalnog dijaloga
   const [show, setShow] = useState(false);
-
   const handleShow = () => setShow(true);
-
   const handleClose = () => setShow(false);
 
+  /* Za zatvaranje modalnog dijaloga
+    Zatvara se kada se izmeni nesto u posetiocima tj kada se doda novi posetilac 
+  */
+  useEffect(() => {
+    handleClose();
+  }, [sortedMestaPosete]);
+
   const [currentPage, setCurrentPage] = useState(1);
-
-  const [mestaPosetePerPage] = useState(5);
-
+  const [mestaPosetePerPage] = useState(10);
   const indexOfLastMestoPosete = currentPage * mestaPosetePerPage;
-
   const indexOfFirstMestoPosete = indexOfLastMestoPosete - mestaPosetePerPage;
-
-  const currentMestaPosete = mestaPosete.slice(
+  const currentMestaPosete = sortedMestaPosete.slice(
     indexOfFirstMestoPosete,
     indexOfLastMestoPosete
   );
-
-  const totalPagesNumber = Math.ceil(mestaPosete.length / mestaPosetePerPage);
+  const totalPagesNumber = Math.ceil(
+    sortedMestaPosete.length / mestaPosetePerPage
+  );
 
   return (
     <>
@@ -36,17 +39,12 @@ const MestoPoseteList = () => {
         <div className="row">
           <div className="col-sm-6">
             <h2>
-              <b>Mesto Posete</b>
+              <b>Mesto posete</b>
             </h2>
           </div>
           <div className="col-sm-6">
-            <Button
-              onClick={handleShow}
-              className="btn btn-success"
-              data-toggle="modal"
-            >
-              <i className="material-icons">&#xE147;</i>
-              <span>Dodaj novo mesto posete</span>
+            <Button className="btn btn-success" onClick={handleShow}>
+              <FaSquarePlus size={20} className="mx-1" /> Dodaj mesto posete
             </Button>
           </div>
         </div>
@@ -54,35 +52,49 @@ const MestoPoseteList = () => {
       <table className="table table-striped table-hover">
         <thead>
           <tr>
-            <th>Naziv</th>
+            <th>Naziv mesta posete</th>
             <th>Ukupan broj mesta</th>
             <th>Akcije</th>
           </tr>
         </thead>
-        <tbody>
-          {currentMestaPosete.map((mestoPosete) => (
-            <tr key={mestoPosete.id}>
-              <MestoPosete mestoPosete={mestoPosete} />
+        {!sortedMestaPosete && sortedMestaPosete.length === 0 ? (
+          <tbody>
+            <tr>
+              <td colSpan="3" className="nema-unetih">
+                Nema upisanih mesta posete.
+              </td>
             </tr>
-          ))}
-        </tbody>
+          </tbody>
+        ) : (
+          <tbody>
+            {currentMestaPosete.map((mestoPosete) => (
+              <tr key={mestoPosete.id}>
+                <MestoPosete mestoPosete={mestoPosete} />
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
 
-      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} />
+      <Pagination
+        pages={totalPagesNumber}
+        setCurrentPage={setCurrentPage}
+        array={sortedMestaPosete}
+      />
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Dodaj mesto posete</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <AddMestoPoseteForm />
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <Button variant="success">Dodaj</Button>
           <Button variant="danger" onClick={handleClose}>
             Zatvori
           </Button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal>
     </>
   );

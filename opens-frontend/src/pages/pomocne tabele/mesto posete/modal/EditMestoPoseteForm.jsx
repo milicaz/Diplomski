@@ -1,26 +1,22 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { MestoPoseteContext } from "../MestoPoseteContext";
 
-const AddMestoPoseteForm = () => {
-  const { addMestoPosete } = useContext(MestoPoseteContext);
+export const EditMestoPoseteForm = ({ updatedMestoPosete }) => {
+  const { editMestoPosete } = useContext(MestoPoseteContext);
 
-  const [newMestoPosete, setNewMestoPosete] = useState({
-    nazivMesta: "",
-    ukupanBrojMesta: 0,
-  });
+  const id = updatedMestoPosete.id;
+  const [nazivMesta, setNazivMesta] = useState(updatedMestoPosete.nazivMesta);
+  const [ukupanBrojMesta, setUkupanBrojMesta] = useState(
+    updatedMestoPosete.ukupanBrojMesta
+  );
 
-  const onInputChange = (e) => {
-    setNewMestoPosete({ ...newMestoPosete, [e.target.name]: e.target.value });
-  };
-
-  const { nazivMesta, ukupanBrojMesta } = newMestoPosete;
+  const editedMestoPosete = { nazivMesta, ukupanBrojMesta };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addMestoPosete(newMestoPosete);
+    editMestoPosete(id, editedMestoPosete);
   };
-
   return (
     <>
       <Form onSubmit={handleSubmit}>
@@ -30,27 +26,27 @@ const AddMestoPoseteForm = () => {
             placeholder="Naziv mesta *"
             name="nazivMesta"
             value={nazivMesta}
-            onChange={(e) => onInputChange(e)}
+            onChange={(e) => setNazivMesta(e.target.value)}
             required
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="ukupanBrojMesta">
           <Form.Control
             type="number"
-            placeholder="Ukupan broj mesta"
+            placeholder="Ukupan broj mesta *"
             name="ukupanBrojMesta"
             value={ukupanBrojMesta}
-            onChange={(e) => onInputChange(e)}
+            onChange={(e) => setUkupanBrojMesta(e.target.value)}
+            required
           />
         </Form.Group>
         <div className="d-grid gap-2">
           <Button variant="success" type="submit">
-            Dodaj mesto posete
+            Izmeni mesto posete
           </Button>
         </div>
       </Form>
     </>
   );
 };
-
-export default AddMestoPoseteForm;
+export default EditMestoPoseteForm;

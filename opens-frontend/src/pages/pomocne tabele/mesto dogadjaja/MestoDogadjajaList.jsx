@@ -69,7 +69,7 @@ const MestoDogadjajaList = () => {
         </tbody>
       </table>
 
-      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} />
+      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} array={mestaDogadjaja} />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

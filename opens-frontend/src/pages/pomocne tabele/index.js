@@ -13,3 +13,6 @@ export { default as TipDogadjajaList } from "../pomocne tabele/tip dogadjaja/Tip
 export { default as TipOpr } from "../pomocne tabele/tip opreme/TipOpr"
 export { default as TipOprHome } from "../pomocne tabele/tip opreme/TipOprHome"
 export { default as TipOprList } from "../pomocne tabele/tip opreme/TipOprList"
+export { default as Oprema } from "../pomocne tabele/oprema/Oprema"
+export { default as OpremaHome } from "../pomocne tabele/oprema/OpremaHome"
+export { default as OpremaTabela } from "../pomocne tabele/oprema/OpremaTabela"
