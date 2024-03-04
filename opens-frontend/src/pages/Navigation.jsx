@@ -17,12 +17,8 @@ import {
 } from "./omladinski klub";
 import Registracija from "./korisnik/Registracija";
 import Login from "./korisnik/Login";
-import TipOprHome from "./pomocne tabele/TipOprHome";
-import MestoPoseteHome from "./pomocne tabele/MestoPoseteHome";
-import MestoDogadjajaHome from "./pomocne tabele/MestoDogadjajaHome";
-import TipDogadjajaHome from "./pomocne tabele/TipDogadjajaHome";
-import PrigradskaNaseljaHome from "./pomocne tabele/PrigradskaNaseljaHome";
 import DogadjajHome from "./aktivnosti/DogadjajHome";
+import { MestoDogadjajaHome, MestoPoseteHome, PrigradskaNaseljaHome, TipDogadjajaHome, TipOprHome } from "./pomocne tabele";
 
 export const Navigation = () => {
   return (
@@ -57,7 +53,7 @@ export const Navigation = () => {
                 Tabela događaja
               </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title="Pomoćne tabele">
+            <NavDropdown title="Šifarnik">
               <NavDropdown.Item href="/tipOpreme">
                 Tip opreme
               </NavDropdown.Item>

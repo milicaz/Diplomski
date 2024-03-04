@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
-import { MestoPoseteContext } from "./MestoPoseteContext";
 import { Button, Modal } from "react-bootstrap";
+import Pagination from "../../Pagination";
+
 import MestoPosete from "./MestoPosete";
+import { MestoPoseteContext } from "./MestoPoseteContext";
 import AddMestoPoseteForm from "./modal/AddMestoPoseteForm";
-import Pagination from "../Pagination";
 
 const MestoPoseteList = () => {
   const { mestaPosete } = useContext(MestoPoseteContext);
@@ -22,7 +23,10 @@ const MestoPoseteList = () => {
 
   const indexOfFirstMestoPosete = indexOfLastMestoPosete - mestaPosetePerPage;
 
-  const currentMestaPosete = mestaPosete.slice(indexOfFirstMestoPosete, indexOfLastMestoPosete);
+  const currentMestaPosete = mestaPosete.slice(
+    indexOfFirstMestoPosete,
+    indexOfLastMestoPosete
+  );
 
   const totalPagesNumber = Math.ceil(mestaPosete.length / mestaPosetePerPage);
 
@@ -36,7 +40,11 @@ const MestoPoseteList = () => {
             </h2>
           </div>
           <div className="col-sm-6">
-            <Button onClick={handleShow} className="btn btn-success" data-toggle="modal">
+            <Button
+              onClick={handleShow}
+              className="btn btn-success"
+              data-toggle="modal"
+            >
               <i className="material-icons">&#xE147;</i>
               <span>Dodaj novo mesto posete</span>
             </Button>
@@ -60,7 +68,7 @@ const MestoPoseteList = () => {
         </tbody>
       </table>
 
-      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} />
+      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -70,9 +78,7 @@ const MestoPoseteList = () => {
           <AddMestoPoseteForm />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success">
-            Dodaj
-          </Button>
+          <Button variant="success">Dodaj</Button>
           <Button variant="danger" onClick={handleClose}>
             Zatvori
           </Button>

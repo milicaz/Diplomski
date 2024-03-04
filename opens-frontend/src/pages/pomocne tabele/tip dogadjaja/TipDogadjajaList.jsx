@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-import { TipDogadjajaContext } from "./TipDogadjajaContext";
 import { Button, Modal } from "react-bootstrap";
+import Pagination from "../../Pagination";
+import AddDogadjajForm from "../mesto dogadjaja/modal/AddDogadjajForm";
 import TipDogadjaja from "./TipDogadjaja";
-import AddDogadjajForm from "./modal/AddDogadjajForm";
-import Pagination from "../Pagination";
+import { TipDogadjajaContext } from "./TipDogadjajaContext";
 
 const TipDogadjajaList = () => {
   const { tipoviDogadjaja } = useContext(TipDogadjajaContext);
@@ -20,11 +20,17 @@ const TipDogadjajaList = () => {
 
   const indexOfLastTipDogadjaja = currentPage * tipDogadjajaPerPage;
 
-  const indexOfFirstTipDogadjaja = indexOfLastTipDogadjaja - tipDogadjajaPerPage;
+  const indexOfFirstTipDogadjaja =
+    indexOfLastTipDogadjaja - tipDogadjajaPerPage;
 
-  const currentTipoviDogadjaja = tipoviDogadjaja.slice(indexOfFirstTipDogadjaja, indexOfLastTipDogadjaja);
+  const currentTipoviDogadjaja = tipoviDogadjaja.slice(
+    indexOfFirstTipDogadjaja,
+    indexOfLastTipDogadjaja
+  );
 
-  const totalPagesNumber = Math.ceil(tipoviDogadjaja.length / tipDogadjajaPerPage)
+  const totalPagesNumber = Math.ceil(
+    tipoviDogadjaja.length / tipDogadjajaPerPage
+  );
 
   return (
     <>
@@ -36,7 +42,11 @@ const TipDogadjajaList = () => {
             </h2>
           </div>
           <div className="col-sm-6">
-            <Button onClick={handleShow} className="btn btn-success" data-toggle="modal">
+            <Button
+              onClick={handleShow}
+              className="btn btn-success"
+              data-toggle="modal"
+            >
               <i className="material-icons">&#xE147;</i>
               <span>Dodaj novi tip događaja</span>
             </Button>
@@ -59,21 +69,19 @@ const TipDogadjajaList = () => {
         </tbody>
       </table>
 
-      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} />
+      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-            <Modal.Title>Dodaj tip događaja</Modal.Title>
+          <Modal.Title>Dodaj tip događaja</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <AddDogadjajForm />
+          <AddDogadjajForm />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success">
-              Dodaj
-          </Button>
+          <Button variant="success">Dodaj</Button>
           <Button variant="danger" onClick={handleClose}>
-              Zatvori
+            Zatvori
           </Button>
         </Modal.Footer>
       </Modal>
