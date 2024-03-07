@@ -39,8 +39,6 @@ public class Organizacija {
 	@Column(name = "link")
 	private String link;
 	
-	@OneToMany(mappedBy = "organizacija")
-	private Set<Dogadjaj> dogadjaji;
 
 	public Organizacija() {
 		super();
@@ -48,7 +46,7 @@ public class Organizacija {
 	}
 
 	public Organizacija(String naziv, String odgovornaOsoba, String brojTelefona, String email, String delatnost,
-			String opis, String link, Set<Dogadjaj> dogadjaji) {
+			String opis, String link) {
 		super();
 		this.naziv = naziv;
 		this.odgovornaOsoba = odgovornaOsoba;
@@ -57,7 +55,6 @@ public class Organizacija {
 		this.delatnost = delatnost;
 		this.opis = opis;
 		this.link = link;
-		this.dogadjaji = dogadjaji;
 	}
 
 	public Long getId() {
@@ -122,14 +119,6 @@ public class Organizacija {
 
 	public void setLink(String link) {
 		this.link = link;
-	}
-
-	public Set<Dogadjaj> getDogadjaji() {
-		return dogadjaji;
-	}
-
-	public void setDogadjaji(Set<Dogadjaj> dogadjaji) {
-		this.dogadjaji = dogadjaji;
 	}
 	
 	
