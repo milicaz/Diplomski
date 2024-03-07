@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-import { PrigradskaNaseljaContext } from "./PrigradskaNaseljaContext";
-import { Button, Modal, ModalBody, ModalHeader, ModalTitle } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
+import Pagination from "../../Pagination";
+import AddDogadjajForm from "../mesto dogadjaja/modal/AddDogadjajForm";
 import PrigradskaNaselja from "./PrigradskaNaselja";
-import AddDogadjajForm from "./modal/AddDogadjajForm";
-import Pagination from "../Pagination";
+import { PrigradskaNaseljaContext } from "./PrigradskaNaseljaContext";
 
 const PrigradskaNaseljaList = () => {
   const { prigradskaNaselja } = useContext(PrigradskaNaseljaContext);
@@ -22,7 +22,10 @@ const PrigradskaNaseljaList = () => {
 
   const indexOfFirstNaselje = indexOfLastNaselje - naseljaPerPage;
 
-  const currentNaselja = prigradskaNaselja.slice(indexOfFirstNaselje, indexOfLastNaselje);
+  const currentNaselja = prigradskaNaselja.slice(
+    indexOfFirstNaselje,
+    indexOfLastNaselje
+  );
 
   const totalPagesNumber = Math.ceil(prigradskaNaselja.length / naseljaPerPage);
 
@@ -36,7 +39,11 @@ const PrigradskaNaseljaList = () => {
             </h2>
           </div>
           <div className="col-sm-6">
-            <Button onClick={handleShow} className="btn btn-success" data-toggle="modal">
+            <Button
+              onClick={handleShow}
+              className="btn btn-success"
+              data-toggle="modal"
+            >
               <i className="material-icons">&#xE147;</i>
               <span>Dodaj novo prigradsko naselje</span>
             </Button>
@@ -59,7 +66,7 @@ const PrigradskaNaseljaList = () => {
         </tbody>
       </table>
 
-      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} />
+      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} array={prigradskaNaselja} />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -69,11 +76,9 @@ const PrigradskaNaseljaList = () => {
           <AddDogadjajForm />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success">
-              Dodaj
-          </Button>
+          <Button variant="success">Dodaj</Button>
           <Button variant="danger" onClick={handleClose}>
-              Zatvori
+            Zatvori
           </Button>
         </Modal.Footer>
       </Modal>

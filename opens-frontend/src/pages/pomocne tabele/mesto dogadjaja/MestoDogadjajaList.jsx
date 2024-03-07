@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-import MestoDogadjajaContextProvider, { MestoDogadjajaContext } from "./MestoDogadjajaContext";
+import { Button, Modal } from "react-bootstrap";
+import Pagination from "../../Pagination";
 import MestoDogadjaja from "./MestoDogadjaja";
-import { Button, Modal, Row } from "react-bootstrap";
+import { MestoDogadjajaContext } from "./MestoDogadjajaContext";
 import AddDogadjajForm from "./modal/AddDogadjajForm";
-import Pagination from "../Pagination";
 
 const MestoDogadjajaList = () => {
   const { mestaDogadjaja } = useContext(MestoDogadjajaContext);
@@ -18,13 +18,19 @@ const MestoDogadjajaList = () => {
 
   const [mestaDogadjajaPerPage] = useState(5);
 
-  const indexOfLastMestoDogadjaja = currentPage * mestaDogadjajaPerPage
+  const indexOfLastMestoDogadjaja = currentPage * mestaDogadjajaPerPage;
 
-  const indexOfFirstMestoDogadjaja = indexOfLastMestoDogadjaja - mestaDogadjajaPerPage
+  const indexOfFirstMestoDogadjaja =
+    indexOfLastMestoDogadjaja - mestaDogadjajaPerPage;
 
-  const currentMestaDogadjaja = mestaDogadjaja.slice(indexOfFirstMestoDogadjaja, indexOfLastMestoDogadjaja)
+  const currentMestaDogadjaja = mestaDogadjaja.slice(
+    indexOfFirstMestoDogadjaja,
+    indexOfLastMestoDogadjaja
+  );
 
-  const totalPagesNumber = Math.ceil(mestaDogadjaja.length / mestaDogadjajaPerPage)
+  const totalPagesNumber = Math.ceil(
+    mestaDogadjaja.length / mestaDogadjajaPerPage
+  );
 
   return (
     <>
@@ -63,7 +69,7 @@ const MestoDogadjajaList = () => {
         </tbody>
       </table>
 
-      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} />
+      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} array={mestaDogadjaja} />
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -73,9 +79,7 @@ const MestoDogadjajaList = () => {
           <AddDogadjajForm />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success">
-            Dodaj
-          </Button>
+          <Button variant="success">Dodaj</Button>
           <Button variant="danger" onClick={handleClose}>
             Zatvori
           </Button>
