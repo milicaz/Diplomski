@@ -1,6 +1,28 @@
+import { useEffect } from "react";
 import { Button, Image, Pressable, Text, View } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
+import { useFonts } from "expo-font";
 
 export default function WelcomePage({ navigation }) {
+
+  const [fontsLoaded] = useFonts({
+    'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf')
+  });
+
+  useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prepare();
+  }, [])
+
+  if(!fontsLoaded) {
+    return undefined;
+  } else {
+    SplashScreen.hideAsync();
+  }
+
   return (
     <View style={{ flex: 1 }}>
 
@@ -23,11 +45,11 @@ export default function WelcomePage({ navigation }) {
       </View>
 
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Button title="Registracija" onPress={() => navigation.navigate("Registracija")} />
+        <Button title="Registracija" textStyle = {{fontFamily: "Montserrat-Regular"}} onPress={() => navigation.navigate("Registracija")} />
         <View style={{ justifyContent: "center", alignItems: "center" }}>
-          <Text style={{ fontSize: 20 }}>Imate napravljen nalog?</Text>
+          <Text style={{ fontSize: 20, fontFamily: "Montserrat-Regular" }}>Imate napravljen nalog?</Text>
           <Pressable onPress={() => navigation.navigate("Login")}>
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+            <Text style={{ fontSize: 20, fontFamily: "Montserrat-Bold" }}>
               Prijavite se
             </Text>
           </Pressable>
