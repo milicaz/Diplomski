@@ -50,7 +50,7 @@ export default function Dostupnost() {
     return(
         
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.white}}>
-            <Text style={{ fontFamily: "Montserrat-BoldItalic", fontSize: 50, marginBottom: 40, color: '#A18BBD'}}>Dostupnost</Text>
+            <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 50, marginBottom: 40, color: '#A18BBD'}}>Dostupnost</Text>
             <View style = {{ flexDirection: "row", width: "80%", marginBottom: 20}}>
                 <View style = {{flex : 1}}>
                     <Image source = {require("../assets/stolica.png")} style={{ height: 45, width: 45}}/>
