@@ -7,6 +7,7 @@ import DatePicker from "react-native-datepicker";
 import { Dropdown } from "react-native-element-dropdown";
 import SearchableDropDown from "react-native-searchable-dropdown";
 import * as SplashScreen from "expo-splash-screen";
+import COLORS from "../constants/colors";
 
 
 export default function Registracija() {
@@ -99,7 +100,7 @@ export default function Registracija() {
   }
 
   return (
-    <ScrollView>
+    <ScrollView style = {{ backgroundColor: COLORS.white}}>
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center", marginTop: "10%" }}>
       {/* <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 50, marginBottom: 40 }}>Registracija</Text> */}
       <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>

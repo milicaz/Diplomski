@@ -3,6 +3,7 @@ import { useFonts } from "expo-font";
 import { useEffect, useState } from "react";
 import { Button, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
+import COLORS from "../constants/colors";
 
 
 export default function Login() {
@@ -38,7 +39,7 @@ export default function Login() {
 
   return (
 
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
 
     <View>
         <Image

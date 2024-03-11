@@ -4,6 +4,7 @@ import { Alert, Button, Image, Modal, Text, TouchableOpacity, View } from "react
 import * as SplashScreen from "expo-splash-screen";
 import ReactNativeModal from "react-native-modal";
 import { useState } from "react/cjs/react.development";
+import COLORS from "../constants/colors";
 
 export default function Dostupnost() {
 
@@ -48,8 +49,8 @@ export default function Dostupnost() {
 
     return(
         
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center"}}>
-            <Text style={{ fontFamily: "Montserrat-BoldItalic", fontSize: 50, marginBottom: 40 }}>Dostupnost</Text>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.white}}>
+            <Text style={{ fontFamily: "Montserrat-BoldItalic", fontSize: 50, marginBottom: 40, color: '#A18BBD'}}>Dostupnost</Text>
             <View style = {{ flexDirection: "row", width: "80%", marginBottom: 20}}>
                 <View style = {{flex : 1}}>
                     <Image source = {require("../assets/stolica.png")} style={{ height: 45, width: 45}}/>

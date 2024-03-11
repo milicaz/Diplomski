@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Button, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
+import COLORS from "../constants/colors";
 
 export default function WelcomePage({ navigation }) {
 
@@ -24,7 +25,7 @@ export default function WelcomePage({ navigation }) {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
 
       <View>
         <Image
