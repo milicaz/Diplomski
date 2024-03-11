@@ -2,7 +2,7 @@ import { AntDesign } from "@expo/vector-icons";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useFonts } from "expo-font";
 import { Fragment, useEffect, useState } from "react";
-import { Button, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, Image, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import DatePicker from "react-native-datepicker";
 import { Dropdown } from "react-native-element-dropdown";
 import SearchableDropDown from "react-native-searchable-dropdown";
@@ -101,7 +101,22 @@ export default function Registracija() {
 
   return (
     <ScrollView style = {{ backgroundColor: COLORS.white}}>
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center", marginTop: "10%" }}>
+    <View style = {{ flex: 1}}>
+
+    {/* <View>
+        <Image
+          source={require("../assets/opens2.png")}
+          style={{
+            height: 100,
+            margin: "5%",
+            width: "90%",
+            position: "absolute",
+
+          }}
+        />
+      </View> */}
+
+    <View style={{ alignItems: "center", justifyContent: "center", marginTop: "10%" }}>
       {/* <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 50, marginBottom: 40 }}>Registracija</Text> */}
       <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Email" />
@@ -177,6 +192,7 @@ export default function Registracija() {
           <Text style = {{fontFamily: "Montserrat-Regular"}}>Registracija</Text>
         </TouchableOpacity>
       </View>
+    </View>
     </View>
     </ScrollView>
   );
