@@ -1,11 +1,33 @@
 import { AntDesign } from "@expo/vector-icons";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import { Fragment, useState } from "react";
+import { useFonts } from "expo-font";
+import { Fragment, useEffect, useState } from "react";
 import { Button, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import DatePicker from "react-native-datepicker";
 import { Dropdown } from "react-native-element-dropdown";
 import SearchableDropDown from "react-native-searchable-dropdown";
+import * as SplashScreen from "expo-splash-screen";
+
+
 export default function Registracija() {
+
+  const [fontsLoaded] = useFonts({
+    'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf')
+  });
+
+  useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prepare();
+  }, [])
+
+  if(!fontsLoaded) {
+    return undefined;
+  } else {
+    SplashScreen.hideAsync();
+  }
 
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
@@ -67,7 +89,7 @@ export default function Registracija() {
     const renderLabel = () => {
       if(value || isFocus) {
         return (
-          <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+          <Text style={[styles.label, isFocus && { color: 'blue', fontFamily: "Montserrat-Regular"}]}>
             Dropdown label
           </Text>
         )
@@ -78,29 +100,31 @@ export default function Registracija() {
 
   return (
     <ScrollView>
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text style={{ fontWeight: "bold", fontSize: 50, marginBottom: 40 }}>Registracija</Text>
-      <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-        <TextInput style = {{height: 50, color: "black"}} placeholder="Email" />
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center", marginTop: "10%" }}>
+      {/* <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 50, marginBottom: 40 }}>Registracija</Text> */}
+      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+        <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Email" />
       </View>
-      <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-        <TextInput style = {{height: 50, color: "black"}} placeholder="Lozinka" />
+      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+        <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Lozinka" />
       </View>
-      <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-        <TextInput style = {{height: 50, color: "black"}} placeholder="Ime" />
+      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+        <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Ime" />
       </View>
-      <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-        <TextInput style = {{height: 50, color: "black"}} placeholder="Prezime" />
+      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+        <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Prezime" />
       </View>
-      <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <Dropdown
+          itemTextStyle = {{fontFamily: "Montserrat-Regular"}}
+          placeholderStyle = {{fontFamily: "Montserrat-Regular"}}
           data={data}
-          search
+          // search
           maxHeight={300}
           labelField="label"
           valueField="value"
           placeholder={!isFocus ? 'Rod' : '...'}
-          searchPlaceholder="Search..."
+          // searchPlaceholder="Search..."
           value={value}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
@@ -111,42 +135,46 @@ export default function Registracija() {
         />
         {/* <TextInput style = {{height: 50, color: "black"}} placeholder="Rod" /> */}
       </View>
-      <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-        {showPicker && (
+      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+        <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} keyboardType="numeric" placeholder="Godina rodjenja"/>
+        {/* {showPicker && (
           <RNDateTimePicker mode = "date" display = "default" value={date} onChange={onChange} />
         )}
 
         {showPicker && Platform.OS === "ios" && (
           <View style = {{ flexDirection: "row", justifyContent: "space-around" }}>
             <TouchableOpacity style = {{backgroundColor: "#11182711", paddingHorizontal:20}} onPress={toogleDatepicker}>
-              <Text style = {{fontSize: 14, fontWeight: "500", color: "#fff"}}>Cancel</Text>
+              <Text style = {{fontSize: 14, fontWeight: "500", color: "#fff", fontFamily: "Montserrat-Regular"}}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity style = {{backgroundColor: "#11182711", paddingHorizontal:20}} onPress={confirmIOSDate}>
-              <Text style = {{fontSize: 14, fontWeight: "500", color: "#fff"}}>Confirm</Text>
+              <Text style = {{fontSize: 14, fontWeight: "500", color: "#fff", fontFamily: "Montserrat-Regular"}}>Confirm</Text>
             </TouchableOpacity>
           </View>
         )}
 
         {!showPicker && (
           <Pressable onPress={toogleDatepicker}>
-          <TextInput style = {{height: 50, color: "black"}} placeholder="Datum rodjenja" editable = {false} value={getDate()} onChangeText={setDate} onPressIn={toogleDatepicker} />
+          <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Datum rodjenja" editable = {false} value={getDate()} onChangeText={setDate} onPressIn={toogleDatepicker} />
         </Pressable>
-        )}
+        )} */}
         
       </View>
-      <View style={{ width: "80%", borderWidth: 2, borderRadius: 25, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-        <TextInput style = {{height: 50, color: "black"}} placeholder="Mesto Boravista" />
+      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+        <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Mesto Boravista" />
       </View>
         <View style = {{flexDirection:"row", width: "80%"}}>
-          <View style = {{flex: 1, borderWidth: 2, borderRadius: 25, height: 50, justifyContent: "center", marginBottom: 20, padding: 20}}>
-            <TextInput style = {{ height: 50, color:"black", }} keyboardType="numeric" placeholder="+381" />
+          <View style = {{flex: 1, borderWidth: 2, height: 50, justifyContent: "center", marginBottom: 20, padding: 20}}>
+            <TextInput style = {{ height: 50, color:"black", fontFamily: "Montserrat-Regular" }} keyboardType="numeric" placeholder="+381" />
           </View>
-          <View style={{flex: 4, borderWidth: 2, borderRadius: 25, height: 50, justifyContent: "center", marginBottom: 20, padding: 20}}>
-            <TextInput style = {{height: 50, color: "black"}} keyboardType="numeric" placeholder="0631234567" />
+          <View style={{flex: 4, borderWidth: 2, height: 50, justifyContent: "center", marginBottom: 20, padding: 20}}>
+            <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} keyboardType="numeric" placeholder="0631234567" />
           </View>
           </View>
       <View style= {{width:"50%", margin:10}}>
-        <Button title="Registracija"></Button>
+        {/* <Button title="Registracija"></Button> */}
+        <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#61CDCD', padding: 13}}>
+          <Text style = {{fontFamily: "Montserrat-Regular"}}>Registracija</Text>
+        </TouchableOpacity>
       </View>
     </View>
     </ScrollView>
