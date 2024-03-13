@@ -25,27 +25,20 @@ export default function WelcomePage({ navigation }) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <View style={{ flex : 1, backgroundColor: COLORS.white }}>
 
       <View>
         <Image
           source={require("../assets/opens2.png")}
           style={{
-            height: 100,
-            width: "90%",
+            height: 350,
+            width: "100%",
             position: "absolute",
-            margin: "5%",
-            top: 100,
-            // transform: [
-            //   { translateX: 5 },
-            //   { translateY: 50 },
-            //   { rotate: "-15deg" },
-            // ],
           }}
         />
       </View>
 
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={{ justifyContent: "center", alignItems: "center", height: 1050}}>
         {/* <Button title="Registracija" textStyle = {{fontFamily: "Montserrat-Regular"}} onPress={() => navigation.navigate("Registracija")} /> */}
         <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#61CDCD', padding: 13, width: "50%"}} onPress={() => navigation.navigate("Registracija")}>
           <Text style = {{fontFamily: "Montserrat-Regular"}}>Registracija</Text>

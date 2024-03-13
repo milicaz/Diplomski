@@ -39,23 +39,7 @@ export default function Login() {
 
   return (
 
-    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
-
-    <View>
-        <Image
-          source={require("../assets/opens2.png")}
-          style={{
-            height: 100,
-            marginTop: "20%",
-            margin: "5%",
-            width: "90%",
-            position: "absolute",
-
-          }}
-        />
-      </View>
-
-      <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+      <View style={{flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.white}}>
 
       {/* <Text style={{fontFamily: "Montserrat-Bold", fontSize: 50, marginBottom: 40 }}>Login</Text> */}
       <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
@@ -73,6 +57,5 @@ export default function Login() {
         </TouchableOpacity>
       </View>
       </View>
-    </View>
   );
 }

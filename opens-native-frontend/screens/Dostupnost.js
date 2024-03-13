@@ -1,6 +1,6 @@
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
-import { Alert, Button, Image, Modal, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Button, Image, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import ReactNativeModal from "react-native-modal";
 import { useState } from "react/cjs/react.development";
@@ -50,60 +50,45 @@ export default function Dostupnost() {
     return(
         
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.white}}>
-            <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 50, marginBottom: 40, color: '#A18BBD'}}>Dostupnost</Text>
-            <View style = {{ flexDirection: "row", width: "80%", marginBottom: 20}}>
+            <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 50, marginBottom: 40}}>Dostupnost</Text>
+            <View style = {{ flexDirection: "row", width: "90%", marginBottom: 20}}>
                 <View style = {{flex : 1}}>
-                    <Image source = {require("../assets/stolica.png")} style={{ height: 45, width: 45}}/>
+                    <Image source = {require("../assets/stolica.png")} style={{ height: 55, width: 55}}/>
                 </View>
                 <View style = {{flex: 4}}>
-                    {/* <Button title = "Broj dostupnih mesta" color= "#5f9ea0" titleStyle = {{fontSize:20}} onPress={mestaAlert} /> */}
-                    <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#A3C57B', padding: 13,}} onPress={mestaAlert}>
-                        <Text style = {{fontFamily: "Montserrat-Regular"}}>Broj dostupnih mesta</Text>
-                    </TouchableOpacity>
+                    <Text style = {{fontFamily: "Montserrat-Regular", backgroundColor: '#A3C57B', padding: 18}}>40 slobodnih mesta.</Text>
                 </View>
             </View>
-            <View style = {{flexDirection:"row", width: "80%", marginBottom: 20}}>
+            <View style = {{flexDirection:"row", width: "90%", marginBottom: 20}}>
                 <View style = {{flex: 1}}>
-                    <Image source = {require("../assets/laptop.png")} style={{ height: 45, width: 45}}/>
+                    <Image source = {require("../assets/laptop.png")} style={{ height: 55, width: 55}}/>
                 </View>
                 <View style = {{flex: 4}}>
-                    {/* <Button title = "Broj dostupnih laptopova" color= "#5f9ea0" onPress={laptopAlert} /> */}
-                    <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#F56F66', padding: 13,}} onPress={laptopAlert}>
-                        <Text style = {{fontFamily: "Montserrat-Regular"}}>Broj dostupnih laptopova</Text>
-                    </TouchableOpacity>
+                <Text style = {{fontFamily: "Montserrat-Regular", backgroundColor: '#F56F66', padding: 18}}>10 slobodnih laptopova.</Text>
                 </View>
             </View>
-            <View style = {{flexDirection:"row", width: "80%", marginBottom: 20}}>
+            <View style = {{flexDirection:"row", width: "90%", marginBottom: 20}}>
                 <View style = {{flex : 1}}>
-                    <Image source = {require("../assets/mis.png")} style={{ height: 45, width: 45}}/>
+                    <Image source = {require("../assets/mis.png")} style={{ height: 55, width: 55}}/>
                 </View>
                 <View style = {{flex: 4}}>
-                    {/* <Button title = "Broj dostupnih miseva" color= "#5f9ea0" onPress={misAlert} /> */}
-                    <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#FBB537', padding: 13,}} onPress={misAlert}>
-                        <Text style = {{fontFamily: "Montserrat-Regular"}}>Broj dostupnih miseva</Text>
-                    </TouchableOpacity>
+                    <Text style = {{fontFamily: "Montserrat-Regular", backgroundColor: '#FBB537', padding: 18}}>2 slobodna miša.</Text>
                 </View>
             </View>
-            <View style = {{flexDirection:"row", width: "80%", marginBottom: 20}}>
+            <View style = {{flexDirection:"row", width: "90%", marginBottom: 20}}>
                 <View style = {{flex: 1}}>
-                    <Image source = {require("../assets/slusalice.png")} style={{ height: 45, width: 45}}/>
+                    <Image source = {require("../assets/slusalice.png")} style={{ height: 55, width: 55}}/>
                 </View>
                 <View style = {{flex : 4}}>
-                    {/* <Button title = "Broj dostupnih slusalica" color= "#5f9ea0" onPress={headphonesAlert} /> */}
-                    <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#61CDCD', padding: 13,}} onPress={headphonesAlert}>
-                        <Text style = {{fontFamily: "Montserrat-Regular"}}>Broj dostupnih slusalica</Text>
-                    </TouchableOpacity>
+                    <Text style = {{fontFamily: "Montserrat-Regular", backgroundColor: '#61CDCD', padding: 18}}>5 slobodnih slušsalica</Text>
                 </View>
             </View>
-            <View style = {{flexDirection:"row", width: "80%", marginBottom: 20}}>
+            <View style = {{flexDirection:"row", width: "90%", marginBottom: 20}}>
                 <View style = {{flex: 1}}>
-                    <Image source = {require("../assets/sony.png")} style={{ height: 45, width: 45}}/>
+                    <Image source = {require("../assets/sony.png")} style={{ height: 55, width: 55}}/>
                 </View>
                 <View style = {{flex : 4}}>
-                    {/* <Button title = "Dostupnost sony-a" color= "#5f9ea0" onPress={sonyAlert} /> */}
-                    <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#A18BBD', padding: 13,}} onPress={sonyAlert}>
-                        <Text style = {{fontFamily: "Montserrat-Regular"}}>Dostupnost sony-a</Text>
-                    </TouchableOpacity>
+                    <Text style = {{fontFamily: "Montserrat-Regular", backgroundColor: '#A18BBD', padding: 18}}>Sony je zeuzet.</Text>
                 </View>
             </View>
         </View>
