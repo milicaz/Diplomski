@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Button, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Button, Image, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import COLORS from "../constants/colors";
@@ -24,6 +24,17 @@ export default function WelcomePage({ navigation }) {
     SplashScreen.hideAsync();
   }
 
+  // State variable to hold the password 
+  const [password, setPassword] = useState(''); 
+  
+  // State variable to track password visibility 
+  const [showPassword, setShowPassword] = useState(false); 
+
+  // Function to toggle the password visibility state 
+  const toggleShowPassword = () => { 
+      setShowPassword(!showPassword); 
+  }
+
   return (
     <View style={{ flex : 1, backgroundColor: COLORS.white }}>
 
@@ -31,17 +42,17 @@ export default function WelcomePage({ navigation }) {
         <Image
           source={require("../assets/opens2.png")}
           style={{
-            height: 350,
+            height: 300,
             width: "100%",
             position: "absolute",
           }}
         />
       </View>
 
-      <View style={{ justifyContent: "center", alignItems: "center", height: 1050}}>
-        {/* <Button title="Registracija" textStyle = {{fontFamily: "Montserrat-Regular"}} onPress={() => navigation.navigate("Registracija")} /> */}
+      <View style={{ justifyContent: "center", alignItems: "center", height: 950}}>
+        {/* <Button title="Registracija" textStyle = {{fontFamily: "Montserrat-Regular"}} onPress={() => navigation.navigate("Registracija")} />
         <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#61CDCD', padding: 13, width: "50%"}} onPress={() => navigation.navigate("Registracija")}>
-          <Text style = {{fontFamily: "Montserrat-Regular"}}>Registracija</Text>
+          <Text style = {{fontFamily: "Montserrat-Bold", color: "black"}}>Registracija</Text>
         </TouchableOpacity>
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <Text style={{ fontSize: 20, fontFamily: "Montserrat-Regular" }}>Imate napravljen nalog?</Text>
@@ -50,6 +61,32 @@ export default function WelcomePage({ navigation }) {
               Prijavite se
             </Text>
           </Pressable>
+        </View> */}
+        <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+          <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Email" />
+        </View>
+        <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+          <TextInput secureTextEntry={!showPassword} value={password} onChangeText={setPassword} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Password" />
+        </View>
+        <View style = {{width: "90%", alignItems: "center", justifyContent: "center"}}>
+          <TouchableOpacity>
+            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }}>Zaboravili ste lozinku?</Text>
+        </TouchableOpacity>
+        </View>
+        <View  style = {{ width: "50%", margin: 10}}>
+          <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#61CDCD', padding: 13}}>
+            <Text style = {{fontFamily: "Montserrat-Bold"}}>Login</Text>
+          </TouchableOpacity>
+        </View>
+        <View style = {{width : "80%", flexDirection: "row" , alignItems : "center", justifyContent: "center"}}>
+          <View style = {{flex : 1}}>
+            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }}>Nemate nalog?</Text>
+          </View>
+        <View style = {{flex: 1, marginLeft: 30}}>
+          <TouchableOpacity>
+            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold" }} onPress={() => navigation.navigate("Registracija")}>Registracija</Text>
+        </TouchableOpacity>
+        </View>
         </View>
       </View>
 
@@ -59,5 +96,6 @@ export default function WelcomePage({ navigation }) {
         </Pressable>
       </View>
     </View>
+    
   );
 }

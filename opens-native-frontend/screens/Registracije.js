@@ -118,19 +118,19 @@ export default function Registracija() {
 
     <View style={{ alignItems: "center", justifyContent: "center", marginTop: "10%" }}>
       {/* <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 50, marginBottom: 40 }}>Registracija</Text> */}
-      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+      <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Email" />
       </View>
-      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+      <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Lozinka" />
       </View>
-      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+      <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Ime" />
       </View>
-      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+      <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Prezime" />
       </View>
-      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+      <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <Dropdown
           itemTextStyle = {{fontFamily: "Montserrat-Regular"}}
           placeholderStyle = {{fontFamily: "Montserrat-Regular"}}
@@ -151,7 +151,7 @@ export default function Registracija() {
         />
         {/* <TextInput style = {{height: 50, color: "black"}} placeholder="Rod" /> */}
       </View>
-      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+      <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} keyboardType="numeric" placeholder="Godina rodjenja"/>
         {/* {showPicker && (
           <RNDateTimePicker mode = "date" display = "default" value={date} onChange={onChange} />
@@ -175,15 +175,15 @@ export default function Registracija() {
         )} */}
         
       </View>
-      <View style={{ width: "80%", borderWidth: 2, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+      <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Mesto Boravista" />
       </View>
         <View style = {{flexDirection:"row", width: "80%"}}>
-          <View style = {{flex: 1, borderWidth: 2, height: 50, justifyContent: "center", marginBottom: 20, padding: 20}}>
+          <View style = {{flex: 1, borderWidth: 1, height: 50, justifyContent: "center", marginBottom: 20, padding: 20, marginRight: 5}}>
             <TextInput style = {{ height: 50, color:"black", fontFamily: "Montserrat-Regular" }} keyboardType="numeric" placeholder="+381" />
           </View>
-          <View style={{flex: 4, borderWidth: 2, height: 50, justifyContent: "center", marginBottom: 20, padding: 20}}>
-            <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} keyboardType="numeric" placeholder="0631234567" />
+          <View style={{flex: 4, borderWidth: 1, height: 50, justifyContent: "center", marginBottom: 20, padding: 20}}>
+            <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} keyboardType="numeric" placeholder="631234567" />
           </View>
           </View>
       <View style= {{width:"50%", margin:10}}>
