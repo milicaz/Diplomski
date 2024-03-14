@@ -1,24 +1,31 @@
+import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import httpCommon from "../../../http-common";
 
 export const MestoDogadjajaContext = createContext()
 
 const MestoDogadjajaContextProvider = (props) => {
 
-    const [mestaDogadjaja, setMestaDogadjaja] = useState([
-        // {id:'1', nazivSale: 'Konferencijska Sala'},
-        // {id:'2', nazivSale: 'Multimedijalna Sala'},
-        // {id:'3', nazivSale: 'Podcast'}
-    ])
+    const [mestaDogadjaja, setMestaDogadjaja] = useState([])
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/mestaDogadjaja')
-        .then(response => response.json())
-        .then(data => setMestaDogadjaja(data))
-        .catch(error => console.error('Error fetching mesta dogadjaja:', error));
-    })
+        getMesta();
+    }, [])
+
+    const getMesta = async () => {
+        const { data } = await axios.get("http://localhost:8080/api/mestaDogadjaja");
+        setMestaDogadjaja(data)
+    }
+
+    const addMestoDogadjaja = async (mestoDogadjaja) => {
+        await axios.post("http://localhost:8080/api/mestaDogadjaja", mestoDogadjaja)
+        getMesta();
+    }
+
+
 
     return (
-        <MestoDogadjajaContext.Provider value={{mestaDogadjaja}}>
+        <MestoDogadjajaContext.Provider value={{mestaDogadjaja, addMestoDogadjaja}}>
             {props.children}
         </MestoDogadjajaContext.Provider>
     )
