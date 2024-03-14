@@ -64,7 +64,7 @@ const DogadjajList = () => {
         </tbody>
       </table>
 
-      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} />
+      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} array={dogadjaji}/>
 
       <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>

@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import Pagination from "../../Pagination";
 import MestoDogadjaja from "./MestoDogadjaja";
 import { MestoDogadjajaContext } from "./MestoDogadjajaContext";
-import AddDogadjajForm from "./modal/AddDogadjajForm";
+// import AddDogadjajForm from "./modal/AddDogadjajForm";
 
 const MestoDogadjajaList = () => {
   const { mestaDogadjaja } = useContext(MestoDogadjajaContext);
@@ -31,6 +31,27 @@ const MestoDogadjajaList = () => {
   const totalPagesNumber = Math.ceil(
     mestaDogadjaja.length / mestaDogadjajaPerPage
   );
+
+  const [mestoDogadjaja, setMestoDogadjaja] = useState({ nazivSale: '' });
+
+  const handleDodaj = (event) => {
+    event.preventDefault();
+    fetch('http://localhost:8080/api/mestaDogadjaja', {
+      method : 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(mestoDogadjaja),
+    }).then(response => response.json())
+    .then(data => console.log('Mesto dogadjaja created:', data))
+    .catch(error => console.error('Error creating mesto dogadjaja:', error))
+    handleClose()
+  }
+
+  const handleChange = (event) => {
+    const {name, value} = event.target
+    setMestoDogadjaja(prevMesto => ({...prevMesto, [name]: value}))
+  }
 
   return (
     <>
@@ -76,10 +97,15 @@ const MestoDogadjajaList = () => {
           <Modal.Title>Dodaj mesto događaja</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AddDogadjajForm />
+          {/* <AddDogadjajForm /> */}
+          <Form>
+            <Form.Group>
+                <Form.Control style={{width:"80%", maxWidth:"90%"}} name="nazivSale" value={mestoDogadjaja.naziv} onChange={handleChange} type="text" placeholder="Naziv " required />
+            </Form.Group>
+          </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success">Dodaj</Button>
+          <Button variant="success" onClick={handleDodaj}>Dodaj</Button>
           <Button variant="danger" onClick={handleClose}>
             Zatvori
           </Button>

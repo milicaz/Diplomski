@@ -78,9 +78,9 @@ export const Navigation = () => {
           </Nav>
           <Nav className="justify-content-end">
             <Nav.Link href="/registracija">Registracija</Nav.Link>
-            <Nav.Link href="/login">Login</Nav.Link>
+            {/* <Nav.Link href="/login">Login</Nav.Link>
             <Nav.Link>Logout</Nav.Link>
-            <Nav.Link href="/profile">Profil</Nav.Link>
+            <Nav.Link href="/profile">Profil</Nav.Link> */}
           </Nav>
         </Container>
       </Navbar>

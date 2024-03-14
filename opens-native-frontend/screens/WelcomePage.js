@@ -6,6 +6,17 @@ import COLORS from "../constants/colors";
 
 export default function WelcomePage({ navigation }) {
 
+  // State variable to hold the password 
+  const [password, setPassword] = useState(''); 
+  
+  // State variable to track password visibility 
+  const [showPassword, setShowPassword] = useState(false); 
+
+  // Function to toggle the password visibility state 
+  const toggleShowPassword = () => { 
+      setShowPassword(!showPassword); 
+  }
+
   const [fontsLoaded] = useFonts({
     'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
     'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf')
@@ -22,17 +33,6 @@ export default function WelcomePage({ navigation }) {
     return undefined;
   } else {
     SplashScreen.hideAsync();
-  }
-
-  // State variable to hold the password 
-  const [password, setPassword] = useState(''); 
-  
-  // State variable to track password visibility 
-  const [showPassword, setShowPassword] = useState(false); 
-
-  // Function to toggle the password visibility state 
-  const toggleShowPassword = () => { 
-      setShowPassword(!showPassword); 
   }
 
   return (
