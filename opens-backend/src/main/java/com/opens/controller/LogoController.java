@@ -27,6 +27,7 @@ import com.opens.repository.LogoRepository;
 
 import ch.qos.logback.core.model.Model;
 import jakarta.persistence.criteria.Path;
+import jdk.jfr.ContentType;
 
 @RestController
 @RequestMapping("/api")
@@ -43,29 +44,27 @@ public class LogoController {
 		return new ResponseEntity<>(logoi, HttpStatus.OK);
 	}
 	
-	@PostMapping(path = "/logoi", consumes={"application/json"})
-	public ResponseEntity<Logo> saveLogo(@RequestParam("image") MultipartFile file) throws IOException{
+	@PostMapping(path = "/logoi", consumes = "multipart/form-data")
+	public ResponseEntity<Logo> saveLogo(@RequestParam("imageFile") MultipartFile file) throws IOException{
 		
-		Logo addLogo = new Logo();
-		addLogo.setNaziv(file.getOriginalFilename());
-		addLogo.setTip(file.getContentType());
-		addLogo.setPicByte(file.getBytes());
+		Logo logo = new Logo();
+		logo.setNaziv(file.getOriginalFilename());
+		logo.setTip(file.getContentType());
+		logo.setPicByte(file.getBytes());
 		
-		System.out.println("Naziv je: " + addLogo.getNaziv());
+		logoRepo.save(logo);
 		
-		logoRepo.save(addLogo);
-		
-		return new ResponseEntity<>(addLogo, HttpStatus.OK);
+		return new ResponseEntity<>(logo, HttpStatus.OK);
 	}
 	
-	@PutMapping("/logoi/{id}")
-	public ResponseEntity<Logo> updateLogo(@PathVariable Long id, @RequestBody Logo logo) {
+	@PutMapping(path = "/logoi/{id}", consumes = "multipart/form-data")
+	public ResponseEntity<Logo> updateLogo(@PathVariable Long id, @RequestParam("imageFile") MultipartFile file) throws IOException {
 		Optional<Logo> upLogo = logoRepo.findById(id);
 		
 		Logo updateLogo = upLogo.get();
-		updateLogo.setNaziv(logo.getNaziv());
-		updateLogo.setPicByte(logo.getPicByte());
-		updateLogo.setTip(logo.getTip());
+		updateLogo.setNaziv(file.getOriginalFilename());
+		updateLogo.setPicByte(file.getBytes());
+		updateLogo.setTip(file.getContentType());
 		
 		logoRepo.save(updateLogo);
 		
