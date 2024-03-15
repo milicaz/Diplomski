@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import { MdDelete, MdEdit } from "react-icons/md"
+import { MestoDogadjajaContext } from "./MestoDogadjajaContext";
 
 const MestoDogadjaja = ({mestoDogadjaja}) => {
 

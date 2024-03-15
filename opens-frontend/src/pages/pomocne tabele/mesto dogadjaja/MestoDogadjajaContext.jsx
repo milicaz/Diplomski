@@ -17,15 +17,25 @@ const MestoDogadjajaContextProvider = (props) => {
         setMestaDogadjaja(data)
     }
 
-    const addMestoDogadjaja = async (mestoDogadjaja) => {
-        await axios.post("http://localhost:8080/api/mestaDogadjaja", mestoDogadjaja)
+    const addMestoDogadjaja = async (addMesto) => {
+        await axios.post("http://localhost:8080/api/mestaDogadjaja", addMesto)
+        getMesta();
+    }
+
+    const editMestoDogadjaja = async (id, editMesto) => {
+        await axios.put(`http://localhost:8080/api/mestaDogadjaja/${id}`, editMesto);
+        getMesta();
+    }
+
+    const deleteMestoDogadjaja = async(id) => {
+        await axios.delete(`http://localhost:8080/api/mestaDogadjaja/${id}`);
         getMesta();
     }
 
 
 
     return (
-        <MestoDogadjajaContext.Provider value={{mestaDogadjaja, addMestoDogadjaja}}>
+        <MestoDogadjajaContext.Provider value={{mestaDogadjaja, addMestoDogadjaja, editMestoDogadjaja, deleteMestoDogadjaja}}>
             {props.children}
         </MestoDogadjajaContext.Provider>
     )
