@@ -48,12 +48,16 @@ public class Dogadjaj {
 	@Temporal(TemporalType.TIME)
 	private LocalTime krajDogadjaja;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+//	@OneToOne(cascade = CascadeType.ALL)
+//	@PrimaryKeyJoinColumn
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "mesto_id")
 	private MestoDogadjaja mesto;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+//	@OneToOne(cascade = CascadeType.ALL)
+//	@PrimaryKeyJoinColumn
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "vrsta_id")
 	private TipDogadjaja vrsta;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
