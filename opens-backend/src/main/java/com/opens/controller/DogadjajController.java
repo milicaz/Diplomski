@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,6 +69,12 @@ public class DogadjajController {
 		return new ResponseEntity<>(dogadjaj, HttpStatus.OK);
 		
 	}
+	
+//	@PutMapping("/dogadjaji/{id}")
+//	public ResponseEntity<String> updateDogadjaj(@PathVariable Long id, @RequestBody DogadjajDTO dogadjajDTO) {
+//		
+//		return new ResponseEntity<>("Dogadjaj je izmenjen!", HttpStatus.OK);
+//	}
 	
 
 }
