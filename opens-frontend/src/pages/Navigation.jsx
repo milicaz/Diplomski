@@ -6,7 +6,7 @@ import {
   Navbar,
   NavbarBrand,
 } from "react-bootstrap";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { opensImage } from "../assets";
 import { Home } from "./Home";
 import DogadjajHome from "./aktivnosti/DogadjajHome";
@@ -28,6 +28,23 @@ import {
 } from "./pomocne tabele";
 
 export const Navigation = () => {
+  const coworkingPaths = ["/coworking-trenutno", "/coworking-tabela"];
+  const omladinskiPaths = ["/omladinski-trenutno", "/omladinski-tabela"];
+  const aktivnostiPaths = ["/dogadjaj"];
+  const sifarnikPaths = [
+    "/tipOpreme",
+    "/oprema",
+    "/mestoPosete",
+    "/mestoDogadjaja",
+    "/tipDogadjaja",
+    "/prigradskaNaselja",
+  ];
+
+  const location = useLocation();
+  const isActive = (pathname) => location.pathname === pathname;
+  const isActiveDropdown = (pathsArray) =>
+    pathsArray.includes(location.pathname);
+
   return (
     <>
       <Navbar bg="light">
@@ -36,48 +53,48 @@ export const Navigation = () => {
             <img src={opensImage} alt="OPENS" width="150" />
           </NavbarBrand>
           <Nav className="me-auto">
-            <NavDropdown title="Co-working">
-              <NavDropdown.Item href="/coworking-trenutno">
+            <NavDropdown title="Co-working" className={isActiveDropdown(coworkingPaths) ? "coworking-dropdown" : "" }>
+              <NavDropdown.Item href="/coworking-trenutno" className={`coworking-dropdown-item ${isActive("/coworking-trenutno") ? "active" : "" }`}>
                 Trenutno
               </NavDropdown.Item>
-              <NavDropdown.Item href="/coworking-tabela">
+              <NavDropdown.Item href="/coworking-tabela" className={`coworking-dropdown-item ${isActive("/coworking-tabela") ? "active" : "" }`}>
                 Tabela poseta
               </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title="Omladinski klub">
-              <NavDropdown.Item href="/omladinski-trenutno">
+            <NavDropdown title="Omladinski klub" className={isActiveDropdown(omladinskiPaths) ? "omladinski-dropdown" : ""}>
+              <NavDropdown.Item href="/omladinski-trenutno" className={`omladinski-dropdown-item ${isActive("/omladinski-trenutno") ? "active" : "" }`}>
                 Trenutno
               </NavDropdown.Item>
-              <NavDropdown.Item href="/omladinski-tabela">
+              <NavDropdown.Item href="/omladinski-tabela" className={`omladinski-dropdown-item ${isActive("/omladinski-tabela") ? "active" : "" }`}>
                 Tabela poseta
               </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title="Aktivnosti">
+            <NavDropdown title="Aktivnosti" className={isActiveDropdown(aktivnostiPaths) ? "aktivnosti-dropdown" : ""}>
               <NavDropdown.Item>Trenutno</NavDropdown.Item>
-              <NavDropdown.Item href="/dogadjaj">
+              <NavDropdown.Item href="/dogadjaj" className={`aktivnosti-dropdown-item ${isActive("/dogadjaj") ? "active" : ""}`}>
                 Tabela događaja
               </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title="Šifarnik">
-              <NavDropdown.Item href="/tipOpreme">Tip opreme</NavDropdown.Item>
-              <NavDropdown.Item href="/oprema">Oprema</NavDropdown.Item>
-              <NavDropdown.Item href="/mestoPosete">
+            <NavDropdown title="Šifarnik" className={isActiveDropdown(sifarnikPaths) ? "sifarnik-dropdown" : ""}>
+              <NavDropdown.Item href="/tipOpreme" className={`sifarnik-dropdown-item ${isActive("/tipOpreme") ? "active" : ""}`}>Tip opreme</NavDropdown.Item>
+              <NavDropdown.Item href="/oprema" className={`sifarnik-dropdown-item ${isActive("/oprema") ? "active" : ""}`}>Oprema</NavDropdown.Item>
+              <NavDropdown.Item href="/mestoPosete" className={`sifarnik-dropdown-item ${isActive("/mestoPosete") ? "active" : ""}`}>
                 Mesto posete
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="/mestoDogadjaja">
+              <NavDropdown.Item href="/mestoDogadjaja" className={`sifarnik-dropdown-item ${isActive("/mestoDogadjaja") ? "active" : ""}`}>
                 Mesto događaja
               </NavDropdown.Item>
-              <NavDropdown.Item href="/tipDogadjaja">
+              <NavDropdown.Item href="/tipDogadjaja" className={`sifarnik-dropdown-item ${isActive("/tipDogadjaja") ? "active" : ""}`}>
                 Tip događaja
               </NavDropdown.Item>
-              <NavDropdown.Item href="/prigradskaNaselja">
+              <NavDropdown.Item href="/prigradskaNaselja" className={`sifarnik-dropdown-item ${isActive("/prigradskaNaselja") ? "active" : ""}`}>
                 Prigradska naselja
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
           <Nav className="justify-content-end">
-            <Nav.Link href="/registracija">Registracija</Nav.Link>
+            <Nav.Link href="/registracija" className={`registracija-dropdown-item ${isActive("/registracija") ? "active" : ""}`}>Registracija</Nav.Link>
             {/* <Nav.Link href="/login">Login</Nav.Link>
             <Nav.Link>Logout</Nav.Link>
             <Nav.Link href="/profile">Profil</Nav.Link> */}

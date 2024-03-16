@@ -166,3 +166,117 @@ td {
 .btn-act {
   padding: 4px;
 }
+
+/*CSS ZA NAVIGACIJU ZA COWORKING DROPDOWN*/
+.coworking-dropdown > a {
+  color: #000000 !important; /* Example: Change the text color */
+  background-color: #a3c57b !important; /* Example: Change the background color */
+  font-weight: bolder;
+}
+
+.coworking-dropdown-item {
+  color: #495057;
+}
+
+.coworking-dropdown-item.active {
+  background-color: #a3c57b;
+  color: #000000; 
+  font-weight: bolder;
+}
+
+/*CSS ZA NAVIGACIJU ZA OMLADINSKI CENTAR DROPDOWN*/
+.omladinski-dropdown > a {
+  color: #000000 !important; /* Example: Change the text color */
+  background-color: #fbb537 !important; /* Example: Change the background color */
+  font-weight: bolder;
+}
+
+.omladinski-dropdown-item {
+  color: #495057;
+}
+
+.omladinski-dropdown-item.active {
+  background-color: #fbb537;
+  color: #000000; 
+  font-weight: bolder;
+}
+
+/*CSS ZA NAVIGACIJU ZA AKTIVNOSTI DROPDOWN*/
+.aktivnosti-dropdown > a {
+  color: #000000 !important; /* Example: Change the text color */
+  background-color: #f56f66 !important; /* Example: Change the background color */
+  font-weight: bolder;
+}
+
+.aktivnosti-dropdown-item {
+  color: #495057;
+}
+
+.aktivnosti-dropdown-item.active {
+  background-color: #f56f66;
+  color: #000000; 
+  font-weight: bolder;
+}
+
+/*CSS ZA NAVIGACIJU ZA SIFARNIK DROPDOWN*/
+.sifarnik-dropdown > a {
+  color: #000000 !important; /* Example: Change the text color */
+  background-color: #61cddc !important; /* Example: Change the background color */
+  font-weight: bolder;
+}
+
+.sifarnik-dropdown-item {
+  color: #495057;
+}
+
+.sifarnik-dropdown-item.active {
+  background-color: #61cddc;
+  color: #000000; 
+  font-weight: bolder;
+}
+
+/*CSS ZA NAVIGACIJU ZA REGISTRACIJU I CHECKIN*/
+.registracija-dropdown-item {
+  color: #495057;
+}
+
+.registracija-dropdown-item.active {
+  background-color: #a18bbd;
+  color: #000000; 
+  font-weight: bolder;
+}
+
+/*CARD I POZADINE ZA CARD*/
+.card-shadow {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.bg-c-green {
+  background: #a3c57b;
+}
+
+.bg-c-yellow {
+  background: #fbb537;
+}
+
+.bg-c-red {
+  background: #f56f66;
+}
+
+.bg-c-blue {
+  background: #61cddc;
+}
+
+.bg-c-purple {
+  background: #a18bbd;
+}
+
+.card-text {
+  font-size: xx-large;
+  font-weight: bold;
+  text-align: center;
+}
+
+.card-height {
+  height: 680px;
+}
