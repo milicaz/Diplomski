@@ -3,7 +3,9 @@ package com.opens.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
+import com.opens.model.Organizacija;
 import com.opens.model.Ucesnik;
 
 public class DogadjajDTO {
@@ -15,7 +17,7 @@ public class DogadjajDTO {
 	private Long mestoDogadjajaId;
 	private Long vrstaDogadjajaId;
 	private Long organizacijaId;
-	private List<Ucesnik> ucesnici;
+	private Set<Ucesnik> ucesnici;
 	
 	public DogadjajDTO() {
 		super();
@@ -78,13 +80,15 @@ public class DogadjajDTO {
 		this.organizacijaId = organizacijaId;
 	}
 
-	public List<Ucesnik> getUcesnici() {
+	public Set<Ucesnik> getUcesnici() {
 		return ucesnici;
 	}
 
-	public void setUcesnici(List<Ucesnik> ucesnici) {
+	public void setUcesnici(Set<Ucesnik> ucesnici) {
 		this.ucesnici = ucesnici;
 	}
+
+	
 	
 	
 	

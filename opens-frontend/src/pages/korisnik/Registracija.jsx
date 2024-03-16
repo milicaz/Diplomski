@@ -4,7 +4,7 @@ import ReactGridLayout from "react-grid-layout";
 
 const Registracija = () => {
   return (
-    <div class="d-flex justify-content-center">
+    <div className="d-flex justify-content-center">
       <Card style={{ width: "40%", height: "40%" }}>
         <Card.Header>Registracija</Card.Header>
         <Card.Body>
