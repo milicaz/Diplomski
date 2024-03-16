@@ -70,11 +70,24 @@ public class DogadjajController {
 		
 	}
 	
-//	@PutMapping("/dogadjaji/{id}")
-//	public ResponseEntity<String> updateDogadjaj(@PathVariable Long id, @RequestBody DogadjajDTO dogadjajDTO) {
+	@PutMapping("/dogadjaji/{id}")
+	public ResponseEntity<String> updateDogadjaj(@PathVariable Long id, @RequestBody DogadjajDTO dogadjajDTO) {
+//		Optional<MestoDogadjaja> mestoDogadjaja = mestoDogadjajaRepo.findById(dogadjajDTO.getMestoDogadjajaId());
+//		Optional<TipDogadjaja> tipDogadjaja = tipDogadjajaRepo.findById(dogadjajDTO.getVrstaDogadjajaId());
+//		Optional<Organizacija> organizacija = organizacijaRepo.findById(dogadjajDTO.getOrganizacijaId());
 //		
-//		return new ResponseEntity<>("Dogadjaj je izmenjen!", HttpStatus.OK);
-//	}
+//		Optional<Dogadjaj> upDogadjaj = dogadjajRepo.findById(id);
+//		
+//		MestoDogadjaja updateMesto = mestoDogadjaja.get();
+//		
+//		Dogadjaj updateDogadjaj = upDogadjaj.get();
+//		updateDogadjaj.setNaziv(dogadjajDTO.getNaziv());
+//		updateDogadjaj.setDatum(dogadjajDTO.getDatum());
+//		updateDogadjaj.setPocetakDogadjaja(dogadjajDTO.getPocetakDogadjaja());
+//		updateDogadjaj.setKrajDogadjaja(dogadjajDTO.getKrajDogadjaja());
+		
+		return new ResponseEntity<>("Dogadjaj je izmenjen!", HttpStatus.OK);
+	}
 	
 
 }
