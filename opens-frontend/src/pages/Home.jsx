@@ -1,33 +1,12 @@
-import React from "react";
-import { Card, Col, Row } from "react-bootstrap";
-import { Bar, Pie } from "react-chartjs-2";
 import "chart.js/auto";
-
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top',
-    },
-    title: {
-      display: true,
-      text: 'Mesečne posete Coworking prostora za 2023. godinu',
-    },
-  },
-};
-
-const labels = ['Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun', 'Jul'];
-
-export const coworking = {
-  labels,
-  datasets: [
-    {
-      label: 'Mesecni broj poseta za 2023. godinu',
-      data: labels.map(() => ([10, 12, 20, 22, 12, 20, 4 ])),
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    },
-  ],
-};
+import React, { useEffect, useState } from "react";
+import { Card, Col, Row } from "react-bootstrap";
+import { Pie } from "react-chartjs-2";
+import httpCommon from "../http-common";
+import {
+  AdminMesecnePoseteCoworking,
+  AdminMesecnePoseteOmladinski,
+} from "./admin dashboard";
 
 const data = {
   labels: ["Interne aktivnosti", "Eksterne aktivnosti", "Kulturna stanica"],
@@ -51,6 +30,24 @@ const data = {
 };
 
 export const Home = () => {
+  const [coworking, setCoworking] = useState([]);
+  const [omladinski, setOmladinski] = useState([]);
+
+  useEffect(() => {
+    fetchCoworking();
+    fetchOmladinski();
+  }, []);
+
+  const fetchCoworking = async () => {
+    const { data } = await httpCommon.get("/admin/coworking");
+    setCoworking(data);
+  };
+
+  const fetchOmladinski = async () => {
+    const { data } = await httpCommon.get("/admin/omladinski");
+    setOmladinski(data);
+  };
+
   return (
     <>
       <Row>
@@ -115,15 +112,14 @@ export const Home = () => {
           <Row className="mb-2">
             <Card className="card-shadow">
               <Card.Body>
-                za coworking
-                <Bar options={options} data={coworking} />
+                <AdminMesecnePoseteCoworking mesecnePosete={coworking} />
               </Card.Body>
             </Card>
           </Row>
           <Row>
             <Card className="card-shadow">
               <Card.Body>
-                za omladinski
+                <AdminMesecnePoseteOmladinski mesecnePosete={omladinski} />
               </Card.Body>
             </Card>
           </Row>
@@ -131,7 +127,6 @@ export const Home = () => {
         <Col>
           <Card className="card-shadow card-height">
             <Card.Body className="justify-content-center">
-              za aktivnosti
               <Pie
                 data={data}
                 options={{
@@ -145,7 +140,7 @@ export const Home = () => {
                       },
                       padding: {
                         top: 30,
-                        bottom: 10
+                        bottom: 10,
                       },
                     },
                   },
