@@ -1,12 +1,13 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import Pagination from "../../Pagination";
 import AddDogadjajForm from "../mesto dogadjaja/modal/AddDogadjajForm";
 import TipDogadjaja from "./TipDogadjaja";
 import { TipDogadjajaContext } from "./TipDogadjajaContext";
+import AddTipDogadjajaForm from "./modal/AddTipDogadjajaForm";
 
 const TipDogadjajaList = () => {
-  const { tipoviDogadjaja } = useContext(TipDogadjajaContext);
+  const { sortedTipoviDogadjaja } = useContext(TipDogadjajaContext);
 
   const [show, setShow] = useState(false);
 
@@ -18,18 +19,22 @@ const TipDogadjajaList = () => {
 
   const [tipDogadjajaPerPage] = useState(5);
 
+  useEffect(() => {
+    handleClose();
+  }, [sortedTipoviDogadjaja]);
+
   const indexOfLastTipDogadjaja = currentPage * tipDogadjajaPerPage;
 
   const indexOfFirstTipDogadjaja =
     indexOfLastTipDogadjaja - tipDogadjajaPerPage;
 
-  const currentTipoviDogadjaja = tipoviDogadjaja.slice(
+  const currentTipoviDogadjaja = sortedTipoviDogadjaja.slice(
     indexOfFirstTipDogadjaja,
     indexOfLastTipDogadjaja
   );
 
   const totalPagesNumber = Math.ceil(
-    tipoviDogadjaja.length / tipDogadjajaPerPage
+    sortedTipoviDogadjaja.length / tipDogadjajaPerPage
   );
 
   return (
@@ -69,21 +74,15 @@ const TipDogadjajaList = () => {
         </tbody>
       </table>
 
-      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} array={tipoviDogadjaja} />
+      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} array={sortedTipoviDogadjaja} />
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Dodaj tip događaja</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AddDogadjajForm />
+          <AddTipDogadjajaForm />
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="success">Dodaj</Button>
-          <Button variant="danger" onClick={handleClose}>
-            Zatvori
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

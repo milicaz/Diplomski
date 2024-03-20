@@ -1,21 +1,65 @@
+import { useContext, useEffect, useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 import { MdDelete, MdEdit } from "react-icons/md";
+import EditTipDogadjajaForm from "./modal/EditTipDogadjajaForm";
+import DeleteMestoDogadjajaForm from "../mesto dogadjaja/modal/DeleteMestoDogadjajaForm";
+import { TipDogadjajaContext } from "./TipDogadjajaContext";
+import DeleteTipDogadjajaForm from "./modal/DeleteTipDogadjajaForm";
 
 const TipDogadjaja = ({ tipDogadjaja }) => {
+
+  const {deleteTip} = useContext(TipDogadjajaContext)
+
+  const [showEdit, setShowEdit] = useState(false)
+  const handleShowEdit = () => setShowEdit(true)
+  const handleCloseEdit = () => setShowEdit(false)
+
+  const [showDelete, setShowDelete] = useState(false)
+  const handleShowDelete = () => setShowDelete(true)
+  const handleCloseDelete = () => setShowDelete(false)
+
+  useEffect(() => {
+    handleCloseDelete();
+    handleCloseEdit();
+  }, [tipDogadjaja])
+
   return (
     <>
       <td>{tipDogadjaja.naziv}</td>
       <td>
-        <a href="#editTipDogadjaja" className="edit">
-            <i className="react-icons" title="Edit">
-                <MdEdit />
-            </i>
-        </a>&nbsp;
-        <a href="#deleteTipDogadjaja" className="delete">
-            <i className="react-icons" title="Delete">
-                <MdDelete />
-            </i>
-        </a>
+        <button className="btn text-warning btn-act" onClick={handleShowEdit}>
+          <MdEdit />
+        </button>
+        <button className="btn text-danger btn-act" onClick={handleShowDelete}>
+          <MdDelete />
+        </button>
       </td>
+
+      <Modal show={showEdit} onHide={handleCloseEdit} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Izmeni tip događaja</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <EditTipDogadjajaForm />
+        </Modal.Body>
+      </Modal>
+
+      <Modal show = {showDelete} onHide={handleCloseDelete} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Obriši tip događaja</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <DeleteTipDogadjajaForm deleteTipDogadjaja = {tipDogadjaja}/>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button className="btn btn-danger" onClick={() => deleteTip(tipDogadjaja.id)}>
+            Obriši
+          </Button>
+          <Button variant="secondary" onClick={handleCloseDelete}>
+            Zatvori
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

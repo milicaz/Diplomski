@@ -12,6 +12,8 @@ const MestoDogadjajaContextProvider = (props) => {
         getMesta();
     }, [])
 
+    const sortedMestaDogadjaja = mestaDogadjaja.sort((a, b) => a.id-b.id)
+
     const getMesta = async () => {
         const { data } = await axios.get("http://localhost:8080/api/mestaDogadjaja");
         setMestaDogadjaja(data)
@@ -35,7 +37,7 @@ const MestoDogadjajaContextProvider = (props) => {
 
 
     return (
-        <MestoDogadjajaContext.Provider value={{mestaDogadjaja, addMestoDogadjaja, editMestoDogadjaja, deleteMestoDogadjaja}}>
+        <MestoDogadjajaContext.Provider value={{sortedMestaDogadjaja, addMestoDogadjaja, editMestoDogadjaja, deleteMestoDogadjaja}}>
             {props.children}
         </MestoDogadjajaContext.Provider>
     )

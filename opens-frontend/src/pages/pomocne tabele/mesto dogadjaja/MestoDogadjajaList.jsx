@@ -6,7 +6,7 @@ import { MestoDogadjajaContext } from "./MestoDogadjajaContext";
 import AddDogadjajForm from "./modal/AddDogadjajForm";
 
 const MestoDogadjajaList = () => {
-  const { mestaDogadjaja } = useContext(MestoDogadjajaContext);
+  const { sortedMestaDogadjaja } = useContext(MestoDogadjajaContext);
 
   const [show, setShow] = useState(false);
 
@@ -21,20 +21,20 @@ const MestoDogadjajaList = () => {
    useEffect(() => {
     handleClose();
     console.log("Handle close uradjen")
-  }, [mestaDogadjaja]);
+  }, [sortedMestaDogadjaja]);
 
   const indexOfLastMestoDogadjaja = currentPage * mestaDogadjajaPerPage;
 
   const indexOfFirstMestoDogadjaja =
     indexOfLastMestoDogadjaja - mestaDogadjajaPerPage;
 
-  const currentMestaDogadjaja = mestaDogadjaja.slice(
+  const currentMestaDogadjaja = sortedMestaDogadjaja.slice(
     indexOfFirstMestoDogadjaja,
     indexOfLastMestoDogadjaja
   );
 
   const totalPagesNumber = Math.ceil(
-    mestaDogadjaja.length / mestaDogadjajaPerPage
+    sortedMestaDogadjaja.length / mestaDogadjajaPerPage
   );
 
 
@@ -75,7 +75,7 @@ const MestoDogadjajaList = () => {
         </tbody>
       </table>
 
-      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} array={mestaDogadjaja} />
+      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} array={sortedMestaDogadjaja} />
 
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
