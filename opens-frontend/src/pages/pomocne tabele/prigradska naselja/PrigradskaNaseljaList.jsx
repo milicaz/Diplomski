@@ -1,12 +1,12 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import Pagination from "../../Pagination";
-import AddDogadjajForm from "../mesto dogadjaja/modal/AddDogadjajForm";
 import PrigradskaNaselja from "./PrigradskaNaselja";
 import { PrigradskaNaseljaContext } from "./PrigradskaNaseljaContext";
+import AddNaseljaForm from "./modal/AddNaseljaForm";
 
 const PrigradskaNaseljaList = () => {
-  const { prigradskaNaselja } = useContext(PrigradskaNaseljaContext);
+  const { sortedPrigradskaNaselja } = useContext(PrigradskaNaseljaContext);
 
   const [show, setShow] = useState(false);
 
@@ -22,12 +22,16 @@ const PrigradskaNaseljaList = () => {
 
   const indexOfFirstNaselje = indexOfLastNaselje - naseljaPerPage;
 
-  const currentNaselja = prigradskaNaselja.slice(
+  const currentNaselja = sortedPrigradskaNaselja.slice(
     indexOfFirstNaselje,
     indexOfLastNaselje
   );
 
-  const totalPagesNumber = Math.ceil(prigradskaNaselja.length / naseljaPerPage);
+  useEffect(() => {
+    handleClose();
+  }, [sortedPrigradskaNaselja])
+
+  const totalPagesNumber = Math.ceil(sortedPrigradskaNaselja.length / naseljaPerPage);
 
   return (
     <>
@@ -66,21 +70,15 @@ const PrigradskaNaseljaList = () => {
         </tbody>
       </table>
 
-      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} array={prigradskaNaselja} />
+      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} array={sortedPrigradskaNaselja} />
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Dodaj prigradsko naselje</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AddDogadjajForm />
+          <AddNaseljaForm />
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="success">Dodaj</Button>
-          <Button variant="danger" onClick={handleClose}>
-            Zatvori
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

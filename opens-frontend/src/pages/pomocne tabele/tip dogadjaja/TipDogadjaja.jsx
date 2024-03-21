@@ -40,7 +40,7 @@ const TipDogadjaja = ({ tipDogadjaja }) => {
           <Modal.Title>Izmeni tip događaja</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <EditTipDogadjajaForm />
+          <EditTipDogadjajaForm currentTip = {tipDogadjaja}/>
         </Modal.Body>
       </Modal>
 
