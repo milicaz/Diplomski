@@ -24,8 +24,9 @@ import {
   OpremaHome,
   PrigradskaNaseljaHome,
   TipDogadjajaHome,
-  TipOprHome,
+  TipOprHome
 } from "./pomocne tabele";
+import LogoHome from "./pomocne tabele/logo/LogoHome";
 
 export const Navigation = () => {
   const coworkingPaths = ["/coworking-trenutno", "/coworking-tabela"];
@@ -38,6 +39,7 @@ export const Navigation = () => {
     "/mestoDogadjaja",
     "/tipDogadjaja",
     "/prigradskaNaselja",
+    "/logo"
   ];
 
   const location = useLocation();
@@ -91,6 +93,9 @@ export const Navigation = () => {
               <NavDropdown.Item href="/prigradskaNaselja" className={`sifarnik-dropdown-item ${isActive("/prigradskaNaselja") ? "active" : ""}`}>
                 Prigradska naselja
               </NavDropdown.Item>
+              <NavDropdown.Item href="/logo" className={`sifarnik-dropdown-item ${isActive("/logo") ? "active" : ""}`}>
+                Logoi
+              </NavDropdown.Item>
             </NavDropdown>
           </Nav>
           <Nav className="justify-content-end">
@@ -128,6 +133,7 @@ export const Navigation = () => {
             element={<PrigradskaNaseljaHome />}
           />
           <Route path="/dogadjaj" element={<DogadjajHome />} />
+          <Route path="/logo" element={<LogoHome />} />
         </Routes>
       </div>
     </>
