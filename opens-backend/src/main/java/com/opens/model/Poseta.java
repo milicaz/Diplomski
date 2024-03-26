@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -29,8 +28,8 @@ public class Poseta {
 	@Column(name = "vreme_posete")
 	@Temporal(TemporalType.TIME)
 	private LocalTime vremePosete;
-	@OneToOne
-	@JoinColumn(name = "mesto_posete_id")
+	@ManyToOne
+	@JoinColumn(name = "mesto_posete_id", referencedColumnName = "id")
 	private MestoPosete mestoPosete;
 
 	@ManyToOne(cascade = CascadeType.ALL)
