@@ -24,7 +24,7 @@ const LogoList = () => {
       {/* <img src={`data:image/png;charset=utf-8;base64,${base64}`} /> NE RADI!!!!! */}
       {/* <img src="|data:image/png;base64,*{base64}|" className="product-image"></img> */}
       {/* <input type="file" name="image" accept="image/png, image/jpeg"/> */}
-      <img alt="Logo" srt={base64} />
+      <img alt="Logo" src={base64} />
     </>
   )
 };
