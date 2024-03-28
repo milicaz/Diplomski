@@ -48,7 +48,7 @@ public class LogoController {
 	}
 	
 	@GetMapping("/logoi/picByte")
-	public ResponseEntity<List<String>> getAllPic() {
+	public List<String> getAllPic() {
 		List<Logo> logoi = new ArrayList<>();
 		logoi = logoRepo.findAll();
 		List<String> encoded = new ArrayList<>();
@@ -60,7 +60,21 @@ public class LogoController {
 			System.out.println("Encoded: " + encoded);
 		}
 		
-		return new ResponseEntity<>(encoded, HttpStatus.OK);
+		return encoded;
+	}
+	
+	@GetMapping("/logoi/pic")
+	public List<byte[]> getAllP() {
+		List<Logo> logoi = new ArrayList<>();
+		logoi = logoRepo.findAll();
+		List<byte[]> picByte  = new ArrayList<>();
+		
+		
+		for(Logo logo: logoi) {
+			picByte.add(logo.getPicByte());
+		}
+		
+		return picByte;
 	}
 	
 	@PostMapping(path = "/logoi", consumes = "multipart/form-data")
