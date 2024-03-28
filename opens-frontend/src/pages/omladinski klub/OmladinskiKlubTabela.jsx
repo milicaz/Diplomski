@@ -1,70 +1,89 @@
-import React from "react";
-import { Col, Form, FormLabel, Row, Table } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Col, Form, Row } from "react-bootstrap";
+import httpCommon from "../../http-common";
+import OmladinskiKlubTabelaItem from "./OmladinskiKlubTabelaItem";
 
 export const OmladinskiKlubTabela = () => {
+  const [posete, setPosete] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+
+  useEffect(() => {
+    fetchPosete();
+  }, []);
+
+  const fetchPosete = async () => {
+    const { data } = await httpCommon.get("/posete/omladinski");
+    setPosete(data);
+  };
+
+  const handleTextChange = (searchValue) => {
+    setSearchInput(searchValue);
+  };
+
+  const poseteZaPrikaz = posete.reduce((acc, poseta) => {
+    //Pretraga da li je unet posetilac ili se kreira novi
+    let entry = acc.find((item) => item.posetilacId === poseta.posetilacId);
+    if (!entry) {
+      entry = {
+        posetilacId: poseta.posetilacId,
+        ime: poseta.ime,
+        prezime: poseta.prezime,
+        godine: poseta.godine,
+        nazivMestaPosete: poseta.nazivMestaPosete,
+        posete: [],
+      };
+      acc.push(entry);
+    }
+
+    //Pretraga da li je uneta godina ili kreirati novu
+    let yearEntry = entry.posete.find(
+      (year) => year.godinaPosete === poseta.godinaPosete
+    );
+    if (!yearEntry) {
+      yearEntry = {
+        godinaPosete: poseta.godinaPosete,
+        godisnjiBrojPoseta: poseta.godisnjiBrojPoseta,
+        posetePoMesecima: [],
+      };
+      entry.posete.push(yearEntry);
+    }
+
+    yearEntry.posetePoMesecima.push({
+      mesecPosete: poseta.mesecPosete,
+      mesecniBrojPoseta: poseta.mesecniBrojPoseta,
+    });
+
+    return acc;
+  }, []);
+
+  // Sortiranje poseteZaPrikaz po celokupnom broju poseta u opadajućem redosledu
+  const sortiranePoseteZaPrikaz = poseteZaPrikaz.sort(
+    (a, b) =>
+      b.posete.reduce((total, visit) => total + visit.godisnjiBrojPoseta, 0) -
+      a.posete.reduce((total, visit) => total + visit.godisnjiBrojPoseta, 0)
+  );
+
+  const filtriranePosete = sortiranePoseteZaPrikaz.filter((item) => {
+    return (
+      item.ime.toLowerCase().includes(searchInput.toLowerCase()) ||
+      item.prezime.toLowerCase().includes(searchInput.toLowerCase())
+    );
+  });
   return (
     <>
-      <div className="table-title">
-        <div className="row mt-2 mb-3">
-          <div className="col center">
-            <h4>Tabela prisutnosti - Omladinski klub</h4>
-          </div>
-        </div>
-      </div>
-      <div className="table-title">
-        <Row className="my-3">
-          <Form.Group as={Col}>
-            <FormLabel>Od</FormLabel>
-            <Form.Control type="date" />
-          </Form.Group>
-          <Form.Group as={Col}>
-            <FormLabel>Do</FormLabel>
-            <Form.Control type="date" />
-          </Form.Group>
-        </Row>
-      </div>
-      <Table hover>
-        <thead>
-          <tr>
-            <th>Posetilac</th>
-            <th>Mesto posete</th>
-            <th>Datum posete</th>
-            <th>Vreme posete</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Mila Milić</td>
-            <td>OPENS - Omladinski klub</td>
-            <td>12.10.2023</td>
-            <td>10:12</td>
-          </tr>
-          <tr>
-            <td>Jovana Jovanović</td>
-            <td>OPENS - Omladinski klub</td>
-            <td>15.10.2023</td>
-            <td>10:02</td>
-          </tr>
-          <tr>
-            <td>Petar Petrović</td>
-            <td>OPENS - Omladinski klub</td>
-            <td>22.10.2023</td>
-            <td>13:52</td>
-          </tr>
-          <tr>
-            <td>Luka Lukić</td>
-            <td>OPENS - Omladinski klub</td>
-            <td>22.10.2023</td>
-            <td>16:02</td>
-          </tr>
-          <tr>
-            <td>Stevan Stevanović</td>
-            <td>OPENS - Omladinski klub</td>
-            <td>25.10.2023</td>
-            <td>13:00</td>
-          </tr>
-        </tbody>
-      </Table>
+      <Row className="mb-4">
+        <Form.Group as={Col}>
+          {/* <Form.Label>Pretraga</Form.Label> */}
+          <Form.Control
+            type="text"
+            placeholder="Pretraga..."
+            onChange={(e) => handleTextChange(e.target.value)}
+          />
+        </Form.Group>
+      </Row>
+      {filtriranePosete.map((posetilac, index) => (
+        <OmladinskiKlubTabelaItem key={index} posetilac={posetilac} />
+      ))}
     </>
   );
 };
