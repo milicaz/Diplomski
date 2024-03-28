@@ -18,11 +18,11 @@ public class Logo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "naziv")
-	private String naziv;
+	@Column(name = "name")
+	private String name;
 	
-	@Column(name = "tip")
-	private String tip;
+	@Column(name = "type")
+	private String type;
 	
 	@Lob
 	@Column(name = "pic_byte")
@@ -32,10 +32,10 @@ public class Logo {
 		super();
 	}
 
-	public Logo(String naziv, String tip, byte[] picByte) {
+	public Logo(String name, String type, byte[] picByte) {
 		super();
-		this.naziv = naziv;
-		this.tip = tip;
+		this.name = name;
+		this.type = type;
 		this.picByte = picByte;
 	}
 
@@ -47,20 +47,20 @@ public class Logo {
 		this.id = id;
 	}
 
-	public String getNaziv() {
-		return naziv;
+	public String getName() {
+		return name;
 	}
 
-	public void setNaziv(String naziv) {
-		this.naziv = naziv;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getTip() {
-		return tip;
+	public String getType() {
+		return type;
 	}
 
-	public void setTip(String tip) {
-		this.tip = tip;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public byte[] getPicByte() {

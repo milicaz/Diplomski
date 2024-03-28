@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,12 +47,28 @@ public class LogoController {
 		return new ResponseEntity<>(logoi, HttpStatus.OK);
 	}
 	
+	@GetMapping("/logoi/picByte")
+	public ResponseEntity<List<String>> getAllPic() {
+		List<Logo> logoi = new ArrayList<>();
+		logoi = logoRepo.findAll();
+		List<String> encoded = new ArrayList<>();
+		
+		
+		for(Logo logo: logoi) {
+			System.out.println("Pic byte je: " + logo.getPicByte());
+			encoded.add(Base64.getEncoder().encodeToString(logo.getPicByte()));
+			System.out.println("Encoded: " + encoded);
+		}
+		
+		return new ResponseEntity<>(encoded, HttpStatus.OK);
+	}
+	
 	@PostMapping(path = "/logoi", consumes = "multipart/form-data")
 	public ResponseEntity<Logo> saveLogo(@RequestParam("imageFile") MultipartFile file) throws IOException{
 		
 		Logo logo = new Logo();
-		logo.setNaziv(file.getOriginalFilename());
-		logo.setTip(file.getContentType());
+		logo.setName(file.getOriginalFilename());
+		logo.setType(file.getContentType());
 		logo.setPicByte(file.getBytes());
 		
 		logoRepo.save(logo);
@@ -64,9 +81,9 @@ public class LogoController {
 		Optional<Logo> upLogo = logoRepo.findById(id);
 		
 		Logo updateLogo = upLogo.get();
-		updateLogo.setNaziv(file.getOriginalFilename());
+		updateLogo.setName(file.getOriginalFilename());
 		updateLogo.setPicByte(file.getBytes());
-		updateLogo.setTip(file.getContentType());
+		updateLogo.setType(file.getContentType());
 		
 		logoRepo.save(updateLogo);
 		

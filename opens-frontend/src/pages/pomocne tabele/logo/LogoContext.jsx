@@ -1,28 +1,28 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import {Buffer} from 'buffer';
 
 export const LogoContext = createContext()
 
 const LogoContextProvider = (props) => {
-    console.log("Logo context provider")
-    const [logoi, setLogoi] = useState([])
+    
+    const [base64, setBase64] = useState();
 
     useEffect(() => {
-        getLogoi();
-    }, [])
-
-    const sortedLogo = logoi.sort((a, b) => a.id - b.id)
-
-    const getLogoi = async () => {
-        const {data} = await axios.get("http://localhost:8080/api/logoi")
-        console.log("Logoi su: " + data)
-        setLogoi(data)
-    }
+        axios.get("http://localhost:8080/api/logoi/picByte",
+        {
+          responseType: "arraybuffer",
+        }
+          )
+          .then((response) =>
+            setBase64(Buffer.from(response.data, "binary").toString("base64"))
+          );
+      }, []);
 
     return(
-        <LogoContextProvider value={{sortedLogo}}>
+        <LogoContext.Provider value={{base64}}>
             {props.children}
-        </LogoContextProvider>
+        </LogoContext.Provider>
     )
 
 }

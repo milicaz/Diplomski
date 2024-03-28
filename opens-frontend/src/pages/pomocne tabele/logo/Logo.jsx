@@ -3,7 +3,7 @@ import { MdDelete, MdEdit } from "react-icons/md"
 const Logo = ({logo}) => {
     return (
         <>
-            <td>{logo.naziv}</td>
+            <td>{logo.name}</td>
             <td>
                 <button className="btn text-warning btn-act">
                     <MdEdit />
