@@ -35,7 +35,7 @@ export const AddOpremaForm = () => {
     return (
       <>
         <Form onSubmit={handleSubmit}>
-          <Form.Group className="my-3" controlId="tipOpreme">
+          <Form.Group className="mb-3" controlId="tipOpreme">
             <Form.Select
               name="tipOpremeID"
               value={tipOpremeID}

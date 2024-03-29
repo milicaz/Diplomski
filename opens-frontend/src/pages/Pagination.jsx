@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const Pagination = ({ pages, setCurrentPage, array }) => {
+const Pagination = ({ pages, setCurrentPage, array, limit }) => {
   const numOfPages = [];
   const [currentButton, setCurrentButton] = useState(1);
 
@@ -12,10 +12,34 @@ const Pagination = ({ pages, setCurrentPage, array }) => {
     setCurrentPage(currentButton);
   }, [currentButton, setCurrentPage]);
 
+  useEffect(() => {
+    // Set-ovanje currentButton ako trenutna stranica premašuje broj novih stranica
+    if (pages < currentButton) {
+      setCurrentButton(pages);
+    }
+  }, [pages]);
+
+  useEffect(() => {
+    // Set-ovanje currentButton 1 na reload
+    setCurrentButton(1);
+  }, []);
+
+  let startIdx = (currentButton - 1) * limit + 1;
+  let endIdx = Math.min(currentButton * limit, array.length);
+
+  if (array.length === 0) {
+    startIdx = 0;
+    endIdx = 0;
+  }
+
   return (
-    <div className="clearfix">
+    <div className="clearfix mt-2">
       <div className="hint-text">
-        Prikazuje se <b>10</b> od <b>{array.length}</b> unosa
+        Prikazuje se{" "}
+        <b>
+          {startIdx} - {endIdx}
+        </b>{" "}
+        od <b>{array.length}</b> unosa
       </div>
       <ul className="pagination justify-content-end">
         <li
@@ -75,39 +99,3 @@ const Pagination = ({ pages, setCurrentPage, array }) => {
 };
 
 export default Pagination;
-
-{
-  /* <li className="page-item disabled">
-            <a href="#!" className="page-link">Previous</a>
-        </li>
-        <li className="page-item">
-          <a href="#!" className="page-link">
-            1
-          </a>
-        </li>
-        <li className="page-item">
-          <a href="#!" className="page-link">
-            2
-          </a>
-        </li>
-        <li className="page-item active">
-          <a href="#!" className="page-link">
-            3
-          </a>
-        </li>
-        <li className="page-item">
-          <a href="#!" className="page-link">
-            4
-          </a>
-        </li>
-        <li className="page-item">
-          <a href="#!" className="page-link">
-            5
-          </a>
-        </li>
-        <li className="page-item">
-          <a href="#!" className="page-link">
-            Next
-          </a>
-        </li> */
-}

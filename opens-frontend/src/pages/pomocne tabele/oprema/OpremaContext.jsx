@@ -10,7 +10,7 @@ const OpremaContextProvider = (props) => {
     fetchOpremu();
   }, []);
 
-  const sortedOprema = oprema.sort((a, b) => (a.id < b.id ? -1 : 1));
+  const sortedOprema = oprema.length > 0 ? oprema.sort((a, b) => (a.id < b.id ? -1 : 1)) : [];
 
   //react axios get method
   const fetchOpremu = async () => {

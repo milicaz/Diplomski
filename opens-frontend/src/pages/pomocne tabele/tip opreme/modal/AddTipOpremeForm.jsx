@@ -23,7 +23,7 @@ const AddTipOpremeForm = () => {
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <Form.Group className="my-3" controlId="naziv">
+        <Form.Group controlId="naziv">
           <Form.Control
             type="text"
             placeholder="Naziv tipa opreme *"

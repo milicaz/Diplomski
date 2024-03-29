@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Modal, Table } from "react-bootstrap";
+import { Button, Form, Modal, Table } from "react-bootstrap";
 import { FaSquarePlus } from "react-icons/fa6";
 import Pagination from "../../Pagination";
 import Oprema from "./Oprema";
@@ -22,21 +22,42 @@ export const OpremaTabela = () => {
   }, [sortedOprema]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit, setLimit] = useState(10);
 
   const indexOfLast = currentPage * limit;
   const indexOfFirst = indexOfLast - limit;
   const currentOpreme = sortedOprema.slice(indexOfFirst, indexOfLast);
   const totalPagesNumber = Math.ceil(sortedOprema.length / limit);
 
+  const onInputChange = (e) => {
+    setLimit(e.target.value);
+  };
+
   return (
     <>
       <div className="table-title">
         <div className="row">
           <div className="col-sm-6">
-            <h2>
-              <b>Oprema</b>
-            </h2>
+            <div className="row align-items-center mb-3">
+              <div className="col-auto pe-0">
+                <span>Prikaži</span>
+              </div>
+              <div className="col-auto">
+                <Form.Select
+                  name="limit"
+                  value={limit}
+                  onChange={(e) => onInputChange(e)}
+                  style={{ width: "100%" }}
+                >
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                </Form.Select>
+              </div>
+              <div className="col-auto ps-0">
+                <span>unosa</span>
+              </div>
+            </div>
           </div>
           <div className="col-sm-6">
             <Button className="btn btn-success" onClick={handleShow}>
@@ -53,11 +74,11 @@ export const OpremaTabela = () => {
             <th>Akcije</th>
           </tr>
         </thead>
-        {!sortedOprema && sortedOprema.length === 0 ? (
+        {sortedOprema.length === 0 ? (
           <tbody>
             <tr>
               <td colSpan="3" className="nema-unetih">
-                Nema unete opreme.
+                Nema stavki za prikazivanje.
               </td>
             </tr>
           </tbody>
@@ -76,6 +97,7 @@ export const OpremaTabela = () => {
         pages={totalPagesNumber}
         setCurrentPage={setCurrentPage}
         array={sortedOprema}
+        limit={limit}
       />
 
       <Modal show={show} onHide={handleClose} centered>
