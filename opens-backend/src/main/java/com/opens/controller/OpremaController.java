@@ -47,6 +47,18 @@ public class OpremaController {
 
 	}
 
+	@GetMapping("/oprema/{isZauzeta}")
+	public ResponseEntity<List<Oprema>> getSlobodnuOpremu(@PathVariable Boolean isZauzeta) {
+		List<Oprema> opreme = new ArrayList<>();
+
+		opremaRepository.findByIsZauzeta(isZauzeta).forEach(opreme::add);
+
+		if (opreme.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<>(opreme, HttpStatus.OK);
+	}
+
 	@PostMapping("/oprema")
 	public ResponseEntity<Oprema> createOpremu(@RequestBody OpremaDTO opremaDTO) {
 		try {

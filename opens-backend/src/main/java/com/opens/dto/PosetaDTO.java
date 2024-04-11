@@ -1,32 +1,16 @@
 package com.opens.dto;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.List;
+
+import com.opens.model.Oprema;
 
 public class PosetaDTO {
 
-	private LocalDate datumPosete;
-	private LocalTime vremePosete;
 	private Long mestoPoseteID;
 	private Long posetilacID;
+	private List<Oprema> oprema;
 
 	public PosetaDTO() {
-	}
-
-	public LocalDate getDatumPosete() {
-		return datumPosete;
-	}
-
-	public void setDatumPosete(LocalDate datumPosete) {
-		this.datumPosete = datumPosete;
-	}
-
-	public LocalTime getVremePosete() {
-		return vremePosete;
-	}
-
-	public void setVremePosete(LocalTime vremePosete) {
-		this.vremePosete = vremePosete;
 	}
 
 	public Long getMestoPoseteID() {
@@ -43,6 +27,14 @@ public class PosetaDTO {
 
 	public void setPosetilacID(Long posetilacID) {
 		this.posetilacID = posetilacID;
+	}
+
+	public List<Oprema> getOprema() {
+		return oprema;
+	}
+
+	public void setOprema(List<Oprema> oprema) {
+		this.oprema = oprema;
 	}
 
 }

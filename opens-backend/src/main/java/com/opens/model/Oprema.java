@@ -21,15 +21,17 @@ public class Oprema {
 	private TipOpreme tipOpreme;
 	@Column(name = "serijski_broj")
 	private String serijskiBroj;
+	private Boolean isZauzeta;
 
 	public Oprema() {
 
 	}
 
-	public Oprema(TipOpreme tipOpreme, String serijskiBroj) {
+	public Oprema(TipOpreme tipOpreme, String serijskiBroj, Boolean isZauzeta) {
 		super();
 		this.tipOpreme = tipOpreme;
 		this.serijskiBroj = serijskiBroj;
+		this.isZauzeta = isZauzeta;
 	}
 
 	public Long getId() {
@@ -54,6 +56,14 @@ public class Oprema {
 
 	public void setSerijskiBroj(String serijskiBroj) {
 		this.serijskiBroj = serijskiBroj;
+	}
+
+	public Boolean getIsZauzeta() {
+		return isZauzeta;
+	}
+
+	public void setIsZauzeta(Boolean isZauzeta) {
+		this.isZauzeta = isZauzeta;
 	}
 
 }
