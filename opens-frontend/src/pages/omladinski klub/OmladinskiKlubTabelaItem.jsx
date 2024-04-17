@@ -1,17 +1,18 @@
-import React from 'react'
+import React from "react";
 import {
   Accordion,
   AccordionBody,
   AccordionHeader,
   AccordionItem,
   Col,
+  Container,
   Nav,
   Row,
   Tab,
   Table,
 } from "react-bootstrap";
 
-export const OmladinskiKlubTabelaItem = ({posetilac}) => {
+export const OmladinskiKlubTabelaItem = ({ posetilac }) => {
   const monthNames = [
     "Januar",
     "Februar",
@@ -40,11 +41,19 @@ export const OmladinskiKlubTabelaItem = ({posetilac}) => {
           eventKey={posetilac.posetilacId}
         >
           <AccordionHeader>
-            <strong>
-              {" "}
-              {posetilac.ime} {posetilac.prezime}
-            </strong>{" "}
-            (<i> godine: {posetilac.godine}</i>) - Ukupno poseta: {totalPoseta}
+            <Container>
+              <Row>
+                <Col md={4}>
+                  <b>
+                    {posetilac.ime} {posetilac.prezime}{" "}
+                  </b>{" "}
+                  (<i>godine: {posetilac.godine}</i>)
+                </Col>
+                <Col md={{ span: 3, offset: 5 }}>
+                  Ukupno poseta: <b>{totalPoseta}</b>
+                </Col>
+              </Row>
+            </Container>
           </AccordionHeader>
           <AccordionBody>
             <Tab.Container defaultActiveKey="0">
@@ -107,5 +116,5 @@ export const OmladinskiKlubTabelaItem = ({posetilac}) => {
       </Accordion>
     </>
   );
-}
+};
 export default OmladinskiKlubTabelaItem;

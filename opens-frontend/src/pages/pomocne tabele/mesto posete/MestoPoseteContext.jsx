@@ -10,7 +10,7 @@ const MestoPoseteContextProvider = (props) => {
     fetchMestaPosete();
   }, []);
 
-  const sortedMestaPosete = mestaPosete.sort((a, b) => (a.id < b.id ? -1 : 1));
+  const sortedMestaPosete = mestaPosete.length > 0 ? mestaPosete.sort((a, b) => (a.id < b.id ? -1 : 1)) : [];
 
   //react axios get method
   const fetchMestaPosete = async () => {

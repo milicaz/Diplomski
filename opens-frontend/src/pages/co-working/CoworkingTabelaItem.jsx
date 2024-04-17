@@ -5,6 +5,7 @@ import {
   AccordionHeader,
   AccordionItem,
   Col,
+  Container,
   Nav,
   Row,
   Tab,
@@ -40,11 +41,19 @@ export const CoworkingTabelaItem = ({ posetilac }) => {
           eventKey={posetilac.posetilacId}
         >
           <AccordionHeader>
-            <strong>
-              {" "}
-              {posetilac.ime} {posetilac.prezime}
-            </strong>{" "}
-            (<i> godine: {posetilac.godine}</i>) - Ukupno poseta: {totalPoseta}
+            <Container>
+              <Row>
+                <Col md={4}>
+                  <b>
+                    {posetilac.ime} {posetilac.prezime}{" "}
+                  </b>{" "}
+                  (<i>godine: {posetilac.godine}</i>)
+                </Col>
+                <Col md={{ span: 3, offset: 5 }}>
+                  Ukupno poseta: <b>{totalPoseta}</b>
+                </Col>
+              </Row>
+            </Container>
           </AccordionHeader>
           <AccordionBody>
             <Tab.Container defaultActiveKey="0">

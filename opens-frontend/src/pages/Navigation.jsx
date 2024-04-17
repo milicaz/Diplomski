@@ -24,7 +24,7 @@ import {
   OpremaHome,
   PrigradskaNaseljaHome,
   TipDogadjajaHome,
-  TipOprHome
+  TipOprHome,
 } from "./pomocne tabele";
 import LogoHome from "./pomocne tabele/logo/LogoHome";
 
@@ -39,7 +39,7 @@ export const Navigation = () => {
     "/mestoDogadjaja",
     "/tipDogadjaja",
     "/prigradskaNaselja",
-    "/logo"
+    "/logo",
   ];
 
   const location = useLocation();
@@ -55,53 +55,151 @@ export const Navigation = () => {
             <img src={opensImage} alt="OPENS" width="150" />
           </NavbarBrand>
           <Nav className="me-auto">
-            <NavDropdown title="Co-working" className={isActiveDropdown(coworkingPaths) ? "coworking-dropdown" : "" }>
-              <NavDropdown.Item href="/coworking-trenutno" className={`coworking-dropdown-item ${isActive("/coworking-trenutno") ? "active" : "" }`}>
+            <NavDropdown
+              title="Co-working"
+              className={
+                isActiveDropdown(coworkingPaths) ? "coworking-dropdown" : ""
+              }
+            >
+              <NavDropdown.Item
+                href="/coworking-trenutno"
+                className={`coworking-dropdown-item ${
+                  isActive("/coworking-trenutno") ? "active" : ""
+                }`}
+              >
                 Trenutno
               </NavDropdown.Item>
-              <NavDropdown.Item href="/coworking-tabela" className={`coworking-dropdown-item ${isActive("/coworking-tabela") ? "active" : "" }`}>
+              <NavDropdown.Item
+                href="/coworking-tabela"
+                className={`coworking-dropdown-item ${
+                  isActive("/coworking-tabela") ? "active" : ""
+                }`}
+              >
                 Tabela poseta
               </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title="Omladinski klub" className={isActiveDropdown(omladinskiPaths) ? "omladinski-dropdown" : ""}>
-              <NavDropdown.Item href="/omladinski-trenutno" className={`omladinski-dropdown-item ${isActive("/omladinski-trenutno") ? "active" : "" }`}>
+            <NavDropdown
+              title="Omladinski centar"
+              className={
+                isActiveDropdown(omladinskiPaths) ? "omladinski-dropdown" : ""
+              }
+            >
+              <NavDropdown.Item
+                href="/omladinski-trenutno"
+                className={`omladinski-dropdown-item ${
+                  isActive("/omladinski-trenutno") ? "active" : ""
+                }`}
+              >
                 Trenutno
               </NavDropdown.Item>
-              <NavDropdown.Item href="/omladinski-tabela" className={`omladinski-dropdown-item ${isActive("/omladinski-tabela") ? "active" : "" }`}>
+              <NavDropdown.Item
+                href="/omladinski-tabela"
+                className={`omladinski-dropdown-item ${
+                  isActive("/omladinski-tabela") ? "active" : ""
+                }`}
+              >
                 Tabela poseta
               </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title="Aktivnosti" className={isActiveDropdown(aktivnostiPaths) ? "aktivnosti-dropdown" : ""}>
+            <NavDropdown
+              title="Aktivnosti"
+              className={
+                isActiveDropdown(aktivnostiPaths) ? "aktivnosti-dropdown" : ""
+              }
+            >
               <NavDropdown.Item>Trenutno</NavDropdown.Item>
-              <NavDropdown.Item href="/dogadjaj" className={`aktivnosti-dropdown-item ${isActive("/dogadjaj") ? "active" : ""}`}>
+              <NavDropdown.Item
+                href="/dogadjaj"
+                className={`aktivnosti-dropdown-item ${
+                  isActive("/dogadjaj") ? "active" : ""
+                }`}
+              >
                 Tabela događaja
               </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title="Šifarnik" className={isActiveDropdown(sifarnikPaths) ? "sifarnik-dropdown" : ""}>
-              <NavDropdown.Item href="/tipOpreme" className={`sifarnik-dropdown-item ${isActive("/tipOpreme") ? "active" : ""}`}>Tip opreme</NavDropdown.Item>
-              <NavDropdown.Item href="/oprema" className={`sifarnik-dropdown-item ${isActive("/oprema") ? "active" : ""}`}>Oprema</NavDropdown.Item>
-              <NavDropdown.Item href="/mestoPosete" className={`sifarnik-dropdown-item ${isActive("/mestoPosete") ? "active" : ""}`}>
+            <NavDropdown
+              title="Šifarnik"
+              className={
+                isActiveDropdown(sifarnikPaths) ? "sifarnik-dropdown" : ""
+              }
+            >
+              <NavDropdown.Item
+                href="/tipOpreme"
+                className={`sifarnik-dropdown-item ${
+                  isActive("/tipOpreme") ? "active" : ""
+                }`}
+              >
+                Tip opreme
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                href="/oprema"
+                className={`sifarnik-dropdown-item ${
+                  isActive("/oprema") ? "active" : ""
+                }`}
+              >
+                Oprema
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                href="/mestoPosete"
+                className={`sifarnik-dropdown-item ${
+                  isActive("/mestoPosete") ? "active" : ""
+                }`}
+              >
                 Mesto posete
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="/mestoDogadjaja" className={`sifarnik-dropdown-item ${isActive("/mestoDogadjaja") ? "active" : ""}`}>
+              <NavDropdown.Item
+                href="/mestoDogadjaja"
+                className={`sifarnik-dropdown-item ${
+                  isActive("/mestoDogadjaja") ? "active" : ""
+                }`}
+              >
                 Mesto događaja
               </NavDropdown.Item>
-              <NavDropdown.Item href="/tipDogadjaja" className={`sifarnik-dropdown-item ${isActive("/tipDogadjaja") ? "active" : ""}`}>
+              <NavDropdown.Item
+                href="/tipDogadjaja"
+                className={`sifarnik-dropdown-item ${
+                  isActive("/tipDogadjaja") ? "active" : ""
+                }`}
+              >
                 Tip događaja
               </NavDropdown.Item>
-              <NavDropdown.Item href="/prigradskaNaselja" className={`sifarnik-dropdown-item ${isActive("/prigradskaNaselja") ? "active" : ""}`}>
+              <NavDropdown.Item
+                href="/prigradskaNaselja"
+                className={`sifarnik-dropdown-item ${
+                  isActive("/prigradskaNaselja") ? "active" : ""
+                }`}
+              >
                 Prigradska naselja
               </NavDropdown.Item>
-              <NavDropdown.Item href="/logo" className={`sifarnik-dropdown-item ${isActive("/logo") ? "active" : ""}`}>
+              <NavDropdown.Item
+                href="/logo"
+                className={`sifarnik-dropdown-item ${
+                  isActive("/logo") ? "active" : ""
+                }`}
+              >
                 Logoi
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
           <Nav className="justify-content-end">
-            <Nav.Link href="/registracija" className={`registracija-dropdown-item ${isActive("/registracija") ? "active" : ""}`}>Registracija</Nav.Link>
-            {/* <Nav.Link href="/login">Login</Nav.Link>
-            <Nav.Link>Logout</Nav.Link>
+            <Nav.Link
+              href="/check-in"
+              className={`registracija-dropdown-item ${
+                isActive("/check-in") ? "active" : ""
+              }`}
+            >
+              Check-in
+            </Nav.Link>
+            <Nav.Link
+              href="/registracija"
+              className={`registracija-dropdown-item ${
+                isActive("/registracija") ? "active" : ""
+              }`}
+            >
+              Registracija
+            </Nav.Link>
+            {/*<Nav.Link>Logout</Nav.Link>
             <Nav.Link href="/profile">Profil</Nav.Link> */}
           </Nav>
         </Container>
@@ -122,7 +220,7 @@ export const Navigation = () => {
             element={<OmladinskiKlubTabelaHome />}
           />
           <Route path="/registracija" element={<Registracija />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/check-in" element={<Login />} />
           <Route path="/tipOpreme" element={<TipOprHome />} />
           <Route path="/oprema" element={<OpremaHome />} />
           <Route path="/mestoPosete" element={<MestoPoseteHome />} />

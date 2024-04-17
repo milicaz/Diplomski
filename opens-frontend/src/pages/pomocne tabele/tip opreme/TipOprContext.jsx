@@ -10,9 +10,10 @@ const TipOprContextProvider = (props) => {
     fetchTipoveOpreme();
   }, []);
 
-  const sortedTipoviOpreme = tipoviOpreme.sort((a, b) =>
-    a.id < b.id ? -1 : 1
-  );
+  const sortedTipoviOpreme =
+    tipoviOpreme.length > 0
+      ? tipoviOpreme.sort((a, b) => (a.id < b.id ? -1 : 1))
+      : [];
 
   //react axios get method
   const fetchTipoveOpreme = async () => {
