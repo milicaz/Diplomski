@@ -1,10 +1,13 @@
 import { useContext} from "react";
 import { LogoContext } from "./LogoContext";
+import { Button } from "react-bootstrap";
 
 const LogoList = () => {
   const { base64 } = useContext(LogoContext);
 
   console.log("Base64 je: " + base64)
+
+ 
 
   // const [show, setShow] = useState(false);
 
@@ -15,6 +18,13 @@ const LogoList = () => {
   //  useEffect(() => {
   //   handleClose();
   // }, [base64]);
+  
+    // return (
+    // <div>
+    //   <h1>Free Stuff Page</h1>
+    //   {listingComponents}
+    // </div>
+    // )
 
 
 

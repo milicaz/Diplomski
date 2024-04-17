@@ -19,6 +19,7 @@ public class Ucesnik extends Korisnik {
 	
 	@Column(name = "organizacija")
 	private String organizacija;
+	private boolean isPrigradskoNaselje;
 	
 	@ManyToMany
 	@JoinTable(
@@ -34,9 +35,10 @@ public class Ucesnik extends Korisnik {
 	}
 
 	public Ucesnik(String ime, String prezime, Rod rod, Integer godine, String mestoBoravista, String brojTelefona,
-			String email, String organizacija) {
+			String email, String organizacija, boolean isPrigradskoNaselje) {
 		super(ime, prezime, rod, godine, mestoBoravista, brojTelefona, email);
 		this.organizacija = organizacija;
+		this.isPrigradskoNaselje = isPrigradskoNaselje;
 	}
 
 	public String getOrganizacija() {
@@ -54,7 +56,13 @@ public class Ucesnik extends Korisnik {
 	public void setDogadjaji(Set<Dogadjaj> dogadjaji) {
 		this.dogadjaji = dogadjaji;
 	}
-	
-	
+
+	public boolean isPrigradskoNaselje() {
+		return isPrigradskoNaselje;
+	}
+
+	public void setPrigradskoNaselje(boolean isPrigradskoNaselje) {
+		this.isPrigradskoNaselje = isPrigradskoNaselje;
+	}
 
 }
