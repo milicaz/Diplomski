@@ -1,7 +1,9 @@
 package com.opens.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.opens.view.DogadjajiView;
 import com.opens.view.repository.DogadjajiViewRepository;
+
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @RestController
 @RequestMapping("/api")
@@ -31,10 +42,34 @@ public class DogadjajViewController {
 	}
 	
 	@GetMapping("/dogadjajiView/{mesec}/{vrsta}")
-	public ResponseEntity<List<DogadjajiView>> getAllByMesecVrsta(@PathVariable Long mesec, @PathVariable String vrsta) {
+	public ResponseEntity<List<DogadjajiView>> getAllByMesecVrsta(@PathVariable Long mesec, @PathVariable String vrsta) throws JRException {
 		List<DogadjajiView> dogadjajiMesecVrsta = new ArrayList<>();
 		
 		dogadjajiMesecVrsta = dogRepo.findByMesecAndVrsta(mesec, vrsta);
+		
+		String filePath = "D:\\Diplomski - git\\Diplomski\\opens-backend\\src\\main\\resources\\dogadjajireport.jrxml";
+		
+		JRBeanCollectionDataSource dogadjajiDataSource = new JRBeanCollectionDataSource(dogadjajiMesecVrsta);
+		
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("ime_zaposlenog", "Antonija");
+		parameters.put("prezime_zaposlenog", "Cverdelj");
+		parameters.put("mesec", "2");
+		parameters.put("godina", "2024");
+		parameters.put("vrsta", vrsta);
+		parameters.put("dogadjajiDataSet", dogadjajiDataSource);
+		
+		JasperReport report = JasperCompileManager.compileReport(filePath);
+		JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
+		JasperExportManager.exportReportToPdfFile(print, "D:\\Diplomski - git\\Diplomski\\opens-backend\\src\\main\\resources\\dogadjajireport.pdf");
+		System.out.println("Izvestaj je kreiran!");
+		
+		String filePathVece = "D:\\Diplomski - git\\Diplomski\\opens-backend\\src\\main\\resources\\dogadjajireportvece.jrxml";
+		
+		JasperReport reportVece = JasperCompileManager.compileReport(filePathVece);
+		JasperPrint printVece = JasperFillManager.fillReport(reportVece, parameters, new JREmptyDataSource());
+		JasperExportManager.exportReportToPdfFile(printVece, "D:\\Diplomski - git\\Diplomski\\opens-backend\\src\\main\\resources\\dogadjajireportvece.pdf");
+		System.out.println("Izvestaj je kreiran!");
 		
 		return new ResponseEntity<>(dogadjajiMesecVrsta, HttpStatus.OK);
 		

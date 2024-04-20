@@ -1,5 +1,6 @@
 package com.opens.view;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import org.hibernate.annotations.Immutable;
@@ -41,6 +42,7 @@ public class DogadjajiView {
 	private Long prigradsko_naselje_z;
 	private Long prigradsko_naselje_dr;
 	private String vrsta;
+	private LocalDate datum;
 	public Long getId() {
 		return id;
 	}
@@ -115,5 +117,8 @@ public class DogadjajiView {
 	}
 	public String getVrsta() {
 		return vrsta;
+	}
+	public LocalDate getDatum() {
+		return datum;
 	}
 }
