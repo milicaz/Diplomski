@@ -30,7 +30,8 @@ export const CoworkingTabela = () => {
         ime: poseta.ime,
         prezime: poseta.prezime,
         godine: poseta.godine,
-        nazivMestaPosete: poseta.nazivMestaPosete,
+        totalPosete: poseta.totalPosete,
+        totalnoProvedenoVreme: poseta.totalnoProvedenoVreme,
         posete: [],
       };
       acc.push(entry);
@@ -44,6 +45,7 @@ export const CoworkingTabela = () => {
       yearEntry = {
         godinaPosete: poseta.godinaPosete,
         godisnjiBrojPoseta: poseta.godisnjiBrojPoseta,
+        godisnjeProvedenoVreme: poseta.godisnjeProvedenoVreme,
         posetePoMesecima: [],
       };
       entry.posete.push(yearEntry);
@@ -52,6 +54,7 @@ export const CoworkingTabela = () => {
     yearEntry.posetePoMesecima.push({
       mesecPosete: poseta.mesecPosete,
       mesecniBrojPoseta: poseta.mesecniBrojPoseta,
+      mesecnoProvedenoVreme: poseta.mesecnoProvedenoVreme,
     });
 
     return acc;
@@ -61,21 +64,9 @@ export const CoworkingTabela = () => {
   const sortiranePoseteZaPrikaz = (items) => {
     return items.slice().sort((a, b) => {
       if (sortOrder === "ascending") {
-        return (
-          a.posete.reduce(
-            (total, visit) => total + visit.godisnjiBrojPoseta,
-            0
-          ) -
-          b.posete.reduce((total, visit) => total + visit.godisnjiBrojPoseta, 0)
-        );
+        return a.totalPosete - b.totalPosete;
       } else {
-        return (
-          b.posete.reduce(
-            (total, visit) => total + visit.godisnjiBrojPoseta,
-            0
-          ) -
-          a.posete.reduce((total, visit) => total + visit.godisnjiBrojPoseta, 0)
-        );
+        return b.totalPosete - a.totalPosete;
       }
     });
   };

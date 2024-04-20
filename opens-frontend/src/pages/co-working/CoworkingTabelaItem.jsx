@@ -28,11 +28,6 @@ export const CoworkingTabelaItem = ({ posetilac }) => {
     "Decembar",
   ];
 
-  // Izračunava celokupan broj poseta
-  const totalPoseta = posetilac.posete.reduce(
-    (total, visit) => total + visit.godisnjiBrojPoseta,
-    0
-  );
   return (
     <>
       <Accordion>
@@ -43,19 +38,22 @@ export const CoworkingTabelaItem = ({ posetilac }) => {
           <AccordionHeader>
             <Container>
               <Row>
-                <Col md={4}>
+                <Col>
                   <b>
                     {posetilac.ime} {posetilac.prezime}{" "}
                   </b>{" "}
                   (<i>godine: {posetilac.godine}</i>)
                 </Col>
-                <Col md={{ span: 3, offset: 5 }}>
-                  Ukupno poseta: <b>{totalPoseta}</b>
+                <Col className="text-end">
+                  Ukupno poseta: <b>{posetilac.totalPosete}</b>
                 </Col>
               </Row>
             </Container>
           </AccordionHeader>
           <AccordionBody>
+            <Col className="my-3 text-end">
+              <h3>Ukupno provedeno vreme: <b>{posetilac.totalnoProvedenoVreme}</b></h3> 
+            </Col>
             <Tab.Container defaultActiveKey="0">
               <Row>
                 <Col sm={1}>
@@ -76,6 +74,7 @@ export const CoworkingTabelaItem = ({ posetilac }) => {
                         <Table size="sm" className="tabela-izvestaj">
                           <thead>
                             <tr>
+                              <th></th>
                               {visit.posetePoMesecima.map(
                                 (monthVisit, index) => (
                                   <th key={index}>
@@ -87,10 +86,21 @@ export const CoworkingTabelaItem = ({ posetilac }) => {
                           </thead>
                           <tbody className="table-group-divider">
                             <tr>
+                              <td>Broj poseta u mesecu</td>
                               {visit.posetePoMesecima.map(
                                 (monthVisit, index) => (
                                   <td key={index}>
                                     {monthVisit.mesecniBrojPoseta}
+                                  </td>
+                                )
+                              )}
+                            </tr>
+                            <tr>
+                              <td>Mesečno provedeno vreme:</td>
+                              {visit.posetePoMesecima.map(
+                                (monthVisit, index) => (
+                                  <td key={index}>
+                                    {monthVisit.mesecnoProvedenoVreme}
                                   </td>
                                 )
                               )}
@@ -101,6 +111,12 @@ export const CoworkingTabelaItem = ({ posetilac }) => {
                               <th colSpan={12}>
                                 Ukupno poseta za {visit.godinaPosete}. godinu:{" "}
                                 {visit.godisnjiBrojPoseta}
+                              </th>
+                            </tr>
+                            <tr>
+                              <th colSpan={12}>
+                                Ukupno provedeno vreme za {visit.godinaPosete}.
+                                godinu: {visit.godisnjeProvedenoVreme}
                               </th>
                             </tr>
                           </tfoot>

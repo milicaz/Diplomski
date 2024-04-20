@@ -10,18 +10,21 @@ import jakarta.persistence.Id;
 @Immutable
 @Subselect("select * from POSETE_OMLADINSKI_VIEW")
 public class PoseteOmladinskiView {
-	
+
 	@Id
 	private Long id;
 	private Long posetilacId;
 	private String ime;
 	private String prezime;
 	private Integer godine;
-	private String nazivMestaPosete;
 	private Integer mesecPosete;
 	private Integer godinaPosete;
-	private Integer godisnjiBrojPoseta;
 	private Integer mesecniBrojPoseta;
+	private Integer godisnjiBrojPoseta;
+	private Integer totalPosete;
+	private String mesecnoProvedenoVreme;
+	private String godisnjeProvedenoVreme;
+	private String totalnoProvedenoVreme;
 
 	public Long getId() {
 		return id;
@@ -63,14 +66,6 @@ public class PoseteOmladinskiView {
 		this.godine = godine;
 	}
 
-	public String getNazivMestaPosete() {
-		return nazivMestaPosete;
-	}
-
-	public void setNazivMestaPosete(String nazivMestaPosete) {
-		this.nazivMestaPosete = nazivMestaPosete;
-	}
-
 	public Integer getMesecPosete() {
 		return mesecPosete;
 	}
@@ -101,6 +96,38 @@ public class PoseteOmladinskiView {
 
 	public void setMesecniBrojPoseta(Integer mesecniBrojPoseta) {
 		this.mesecniBrojPoseta = mesecniBrojPoseta;
+	}
+
+	public Integer getTotalPosete() {
+		return totalPosete;
+	}
+
+	public void setTotalPosete(Integer totalPosete) {
+		this.totalPosete = totalPosete;
+	}
+
+	public String getMesecnoProvedenoVreme() {
+		return mesecnoProvedenoVreme;
+	}
+
+	public void setMesecnoProvedenoVreme(String mesecnoProvedenoVreme) {
+		this.mesecnoProvedenoVreme = mesecnoProvedenoVreme;
+	}
+
+	public String getGodisnjeProvedenoVreme() {
+		return godisnjeProvedenoVreme;
+	}
+
+	public void setGodisnjeProvedenoVreme(String godisnjeProvedenoVreme) {
+		this.godisnjeProvedenoVreme = godisnjeProvedenoVreme;
+	}
+
+	public String getTotalnoProvedenoVreme() {
+		return totalnoProvedenoVreme;
+	}
+
+	public void setTotalnoProvedenoVreme(String totalnoProvedenoVreme) {
+		this.totalnoProvedenoVreme = totalnoProvedenoVreme;
 	}
 
 }
