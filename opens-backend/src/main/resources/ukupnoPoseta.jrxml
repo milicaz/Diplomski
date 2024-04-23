@@ -63,7 +63,7 @@
 	<detail>
 		<band height="218" splitType="Stretch">
 			<componentElement>
-				<reportElement x="29" y="18" width="190" height="160" uuid="ec5e5ba3-626d-4304-9624-b6c1965df4fb">
+				<reportElement x="0" y="0" width="250" height="160" uuid="ec5e5ba3-626d-4304-9624-b6c1965df4fb">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -71,6 +71,8 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.components.autoresize.proportional" value="true"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="poseteDataset" uuid="d7fa1c0c-dd8d-4d17-bd71-a52b5ca30353">
@@ -81,20 +83,21 @@
 						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
 							<textField textAdjust="StretchHeight">
 								<reportElement x="0" y="0" width="250" height="30" uuid="b41e281f-f154-4f60-84c0-eac309776374"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Calibri" isBold="true" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+								</textElement>
 								<textFieldExpression><![CDATA["Ukupne posete za " + ($F{mesecPosete} == 1 ? "JANUAR":
-									$F{mesecPosete} == 2 ? "FEBRUAR": 
-									$F{mesecPosete} == 3 ? "MART":
-									$F{mesecPosete} == 4 ? "APRIL":
-									$F{mesecPosete} == 5 ? "MAJ": 
-									$F{mesecPosete} == 6 ? "JUN":
-									$F{mesecPosete} == 7 ? "JUL":
-									$F{mesecPosete} == 8 ? "AVGUST":
-									$F{mesecPosete} == 9 ? "SEPTEMBAR":
-									$F{mesecPosete} == 10 ? "OKTOBAR":
-									$F{mesecPosete} == 11 ? "NOVEMBAR":
-									$F{mesecPosete} == 12 ? "DECEMBAR" : "")  +" " +$F{godinaPosete}]]>
-								</textFieldExpression>
+ $F{mesecPosete} == 2 ? "FEBRUAR": 
+ $F{mesecPosete} == 3 ? "MART":
+ $F{mesecPosete} == 4 ? "APRIL":
+ $F{mesecPosete} == 5 ? "MAJ": 
+ $F{mesecPosete} == 6 ? "JUN":
+ $F{mesecPosete} == 7 ? "JUL":
+ $F{mesecPosete} == 8 ? "AVGUST":
+ $F{mesecPosete} == 9 ? "SEPTEMBAR":
+ $F{mesecPosete} == 10 ? "OKTOBAR":
+ $F{mesecPosete} == 11 ? "NOVEMBAR":
+ $F{mesecPosete} == 12 ? "DECEMBAR" : "")  +" " +$F{godinaPosete}]]></textFieldExpression>
 							</textField>
 						</jr:tableHeader>
 						<jr:column width="85" uuid="21460444-6efd-4852-b458-43c0d8dc61a4">
@@ -102,7 +105,9 @@
 							<jr:tableFooter style="Table_TH" height="30" rowSpan="1">
 								<staticText>
 									<reportElement x="0" y="0" width="85" height="30" uuid="09452cc8-2a8c-4b91-ac6a-44ba1492a92b"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
 									<text><![CDATA[Ukupno]]></text>
 								</staticText>
 							</jr:tableFooter>
@@ -110,15 +115,19 @@
 								<property name="com.jaspersoft.studio.unit.width" value="px"/>
 								<staticText>
 									<reportElement x="0" y="0" width="85" height="30" uuid="31e35fbb-929c-4cb3-ba47-d6ea20da088e"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle"/>
-									<text><![CDATA[OPSEG GODINA]]></text>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[Opseg godina]]></text>
 								</staticText>
 							</jr:columnHeader>
 							<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
 							<jr:detailCell style="Table_TD" height="30">
 								<textField>
 									<reportElement x="0" y="0" width="85" height="30" uuid="71787d9f-97e7-400c-aee0-02f301b7b2a3"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
 									<textFieldExpression><![CDATA[$F{opsegGodina}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
@@ -128,7 +137,9 @@
 							<jr:tableFooter style="Table_TH" height="30" rowSpan="1">
 								<textField>
 									<reportElement x="0" y="0" width="165" height="30" uuid="36d13e0c-c630-4c90-8b4e-e57a36b8765a"/>
-									<textElement textAlignment="Center" verticalAlignment="Middle"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
 									<textFieldExpression><![CDATA[$V{totalU}]]></textFieldExpression>
 								</textField>
 							</jr:tableFooter>
@@ -138,21 +149,27 @@
 									<property name="com.jaspersoft.studio.unit.width" value="px"/>
 									<staticText>
 										<reportElement x="0" y="0" width="55" height="30" uuid="3189eae1-0c84-463b-8258-b315b33168ef"/>
-										<textElement textAlignment="Center" verticalAlignment="Middle"/>
-										<text><![CDATA[MUŠKO]]></text>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+										</textElement>
+										<text><![CDATA[Muško]]></text>
 									</staticText>
 								</jr:columnHeader>
 								<jr:columnFooter style="Table_CH" height="30" rowSpan="1">
 									<textField>
 										<reportElement x="0" y="0" width="55" height="30" uuid="84fcf01a-4f20-4d0f-8fad-41da94f8e9cb"/>
-										<textElement textAlignment="Center" verticalAlignment="Middle"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+										</textElement>
 										<textFieldExpression><![CDATA[$V{totalM}]]></textFieldExpression>
 									</textField>
 								</jr:columnFooter>
 								<jr:detailCell style="Table_TD" height="30">
 									<textField>
 										<reportElement x="0" y="0" width="55" height="30" uuid="f55f0a9b-6c86-4443-8afb-754ab7fb6f69"/>
-										<textElement textAlignment="Center" verticalAlignment="Middle"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+										</textElement>
 										<textFieldExpression><![CDATA[$F{ukupnoMusko}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
@@ -163,21 +180,27 @@
 									<property name="com.jaspersoft.studio.unit.width" value="px"/>
 									<staticText>
 										<reportElement x="0" y="0" width="55" height="30" uuid="bbcf70ef-5be1-4c99-a89a-a1265ec9d1b8"/>
-										<textElement textAlignment="Center" verticalAlignment="Middle"/>
-										<text><![CDATA[ŽENSKO]]></text>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+										</textElement>
+										<text><![CDATA[Žensko]]></text>
 									</staticText>
 								</jr:columnHeader>
 								<jr:columnFooter style="Table_CH" height="30" rowSpan="1">
 									<textField>
 										<reportElement x="0" y="0" width="55" height="30" uuid="41e96447-bf42-4e67-9947-463ad84dd040"/>
-										<textElement textAlignment="Center" verticalAlignment="Middle"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+										</textElement>
 										<textFieldExpression><![CDATA[$V{totalZ}]]></textFieldExpression>
 									</textField>
 								</jr:columnFooter>
 								<jr:detailCell style="Table_TD" height="30">
 									<textField>
 										<reportElement x="0" y="0" width="55" height="30" uuid="81043669-cd8f-4c68-8cf4-ea57c98d923a"/>
-										<textElement textAlignment="Center" verticalAlignment="Middle"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+										</textElement>
 										<textFieldExpression><![CDATA[$F{ukupnoZensko}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
@@ -188,21 +211,27 @@
 									<property name="com.jaspersoft.studio.unit.width" value="px"/>
 									<staticText>
 										<reportElement x="0" y="0" width="55" height="30" uuid="bb7df83a-b8d2-41af-9f84-0c87fa7e5219"/>
-										<textElement textAlignment="Center" verticalAlignment="Middle"/>
-										<text><![CDATA[DRUGO]]></text>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+										</textElement>
+										<text><![CDATA[Drugo]]></text>
 									</staticText>
 								</jr:columnHeader>
 								<jr:columnFooter style="Table_CH" height="30" rowSpan="1">
 									<textField>
 										<reportElement x="0" y="0" width="55" height="30" uuid="99d1bc50-b023-4d85-8ebf-d765cdbea70f"/>
-										<textElement textAlignment="Center" verticalAlignment="Middle"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+										</textElement>
 										<textFieldExpression><![CDATA[$V{totalD}]]></textFieldExpression>
 									</textField>
 								</jr:columnFooter>
 								<jr:detailCell style="Table_TD" height="30">
 									<textField>
 										<reportElement x="0" y="0" width="55" height="30" uuid="e66fa375-8d01-43bd-afbc-b81885b3de20"/>
-										<textElement textAlignment="Center" verticalAlignment="Middle"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font fontName="Calibri" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+										</textElement>
 										<textFieldExpression><![CDATA[$F{ukupnoDrugo}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>

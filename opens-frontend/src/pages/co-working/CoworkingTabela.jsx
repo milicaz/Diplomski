@@ -16,6 +16,7 @@ export const CoworkingTabela = () => {
   const [limit, setLimit] = useState(10);
 
   const [downloading, setDownloading] = useState(false);
+  const [downloadingXlsx, setDownloadingXlsx] = useState(false);
 
   useEffect(() => {
     fetchPosete();
@@ -155,6 +156,47 @@ export const CoworkingTabela = () => {
     }, 2000);
   };
 
+  const handleXLSXDownload = async () => {
+    if (!dateInput) {
+      alert("Izaberite mesec i godinu prvo");
+      return;
+    }
+
+    setDownloadingXlsx(true);
+
+    const mesec = new Date(dateInput).getMonth() + 1;
+    const godina = new Date(dateInput).getFullYear();
+
+    setTimeout(async () => {
+      setDownloadingXlsx(false);
+
+      try {
+        const response = await httpCommon.get(
+          `/coworking/xlsx/${mesec}/godina/${godina}`,
+          {
+            responseType: "blob",
+          }
+        );
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+
+        link.setAttribute(
+          "download",
+          "Evidencija direktnih posetioca Coworkinga-" + formattedDate + ".xlsx"
+        );
+        document.body.appendChild(link);
+        link.click();
+
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error("Error downloading PDF:", error);
+      }
+    }, 2000);
+  };
+
   return (
     <>
       <div className="row align-items-center mb-4">
@@ -183,7 +225,7 @@ export const CoworkingTabela = () => {
             onClick={handlePDFDownload}
             disabled={downloading}
           >
-            {downloading ? ( 
+            {downloading ? (
               <>
                 <Spinner
                   as="span"
@@ -200,8 +242,28 @@ export const CoworkingTabela = () => {
               </>
             )}
           </Button>
-          <Button className="mx-1" variant="success">
-            <RiFileExcel2Fill size={20} /> EXCEL
+          <Button
+            className="mx-1"
+            variant="success"
+            onClick={handleXLSXDownload}
+            disabled={downloadingXlsx}
+          >
+            {downloadingXlsx ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                EXCEL
+              </>
+            ) : (
+              <>
+                <RiFileExcel2Fill size={20} /> EXCEL
+              </>
+            )}
           </Button>
         </div>
       </div>
