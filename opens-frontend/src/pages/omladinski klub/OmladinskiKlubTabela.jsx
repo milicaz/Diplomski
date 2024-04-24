@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Form } from "react-bootstrap";
+import { Alert, Button, Form, Spinner } from "react-bootstrap";
+import { FaRegFilePdf } from "react-icons/fa";
+import { RiFileExcel2Fill } from "react-icons/ri";
 import httpCommon from "../../http-common";
 import Pagination from "../Pagination";
 import OmladinskiKlubTabelaItem from "./OmladinskiKlubTabelaItem";
@@ -7,10 +9,14 @@ import OmladinskiKlubTabelaItem from "./OmladinskiKlubTabelaItem";
 export const OmladinskiKlubTabela = () => {
   const [posete, setPosete] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [dateInput, setDateInput] = useState(null);
   const [sortOrder, setSortOrder] = useState("ascending");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
+
+  const [downloading, setDownloading] = useState(false);
+  const [downloadingXlsx, setDownloadingXlsx] = useState(false);
 
   useEffect(() => {
     fetchPosete();
@@ -104,16 +110,162 @@ export const OmladinskiKlubTabela = () => {
     }
   }, [searchInput]);
 
+  const date = new Date();
+  const formattedDate = `${date.getDate()}-${
+    date.getMonth() + 1
+  }-${date.getFullYear()}`;
+
+  const handlePDFDownload = async () => {
+    if (!dateInput) {
+      alert("Izaberite mesec i godinu prvo");
+      return;
+    }
+
+    setDownloading(true);
+
+    const mesec = new Date(dateInput).getMonth() + 1;
+    const godina = new Date(dateInput).getFullYear();
+
+    setTimeout(async () => {
+      setDownloading(false);
+
+      try {
+        const response = await httpCommon.get(
+          `/omladinski/pdf/${mesec}/godina/${godina}`,
+          {
+            responseType: "blob",
+          }
+        );
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+
+        link.setAttribute(
+          "download",
+          "Evidencija direktnih posetioca Omladinskog kluba-" + formattedDate + ".pdf"
+        );
+        document.body.appendChild(link);
+        link.click();
+
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error("Error downloading PDF:", error);
+      }
+    }, 2000);
+  };
+
+  const handleXLSXDownload = async () => {
+    if (!dateInput) {
+      alert("Izaberite mesec i godinu prvo");
+      return;
+    }
+
+    setDownloadingXlsx(true);
+
+    const mesec = new Date(dateInput).getMonth() + 1;
+    const godina = new Date(dateInput).getFullYear();
+
+    setTimeout(async () => {
+      setDownloadingXlsx(false);
+
+      try {
+        const response = await httpCommon.get(
+          `/omladinski/xlsx/${mesec}/godina/${godina}`,
+          {
+            responseType: "blob",
+          }
+        );
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+
+        link.setAttribute(
+          "download",
+          "Evidencija direktnih posetioca Omladinskog kluba-" + formattedDate + ".xlsx"
+        );
+        document.body.appendChild(link);
+        link.click();
+
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error("Error downloading PDF:", error);
+      }
+    }, 2000);
+  };
+
   return (
     <>
-      <div>
-        <Form.Control
-          type="text"
-          placeholder="Pretraga po imenu ili prezimenu"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className="mb-4"
-        />
+      <div className="row align-items-center mb-4">
+        <div className="col">
+          <Form.Control
+            type="text"
+            placeholder="Pretraga po imenu ili prezimenu"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+        </div>
+
+        <div className="col-auto pe-0">
+          <span>Period za koji hoćete da generišete izveštaj: </span>
+        </div>
+        <div className="col">
+          <Form.Control
+            type="month"
+            onChange={(e) => setDateInput(e.target.value)}
+          />
+        </div>
+        <div className="col-auto ps-0">
+          <Button
+            className="mx-1"
+            variant="danger"
+            onClick={handlePDFDownload}
+            disabled={downloading}
+          >
+            {downloading ? ( 
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                PDF
+              </>
+            ) : (
+              <>
+                <FaRegFilePdf size={20} /> PDF
+              </>
+            )}
+          </Button>
+          <Button
+            className="mx-1"
+            variant="success"
+            onClick={handleXLSXDownload}
+            disabled={downloadingXlsx}
+          >
+            {downloadingXlsx ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                EXCEL
+              </>
+            ) : (
+              <>
+                <RiFileExcel2Fill size={20} /> EXCEL
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       <div className="row my-2">
