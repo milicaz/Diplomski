@@ -54,7 +54,7 @@ public class DogadjajViewController {
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("ime_zaposlenog", "Antonija");
 		parameters.put("prezime_zaposlenog", "Cverdelj");
-		parameters.put("mesec", "2");
+		parameters.put("mesec", mesec);
 		parameters.put("godina", "2024");
 		parameters.put("vrsta", vrsta);
 		parameters.put("dogadjajiDataSet", dogadjajiDataSource);
@@ -62,13 +62,6 @@ public class DogadjajViewController {
 		JasperReport report = JasperCompileManager.compileReport(filePath);
 		JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
 		JasperExportManager.exportReportToPdfFile(print, "D:\\Diplomski - git\\Diplomski\\opens-backend\\src\\main\\resources\\dogadjajireport.pdf");
-		System.out.println("Izvestaj je kreiran!");
-		
-		String filePathVece = "D:\\Diplomski - git\\Diplomski\\opens-backend\\src\\main\\resources\\dogadjajireportvece.jrxml";
-		
-		JasperReport reportVece = JasperCompileManager.compileReport(filePathVece);
-		JasperPrint printVece = JasperFillManager.fillReport(reportVece, parameters, new JREmptyDataSource());
-		JasperExportManager.exportReportToPdfFile(printVece, "D:\\Diplomski - git\\Diplomski\\opens-backend\\src\\main\\resources\\dogadjajireportvece.pdf");
 		System.out.println("Izvestaj je kreiran!");
 		
 		return new ResponseEntity<>(dogadjajiMesecVrsta, HttpStatus.OK);
