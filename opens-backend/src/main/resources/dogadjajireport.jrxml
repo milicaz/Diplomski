@@ -93,7 +93,7 @@
 		<field name="prigradsko_naselje_dr" class="java.lang.Long"/>
 		<field name="vrsta" class="java.lang.String"/>
 		<field name="mesec" class="java.lang.Long"/>
-		<variable name="total" class="java.lang.Long" calculation="Sum">
+		<variable name="total" class="java.lang.Long" calculation="Count">
 			<variableExpression><![CDATA[$F{id}]]></variableExpression>
 		</variable>
 		<variable name="total_m" class="java.lang.Long" calculation="Sum">
@@ -156,6 +156,12 @@
 		<variable name="total_mladi_m" class="java.lang.Long" calculation="Sum">
 			<variableExpression><![CDATA[$V{total_petnaest_devetnaest_m} + $V{total_dvadeset_dvadesetpet_m} + $V{total_dvadesetsest_trideset_m} + $V{total_tridesetplus_m}]]></variableExpression>
 		</variable>
+		<variable name="total_mladi_z" class="java.lang.Long" calculation="Sum">
+			<variableExpression><![CDATA[$V{total_petnaest_devetnaest_z} + $V{total_dvadeset_dvadesetpet_z} + $V{total_dvadesetsest_trideset_z} + $V{total_tridesetplus_z}]]></variableExpression>
+		</variable>
+		<variable name="total_mladi_dr" class="java.lang.Long" calculation="Sum">
+			<variableExpression><![CDATA[$V{total_petnaest_devetnaest_dr} + $V{total_dvadeset_dvadesetpet_dr} + $V{total_dvadesetsest_trideset_dr} + $V{total_tridesetplus_dr}]]></variableExpression>
+		</variable>
 	</subDataset>
 	<parameter name="ime_zaposlenog" class="java.lang.String"/>
 	<parameter name="prezime_zaposlenog" class="java.lang.String"/>
@@ -163,6 +169,7 @@
 	<parameter name="godina" class="java.lang.String"/>
 	<parameter name="vrsta" class="java.lang.String"/>
 	<parameter name="dogadjajiDataSet" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="dogadjajiDataSetDva" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -211,9 +218,9 @@
 		<band height="16" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="682" splitType="Stretch">
+		<band height="706" splitType="Stretch">
 			<componentElement>
-				<reportElement positionType="Float" stretchType="ContainerHeight" x="1" y="0" width="1639" height="400" uuid="29fb22f2-c71b-4c56-9be6-e4ed4f9e2982">
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="-16" width="1639" height="400" uuid="29fb22f2-c71b-4c56-9be6-e4ed4f9e2982">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -1126,7 +1133,7 @@
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement x="0" y="430" width="980" height="230" uuid="da430889-6786-4a5b-a1e1-645803f9dca5">
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="410" width="980" height="230" uuid="9fc34072-a728-4c99-974e-9640dc0ac5df">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
@@ -1134,27 +1141,27 @@
 					<property name="com.jaspersoft.studio.components.autoresize.proportional" value="true"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="dogadjajiDataSet" uuid="72067677-3911-4c3f-9c4f-9d85c61131f2">
-						<dataSourceExpression><![CDATA[$P{dogadjajiDataSet}]]></dataSourceExpression>
+					<datasetRun subDataset="dogadjajiDataSet" uuid="fb4321bf-51a1-4955-a04e-65d86c8743ca">
+						<dataSourceExpression><![CDATA[$P{dogadjajiDataSetDva}]]></dataSourceExpression>
 					</datasetRun>
-					<jr:columnGroup width="980" uuid="1b0e4b10-78b5-4e3d-a2b7-31bd6de1deaf">
+					<jr:columnGroup width="980" uuid="51363dd7-8b4d-46bc-9f3b-34a7afdbc1a8">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [17]"/>
 						<jr:tableHeader style="Table 1_TH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="980" height="30" backcolor="#D9E2F3" uuid="5649d238-e721-47ce-b788-5b74778bf500"/>
+								<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="980" height="30" backcolor="#D9E2F3" uuid="4e61fcc6-dada-403f-a207-8cb95c4b264a"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Calibri" size="14" isBold="true" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 								</textElement>
 								<text><![CDATA[Tabela sa indikatorima]]></text>
 							</staticText>
 						</jr:tableHeader>
-						<jr:columnGroup width="116" uuid="55f74368-c46d-4b4f-b1ff-6cc364e80f3d">
+						<jr:columnGroup width="116" uuid="4fca4f33-25da-4fe3-bf3b-e19e37406f85">
 							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [2]"/>
-							<jr:column width="58" uuid="e318989b-b06a-42b2-9488-75f9c1e2566e">
+							<jr:column width="58" uuid="4d1bbcc0-be89-4336-a9ca-09e1af69439b">
 								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 								<jr:columnHeader style="Table 1_CH" height="90" rowSpan="3">
 									<textField textAdjust="StretchHeight">
-										<reportElement mode="Opaque" x="0" y="0" width="58" height="90" backcolor="#FFC0CB" uuid="4d878112-a280-4060-b8b6-1208af270aaf"/>
+										<reportElement mode="Opaque" x="0" y="0" width="58" height="90" backcolor="#FFC0CB" uuid="9c057997-916a-4e73-b0c1-e78c4e96cc28"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 										</textElement>
@@ -1163,7 +1170,7 @@
 								</jr:columnHeader>
 								<jr:detailCell style="Table 1_TD" height="30">
 									<textField textAdjust="StretchHeight">
-										<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="6ae8fd4c-be94-4ed6-9666-1ca3c0226faa"/>
+										<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="c0d07666-0749-45d3-a025-e07d9fe8d53d"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 										</textElement>
@@ -1171,11 +1178,11 @@
 									</textField>
 								</jr:detailCell>
 							</jr:column>
-							<jr:column width="58" uuid="09688656-09fe-476f-97e9-af67de9c65ae">
+							<jr:column width="58" uuid="9ca5511e-9b2f-43f2-bcb9-2be0efc00f2f">
 								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 								<jr:columnHeader style="Table 1_CH" height="90" rowSpan="3">
 									<staticText>
-										<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="90" backcolor="#FFC0CB" uuid="645d8515-aca0-4110-b65f-4f542429ccba"/>
+										<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="90" backcolor="#FFC0CB" uuid="76ae368c-0182-4344-ba21-f4523782b9ae"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 										</textElement>
@@ -1184,7 +1191,7 @@
 								</jr:columnHeader>
 								<jr:detailCell style="Table 1_TD" height="30">
 									<textField textAdjust="StretchHeight">
-										<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="50e5d3fa-955d-4766-9813-d9677c9dde42"/>
+										<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="a3761619-038a-41ad-8932-cd7451549c4f"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 										</textElement>
@@ -1193,13 +1200,13 @@
 								</jr:detailCell>
 							</jr:column>
 						</jr:columnGroup>
-						<jr:columnGroup width="864" uuid="3c0f6473-32a5-4444-afd9-09d2c72f5df7">
+						<jr:columnGroup width="864" uuid="9656fb8e-76bf-452d-a008-1115795e266d">
 							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [15]"/>
-							<jr:columnGroup width="173" uuid="1afc07bb-99a6-4f21-86c0-61971ba051ab">
+							<jr:columnGroup width="173" uuid="4877e789-5995-4cdf-a18f-c3ca9f098001">
 								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
 								<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 									<staticText>
-										<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="173" height="30" backcolor="#FFC0CB" uuid="8831ed75-18fa-4302-b2ce-d89383b57859"/>
+										<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="173" height="30" backcolor="#FFC0CB" uuid="2ea858d7-16de-47eb-ad56-c46630ae0173"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 										</textElement>
@@ -1208,18 +1215,18 @@
 								</jr:columnHeader>
 								<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1">
 									<staticText>
-										<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="173" height="30" uuid="6071152d-6061-45ac-918f-849ef555f7e1"/>
+										<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="173" height="30" uuid="dc339aa2-33c5-4d34-8e14-4fc813a70a46"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 										</textElement>
-										<text><![CDATA[Ukupno: ]]></text>
+										<text><![CDATA[Ukupnan broj mladih učesnika: ]]></text>
 									</staticText>
 								</jr:columnFooter>
-								<jr:column width="58" uuid="8d62f5fd-bc62-4c25-82e9-cf2670d720dc">
+								<jr:column width="58" uuid="28719cb8-866f-4f05-8eff-c95568cd7b4c">
 									<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 									<jr:columnHeader style="Table 1_CH" height="60" rowSpan="2">
 										<staticText>
-											<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="60" backcolor="#FFC0CB" uuid="cd237aa6-9cb3-4dd4-9001-895f3637df5a"/>
+											<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="60" backcolor="#FFC0CB" uuid="876ad95a-4ce2-4cb7-924d-827ccd08b785"/>
 											<textElement textAlignment="Center" verticalAlignment="Middle">
 												<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 											</textElement>
@@ -1228,7 +1235,7 @@
 									</jr:columnHeader>
 									<jr:detailCell style="Table 1_TD" height="30">
 										<textField textAdjust="StretchHeight">
-											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="919ac8cb-375e-42e6-803b-892d8735dafd"/>
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="0ab946ae-83d1-4c59-9391-dcfe210fe5e2"/>
 											<textElement textAlignment="Center" verticalAlignment="Middle">
 												<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 											</textElement>
@@ -1236,11 +1243,11 @@
 										</textField>
 									</jr:detailCell>
 								</jr:column>
-								<jr:column width="58" uuid="df0f4593-fa40-4ddb-9fb8-b9b3401c70a0">
+								<jr:column width="58" uuid="3f42b14c-9cb6-4bea-ade9-a07ff664c884">
 									<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 									<jr:columnHeader style="Table 1_CH" height="60" rowSpan="2">
 										<staticText>
-											<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="60" backcolor="#FFC0CB" uuid="217d068a-02c9-4c2c-bda4-a070877a0bfe"/>
+											<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="60" backcolor="#FFC0CB" uuid="80b8818c-e4de-4cbb-b9bd-15958d8e8b48"/>
 											<textElement textAlignment="Center" verticalAlignment="Middle">
 												<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 											</textElement>
@@ -1249,7 +1256,7 @@
 									</jr:columnHeader>
 									<jr:detailCell style="Table 1_TD" height="30">
 										<textField textAdjust="StretchHeight">
-											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="8f8cdc24-35d0-4d54-bb63-9f254ea22ad2"/>
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="4493ee28-3ac6-4658-af37-8590a271dc93"/>
 											<textElement textAlignment="Center" verticalAlignment="Middle">
 												<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 											</textElement>
@@ -1257,11 +1264,11 @@
 										</textField>
 									</jr:detailCell>
 								</jr:column>
-								<jr:column width="57" uuid="fb82b4c9-a550-4852-9058-ae89b017672d">
+								<jr:column width="57" uuid="1ef571c3-f26e-4db1-85f9-ac8a2bee0638">
 									<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 									<jr:columnHeader style="Table 1_CH" height="60" rowSpan="2">
 										<staticText>
-											<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="57" height="60" backcolor="#FFC0CB" uuid="997c0d94-e055-4a60-8ff1-05153bac7121"/>
+											<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="57" height="60" backcolor="#FFC0CB" uuid="fc90fc77-017b-4967-b56d-5c4ecdab8dee"/>
 											<textElement textAlignment="Center" verticalAlignment="Middle">
 												<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 											</textElement>
@@ -1270,7 +1277,7 @@
 									</jr:columnHeader>
 									<jr:detailCell style="Table 1_TD" height="30">
 										<textField textAdjust="StretchHeight">
-											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="57" height="30" uuid="e3ab172f-fedb-4ecc-9151-55210773d4ed"/>
+											<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="57" height="30" uuid="b17a9ce0-5f34-44c6-b607-6827f59bf9bb"/>
 											<textElement textAlignment="Center" verticalAlignment="Middle">
 												<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 											</textElement>
@@ -1279,46 +1286,46 @@
 									</jr:detailCell>
 								</jr:column>
 							</jr:columnGroup>
-							<jr:columnGroup width="691" uuid="f9827083-3f81-477f-9da8-99921ab38f0b">
+							<jr:columnGroup width="691" uuid="fcf1f7e7-4d2d-4fde-a646-421facd61491">
 								<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [12]"/>
 								<jr:columnFooter style="Table 1_CH" height="30" rowSpan="1">
 									<textField textAdjust="StretchHeight">
-										<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="691" height="30" uuid="70d9b277-fb3a-445b-bd69-e85641b83252">
+										<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="691" height="30" uuid="129df02c-093e-40bf-a742-45048e660fc2">
 											<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 										</reportElement>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 										</textElement>
-										<textFieldExpression><![CDATA["Musko: " + $V{total_mladi_m}]]></textFieldExpression>
+										<textFieldExpression><![CDATA["Musko: " + $V{total_mladi_m} + "   " + "Žensko: " + $V{total_mladi_z} + "   " + "Drugo: " + $V{total_mladi_dr}]]></textFieldExpression>
 									</textField>
 								</jr:columnFooter>
-								<jr:columnGroup width="691" uuid="419f6d84-8108-4361-8f95-70de97696f1a">
+								<jr:columnGroup width="691" uuid="994faca5-04eb-484f-8bd2-6ca7287a4554">
 									<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [12]"/>
 									<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 										<staticText>
-											<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="691" height="30" backcolor="#FFC0CB" uuid="7d15572b-3d54-4bdd-83ea-29b1477960e9"/>
+											<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="691" height="30" backcolor="#FFC0CB" uuid="98a6113a-e5c3-46fd-b048-c5cbc9ee2e22"/>
 											<textElement textAlignment="Center" verticalAlignment="Middle">
 												<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 											</textElement>
 											<text><![CDATA[Ukupan broj mladih učesnika]]></text>
 										</staticText>
 									</jr:columnHeader>
-									<jr:columnGroup width="173" uuid="86139333-4bf5-4c12-b4a8-400c356c8178">
+									<jr:columnGroup width="173" uuid="c53b9ce9-2a0b-481d-be46-fc7c185bba91">
 										<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
 										<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 											<staticText>
-												<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="173" height="30" backcolor="#FFC0CB" uuid="c382a2d8-df86-4569-9d3d-df92a7869ab2"/>
+												<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="173" height="30" backcolor="#FFC0CB" uuid="58bf996a-3c51-45bc-912f-ef69a09ac746"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
 												<text><![CDATA[15-19]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:column width="58" uuid="24e70b53-245d-4f0a-a7be-fb602023cf90">
+										<jr:column width="58" uuid="f4bfba2c-c74a-4680-bcde-f36902425fe1">
 											<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 											<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 												<staticText>
-													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="30" backcolor="#FFC0CB" uuid="207322dc-cd43-4bab-acd3-2f363476da61"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="30" backcolor="#FFC0CB" uuid="c93b2317-a9ce-48c2-8082-6088a8fa9a78"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1327,7 +1334,7 @@
 											</jr:columnHeader>
 											<jr:detailCell style="Table 1_TD" height="30">
 												<textField textAdjust="StretchHeight">
-													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="d27ae988-457c-4257-a48c-33a7aacff6cf"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="59cf467a-04b5-4d3a-80a8-86338aa41569"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1335,11 +1342,11 @@
 												</textField>
 											</jr:detailCell>
 										</jr:column>
-										<jr:column width="58" uuid="25b6abca-3191-402e-a5ca-605fe1e60491">
+										<jr:column width="58" uuid="95c2f83f-937a-42d9-ba13-143655393189">
 											<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 											<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 												<staticText>
-													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="30" backcolor="#FFC0CB" uuid="bd01316e-0f83-4cb3-9b2b-2343b405a3df"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="30" backcolor="#FFC0CB" uuid="0f35ab18-0790-44b4-a6d3-9765967b144c"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1348,7 +1355,7 @@
 											</jr:columnHeader>
 											<jr:detailCell style="Table 1_TD" height="30">
 												<textField textAdjust="StretchHeight">
-													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="ce9d5ab5-ec40-49f4-bdd7-817c53f954c3"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="01e8841a-e74a-4079-a0d8-18bbf5b2ab29"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1356,11 +1363,11 @@
 												</textField>
 											</jr:detailCell>
 										</jr:column>
-										<jr:column width="57" uuid="b0f2cb91-9c94-4bcc-a55d-30f39e745b84">
+										<jr:column width="57" uuid="756d4826-f358-4e9a-bc3b-7bc2f470b7b1">
 											<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
 											<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 												<staticText>
-													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="57" height="30" backcolor="#FFC0CB" uuid="43d9ba19-ac71-4920-bb88-736b84ce022d"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="57" height="30" backcolor="#FFC0CB" uuid="ae9ca5be-755f-4751-bcd4-586678dc0f60"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1369,7 +1376,7 @@
 											</jr:columnHeader>
 											<jr:detailCell style="Table 1_TD" height="30">
 												<textField textAdjust="StretchHeight">
-													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="57" height="30" uuid="65b0aca9-97f5-4e65-ac40-4be9567c5a92"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="57" height="30" uuid="f43b6948-88fe-448c-9f57-b5da2d06cced"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1378,22 +1385,22 @@
 											</jr:detailCell>
 										</jr:column>
 									</jr:columnGroup>
-									<jr:columnGroup width="173" uuid="979f08b1-8972-4588-a412-12bb3390cf73">
+									<jr:columnGroup width="173" uuid="58f9aaa4-9320-4e21-b478-eb28943f32fd">
 										<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
 										<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 											<staticText>
-												<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="173" height="30" backcolor="#FFC0CB" uuid="657593bf-da22-42c5-a47d-f0c8c0b6d743"/>
+												<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="173" height="30" backcolor="#FFC0CB" uuid="12e36d5f-8690-430e-840d-be3a5ea11cb1"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
 												<text><![CDATA[20-25]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:column width="58" uuid="987b4527-ddcf-4fb0-a289-8b3150121624">
+										<jr:column width="58" uuid="a0469b32-d05b-483c-bebf-fae5c817b47b">
 											<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
 											<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 												<staticText>
-													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="30" backcolor="#FFC0CB" uuid="ecc59ffd-0c59-41a4-b321-0fe8a1f758fd"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="30" backcolor="#FFC0CB" uuid="c2ea029b-b9c2-476f-adce-53515d0cba5e"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1402,7 +1409,7 @@
 											</jr:columnHeader>
 											<jr:detailCell style="Table 1_TD" height="30">
 												<textField textAdjust="StretchHeight">
-													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="a6b12089-c692-4b2c-a5b6-233708810df4"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="cf757f5e-215d-4ef0-977e-3bf677d4c27c"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1410,11 +1417,11 @@
 												</textField>
 											</jr:detailCell>
 										</jr:column>
-										<jr:column width="58" uuid="b771cfe1-3120-4bd4-be50-1736aab00fa7">
+										<jr:column width="58" uuid="76ba09fa-3f14-4c8c-b9ff-8029ef05b98e">
 											<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
 											<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 												<staticText>
-													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="30" backcolor="#FFC0CB" uuid="17778d14-1621-41e5-b623-78a4db11917d"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="58" height="30" backcolor="#FFC0CB" uuid="302e0a40-056b-4fbc-bbef-6dd91e6f333e"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1423,7 +1430,7 @@
 											</jr:columnHeader>
 											<jr:detailCell style="Table 1_TD" height="30">
 												<textField textAdjust="StretchHeight">
-													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="4b2bf028-0bbe-44fb-a412-42ad2a20c0fb"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="58" height="30" uuid="d4137865-054d-4892-aac1-2cd9b6fb5270"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1431,11 +1438,11 @@
 												</textField>
 											</jr:detailCell>
 										</jr:column>
-										<jr:column width="57" uuid="b1c42b81-bfb6-4d1d-9f9f-146b9270a9b7">
+										<jr:column width="57" uuid="061b4ee7-f0b9-48c4-8367-3bba6a923bef">
 											<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
 											<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 												<staticText>
-													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="57" height="30" backcolor="#FFC0CB" uuid="1214e894-0bdd-41da-b4e2-93cee2d96620"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="57" height="30" backcolor="#FFC0CB" uuid="72e04e5c-6b2f-47f2-b0b3-e2a5c3121586"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1444,7 +1451,7 @@
 											</jr:columnHeader>
 											<jr:detailCell style="Table 1_TD" height="30">
 												<textField textAdjust="StretchHeight">
-													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="57" height="30" uuid="997329b2-6e1c-4ab3-a1ca-d0caf5fb5418"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="57" height="30" uuid="8804829a-d6ef-44b3-954d-b4b2a1f03eaa"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1453,22 +1460,22 @@
 											</jr:detailCell>
 										</jr:column>
 									</jr:columnGroup>
-									<jr:columnGroup width="158" uuid="b19f60af-c3fe-454e-a5b9-07610b8d32e7">
+									<jr:columnGroup width="158" uuid="db2ea0b4-f9c8-4adf-868a-38989f4a267d">
 										<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
 										<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 											<staticText>
-												<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="158" height="30" backcolor="#FFC0CB" uuid="e7e52f52-16d1-419e-8513-9492c50e72e4"/>
+												<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="158" height="30" backcolor="#FFC0CB" uuid="52e13965-2134-4f8e-95dc-53aec65ce4dd"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
 												<text><![CDATA[26-30]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:column width="55" uuid="f7f4bc2e-aada-46f2-8667-17ca69271a23">
+										<jr:column width="55" uuid="6358eecd-7583-43b7-869b-f647fe7c60a8">
 											<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
 											<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 												<staticText>
-													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="55" height="30" backcolor="#FFC0CB" uuid="c0df42a4-7e49-40cb-b617-b75bff2e9b6f"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="55" height="30" backcolor="#FFC0CB" uuid="1c6d2c26-295f-41b6-9668-436d89985700"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1477,7 +1484,7 @@
 											</jr:columnHeader>
 											<jr:detailCell style="Table 1_TD" height="30">
 												<textField textAdjust="StretchHeight">
-													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="55" height="30" uuid="2b77b9c8-16ba-4612-a147-a2cc0ae93f3f"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="55" height="30" uuid="479bda14-f8da-49b1-8e3a-d9213dbfc7c2"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1485,11 +1492,11 @@
 												</textField>
 											</jr:detailCell>
 										</jr:column>
-										<jr:column width="53" uuid="6421c838-fba8-4bb8-98fd-28fd04407b05">
+										<jr:column width="53" uuid="1cfc4111-e9e6-47fd-92e8-dc51607d85f2">
 											<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column13"/>
 											<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 												<staticText>
-													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="53" height="30" backcolor="#FFC0CB" uuid="f8140187-0b72-4834-a793-79c276c1df90"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="53" height="30" backcolor="#FFC0CB" uuid="a370d744-d65e-4389-9cdd-b1399dbb12f3"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1498,7 +1505,7 @@
 											</jr:columnHeader>
 											<jr:detailCell style="Table 1_TD" height="30">
 												<textField textAdjust="StretchHeight">
-													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="53" height="30" uuid="dffe1479-e945-4b26-a60e-930917f02b6d"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="53" height="30" uuid="aafa4ac6-fb13-42dc-b0a7-cdf82c60c896"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1506,11 +1513,11 @@
 												</textField>
 											</jr:detailCell>
 										</jr:column>
-										<jr:column width="50" uuid="93253acf-a486-4380-94af-421efbea767f">
+										<jr:column width="50" uuid="83fa0618-e9e7-4bfc-bfdc-d93bd1098ce6">
 											<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column14"/>
 											<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 												<staticText>
-													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="50" height="30" backcolor="#FFC0CB" uuid="a8080933-a9a2-48cc-9c24-9425a3df03b0"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="50" height="30" backcolor="#FFC0CB" uuid="57918742-842b-4c66-ab99-7918c6ab3332"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1519,7 +1526,7 @@
 											</jr:columnHeader>
 											<jr:detailCell style="Table 1_TD" height="30">
 												<textField textAdjust="StretchHeight">
-													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="50" height="30" uuid="e7355f3d-e8d9-4ca9-b505-b8b8279399e5"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="50" height="30" uuid="44e31006-3876-420a-a8b7-4df8be0b8ed6"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1528,22 +1535,22 @@
 											</jr:detailCell>
 										</jr:column>
 									</jr:columnGroup>
-									<jr:columnGroup width="187" uuid="8603864c-c01f-4075-8cde-e28f7b8e8666">
+									<jr:columnGroup width="187" uuid="2676ff0e-3916-4eae-ab46-c3fe3a765ebe">
 										<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
 										<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 											<staticText>
-												<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="187" height="30" backcolor="#FFC0CB" uuid="9d59b479-bd2b-4594-b98e-2a1798d3a74e"/>
+												<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="187" height="30" backcolor="#FFC0CB" uuid="7a625f36-9a91-47cb-9013-48280bcc2f6f"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
 												<text><![CDATA[30+]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:column width="65" uuid="c2b60a50-9d6b-4cb0-bd11-5ad2498cfa33">
+										<jr:column width="65" uuid="5fd51caf-f14f-4d42-bc1f-82229913546e">
 											<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column15"/>
 											<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 												<staticText>
-													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="65" height="30" backcolor="#FFC0CB" uuid="e38c4e70-cd50-4265-b086-e46842c069ee"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="65" height="30" backcolor="#FFC0CB" uuid="af0771ee-4cc3-434a-b68d-ae8a8dc55f4a"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1552,7 +1559,7 @@
 											</jr:columnHeader>
 											<jr:detailCell style="Table 1_TD" height="30">
 												<textField textAdjust="StretchHeight">
-													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="65" height="30" uuid="d58dd1fe-b29e-4556-a873-9f48f7218a36"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="65" height="30" uuid="7613c42d-2757-44a9-97fc-fe08d5be6202"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1560,11 +1567,11 @@
 												</textField>
 											</jr:detailCell>
 										</jr:column>
-										<jr:column width="65" uuid="9c61fff5-d64e-4e42-8d67-84569610186e">
+										<jr:column width="65" uuid="fa90d532-b5ca-42da-b256-eadc09a3b21b">
 											<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column16"/>
 											<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 												<staticText>
-													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="65" height="30" backcolor="#FFC0CB" uuid="5f59109c-2c9e-421d-a898-1f19c7c7e3ed"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="65" height="30" backcolor="#FFC0CB" uuid="cfa940da-46ab-4c7b-a03a-dc11b939c451"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1573,7 +1580,7 @@
 											</jr:columnHeader>
 											<jr:detailCell style="Table 1_TD" height="30">
 												<textField textAdjust="StretchHeight">
-													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="65" height="30" uuid="7039c2df-377a-4aa9-84d8-e3789198cad7"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="65" height="30" uuid="dfb646da-9240-424f-aba6-364e8e9ab4b8"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1581,11 +1588,11 @@
 												</textField>
 											</jr:detailCell>
 										</jr:column>
-										<jr:column width="57" uuid="19bc42b8-dac9-434a-af8f-42d5a9289ff7">
+										<jr:column width="57" uuid="c9b3808c-8803-4635-82ba-9049fc14dcb0">
 											<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column17"/>
 											<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 												<staticText>
-													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="57" height="30" backcolor="#FFC0CB" uuid="72e571a8-c5dd-4cbf-b6bd-e97b5c812de5"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="57" height="30" backcolor="#FFC0CB" uuid="1cdf7684-f0cd-4a3d-811c-3f43ad218a21"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1594,7 +1601,7 @@
 											</jr:columnHeader>
 											<jr:detailCell style="Table 1_TD" height="30">
 												<textField textAdjust="StretchHeight">
-													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="57" height="30" uuid="704c0fb4-b6b4-4cbf-823e-9a8e3e76957b"/>
+													<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="57" height="30" uuid="00f4f1f7-3ff8-434b-b829-3fc3b5b7430f"/>
 													<textElement textAlignment="Center" verticalAlignment="Middle">
 														<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 													</textElement>
@@ -1618,6 +1625,6 @@
 		<band height="18" splitType="Stretch"/>
 	</pageFooter>
 	<summary>
-		<band height="21" splitType="Stretch"/>
+		<band height="24" splitType="Stretch"/>
 	</summary>
 </jasperReport>

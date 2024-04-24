@@ -51,6 +51,8 @@ public class DogadjajViewController {
 		
 		JRBeanCollectionDataSource dogadjajiDataSource = new JRBeanCollectionDataSource(dogadjajiMesecVrsta);
 		
+		JRBeanCollectionDataSource dogadjajiDataSourceDva = new JRBeanCollectionDataSource(dogadjajiMesecVrsta);
+		
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("ime_zaposlenog", "Antonija");
 		parameters.put("prezime_zaposlenog", "Cverdelj");
@@ -58,6 +60,7 @@ public class DogadjajViewController {
 		parameters.put("godina", "2024");
 		parameters.put("vrsta", vrsta);
 		parameters.put("dogadjajiDataSet", dogadjajiDataSource);
+		parameters.put("dogadjajiDataSetDva", dogadjajiDataSourceDva);
 		
 		JasperReport report = JasperCompileManager.compileReport(filePath);
 		JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
