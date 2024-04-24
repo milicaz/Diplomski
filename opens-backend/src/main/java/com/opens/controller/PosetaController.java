@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -134,6 +135,43 @@ public class PosetaController {
 
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@PutMapping("/posete/{id}/oprema")
+	public ResponseEntity<Poseta> odjaviOpremu(@PathVariable Long id) {
+		Optional<Poseta> posetaData = posetaRepository.findById(id);
+
+		if (posetaData.isPresent()) {
+			Poseta poseta = posetaData.get();
+
+			for (Oprema oprema : poseta.getOprema()) {
+				oprema.setIsZauzeta(false);
+				opremaRepository.save(oprema);
+			}
+
+			poseta.setOprema(null);
+			posetaRepository.save(poseta);
+			return new ResponseEntity<>(poseta, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@PutMapping("/posete/{id}/odjava")
+	public ResponseEntity<Poseta> checkOut(@PathVariable Long id) {
+		Optional<Poseta> posetaData = posetaRepository.findById(id);
+
+		if (posetaData.isPresent()) {
+			Poseta poseta = posetaData.get();
+			
+			LocalTime vremeOdjave = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
+			poseta.setVremeOdjave(vremeOdjave);
+			
+			posetaRepository.save(poseta);
+			return new ResponseEntity<>(poseta, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 

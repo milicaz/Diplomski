@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import Pagination from "../../Pagination";
-import AddDogadjajForm from "../mesto dogadjaja/modal/AddDogadjajForm";
 import TipDogadjaja from "./TipDogadjaja";
 import { TipDogadjajaContext } from "./TipDogadjajaContext";
 import AddTipDogadjajaForm from "./modal/AddTipDogadjajaForm";
@@ -10,14 +9,11 @@ const TipDogadjajaList = () => {
   const { sortedTipoviDogadjaja } = useContext(TipDogadjajaContext);
 
   const [show, setShow] = useState(false);
-
   const handleShow = () => setShow(true);
-
   const handleClose = () => setShow(false);
 
   const [currentPage, setCurrentPage] = useState(1);
-
-  const [tipDogadjajaPerPage] = useState(5);
+  const [tipDogadjajaPerPage, setTipDogadjajaPerPage] = useState(10);
 
   useEffect(() => {
     handleClose();
@@ -37,14 +33,35 @@ const TipDogadjajaList = () => {
     sortedTipoviDogadjaja.length / tipDogadjajaPerPage
   );
 
+  const onInputChange = (e) => {
+    setTipDogadjajaPerPage(e.target.value);
+  };
+
   return (
     <>
       <div className="table-title">
         <div className="row">
           <div className="col-sm-6">
-            <h2>
-              <b>Tip Događaja</b>
-            </h2>
+            <div className="row align-items-center mb-3">
+              <div className="col-auto pe-0">
+                <span>Prikaži</span>
+              </div>
+              <div className="col-auto">
+                <Form.Select
+                  name="tipDogadjajaPerPage"
+                  value={tipDogadjajaPerPage}
+                  onChange={(e) => onInputChange(e)}
+                  style={{ width: "100%" }}
+                >
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                </Form.Select>
+              </div>
+              <div className="col-auto ps-0">
+                <span>unosa</span>
+              </div>
+            </div>
           </div>
           <div className="col-sm-6">
             <Button
@@ -74,7 +91,13 @@ const TipDogadjajaList = () => {
         </tbody>
       </table>
 
-      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} array={sortedTipoviDogadjaja} />
+      <Pagination
+        pages={totalPagesNumber}
+        setCurrentPage={setCurrentPage}
+        array={sortedTipoviDogadjaja}
+        limit={tipDogadjajaPerPage}
+        maxVisibleButtons={3}
+      />
 
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>

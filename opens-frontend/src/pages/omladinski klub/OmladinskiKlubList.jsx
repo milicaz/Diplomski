@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Button,
   Card,
   Col,
@@ -19,6 +20,7 @@ export const OmladinskiKlubList = () => {
   const [tipoviOpreme, setTipoviOpreme] = useState([]);
   const [selectedTipOpreme, setSelectedTipOpreme] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [show, setShow] = useState(false);
 
   const now = new Date();
   const datumPosete = now.toISOString().split("T")[0]; // Formats the date as "YYYY-MM-DD"
@@ -59,6 +61,35 @@ export const OmladinskiKlubList = () => {
           );
         })
       : [];
+
+  const handleCheckOut = async (id) => {
+    try {
+      await httpCommon.put(`/posete/${id}/odjava`);
+      fetchTrenutno();
+      fetchTipoviOpreme();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleCheckOutOpremu = async (id) => {
+    try {
+      await httpCommon.put(`/posete/${id}/oprema`);
+      fetchTrenutno();
+      fetchTipoviOpreme();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  if (show) {
+    return (
+      <Alert variant="danger" onClose={() => setShow(false)} dismissible>
+        <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+        <p>Prvo morate odjaviti opremu!</p>
+      </Alert>
+    );
+  }
 
   return (
     <>
@@ -183,7 +214,14 @@ export const OmladinskiKlubList = () => {
                               u {poseta.vremePosete.substring(0, 5)}
                             </p>
                           </Row>
-                          <Button className="btn-table mx-2">Odjavi</Button>
+                          <Button
+                            className="btn-table mx-2"
+                            onClick={() => {
+                              handleCheckOut(poseta.id);
+                            }}
+                          >
+                            Odjavi
+                          </Button>
                         </Card.Body>
                       </Card>
                     </Tab.Pane>
@@ -213,8 +251,18 @@ export const OmladinskiKlubList = () => {
                               </li>
                             ))}
                           </Row>
-                          <Button className="btn-table mx-2">Odjavi</Button>
-                          <Button className="btn-table mx-2">
+                          <Button
+                            className="btn-table mx-2"
+                            onClick={() => setShow(true)}
+                          >
+                            Odjavi
+                          </Button>
+                          <Button
+                            className="btn-table mx-2"
+                            onClick={() => {
+                              handleCheckOutOpremu(poseta.id);
+                            }}
+                          >
                             Odjavi opremu
                           </Button>
                         </Card.Body>

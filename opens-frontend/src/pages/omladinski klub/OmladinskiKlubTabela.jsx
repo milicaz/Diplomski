@@ -327,6 +327,7 @@ export const OmladinskiKlubTabela = () => {
           setCurrentPage={setCurrentPage}
           array={filteredPosete}
           limit={limit}
+          maxVisibleButtons={3}
         />
       )}
     </>

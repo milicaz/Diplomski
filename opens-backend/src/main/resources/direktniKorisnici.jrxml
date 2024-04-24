@@ -68,7 +68,16 @@
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band height="54" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<image hAlign="Center" vAlign="Middle" evaluationTime="Page">
+				<reportElement x="0" y="0" width="800" height="50" uuid="3475c9e8-c14c-4959-9602-97cf232f65e2">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA["classpath:/images/OPENS header.png"]]></imageExpression>
+			</image>
+		</band>
 	</pageHeader>
 	<detail>
 		<band height="424" splitType="Stretch">
@@ -181,7 +190,7 @@
 				<subreportExpression><![CDATA[$P{direktniUkupnoReport}]]></subreportExpression>
 			</subreport>
 			<subreport>
-				<reportElement x="440" y="280" width="250" height="110" uuid="a0cf7e93-77c2-4390-b9c7-c4df954ace21">
+				<reportElement x="440" y="310" width="250" height="110" uuid="a0cf7e93-77c2-4390-b9c7-c4df954ace21">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -192,6 +201,11 @@
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="130" splitType="Stretch">
+			<image scaleImage="FillFrame">
+				<reportElement x="-22" y="0" width="844" height="130" uuid="93e9e191-9c6d-4204-bded-7f4b4528be44"/>
+				<imageExpression><![CDATA["classpath:/images/OPENS footer.png"]]></imageExpression>
+			</image>
+		</band>
 	</pageFooter>
 </jasperReport>

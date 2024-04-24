@@ -98,6 +98,7 @@ export const OpremaTabela = () => {
         setCurrentPage={setCurrentPage}
         array={sortedOprema}
         limit={limit}
+        maxVisibleButtons={3}
       />
 
       <Modal show={show} onHide={handleClose} centered>

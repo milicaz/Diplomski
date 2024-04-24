@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const Pagination = ({ pages, setCurrentPage, array, limit }) => {
+const Pagination = ({ pages, setCurrentPage, array, limit, maxVisibleButtons }) => {
   const numOfPages = [];
   const [currentButton, setCurrentButton] = useState(1);
 
@@ -32,6 +32,70 @@ const Pagination = ({ pages, setCurrentPage, array, limit }) => {
     endIdx = 0;
   }
 
+  const renderPageButtons = () => {
+    const buttons = [];
+    const halfMaxVisibleButtons = Math.floor(maxVisibleButtons / 2);
+
+    let startPage = Math.max(1, currentButton - halfMaxVisibleButtons);
+    let endPage = Math.min(startPage + maxVisibleButtons - 1, pages);
+
+    if (endPage - startPage + 1 < maxVisibleButtons) {
+      startPage = Math.max(1, endPage - maxVisibleButtons + 1);
+    }
+
+    if (startPage > 1) {
+      buttons.push(
+        <li key={1} className="page-item">
+          <button className="page-link" onClick={() => setCurrentButton(1)}>
+            1
+          </button>
+        </li>
+      );
+      if (startPage > 2) {
+        buttons.push(
+          <li key="startEllipsis" className="page-item disabled">
+            <span className="page-link">...</span>
+          </li>
+        );
+      }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      buttons.push(
+        <li
+          key={i}
+          className={`${currentButton === i ? "page-item active" : "page-item"}`}
+        >
+          <button className="page-link" onClick={() => setCurrentButton(i)}>
+            {i}
+          </button>
+        </li>
+      );
+    }
+
+    if (endPage < pages) {
+      if (endPage < pages - 1) {
+        buttons.push(
+          <li key="endEllipsis" className="page-item disabled">
+            <span className="page-link">...</span>
+          </li>
+        );
+      }
+      buttons.push(
+        <li key={pages} className="page-item">
+          <button
+            className="page-link"
+            onClick={() => setCurrentButton(pages)}
+          >
+            {pages}
+          </button>
+        </li>
+      );
+    }
+
+    return buttons;
+  };
+
   return (
     <div className="clearfix mt-2">
       <div className="hint-text">
@@ -42,11 +106,7 @@ const Pagination = ({ pages, setCurrentPage, array, limit }) => {
         od <b>{array.length}</b> unosa
       </div>
       <ul className="pagination justify-content-end">
-        <li
-          className={`${
-            currentButton === 1 ? "page-item disabled" : "page-item"
-          }`}
-        >
+        <li className={`${currentButton === 1 ? "page-item disabled" : "page-item"}`}>
           <button
             className="page-link"
             onClick={() =>
@@ -57,36 +117,18 @@ const Pagination = ({ pages, setCurrentPage, array, limit }) => {
           </button>
         </li>
 
-        {numOfPages.map((page, index) => {
-          return (
-            <li
-              key={index}
-              className={`${
-                currentButton === page ? "page-item active" : "page-item"
-              }`}
-            >
-              <button
-                className="page-link"
-                onClick={() => setCurrentButton(page)}
-              >
-                {page}
-              </button>
-            </li>
-          );
-        })}
+        {renderPageButtons()}
 
         <li
           className={`${
-            currentButton === numOfPages.length
-              ? "page-item disabled"
-              : "page-item"
+            currentButton === pages ? "page-item disabled" : "page-item"
           }`}
         >
           <button
             className="page-link"
             onClick={() =>
               setCurrentButton((next) =>
-                next === numOfPages.length ? next : next + 1
+                next === pages ? next : next + 1
               )
             }
           >
