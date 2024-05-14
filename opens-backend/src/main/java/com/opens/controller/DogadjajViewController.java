@@ -41,11 +41,11 @@ public class DogadjajViewController {
 		return new ResponseEntity<>(dogadjaji, HttpStatus.OK);
 	}
 	
-	@GetMapping("/dogadjajiView/{mesec}/{vrsta}")
-	public ResponseEntity<List<DogadjajiView>> getAllByMesecVrsta(@PathVariable Long mesec, @PathVariable String vrsta) throws JRException {
+	@GetMapping("/dogadjajiView/{mesec}/{godina}/{vrsta}")
+	public ResponseEntity<List<DogadjajiView>> getAllByMesecVrsta(@PathVariable Long mesec, @PathVariable Long godina, @PathVariable String vrsta) throws JRException {
 		List<DogadjajiView> dogadjajiMesecVrsta = new ArrayList<>();
 		
-		dogadjajiMesecVrsta = dogRepo.findByMesecAndVrsta(mesec, vrsta);
+		dogadjajiMesecVrsta = dogRepo.findByMesecAndGodinaAndVrsta(mesec, godina, vrsta);
 		
 		String filePath = "D:\\Diplomski - git\\Diplomski\\opens-backend\\src\\main\\resources\\dogadjajireport.jrxml";
 		
@@ -57,7 +57,7 @@ public class DogadjajViewController {
 		parameters.put("ime_zaposlenog", "Antonija");
 		parameters.put("prezime_zaposlenog", "Cverdelj");
 		parameters.put("mesec", mesec);
-		parameters.put("godina", "2024");
+		parameters.put("godina", godina);
 		parameters.put("vrsta", vrsta);
 		parameters.put("dogadjajiDataSet", dogadjajiDataSource);
 		parameters.put("dogadjajiDataSetDva", dogadjajiDataSourceDva);

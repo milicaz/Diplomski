@@ -6,7 +6,7 @@ import com.opens.view.DogadjajiView;
 
 public interface DogadjajiViewRepository extends ReadOnlyRepository<DogadjajiView, Long> {
 	
-	List<DogadjajiView> findByMesecAndVrsta(Long mesec, String vrsta);
+	List<DogadjajiView> findByMesecAndGodinaAndVrsta(Long mesec, Long godina, String vrsta);
 	
 //	List<DogadjajiView> findByVrsta_dogadjaja(String vrsta_dogadjaja);
 

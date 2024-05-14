@@ -20,7 +20,7 @@ public class DogadjajiView {
 	private Long id;
 	private String naziv_aktivnosti;
 	private Long mesec;
-	private Integer godina;
+	private Long godina;
 	private String ime_odgovorne_osobe;
 	private Long m;
 	private Long z;
@@ -52,7 +52,7 @@ public class DogadjajiView {
 	public Long getMesec() {
 		return mesec;
 	}
-	public Integer getGodina() {
+	public Long getGodina() {
 		return godina;
 	}
 	public String getIme_odgovorne_osobe() {
