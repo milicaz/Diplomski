@@ -102,6 +102,7 @@ const MestoPoseteList = () => {
         setCurrentPage={setCurrentPage}
         array={sortedMestaPosete}
         limit={mestaPosetePerPage}
+        maxVisibleButtons={3}
       />
 
       <Modal show={show} onHide={handleClose} centered>

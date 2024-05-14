@@ -21,6 +21,7 @@ import {
 import {
   MestoDogadjajaHome,
   MestoPoseteHome,
+  ObavestenjaHome,
   OpremaHome,
   PrigradskaNaseljaHome,
   TipDogadjajaHome,
@@ -123,6 +124,15 @@ export const Navigation = () => {
                 isActiveDropdown(sifarnikPaths) ? "sifarnik-dropdown" : ""
               }
             >
+              <NavDropdown.Item
+                href="/obavestenja"
+                className={`sifarnik-dropdown-item ${
+                  isActive("/obavestenja") ? "active" : ""
+                }`}
+              >
+                Obaveštenja
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
               <NavDropdown.Item
                 href="/tipOpreme"
                 className={`sifarnik-dropdown-item ${
@@ -232,6 +242,7 @@ export const Navigation = () => {
           />
           <Route path="/dogadjaj" element={<DogadjajHome />} />
           <Route path="/logo" element={<LogoHome />} />
+          <Route path="/obavestenja" element={<ObavestenjaHome />} />
         </Routes>
       </div>
     </>

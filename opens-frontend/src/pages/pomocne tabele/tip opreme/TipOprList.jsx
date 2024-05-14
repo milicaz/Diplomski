@@ -101,6 +101,7 @@ const TipOprList = () => {
         setCurrentPage={setCurrentPage}
         array={sortedTipoviOpreme}
         limit={tipPerPage}
+        maxVisibleButtons={3}
       />
 
       <Modal show={show} onHide={handleClose} centered size="sm">

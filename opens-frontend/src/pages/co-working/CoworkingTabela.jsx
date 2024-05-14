@@ -327,6 +327,7 @@ export const CoworkingTabela = () => {
           setCurrentPage={setCurrentPage}
           array={filteredPosete}
           limit={limit}
+          maxVisibleButtons={3}
         />
       )}
     </>

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import Pagination from "../../Pagination";
 import PrigradskaNaselja from "./PrigradskaNaselja";
 import { PrigradskaNaseljaContext } from "./PrigradskaNaseljaContext";
@@ -9,38 +9,55 @@ const PrigradskaNaseljaList = () => {
   const { sortedPrigradskaNaselja } = useContext(PrigradskaNaseljaContext);
 
   const [show, setShow] = useState(false);
-
   const handleShow = () => setShow(true);
-
   const handleClose = () => setShow(false);
 
   const [currentPage, setCurrentPage] = useState(1);
-
-  const [naseljaPerPage] = useState(5);
+  const [naseljaPerPage, setNaseljaPerPage] = useState(10);
 
   const indexOfLastNaselje = currentPage * naseljaPerPage;
-
   const indexOfFirstNaselje = indexOfLastNaselje - naseljaPerPage;
-
   const currentNaselja = sortedPrigradskaNaselja.slice(
     indexOfFirstNaselje,
     indexOfLastNaselje
   );
+  const totalPagesNumber = Math.ceil(
+    sortedPrigradskaNaselja.length / naseljaPerPage
+  );
 
   useEffect(() => {
     handleClose();
-  }, [sortedPrigradskaNaselja])
+  }, [sortedPrigradskaNaselja]);
 
-  const totalPagesNumber = Math.ceil(sortedPrigradskaNaselja.length / naseljaPerPage);
+  const onInputChange = (e) => {
+    setNaseljaPerPage(e.target.value);
+  };
 
   return (
     <>
       <div className="table-title">
         <div className="row">
           <div className="col-sm-6">
-            <h2>
-              <b>Prigradska Naselja</b>
-            </h2>
+            <div className="row align-items-center mb-3">
+              <div className="col-auto pe-0">
+                <span>Prikaži</span>
+              </div>
+              <div className="col-auto">
+                <Form.Select
+                  name="naseljaPerPage"
+                  value={naseljaPerPage}
+                  onChange={(e) => onInputChange(e)}
+                  style={{ width: "100%" }}
+                >
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                </Form.Select>
+              </div>
+              <div className="col-auto ps-0">
+                <span>unosa</span>
+              </div>
+            </div>
           </div>
           <div className="col-sm-6">
             <Button
@@ -70,7 +87,13 @@ const PrigradskaNaseljaList = () => {
         </tbody>
       </table>
 
-      <Pagination pages={totalPagesNumber} setCurrentPage={setCurrentPage} array={sortedPrigradskaNaselja} />
+      <Pagination
+        pages={totalPagesNumber}
+        setCurrentPage={setCurrentPage}
+        array={sortedPrigradskaNaselja}
+        limit={naseljaPerPage}
+        maxVisibleButtons={3}
+      />
 
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
