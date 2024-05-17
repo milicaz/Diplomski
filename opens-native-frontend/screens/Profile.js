@@ -5,8 +5,12 @@ import React, { useEffect } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import COLORS from '../constants/colors'
+import { useTranslation } from 'react-i18next'
 
 export default function Profile({ navigation }) {
+
+  const { t } = useTranslation();
+
   const [fontsLoaded] = useFonts({
     'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
     'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf'),
@@ -74,13 +78,13 @@ export default function Profile({ navigation }) {
               color: COLORS.white,
             }}
           >
-            Izmenite profil
+            {t('profile-page.text.edit-profile')}
           </Text>
         </TouchableOpacity>
       </View>
       <View style={{ marginLeft: 20 }}>
         <View style={{ borderBottomColor: COLORS.black, borderBottomWidth: StyleSheet.hairlineWidth, width: "90%" }}>
-          <Text style={{ fontSize: 25, color: COLORS.black, fontFamily: 'Montserrat-Bold' }}>Informacije</Text>
+          <Text style={{ fontSize: 25, color: COLORS.black, fontFamily: 'Montserrat-Bold' }}>{t('profile-page.text.info')}</Text>
         </View>
         <View style={{ flexDirection: "row", marginVertical: 6, alignItems: 'center' }}>
           <MaterialIcons name="location-on" size={16} color="black" />

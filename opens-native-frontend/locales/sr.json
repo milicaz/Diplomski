@@ -1,0 +1,75 @@
+{
+    "welcome-page": {
+        "input": {
+            "email": "Email",
+            "password": "Lozinka"
+        },
+        "text": {
+            "forgot-password": "Zaboravili ste lozinku?",
+            "no-account": "Nemate nalog?",
+            "register": "Registracija",
+            "language": "Izaberite jezik"
+        }
+    },
+    "home-page": {
+        "text": {
+            "show-more": "Prikaži više",
+            "close": "Zatvori"
+        }
+    },
+    "register-page": {
+        "input": {
+            "email": "Email",
+            "password": "Lozinka",
+            "name": "Ime",
+            "surname": "Prezime",
+            "gender": "Rod",
+            "yearOfBirth": "Godina rođenja",
+            "placeOfResidence": "Mesto boravišta"
+        },
+        "button": {
+            "register": "Registracija"
+        }
+    },
+    "profile-page": {
+        "text": {
+            "edit-profile": "Izmenite profil",
+            "info": "Informacije"
+        }
+    },
+    "profile-edit-page": {
+        "text": {
+            "edit-profile": "Izmena profila",
+            "name": "Ime",
+            "surname": "Prezime",
+            "email": "Email",
+            "placeOfResidence": "Mesto boravišta",
+            "phone": "Broj telefona",
+            "yearOfBirth": "Godina rođenja",
+            "save": "Sačuvaj izmene"
+        }
+    },
+    "dostupnost-page": {
+        "text": {
+            "availability": "Dostupnost",
+            "space": "1 slobodno mesto",
+            "space_plural": "{{count}} slobodna mesta",
+            "space_plural5": "{{count}} slobodnih mesta",
+            "space_negative": "Nema slobodnih mesta",
+            "laptop": "1 slobodan laptop",
+            "laptop_plural": "{{count}} slobodna laptopa",
+            "laptop_plural5": "{{count}} slobodnih laptopova",
+            "laptop_negative": "Nema slobodnih laptopa",
+            "mouse": "1 slobodan miš",
+            "mouse_plural": "{{count}} slobodna miša",
+            "mouse_plural5": "{{count}} slobodnih miševa",
+            "mouse_negative": "Nema slobodnih miševa",
+            "headphone": "1 slobodne slušalice",
+            "headphone_plural": "{{count}} slobodnih slušalica",
+            "headphone_plural5": "{{count}} slobodnih slušalica",
+            "headphone_negative": "Nema slobodnih slušalica",
+            "sony": "Sony je slobodan",
+            "sony_negative": "Sony je zauzet"
+        }
+    }
+}

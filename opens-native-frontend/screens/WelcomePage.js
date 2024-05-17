@@ -1,20 +1,29 @@
-import { useEffect, useState } from "react";
-import { Button, Image, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
-import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Image, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
+import englishFlag from '../assets/flags/english.png';
+import serbianFlag from '../assets/flags/serbian.png';
 import COLORS from "../constants/colors";
+import i18next from '../services/i18next';
 
 export default function WelcomePage({ navigation }) {
+  const { t } = useTranslation();
+
+  const changeLng = lng => {
+    i18next.changeLanguage(lng);
+  };
 
   // State variable to hold the password 
-  const [password, setPassword] = useState(''); 
-  
+  const [password, setPassword] = useState('');
+
   // State variable to track password visibility 
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
 
   // Function to toggle the password visibility state 
-  const toggleShowPassword = () => { 
-      setShowPassword(!showPassword); 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
   }
 
   const [fontsLoaded] = useFonts({
@@ -29,14 +38,14 @@ export default function WelcomePage({ navigation }) {
     prepare();
   }, [])
 
-  if(!fontsLoaded) {
+  if (!fontsLoaded) {
     return undefined;
   } else {
     SplashScreen.hideAsync();
   }
 
   return (
-    <View style={{ flex : 1, backgroundColor: COLORS.white }}>
+    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
 
       <View>
         <Image
@@ -49,7 +58,15 @@ export default function WelcomePage({ navigation }) {
         />
       </View>
 
-      <View style={{ justifyContent: "center", alignItems: "center", height: 950}}>
+      <View style={{ flexDirection: "row", marginHorizontal: 12, top: 305, justifyContent: 'flex-end' }}>
+        <TouchableOpacity onPress={() => changeLng('sr')}>
+          <Image source={serbianFlag} style={{ width: 30, height: 20, marginRight: 5 }} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => changeLng('en')}>
+          <Image source={englishFlag} style={{ width: 30, height: 20, marginRight: 5 }} />
+        </TouchableOpacity>
+      </View>
+      <View style={{ justifyContent: "center", alignItems: "center", height: 950 }}>
         {/* <Button title="Registracija" textStyle = {{fontFamily: "Montserrat-Regular"}} onPress={() => navigation.navigate("Registracija")} />
         <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#61CDCD', padding: 13, width: "50%"}} onPress={() => navigation.navigate("Registracija")}>
           <Text style = {{fontFamily: "Montserrat-Bold", color: "black"}}>Registracija</Text>
@@ -68,25 +85,25 @@ export default function WelcomePage({ navigation }) {
         <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
           <TextInput secureTextEntry={!showPassword} value={password} onChangeText={setPassword} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Password" />
         </View>
-        <View style = {{width: "90%", alignItems: "center", justifyContent: "center"}}>
+        <View style={{ width: "90%", alignItems: "center", justifyContent: "center" }}>
           <TouchableOpacity>
             <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }}>Zaboravili ste lozinku?</Text>
-        </TouchableOpacity>
-        </View>
-        <View  style = {{ width: "50%", margin: 10}}>
-          <TouchableOpacity style={{alignItems: 'center', backgroundColor: '#61CDCD', padding: 13}}>
-            <Text style = {{fontFamily: "Montserrat-Bold"}}>Login</Text>
           </TouchableOpacity>
         </View>
-        <View style = {{width : "80%", flexDirection: "row" , alignItems : "center", justifyContent: "center"}}>
-          <View style = {{flex : 1}}>
+        <View style={{ width: "50%", margin: 10 }}>
+          <TouchableOpacity style={{ alignItems: 'center', backgroundColor: '#61CDCD', padding: 13 }}>
+            <Text style={{ fontFamily: "Montserrat-Bold" }}>Login</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ width: "80%", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
+          <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }}>Nemate nalog?</Text>
           </View>
-        <View style = {{flex: 1, marginLeft: 30}}>
-          <TouchableOpacity>
-            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold" }} onPress={() => navigation.navigate("Registracija")}>Registracija</Text>
-        </TouchableOpacity>
-        </View>
+          <View style={{ flex: 1, marginLeft: 30 }}>
+            <TouchableOpacity>
+              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold" }} onPress={() => navigation.navigate("Registracija")}>Registracija</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
@@ -96,6 +113,6 @@ export default function WelcomePage({ navigation }) {
         </Pressable>
       </View>
     </View>
-    
+
   );
 }

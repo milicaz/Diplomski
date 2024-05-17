@@ -1,0 +1,71 @@
+{
+    "welcome-page": {
+        "input": {
+            "email": "Email",
+            "password": "Password"
+        },
+        "text": {
+            "forgot-password": "Forgot password?",
+            "no-account": "Don't have an account yet?",
+            "register": "Register",
+            "language": "Choose language"
+        }
+    },
+    "home-page": {
+        "text": {
+            "show-more": "Show more",
+            "close": "Close"
+        }
+    },
+    "register-page": {
+        "input": {
+            "email": "Email",
+            "password": "Password",
+            "name": "Name",
+            "surname": "Surname",
+            "gender": "Gender",
+            "yearOfBirth": "Year of birth",
+            "placeOfResidence": "Place of residence"
+        },
+        "button": {
+            "register": "Register"
+        }
+    },
+    "profile-page": {
+        "text": {
+            "edit-profile": "Edit profile",
+            "info": "Information"
+        }
+    },
+    "profile-edit-page": {
+        "text": {
+            "edit-profile": "Edit profile",
+            "name": "Name",
+            "surname": "Surname",
+            "email": "Email",
+            "placeOfResidence": "Place of residence",
+            "phone": "Phone number",
+            "yearOfBirth": "Year of birth",
+            "save": "Save"
+        }
+    },
+    "dostupnost-page": {
+        "text": {
+            "availability": "Availability",
+            "space": "1 free space",
+            "space_plural": "{{count}} free spaces",
+            "space_negative": "There is no free spaces",
+            "laptop": "1 free laptop",
+            "laptop_plural": "{{count}} free laptops",
+            "laptop_negative": "There is no free laptops",
+            "mouse": "1 free mouse",
+            "mouse_plural": "{{count}} free mouses",
+            "mouse_negative": "There is no free mouses",
+            "headphone": "1 free headphone",
+            "headphone_plural": "{{count}} free headphones",
+            "headphone_negative": "There is no free headphones",
+            "sony": "Sony is free",
+            "sony_negative": "Sony is occupied"
+        }
+    }
+}
