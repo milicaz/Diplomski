@@ -11,6 +11,7 @@ import {
   Tab,
   Table,
 } from "react-bootstrap";
+import { FaBuildingCircleArrowRight, FaClock } from "react-icons/fa6";
 
 export const OmladinskiKlubTabelaItem = ({ posetilac }) => {
   const monthNames = [
@@ -44,16 +45,15 @@ export const OmladinskiKlubTabelaItem = ({ posetilac }) => {
                   </b>{" "}
                   (<i>godine: {posetilac.godine}</i>)
                 </Col>
-                <Col className="text-end">
-                  Ukupno poseta: <b>{posetilac.totalPosete}</b>
+                <Col className="text-end mx-2">
+                  <FaBuildingCircleArrowRight />{" "}
+                  <i className="me-2">{posetilac.totalPosete}</i>
+                  <FaClock /> <i>{posetilac.totalnoProvedenoVreme}</i>
                 </Col>
               </Row>
             </Container>
           </AccordionHeader>
           <AccordionBody>
-          <Col className="my-3 text-end">
-              <h3>Ukupno provedeno vreme: <b>{posetilac.totalnoProvedenoVreme}</b></h3> 
-            </Col>
             <Tab.Container defaultActiveKey="0">
               <Row>
                 <Col sm={1}>

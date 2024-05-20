@@ -47,15 +47,15 @@ export default function Profile({ navigation }) {
           style={{
             height: 155,
             width: 155,
-            borderColor: COLORS.primary,
+            borderColor: COLORS.yellow,
             borderWidth: 2,
             marginTop: -90
           }}
         />
-        <Text style={{ fontSize: 25, fontFamily: 'Montserrat-Bold', color: COLORS.primary, }}>
+        <Text style={{ fontSize: 25, fontFamily: 'Montserrat-Bold', color: COLORS.yellow, }}>
           Jovana Jovanović
         </Text>
-        <Text style={{ fontSize: 16, fontFamily: 'Montserrat-Medium', color: COLORS.primary }}>
+        <Text style={{ fontSize: 16, fontFamily: 'Montserrat-Medium', color: COLORS.yellow }}>
           jovana.jovanovic@mail.com
         </Text>
       </View>
@@ -63,11 +63,11 @@ export default function Profile({ navigation }) {
         <TouchableOpacity
           onPress={() => navigation.navigate("ProfileEdit")}
           style={{
-            width: 124,
-            height: 36,
+            width: 130,
+            height: 40,
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: COLORS.primary,
+            backgroundColor: COLORS.blue,
             marginHorizontal: 20,
           }}
         >
@@ -84,21 +84,21 @@ export default function Profile({ navigation }) {
       </View>
       <View style={{ marginLeft: 20 }}>
         <View style={{ borderBottomColor: COLORS.black, borderBottomWidth: StyleSheet.hairlineWidth, width: "90%" }}>
-          <Text style={{ fontSize: 25, color: COLORS.black, fontFamily: 'Montserrat-Bold' }}>{t('profile-page.text.info')}</Text>
+          <Text style={{ fontSize: 25, color: COLORS.yellow, fontFamily: 'Montserrat-Bold' }}>{t('profile-page.text.info')}</Text>
         </View>
         <View style={{ flexDirection: "row", marginVertical: 6, alignItems: 'center' }}>
           <MaterialIcons name="location-on" size={16} color="black" />
-          <Text style={{ fontSize: 16, color: COLORS.primary, fontFamily: 'Montserrat-Medium', marginLeft: 4 }}>Novi Sad</Text>
+          <Text style={{ fontSize: 16, color: COLORS.yellow, fontFamily: 'Montserrat-Medium', marginLeft: 4 }}>Novi Sad</Text>
         </View>
 
         <View style={{ flexDirection: "row", marginVertical: 6, alignItems: 'center' }}>
           <MaterialIcons name="smartphone" size={16} color="black" />
-          <Text style={{ fontSize: 16, color: COLORS.primary, fontFamily: 'Montserrat-Medium', marginLeft: 4 }}>+381 61 2345678</Text>
+          <Text style={{ fontSize: 16, color: COLORS.yellow, fontFamily: 'Montserrat-Medium', marginLeft: 4 }}>+381 61 2345678</Text>
         </View>
 
         <View style={{ flexDirection: "row", marginVertical: 6, alignItems: 'center' }}>
           <MaterialIcons name="date-range" size={16} color="black" />
-          <Text style={{ fontSize: 16, color: COLORS.primary, fontFamily: 'Montserrat-Medium', marginLeft: 4 }}>2011</Text>
+          <Text style={{ fontSize: 16, color: COLORS.yellow, fontFamily: 'Montserrat-Medium', marginLeft: 4 }}>2011</Text>
         </View>
       </View>
     </SafeAreaView>

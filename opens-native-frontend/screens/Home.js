@@ -46,7 +46,7 @@ export default function Home() {
         marginBottom: 8
       }}>
         <View style={{ marginBottom: 16, alignItems: 'center' }}>
-          <Text style={{ fontSize: 22, fontFamily: 'Montserrat-SemiBold', color: COLORS.primary, marginTop: 10 }}>
+          <Text style={{ fontSize: 22, fontFamily: 'Montserrat-SemiBold', color: COLORS.purple, marginTop: 10 }}>
             Lorem ipsum dolor sit amet
           </Text>
         </View>
@@ -77,7 +77,7 @@ export default function Home() {
         alignItems: 'center',
       }}>
         <View style={{ marginBottom: 16, alignItems: 'center' }}>
-          <Text style={{ fontSize: 22, fontFamily: 'Montserrat-SemiBold', color: COLORS.primary, marginTop: 10 }}>
+          <Text style={{ fontSize: 22, fontFamily: 'Montserrat-SemiBold', color: COLORS.purple, marginTop: 10 }}>
             Lorem ipsum dolor sit amet
           </Text>
         </View>

@@ -2,10 +2,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import { Image, Platform } from 'react-native';
 import COLORS from '../constants/colors';
+import Dostupnost from '../screens/Dostupnost';
 import Home from '../screens/Home';
 import Profile from '../screens/Profile';
 import QrCode from '../screens/QrCode';
-import Dostupnost from '../screens/Dostupnost';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,7 +33,7 @@ export default function BottomTabNavigation() {
                             <Image
                                 source={focused ? require("../assets/icons/home.png") : require("../assets/icons/home-outline.png")}
                                 resizeMode='contain'
-                                style={{ height: 24, width: 24, tintColor: focused ? COLORS.primary : COLORS.black }} />
+                                style={{ height: 24, width: 24, tintColor: focused ? COLORS.purple : COLORS.black }} />
                         )
                     }
                 }}
@@ -47,7 +47,7 @@ export default function BottomTabNavigation() {
                             <Image
                                 source={focused ? require("../assets/icons/qr-code.png") : require("../assets/icons/qr-code.png")}
                                 resizeMode='contain'
-                                style={{ height: 24, width: 24, tintColor: focused ? COLORS.primary : COLORS.black }} />
+                                style={{ height: 24, width: 24, tintColor: focused ? COLORS.red : COLORS.black }} />
                         )
                     }
                 }}
@@ -61,7 +61,7 @@ export default function BottomTabNavigation() {
                             <Image
                                 source={focused ? require("../assets/icons/user.png") : require("../assets/icons/user-outline.png")}
                                 resizeMode='contain'
-                                style={{ height: 24, width: 24, tintColor: focused ? COLORS.primary : COLORS.black }} />
+                                style={{ height: 24, width: 24, tintColor: focused ? COLORS.yellow : COLORS.black }} />
                         )
                     }
                 }}
@@ -75,12 +75,11 @@ export default function BottomTabNavigation() {
                             <Image
                                 source={focused ? require("../assets/icons/search.png") : require("../assets/icons/search.png")}
                                 resizeMode='contain'
-                                style={{ height: 24, width: 24, tintColor: focused ? COLORS.primary : COLORS.black }} />
+                                style={{ height: 24, width: 24, tintColor: focused ? COLORS.green : COLORS.black }} />
                         )
                     }
                 }}
             />
-
         </Tab.Navigator>
     )
 }

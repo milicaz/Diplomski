@@ -37,7 +37,7 @@ export default function ProfileEdit({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white, paddingHorizontal: 22 }}>
-      <View style={{ flexDirection: "row", marginHorizontal: 12, justifyContent: 'center' }}>
+      <View style={{ flexDirection: "row", marginHorizontal: 12, justifyContent: 'center', top: 15  }}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={{
@@ -52,13 +52,13 @@ export default function ProfileEdit({ navigation }) {
           />
         </TouchableOpacity>
 
-        <Text style={{ fontSize: 18, fontFamily: 'Montserrat-Medium' }}>{t('profile-edit-page.text.edit-profile')}</Text>
+        <Text style={{ fontSize: 18, fontFamily: 'Montserrat-Medium', color: COLORS.yellow  }}>{t('profile-edit-page.text.edit-profile')}</Text>
       </View>
       <ScrollView>
         <View
           style={{
             alignItems: "center",
-            marginVertical: 22,
+            marginVertical: 42,
           }}
         >
           <TouchableOpacity>
@@ -68,7 +68,7 @@ export default function ProfileEdit({ navigation }) {
                 height: 100,
                 width: 100,
                 borderWidth: 2,
-                borderColor: COLORS.primary,
+                borderColor: COLORS.yellow,
               }}
             />
 
@@ -100,7 +100,7 @@ export default function ProfileEdit({ navigation }) {
             style={{
               height: 44,
               width: "100%",
-              borderColor: COLORS.secondaryGrey,
+              borderColor: COLORS.black,
               borderWidth: 1,
               marginVertical: 6,
               justifyContent: "center",
@@ -154,7 +154,7 @@ export default function ProfileEdit({ navigation }) {
             style={{
               height: 44,
               width: "100%",
-              borderColor: COLORS.secondaryGrey,
+              borderColor: COLORS.black,
               borderWidth: 1,
               marginVertical: 6,
               justifyContent: "center",
@@ -181,7 +181,7 @@ export default function ProfileEdit({ navigation }) {
             style={{
               height: 44,
               width: "100%",
-              borderColor: COLORS.secondaryGrey,
+              borderColor: COLORS.black,
               borderWidth: 1,
               marginVertical: 6,
               justifyContent: "center",
@@ -208,7 +208,7 @@ export default function ProfileEdit({ navigation }) {
             style={{
               height: 44,
               width: "100%",
-              borderColor: COLORS.secondaryGrey,
+              borderColor: COLORS.black,
               borderWidth: 1,
               marginVertical: 6,
               justifyContent: "center",
@@ -235,7 +235,7 @@ export default function ProfileEdit({ navigation }) {
             style={{
               height: 44,
               width: "100%",
-              borderColor: COLORS.secondaryGrey,
+              borderColor: COLORS.black,
               borderWidth: 1,
               marginVertical: 6,
               justifyContent: "center",
@@ -253,7 +253,7 @@ export default function ProfileEdit({ navigation }) {
 
         <TouchableOpacity
           style={{
-            backgroundColor: COLORS.primary,
+            backgroundColor: COLORS.blue,
             height: 44,
             alignItems: "center",
             justifyContent: "center",
