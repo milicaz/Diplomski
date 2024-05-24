@@ -43,14 +43,21 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-    		<groupId>commons-io</groupId>
-    		<artifactId>commons-io</artifactId>
-    		<version>2.15.1</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.15.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 			<version>6.20.0</version>
+		</dependency>
+		<dependency>
+			<groupId>local.jasperFont</groupId>
+			<artifactId>local.jasperFont</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>D:/Diplomski - git/Diplomski/opens-backend/src/main/resources/reports/fonts-extension.jar</systemPath>
 		</dependency>
 	</dependencies>
 

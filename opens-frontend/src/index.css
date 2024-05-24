@@ -117,7 +117,7 @@ td {
 
 /* Modal styles */
 .modal .modal-dialog {
-  max-width: 400px;
+  max-width: 500px;
 }
 
 /* .modal .modal-header,
@@ -290,4 +290,20 @@ td {
 .icon-container {
   display: flex;
   gap: 5px;
+}
+
+/*CSS za Logoe*/
+.image-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.image-table th, .image-table td {
+  border: 1px solid #dddddd;
+  text-align: center;
+  padding: 8px;
+}
+
+.image-table th {
+  background-color: #f2f2f2;
 }

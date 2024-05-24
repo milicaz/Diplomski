@@ -8,4 +8,5 @@ import com.opens.model.Dogadjaj;
 @Repository
 public interface DogadjajRepository extends JpaRepository<Dogadjaj, Long> {
 
+	Dogadjaj findOneById(Long id);
 }

@@ -9,6 +9,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.catalina.valves.JsonAccessLogValve;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -89,6 +90,27 @@ public class LogoController {
 		
 		return new ResponseEntity<>(logo, HttpStatus.OK);
 	}
+	
+//	@PostMapping(path = "/logos", consumes = "multipart/form-data")
+//	public ResponseEntity<List<Logo>> saveLogos(@RequestParam("imageFile") MultipartFile file) throws IOException{
+//		
+//		List<Logo> logos = new ArrayList<>();
+//		
+//		if(file.isEmpty()) {
+//			System.out.println("File is empty!");
+//		}else {
+//			Logo logo = new Logo();
+//			logo.setName(file.getOriginalFilename());
+//			logo.setType(file.getContentType());
+//			logo.setPicByte(file.getBytes());
+//			logos.add(logo);
+//			System.out.println("Logos: " + logos.toString());
+//		}
+//		
+//		logoRepo.saveAll(logos);
+//		
+//		return new ResponseEntity<>(logos, HttpStatus.OK);
+//	}
 	
 	@PutMapping(path = "/logoi/{id}", consumes = "multipart/form-data")
 	public ResponseEntity<Logo> updateLogo(@PathVariable Long id, @RequestParam("imageFile") MultipartFile file) throws IOException {

@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ucesnici" pageWidth="1191" pageHeight="842" orientation="Landscape" columnWidth="1151" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0887999c-fe8d-4fe2-96fb-54b4c1694feb">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="ucesniciDataSet" uuid="5d83e760-2a7d-4a5e-99d5-373513b22f47">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="id" class="java.lang.Long"/>
+		<field name="ime" class="java.lang.String"/>
+		<field name="prezime" class="java.lang.String"/>
+		<field name="pol" class="java.lang.String"/>
+		<field name="godine" class="java.lang.Long"/>
+		<field name="mesto_boravista" class="java.lang.String"/>
+		<field name="telefon" class="java.lang.String"/>
+		<field name="email" class="java.lang.String"/>
+		<field name="uc_organizacija" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="dogadjaj" class="java.lang.String"/>
+	<parameter name="organizator" class="java.lang.String"/>
+	<parameter name="datum" class="java.time.LocalDate"/>
+	<parameter name="mesto" class="java.lang.String"/>
+	<parameter name="pocetak" class="java.time.LocalTime"/>
+	<parameter name="kraj" class="java.time.LocalTime"/>
+	<parameter name="ucesniciDataSet" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<detail>
+		<band height="460" splitType="Stretch">
+			<frame>
+				<reportElement x="0" y="20" width="1150" height="170" uuid="9298ce7f-55ee-4118-9132-bf03266ba007"/>
+				<staticText>
+					<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="10" width="1150" height="50" uuid="70c51877-2ef2-4a5d-9a5c-2f71d33714ca"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled">
+						<font fontName="Calibri" size="18" isBold="false" isItalic="false" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[<style isBold="true">Obrazac za evidentiranje aktivnosti</style> Activities form]]></text>
+				</staticText>
+				<textField textAdjust="StretchHeight">
+					<reportElement x="0" y="70" width="1150" height="30" uuid="87cb5029-f9dc-4502-988c-f1a39544a47f"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+						<font fontName="Calibri" size="14" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["<b>Događaj</b>/<i>Event</i>" + ": " + $P{dogadjaj}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement x="0" y="100" width="1150" height="30" uuid="f575c202-58ef-444b-bdef-d895ee9da55c"/>
+					<textElement verticalAlignment="Middle" markup="html">
+						<font fontName="Calibri" size="14" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["<b>Organizator (organizacija, institucija i sl.)</b>/<i>Organizer</i>" + ": " + $P{organizator}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement x="0" y="130" width="420" height="30" uuid="4c5ee5d2-e7cc-497a-8a1f-3aaf7475d166"/>
+					<textElement verticalAlignment="Middle" markup="html">
+						<font fontName="Calibri" size="14" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["<b>Datum</b>/<i>Date</i>" + ": " + $P{datum}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement x="420" y="130" width="381" height="30" uuid="98d39460-6d02-4e56-8c4c-0e125fea7c53"/>
+					<textElement verticalAlignment="Middle" markup="html">
+						<font fontName="Calibri" size="14" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["<b>Mesto</b>/<i>Place</i>" + ": " + $P{mesto}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement x="801" y="130" width="349" height="30" uuid="1c3c5721-7101-4eed-87c9-a60ca21499b7">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle" markup="html">
+						<font fontName="Calibri" size="14" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["<b>Vreme</b>/<i>Time</i>" + ": " + $P{pocetak} + " - " + $P{kraj}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<componentElement>
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="190" width="1150" height="240" uuid="6a374aa4-eae0-4d70-a91f-5b10bade37a2">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="ucesniciDataSet" uuid="8ca34513-d3a4-4eb9-8b1f-c7edb5020110">
+						<dataSourceExpression><![CDATA[$P{ucesniciDataSet}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:columnGroup width="1018" uuid="df679b51-f9f2-4ac0-8432-a3163834bb28">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [9]"/>
+						<jr:tableHeader style="Table_TH" height="50" rowSpan="1">
+							<staticText>
+								<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="1018" height="50" uuid="948d5c06-88b7-4358-b97d-cbb3a71aea55"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+									<font fontName="Calibri" size="14" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+								</textElement>
+								<text><![CDATA[<b>Lista učesnika</b><br><i>List of participants</i></br>]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:column width="90" uuid="589d1227-8039-4218-b422-3522fd62735e">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+							<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
+								<staticText>
+									<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="90" height="50" uuid="e9930162-630f-432f-9ef1-d2ded42a44c1"/>
+									<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[<b>Red. broj</b> <br> <i>Num</i> </br>]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField textAdjust="StretchHeight">
+									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="90" height="30" uuid="b3727a06-82e6-4ad6-b977-bef6448fd911"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="130" uuid="da46ec65-a6f1-4a93-8ce0-b9caa5c23750">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+							<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
+								<staticText>
+									<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="130" height="50" uuid="09e56634-327b-4e77-9c9d-6f71a1f5a8ee"/>
+									<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[<b>Ime i prezime</b> <br><i>Name and surname</i></br>]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField textAdjust="StretchHeight">
+									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="130" height="30" uuid="c7d93d29-5bd2-48bd-8d6d-476752ba8ff1"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{ime} + " " + $F{prezime}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="90" uuid="9d53d4b1-6a69-4169-89de-8d15bc42d320">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+							<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
+								<staticText>
+									<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="90" height="50" uuid="222e92f0-27c8-4f19-99e2-26855b8a9c80"/>
+									<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[<b>Pol</b> <br> <i>Gender</i> </br>]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField textAdjust="StretchHeight">
+									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="90" height="30" uuid="366ab128-120a-4db7-885e-e869ba9f1a69"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{pol}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="90" uuid="8529a1fb-5f63-48dc-bcd8-da1618c5dc23">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+							<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
+								<staticText>
+									<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="90" height="50" uuid="73441d3e-45bd-4cdb-989c-d452e5a0ffa7"/>
+									<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[<b>Godine</b> <br> <i>Age</i> </br>]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField textAdjust="StretchHeight">
+									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="90" height="30" uuid="08eac831-7eff-45fa-b171-83636938b952"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{godine}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="126" uuid="54b9fda4-b3b2-48f7-814d-587b19db8e0a">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+							<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
+								<staticText>
+									<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="126" height="50" uuid="eff39b20-0f5d-4c12-85aa-5dd0831bd46b"/>
+									<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[<b>Mesto boravišta</b> <br><i>Place of residence</i></br>]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField textAdjust="StretchHeight">
+									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="126" height="30" uuid="e9e52230-aa18-45b2-8f37-197d503b455c"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{mesto_boravista}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="114" uuid="dc11c447-4a9d-4f0d-9548-cea24b96e73d">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+							<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
+								<staticText>
+									<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="114" height="50" uuid="22d5ebe4-9ffb-4b3d-9d6f-8a91d77a6300"/>
+									<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[<b>Organizacija</b><br><i>Organisation</i></br>]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField textAdjust="StretchHeight">
+									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="114" height="30" uuid="29eb32bf-7baf-45fd-980a-48af11ef8aad"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{uc_organizacija}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="130" uuid="f950e589-7c9d-410b-87f3-edd4112fee1d">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+							<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
+								<staticText>
+									<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="130" height="50" uuid="d9f00b66-3454-47ac-a18a-fa874d18c897"/>
+									<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[<b>Telefon</b><br><i>Phone</i></br>]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField textAdjust="StretchHeight">
+									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="130" height="30" uuid="b410239a-402b-4f90-903d-8095c0df99cd"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{telefon}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="124" uuid="74184f8e-cbde-4205-bca5-e0ff982da59d">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+							<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
+								<staticText>
+									<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="124" height="50" uuid="d23b5294-aeef-472c-b510-a8f9583a97d1"/>
+									<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[<b>Mejl</b><br><i>E-mail</i></br>]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField textAdjust="StretchHeight">
+									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="124" height="30" uuid="506bf610-846e-4d6a-b6c9-7c561569eed7"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="124" uuid="2dc7254c-a318-44a7-8f13-1d0bc7fd4acc">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+							<jr:tableFooter style="Table_TH" height="30" rowSpan="1"/>
+							<jr:columnHeader style="Table_CH" height="50" rowSpan="1">
+								<staticText>
+									<reportElement positionType="Float" stretchType="ContainerHeight" mode="Opaque" x="0" y="0" width="124" height="50" uuid="91673d1b-c85b-420e-ac95-3075c0b71290"/>
+									<textElement textAlignment="Center" verticalAlignment="Top" markup="html">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<text><![CDATA[<b>Potpis</b><br><i>Signature</i></br>]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<textField textAdjust="StretchHeight">
+									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="124" height="30" uuid="172e5d85-c89f-40a6-bd88-0a0caa3faf3b"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

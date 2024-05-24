@@ -43,6 +43,8 @@ public class DogadjajiView {
 	private Long prigradsko_naselje_dr;
 	private String vrsta;
 	private LocalDate datum;
+	
+	
 	public Long getId() {
 		return id;
 	}
