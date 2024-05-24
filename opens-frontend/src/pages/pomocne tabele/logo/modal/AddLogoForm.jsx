@@ -32,7 +32,7 @@ const AddLogoForm = () => {
       )}
       <br />
       <Button variant="primary" type="submit">
-        Upload Logo
+        Dodaj
       </Button>
     </Form>
   );
