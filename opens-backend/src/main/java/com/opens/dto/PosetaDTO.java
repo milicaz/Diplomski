@@ -7,7 +7,7 @@ import com.opens.model.Oprema;
 public class PosetaDTO {
 
 	private Long mestoPoseteID;
-	private Long posetilacID;
+	private String posetilacEmail;
 	private List<Oprema> oprema;
 
 	public PosetaDTO() {
@@ -21,12 +21,12 @@ public class PosetaDTO {
 		this.mestoPoseteID = mestoPoseteID;
 	}
 
-	public Long getPosetilacID() {
-		return posetilacID;
+	public String getPosetilacEmail() {
+		return posetilacEmail;
 	}
 
-	public void setPosetilacID(Long posetilacID) {
-		this.posetilacID = posetilacID;
+	public void setPosetilacEmail(String posetilacEmail) {
+		this.posetilacEmail = posetilacEmail;
 	}
 
 	public List<Oprema> getOprema() {

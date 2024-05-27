@@ -57,7 +57,7 @@
 			<artifactId>local.jasperFont</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>D:/Diplomski - git/Diplomski/opens-backend/src/main/resources/reports/fonts-extension.jar</systemPath>
+			<systemPath>D:/Diplomski/opens-backend/src/main/resources/reports/fonts-extension.jar</systemPath>
 		</dependency>
 	</dependencies>
 

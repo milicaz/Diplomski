@@ -11,7 +11,7 @@ import { opensImage } from "../assets";
 import { Home } from "./Home";
 import DogadjajHome from "./aktivnosti/DogadjajHome";
 import { CoworkingListHome, CoworkingTabelaHome } from "./co-working";
-import Login from "./korisnik/Login";
+import MainCheckIn from "./korisnik/MainCheckIn";
 import { Profile } from "./korisnik/Profile";
 import Registracija from "./korisnik/Registracija";
 import {
@@ -230,7 +230,7 @@ export const Navigation = () => {
             element={<OmladinskiKlubTabelaHome />}
           />
           <Route path="/registracija" element={<Registracija />} />
-          <Route path="/check-in" element={<Login />} />
+          <Route path="/check-in" element={<MainCheckIn />} />
           <Route path="/tipOpreme" element={<TipOprHome />} />
           <Route path="/oprema" element={<OpremaHome />} />
           <Route path="/mestoPosete" element={<MestoPoseteHome />} />

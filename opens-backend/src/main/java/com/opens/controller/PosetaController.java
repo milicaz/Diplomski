@@ -111,7 +111,7 @@ public class PosetaController {
 	public ResponseEntity<Poseta> createPosetu(@RequestBody PosetaDTO posetaDTO) {
 		try {
 			Optional<MestoPosete> mestoPosete = mestoPoseteRepository.findById(posetaDTO.getMestoPoseteID());
-			Optional<Posetilac> posetilac = posetilacRepository.findById(posetaDTO.getPosetilacID());
+			Optional<Posetilac> posetilac = posetilacRepository.findByEmail(posetaDTO.getPosetilacEmail());
 			
 			List<Oprema> oprema = new ArrayList<>();
 
@@ -121,10 +121,12 @@ public class PosetaController {
 			_poseta.setMestoPosete(mestoPosete.get());
 			_poseta.setPosetilac(posetilac.get());
 			
-			for (int i = 0; i < posetaDTO.getOprema().size(); i++) {
-				Optional<Oprema> _oprema = opremaRepository.findById(posetaDTO.getOprema().get(i).getId());
-				_oprema.get().setIsZauzeta(true);
-				oprema.add(_oprema.get());
+			if(posetaDTO.getOprema()!= null) {
+				for (int i = 0; i < posetaDTO.getOprema().size(); i++) {
+					Optional<Oprema> _oprema = opremaRepository.findById(posetaDTO.getOprema().get(i).getId());
+					_oprema.get().setIsZauzeta(true);
+					oprema.add(_oprema.get());
+				}
 			}
 
 			_poseta.setOprema(oprema);
