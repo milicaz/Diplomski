@@ -3,12 +3,14 @@ import { MdDelete, MdEdit } from "react-icons/md";
 const Dogadjaj = ({ dogadjaj }) => {
   return (
     <>
+      <td>{dogadjaj.id}</td>
       <td>{dogadjaj.naziv}</td>
       <td>{dogadjaj.datum}</td>
-      <td>{dogadjaj.mesto}</td>
-      <td>{dogadjaj.vrsta}</td>
       <td>{dogadjaj.pocetakDogadjaja}</td>
       <td>{dogadjaj.krajDogadjaja}</td>
+      <td>{dogadjaj.mesto.nazivSale}</td>
+      <td>{dogadjaj.vrsta.naziv}</td>
+      <td>{dogadjaj.organizacija.naziv}</td>
       <td>
         <a href="#editDogadjaj" className="edit">
             <i className="react-icons" title="Edit">

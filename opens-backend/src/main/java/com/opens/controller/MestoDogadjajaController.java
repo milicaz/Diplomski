@@ -36,6 +36,12 @@ public class MestoDogadjajaController {
 		return new ResponseEntity<>(mesta, HttpStatus.OK);
 	}
 	
+	@GetMapping("/mestoDogadjaja/{nazivSale}")
+	public ResponseEntity<Long> getMesto(@PathVariable String nazivSale) {
+		MestoDogadjaja mesto = mestoDogadjajaRepo.findByNazivSale(nazivSale);
+		return new ResponseEntity<>(mesto.getId(), HttpStatus.OK);
+	}
+	
 	@PostMapping("/mestaDogadjaja")
 	public ResponseEntity<MestoDogadjaja> save(@RequestBody MestoDogadjaja mestoDogadjaja) {
 		MestoDogadjaja mesto = mestoDogadjajaRepo.save(mestoDogadjaja);

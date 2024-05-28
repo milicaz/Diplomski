@@ -7,7 +7,7 @@ const DogadjajHome = () => {
       <div className="table-responsive">
         <div className="table-wrapper">
           <DogadjajContextProvider>
-            <DogadjajList />
+              <DogadjajList />
           </DogadjajContextProvider>
         </div>
       </div>

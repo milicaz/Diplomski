@@ -7,5 +7,7 @@ import com.opens.model.MestoDogadjaja;
 
 @Repository
 public interface MestoDogadjajaRepository extends JpaRepository<MestoDogadjaja, Long> {
+	
+	MestoDogadjaja findByNazivSale(String nazivSale);
 
 }
