@@ -66,16 +66,38 @@ export const CoworkingTabela = () => {
     return acc;
   }, []);
 
-  // Sortiranje poseteZaPrikaz po celokupnom broju poseta u opadajućem redosledu
+  // Sortiranje poseteZaPrikaz po celokupnom broju poseta i provedenom vremenu u opadajućem redosledu
   const sortiranePoseteZaPrikaz = (items) => {
     return items.slice().sort((a, b) => {
       if (sortOrder === "ascending") {
         return a.totalPosete - b.totalPosete;
-      } else {
+      } else if (sortOrder === "descending") {
         return b.totalPosete - a.totalPosete;
+      } else if (sortOrder === "ascendingVreme") {
+        const aTotalMinutes = getTotalMinutes(a.totalnoProvedenoVreme);
+        const bTotalMinutes = getTotalMinutes(b.totalnoProvedenoVreme);
+        return aTotalMinutes - bTotalMinutes;
+      } else if (sortOrder === "descendingVreme") {
+        const aTotalMinutes = getTotalMinutes(a.totalnoProvedenoVreme);
+        const bTotalMinutes = getTotalMinutes(b.totalnoProvedenoVreme);
+        return bTotalMinutes - aTotalMinutes;
       }
     });
   };
+
+  function getTotalMinutes(timeString) {
+    const timeParts = timeString.split(" ");
+
+    if (timeParts.length === 4) {
+      const hours = parseInt(timeParts[0]);
+      const minutes = parseInt(timeParts[2]);
+      return hours * 60 + minutes;
+    } else if (timeParts.length === 2 && timeParts[1] === "min") {
+      return parseInt(timeParts[0]);
+    }
+
+    return 0;
+  }
 
   const filtriranePosete = (items) => {
     if (searchInput.trim() === "") {
@@ -305,6 +327,8 @@ export const CoworkingTabela = () => {
               >
                 <option value="ascending">Najmanje poseta</option>
                 <option value="descending">Najviše poseta</option>
+                <option value="ascendingVreme">Najmanje vremena</option>
+                <option value="descendingVreme">Najviše vremena</option>
               </Form.Select>
             </div>
           </div>

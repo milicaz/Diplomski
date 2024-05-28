@@ -203,7 +203,7 @@
 	<pageFooter>
 		<band height="130" splitType="Stretch">
 			<image scaleImage="FillFrame">
-				<reportElement x="-22" y="0" width="844" height="130" uuid="93e9e191-9c6d-4204-bded-7f4b4528be44"/>
+				<reportElement x="-22" y="0" width="844" height="128" uuid="93e9e191-9c6d-4204-bded-7f4b4528be44"/>
 				<imageExpression><![CDATA["classpath:/images/OPENS footer.png"]]></imageExpression>
 			</image>
 		</band>

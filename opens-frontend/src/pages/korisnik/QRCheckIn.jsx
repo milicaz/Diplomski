@@ -1,36 +1,26 @@
-import { useEffect, useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Form } from "react-bootstrap";
 import Select from "react-select";
 import httpCommon from "../../http-common";
 
-const Login = () => {
-  const [oprema, setOprema] = useState([]);
-  const [options, setOptions] = useState([]);
+export const QRCheckIn = () => {
+  const [posetilac, setPosetilac] = useState("");
   const [mestaPosete, setMestaPosete] = useState([]);
+  const [oprema, setOprema] = useState([]);
 
-  const [posetilac, setPosetilac] = useState(null);
   const [mestoPoseteId, setMestaPoseteId] = useState();
   const [selectedOprema, setSelectedOprema] = useState([]);
+  const inputRef = useRef(null);
 
   useEffect(() => {
-    fetchPosetioci();
     fetchMestaPosete();
     fetchOprema();
+    
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
-
-  const fetchPosetioci = async () => {
-    try {
-      const response = await httpCommon.get("/posetioci");
-      const formattedOptions = response.data.map((option) => ({
-        value: option.email,
-        label: `${option.ime} ${option.prezime} (${option.email})`,
-        data: option,
-      }));
-      setOptions(formattedOptions);
-    } catch (error) {
-      console.error("Greška prilikom fetching posetioci:", error);
-    }
-  };
 
   const fetchMestaPosete = async () => {
     const { data } = await httpCommon.get("/mestaPosete");
@@ -46,8 +36,11 @@ const Login = () => {
     }
   };
 
-  const handlePosetilacChange = (selectedOption) => {
-    setPosetilac(selectedOption);
+  const handleKeyDown = (e) => {
+    if (inputRef.current === document.activeElement && e.key === "Tab") {
+      setPosetilac(inputRef.current.value);
+      inputRef.current.value = "";
+    }
   };
 
   const handleOpremaChange = (selectedOptions) => {
@@ -56,6 +49,7 @@ const Login = () => {
 
   const addPosetu = async (newPoseta) => {
     httpCommon.post("/posete", newPoseta);
+    console.log(newPoseta);
   };
 
   const handleSubmit = (e) => {
@@ -63,26 +57,26 @@ const Login = () => {
 
     try {
       const posetaData = {
-        posetilacEmail: posetilac.value,
-        oprema: selectedOprema.map((oprema) => ({ id: oprema.value })),
+        posetilacEmail: posetilac,
         mestoPoseteID: mestoPoseteId,
+        oprema: selectedOprema.map((oprema) => ({ id: oprema.value })),
       };
       addPosetu(posetaData);
-      window.location.reload();
+      //window.location.reload();
     } catch (error) {
-      console.error("Greska tokom kreiranja posete:", error);
+      console.error("Greska prilikom kreiranja posete:", error);
     }
   };
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Select
+      <Form.Control
         className="mb-3"
         value={posetilac}
-        onChange={handlePosetilacChange}
-        options={options}
-        placeholder={"Posetilac"}
-        isSearchable
+        onChange={(e) => setPosetilac(e.target.value)}
+        placeholder="Posetilac"
+        autoComplete="off"
+        autoFocus
       />
       <div className="mb-3">
         <span className="mx-3">Mesto posete:</span>
@@ -120,8 +114,13 @@ const Login = () => {
           Check-in
         </Button>
       </div>
+      {/* Hidden input field to capture keyboard input */}
+      <input
+        ref={inputRef}
+        type="text"
+        style={{ position: "absolute", top: -100 }}
+      />
     </Form>
   );
 };
-
-export default Login;
+export default QRCheckIn;

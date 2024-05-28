@@ -9,7 +9,7 @@ import {
   Nav,
   Row,
   Tab,
-  Table,
+  Table
 } from "react-bootstrap";
 import { FaBuildingCircleArrowRight, FaClock } from "react-icons/fa6";
 
