@@ -52,13 +52,6 @@
 			<artifactId>jasperreports</artifactId>
 			<version>6.20.0</version>
 		</dependency>
-		<dependency>
-			<groupId>local.jasperFont</groupId>
-			<artifactId>local.jasperFont</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>D:/Diplomski/opens-backend/src/main/resources/reports/fonts-extension.jar</systemPath>
-		</dependency>
 	</dependencies>
 
 	<build>

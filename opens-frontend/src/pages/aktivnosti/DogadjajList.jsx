@@ -10,10 +10,39 @@ const DogadjajList = ({ handleShowOrg, showOrg, handleCloseOrg }) => {
   const {addOrganizacija} = useContext(DogadjajContext);
   const {organizacijaId} = useContext(DogadjajContext);
   const {addDogadjaj} = useContext(DogadjajContext);
+  const {getOrganizacijaById} = useContext(DogadjajContext);
+  const {currentOrganizacija} = useContext(DogadjajContext);
+  const {editOrganizacija} = useContext(DogadjajContext);
 
   const [organizacija, setOrganizacija] = useState({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""})
 
   const [dogadjaj, setDogadjaj] = useState({naziv: "", datum: LocalDate.now(), pocetakDogadjaja: LocalTime.MIDNIGHT, krajDogadjaja: LocalTime.MIDNIGHT, organizacijaId: organizacijaId, mestoDogadjajaId: "", vrstaDogadjajaId: ""}) 
+
+  const [organizacijaEdit, setOrganizacijaEdit] = useState({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""})
+
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const [dogadjajiPerPage] = useState(5)
+
+  const [id, setId] = useState()
+
+  useEffect(() => {
+    // console.log("organizacijaId has been updated:", organizacijaId);
+    // console.log("Current organizacija u useEffect je: " + JSON.stringify(currentOrganizacija))
+    setOrganizacijaEdit(currentOrganizacija)
+    setId(organizacijaId)
+    // handleCloseDogadjaj();
+    // handleCloseOrganizacija();
+    // handleCloseEditOrganizacija();
+  }, [organizacijaId, currentOrganizacija]);
+
+  const indexOfLastDogadjaj = currentPage * dogadjajiPerPage
+
+  const indexOfFirstDogadjaj = indexOfLastDogadjaj - dogadjajiPerPage
+
+  const currentDogadjaji = sortedDogadjaji.slice(indexOfFirstDogadjaj, indexOfLastDogadjaj)
+
+  const totalPagesNumber = Math.ceil(sortedDogadjaji.length / dogadjajiPerPage)
 
   const [showDogadjaj, setShowDogadjaj] = useState(false)
   const handleShowDogadjaj = () => {
@@ -31,25 +60,19 @@ const DogadjajList = ({ handleShowOrg, showOrg, handleCloseOrg }) => {
     setShowOrganizacija(false)
   }
 
-  const [currentPage, setCurrentPage] = useState(1)
-
-  const [dogadjajiPerPage] = useState(5)
-
-  useEffect(() => {
-    console.log("organizacijaId has been updated:", organizacijaId);
-  }, [organizacijaId]);
-
-  const indexOfLastDogadjaj = currentPage * dogadjajiPerPage
-
-  const indexOfFirstDogadjaj = indexOfLastDogadjaj - dogadjajiPerPage
-
-  const currentDogadjaji = sortedDogadjaji.slice(indexOfFirstDogadjaj, indexOfLastDogadjaj)
-
-  const totalPagesNumber = Math.ceil(sortedDogadjaji.length / dogadjajiPerPage)
+  const [showEditOrganizacija, setShowEditOrganizacija] = useState(false)
+  const handleShowEditOrganizacija = () => {
+    setShowEditOrganizacija(true)
+    // setShowDogadjaj(false)
+  }
+  const handleCloseEditOrganizacija = () => {
+    setShowEditOrganizacija(false)
+  }
 
   const handleChange = (event) => {
     const {name, value} = event.target
-    setOrganizacija(prevOrganizacija => ({...prevOrganizacija, [name]: value}))
+    // setOrganizacija(prevOrganizacija => ({...prevOrganizacija, [name]: value}))
+    setOrganizacija({...organizacija, [name]:value})
 }
 
 const handleDalje = (event) => {
@@ -70,7 +93,30 @@ const handleDodaj = (event) => {
   dogadjaj.mestoDogadjajaId = "1"
   dogadjaj.vrstaDogadjajaId = "1"
   addDogadjaj(dogadjaj)
+  handleCloseDogadjaj();
+  setOrganizacija({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""});
+  setDogadjaj({naziv: "", datum: LocalDate.now(), pocetakDogadjaja: LocalTime.MIDNIGHT, krajDogadjaja: LocalTime.MIDNIGHT, organizacijaId: organizacijaId, mestoDogadjajaId: "", vrstaDogadjajaId: ""});
+  // window.location.reload();
+}
+
+const handleChangeEditOrganziacija = (event) => {
+  const {name, value} = event.target
+  setOrganizacijaEdit({...organizacijaEdit, [name]: value})
+}
+
+const handleNazad = () => {
+  getOrganizacijaById(organizacijaId)
+  // console.log("Current organizacija u nazad je: " + JSON.stringify(currentOrganizacija))
+  // console.log("Edit organizacija u nazad je: " + JSON.stringify(organizacijaEdit))
+  handleShowEditOrganizacija()
   handleCloseDogadjaj()
+}
+
+const handleEditOrganizacija = (event) => {
+  event.preventDefault();
+  editOrganizacija(id, organizacijaEdit)
+  handleCloseEditOrganizacija()
+  handleShowDogadjaj()
 }
 
   return (
@@ -144,14 +190,17 @@ const handleDodaj = (event) => {
             <Form.Group>
                 <Form.Control name="link" value={organizacija.link} onChange={handleChange} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Link" required />
             </Form.Group><br/>
-            <Form.Group>
+            {/* <Form.Group>
                 <div className="d-flex justify-content-end">
                     <Button onClick={handleDalje} variant="success">Dalje</Button>&nbsp;
                 </div><br/>
-            </Form.Group>
+            </Form.Group> */}
         </Form>
         </div>
         </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleDalje} variant="success">Dalje</Button>&nbsp;
+        </Modal.Footer>
       </Modal>
 
       <Modal show={showDogadjaj} onHide={handleCloseDogadjaj}>
@@ -188,10 +237,52 @@ const handleDodaj = (event) => {
               <Button variant="success" onClick={handleDodaj}>
                 Dodaj
               </Button>
-              <Button variant="danger" onClick={handleCloseDogadjaj}>
-                Zatvori
+              <Button variant="danger" onClick={handleNazad}>
+                Nazad
               </Button>
             </Modal.Footer>
+      </Modal>
+
+      <Modal show={showEditOrganizacija} onHide={handleCloseEditOrganizacija}>
+        <Modal.Header closeButton>
+            <Modal.Title>Dodaj organizaciju</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            {/* <AddOrganizacijaForm handleCloseOrg={handleCloseOrg}/> */}
+            <div>
+        <Form>
+            <Form.Group>
+                <Form.Control name="naziv" value={organizacijaEdit.naziv} onChange={handleChangeEditOrganziacija} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Naziv" required />
+            </Form.Group><br />
+            <Form.Group>
+                <Form.Control name="odgovornaOsoba" value={organizacijaEdit.odgovornaOsoba} onChange={handleChangeEditOrganziacija} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Odgovorna osoba" required />
+            </Form.Group><br/>
+            <Form.Group>
+                <Form.Control name="brojTelefona" value={organizacijaEdit.brojTelefona} onChange={handleChangeEditOrganziacija} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Broj telefon" required />
+            </Form.Group><br/>
+            <Form.Group>
+                <Form.Control name="email" value={organizacijaEdit.email} onChange={handleChangeEditOrganziacija} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="E-mail" required />
+            </Form.Group><br/>
+            <Form.Group>
+                <Form.Control name="delatnost" value={organizacijaEdit.delatnost} onChange={handleChangeEditOrganziacija} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Delatnost" required />
+            </Form.Group><br/>
+            <Form.Group>
+                <Form.Control name="opis" value={organizacijaEdit.opis} onChange={handleChangeEditOrganziacija} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Opis" required />
+            </Form.Group><br/>
+            <Form.Group>
+                <Form.Control name="link" value={organizacijaEdit.link} onChange={handleChangeEditOrganziacija} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Link" required />
+            </Form.Group><br/>
+            {/* <Form.Group>
+                <div className="d-flex justify-content-end">
+                    <Button onClick={handleDalje} variant="success">Dalje</Button>&nbsp;
+                </div><br/>
+            </Form.Group> */}
+        </Form>
+        </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleEditOrganizacija} variant="success">Dalje</Button>&nbsp;
+        </Modal.Footer>
       </Modal>
     </>
   );

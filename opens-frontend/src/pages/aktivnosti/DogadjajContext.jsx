@@ -10,6 +10,8 @@ const DogadjajContextProvider = (props) => {
 
     const [organizacijaId, setOrganizacijaId] = useState(null)
 
+    const [currentOrganizacija, setCurrentOrganizacija] = useState({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""})
+
     useEffect(() => {
         getDogadjaji();
     }, [])
@@ -17,8 +19,9 @@ const DogadjajContextProvider = (props) => {
     useEffect(() => {
         if (organizacijaId !== null) {
           console.log("Organizacija id je: " + organizacijaId);
+        //   console.log("Currnet organizacija je: " + JSON.stringify(currentOrganizacija))
         }
-      }, [organizacijaId]);
+      }, [organizacijaId, currentOrganizacija]);
 
     const sortedDogadjaji = dogadjaji.sort((a, b) => a.id-b.id)
 
@@ -43,8 +46,17 @@ const DogadjajContextProvider = (props) => {
         await axios.put(`http://localhost:8080/api/organizacije/${id}`, editOrg)
     }
 
+    const getOrganizacijaById = async(id) => {
+        const response = await axios.get(`http://localhost:8080/api/organizacije/${id}`)
+        setCurrentOrganizacija(response.data)
+    }
+
+    const deleteDogadjaj = async(id) => {
+        await axios.put(`http://localhost:8080/api/dogadjaji/${id}`)
+    }
+
     return (
-        <DogadjajContext.Provider value={{sortedDogadjaji, addDogadjaj, addOrganizacija, editOrganizacija, organizacijaId}}>
+        <DogadjajContext.Provider value={{sortedDogadjaji, addDogadjaj, addOrganizacija, editOrganizacija, organizacijaId, getOrganizacijaById, currentOrganizacija}}>
             {props.children}
         </DogadjajContext.Provider>
     )

@@ -36,6 +36,13 @@ public class OrganizacijaController {
 		return new ResponseEntity<>(organizacije, HttpStatus.OK);
 	}
 	
+	@GetMapping("/organizacije/{id}")
+	public ResponseEntity<Optional<Organizacija>> getOne(@PathVariable Long id) {
+		Optional<Organizacija> org = organizacijaRepo.findById(id);
+		
+		return new ResponseEntity<>(org, HttpStatus.OK);
+	}
+	
 	@PostMapping("/organizacije")
 	public ResponseEntity<Organizacija> save(@RequestBody Organizacija organizacija){
 		Organizacija org = organizacijaRepo.save(organizacija);
