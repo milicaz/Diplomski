@@ -65,4 +65,12 @@ public class Ucesnik extends Korisnik {
 		this.isPrigradskoNaselje = isPrigradskoNaselje;
 	}
 
+	@Override
+	public String toString() {
+		return "Ucesnik [organizacija=" + organizacija + ", isPrigradskoNaselje=" + isPrigradskoNaselje + ", dogadjaji="
+				+ dogadjaji + "]";
+	}
+
+	
+
 }

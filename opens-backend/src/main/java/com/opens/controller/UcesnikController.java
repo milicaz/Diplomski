@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,6 +26,7 @@ import com.opens.repository.UcesnikRepository;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UcesnikController {
 	
 	@Autowired
@@ -33,6 +35,7 @@ public class UcesnikController {
 	@Autowired
 	private DogadjajRepository dogadjajRepo;
 	
+	@Autowired
 	private PrigradskaNaseljaRepository pnRepo;
 	
 	
@@ -54,12 +57,18 @@ public class UcesnikController {
 		System.out.println("Prigradska Naselja su: " + pn);
 		
 		for(PrigradskaNaselja n : pn) {
-			if(ucesnik.getMestoBoravista() == n.getNaziv()) {
-				ucesnik.setPrigradskoNaselje(true);
+			System.out.println("Mesto boravista je: " + ucesnik.getMestoBoravista());
+			System.out.println("Naselje je: " + n.getNaziv());
+			System.out.println("Boolean je: " + ucesnik.getMestoBoravista().equals(n.getNaziv()));
+			if(ucesnik.getMestoBoravista().equals(n.getNaziv())) {
+				uc.setPrigradskoNaselje(true);
+				break;
 			} else {
-				ucesnik.setPrigradskoNaselje(false);
+				uc.setPrigradskoNaselje(false);
 			}
 		}
+		
+		//System.out.println("Ucesnik je:  " + ucesnik.toString());
 		
 		Set<Ucesnik> ucesnici = new HashSet<>();
 		ucesnici.add(ucesnik);
@@ -71,9 +80,9 @@ public class UcesnikController {
 		
 		uc = ucesnikRepo.save(uc);
 		
-		System.out.println("Ucesnik je: " + ucesnik.getIme());
+//		System.out.println("Ucesnik je: " + ucesnik.getIme());
 		
-		System.out.println("Ucesnici su: " + ucesnici);
+//		System.out.println("Ucesnici su: " + ucesnici);
 		
 		dogadjaj.setUcesnici(ucesnici);
 		

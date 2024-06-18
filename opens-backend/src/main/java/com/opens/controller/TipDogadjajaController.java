@@ -36,6 +36,13 @@ public class TipDogadjajaController {
 		return new ResponseEntity<>(tipovi, HttpStatus.OK);
 	}
 	
+	@GetMapping("/tipoviDogadjaja/{naziv}")
+	public ResponseEntity<Long> getOneByNaziv(@PathVariable String naziv ) {
+		TipDogadjaja tip = tipDogadjajaRepo.findByNaziv(naziv);
+		
+		return new ResponseEntity<>(tip.getId(), HttpStatus.OK);
+	}
+	
 	@PostMapping("/tipoviDogadjaja")
 	public ResponseEntity<TipDogadjaja> save(@RequestBody TipDogadjaja tipDogadjaja ) {
 		TipDogadjaja tip = tipDogadjajaRepo.save(tipDogadjaja);

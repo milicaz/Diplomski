@@ -83,6 +83,8 @@ public class DogadjajController {
 		dogadjaj.setVrsta(tipDogadjaja.get());
 		dogadjaj.setOrganizacija(organizacija.get());
 		dogadjajRepo.save(dogadjaj);
+		
+//		System.out.println("Id dogadjaja je: " + dogadjaj.getId());
 
 		return new ResponseEntity<>(dogadjaj, HttpStatus.OK);
 

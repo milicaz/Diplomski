@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { DogadjajContext } from "./DogadjajContext";
-import { Button, Form, Modal } from "react-bootstrap";
+import { Button, Col, Form, Image, Modal, Row } from "react-bootstrap";
 import Dogadjaj from "./Dogadjaj";
 import Pagination from "../Pagination";
 import { LocalDate, LocalTime } from "@js-joda/core";
+import { ucesniciImage } from "../../assets";
 
-const DogadjajList = ({ handleShowOrg, showOrg, handleCloseOrg }) => {
+const DogadjajList = () => {
   const { sortedDogadjaji } = useContext(DogadjajContext);
   const {addOrganizacija} = useContext(DogadjajContext);
   const {organizacijaId} = useContext(DogadjajContext);
@@ -13,6 +14,10 @@ const DogadjajList = ({ handleShowOrg, showOrg, handleCloseOrg }) => {
   const {getOrganizacijaById} = useContext(DogadjajContext);
   const {currentOrganizacija} = useContext(DogadjajContext);
   const {editOrganizacija} = useContext(DogadjajContext);
+  const {mestaDogadjaja} = useContext(DogadjajContext);
+  const {tipoviDogadjaja} = useContext(DogadjajContext);
+  const {dogadjajId} = useContext(DogadjajContext);
+  const {dodajUcesnika} = useContext(DogadjajContext);
 
   const [organizacija, setOrganizacija] = useState({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""})
 
@@ -20,21 +25,26 @@ const DogadjajList = ({ handleShowOrg, showOrg, handleCloseOrg }) => {
 
   const [organizacijaEdit, setOrganizacijaEdit] = useState({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""})
 
+  const [ucesnik, setUcesnik] = useState({ime: "", prezime: "", rod: "", godine: "", mestoBoravista: "", brojTelefona: "", email: "", organizacija: ""})
+
   const [currentPage, setCurrentPage] = useState(1)
 
   const [dogadjajiPerPage] = useState(5)
 
   const [id, setId] = useState()
 
+  // const [selectedOption, setSelectedOption] = useState('');
+
+  // const [mestoId, setMestoId] = useState();
+
+  const [idDogadjaja, setIdDogadjaja] = useState()
+
   useEffect(() => {
-    // console.log("organizacijaId has been updated:", organizacijaId);
-    // console.log("Current organizacija u useEffect je: " + JSON.stringify(currentOrganizacija))
     setOrganizacijaEdit(currentOrganizacija)
     setId(organizacijaId)
-    // handleCloseDogadjaj();
-    // handleCloseOrganizacija();
-    // handleCloseEditOrganizacija();
-  }, [organizacijaId, currentOrganizacija]);
+    setIdDogadjaja(dogadjajId)
+    // console.log("idDogadjaja u dogadjaj list: " + dogadjajId)
+  }, [organizacijaId, currentOrganizacija, dogadjajId]);
 
   const indexOfLastDogadjaj = currentPage * dogadjajiPerPage
 
@@ -50,14 +60,19 @@ const DogadjajList = ({ handleShowOrg, showOrg, handleCloseOrg }) => {
   }
   const handleCloseDogadjaj = () => {
     setShowDogadjaj(false)
+    setOrganizacija({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""});
+  setDogadjaj({naziv: "", datum: LocalDate.now(), pocetakDogadjaja: LocalTime.MIDNIGHT, krajDogadjaja: LocalTime.MIDNIGHT, organizacijaId: organizacijaId, mestoDogadjajaId: "", vrstaDogadjajaId: ""});
   }
 
   const [showOrganizacija, setShowOrganizacija] = useState(false)
   const handleShowOrganizacija = () => {
     setShowOrganizacija(true)
+    // console.log("Mesta dogadjaja: " + JSON.stringify(mestaDogadjaja))
   }
   const handleCloseOrganizacija = () => {
     setShowOrganizacija(false)
+    setOrganizacija({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""});
+  setDogadjaj({naziv: "", datum: LocalDate.now(), pocetakDogadjaja: LocalTime.MIDNIGHT, krajDogadjaja: LocalTime.MIDNIGHT, organizacijaId: organizacijaId, mestoDogadjajaId: "", vrstaDogadjajaId: ""});
   }
 
   const [showEditOrganizacija, setShowEditOrganizacija] = useState(false)
@@ -69,9 +84,27 @@ const DogadjajList = ({ handleShowOrg, showOrg, handleCloseOrg }) => {
     setShowEditOrganizacija(false)
   }
 
+  const [showUcesnik, setShowUcesnik] = useState(false)
+  const handleShowUcesnici = () => {
+    setShowUcesnik(true)
+    setShowDogadjaj(false)
+    setShowDialogUcesnik(false)
+  }
+
+  const handleCloseUcesnik = () => {
+    setShowUcesnik(false)
+  }
+
+  const [showDialogUcesnik, setShowDialogUcesnik] = useState(false)
+  const handleShowDialogUcesnik = () => {
+    setShowDialogUcesnik(true)
+  }
+  const handleCloseDialogUcesnik = () => {
+    setShowDialogUcesnik(false)
+  }
+
   const handleChange = (event) => {
     const {name, value} = event.target
-    // setOrganizacija(prevOrganizacija => ({...prevOrganizacija, [name]: value}))
     setOrganizacija({...organizacija, [name]:value})
 }
 
@@ -90,13 +123,15 @@ const handleChangeDogadjaj = (event) => {
 const handleDodaj = (event) => {
   event.preventDefault();
   dogadjaj.organizacijaId = organizacijaId
-  dogadjaj.mestoDogadjajaId = "1"
-  dogadjaj.vrstaDogadjajaId = "1"
+  // dogadjaj.mestoDogadjajaId = mestoId
+  // dogadjaj.vrstaDogadjajaId = "1"
+  // console.log("Vrsta id je: " + dogadjaj.vrstaDogadjajaId)
+  // console.log("Dogadjaj je: " + JSON.stringify(dogadjaj))
   addDogadjaj(dogadjaj)
   handleCloseDogadjaj();
   setOrganizacija({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""});
   setDogadjaj({naziv: "", datum: LocalDate.now(), pocetakDogadjaja: LocalTime.MIDNIGHT, krajDogadjaja: LocalTime.MIDNIGHT, organizacijaId: organizacijaId, mestoDogadjajaId: "", vrstaDogadjajaId: ""});
-  // window.location.reload();
+  handleShowDialogUcesnik();
 }
 
 const handleChangeEditOrganziacija = (event) => {
@@ -106,8 +141,6 @@ const handleChangeEditOrganziacija = (event) => {
 
 const handleNazad = () => {
   getOrganizacijaById(organizacijaId)
-  // console.log("Current organizacija u nazad je: " + JSON.stringify(currentOrganizacija))
-  // console.log("Edit organizacija u nazad je: " + JSON.stringify(organizacijaEdit))
   handleShowEditOrganizacija()
   handleCloseDogadjaj()
 }
@@ -117,6 +150,17 @@ const handleEditOrganizacija = (event) => {
   editOrganizacija(id, organizacijaEdit)
   handleCloseEditOrganizacija()
   handleShowDogadjaj()
+}
+
+const handleChangeUcesnik = (event) => {
+  const {name, value} = event.target
+  setUcesnik({...ucesnik, [name]: value})
+}
+
+const handleDodajUcesnika = (event) => {
+  event.preventDefault();
+  dodajUcesnika(ucesnik, idDogadjaja)
+  setUcesnik({ime: "", prezime: "", rod: "", godine: "", mestoBoravista: "", brojTelefona: "", email: "", organizacija: ""})
 }
 
   return (
@@ -190,11 +234,6 @@ const handleEditOrganizacija = (event) => {
             <Form.Group>
                 <Form.Control name="link" value={organizacija.link} onChange={handleChange} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Link" required />
             </Form.Group><br/>
-            {/* <Form.Group>
-                <div className="d-flex justify-content-end">
-                    <Button onClick={handleDalje} variant="success">Dalje</Button>&nbsp;
-                </div><br/>
-            </Form.Group> */}
         </Form>
         </div>
         </Modal.Body>
@@ -216,21 +255,35 @@ const handleEditOrganizacija = (event) => {
             <Form.Group>
                 <Form.Control name="datum" value={dogadjaj.datum} onChange={handleChangeDogadjaj} style={{width:"80%", maxWidth:"90%"}} type="date" placeholder="Datum" required />
             </Form.Group><br/>
-            {/* <Form.Group>
-                <Form.Control name="pocetakDogadjaja" value={dogadjaj.pocetakDogadjaja} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Mesto" required />
-            </Form.Group><br/>
-            <Form.Group>
-                <Form.Control name="krajDogadjaja" value={dogadjaj.krajDogadjaja} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Vrsta" required />
-            </Form.Group><br/> */}
             <Form.Group>
                 <Form.Control name="pocetakDogadjaja" value={dogadjaj.pocetakDogadjaja} onChange={handleChangeDogadjaj} style={{width:"80%", maxWidth:"90%"}} type="time" placeholder="Početak događaja" required />
             </Form.Group><br/>
             <Form.Group>
                 <Form.Control name="krajDogadjaja" value={dogadjaj.krajDogadjaja} onChange={handleChangeDogadjaj} style={{width:"80%", maxWidth:"90%"}} type="time" placeholder="Kraj događaja" required />
             </Form.Group><br />
-            <Form.Group>
+            <Form.Group controlId="dropdown">
+              <Form.Control as="select" name="mestoDogadjajaId" value={dogadjaj.mestoDogadjajaId} onChange={handleChangeDogadjaj} style={{width:"80%", maxWidth:"90%"}} >
+                <option value="">Izaberite salu</option>
+                  {mestaDogadjaja.map((item, index) => (
+                <option key={item.id} value={item.id}>
+                  {item.nazivSale}
+                </option>
+                  ))}
+              </Form.Control>
+            </Form.Group><br />
+            <Form.Group controlId="dropdown">
+              <Form.Control as="select" name="vrstaDogadjajaId" value={dogadjaj.vrstaDogadjajaId} onChange={handleChangeDogadjaj} style={{width:"80%", maxWidth:"90%"}} >
+                <option value="">Izaberite vrstu događaja</option>
+                  {tipoviDogadjaja.map((item, index) => (
+                <option key={item.id} value={item.id}>
+                  {item.naziv}
+                </option>
+                  ))}
+              </Form.Control>
+            </Form.Group><br />
+            {/* <Form.Group>
                 <Form.Control name="organizacijaId" value={organizacijaId} onChange={handleChangeDogadjaj} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Organizacija" required />
-            </Form.Group>
+            </Form.Group> */}
         </Form>
             </Modal.Body>
             <Modal.Footer>
@@ -284,6 +337,88 @@ const handleEditOrganizacija = (event) => {
           <Button onClick={handleEditOrganizacija} variant="success">Dalje</Button>&nbsp;
         </Modal.Footer>
       </Modal>
+
+      <Modal show={showUcesnik} onHide={handleCloseUcesnik}>
+        <Modal.Header closeButton>
+            <Modal.Title>Dodaj učesnika</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            {/* <AddOrganizacijaForm handleCloseOrg={handleCloseOrg}/> */}
+            <div>
+        <Form>
+            <Form.Group>
+                <Form.Control name="ime" value={ucesnik.ime} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Ime" required />
+            </Form.Group><br />
+            <Form.Group>
+                <Form.Control name="prezime" value={ucesnik.prezime} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Prezime" required />
+            </Form.Group><br/>
+            <Form.Group>
+                <Form.Control name="rod" value={ucesnik.rod} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Rod" required />
+            </Form.Group><br/>
+            <Form.Group>
+                <Form.Control name="godine" value={ucesnik.godine} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="number" placeholder="Godine" required />
+            </Form.Group><br/>
+            <Form.Group>
+                <Form.Control name="mestoBoravista" value={ucesnik.mestoBoravista} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Mesto boravišta" required />
+            </Form.Group><br/>
+            <Form.Group>
+                <Form.Control name="brojTelefona" value={ucesnik.brojTelefona} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Broj telefona" required />
+            </Form.Group><br/>
+            <Form.Group>
+                <Form.Control name="email" value={ucesnik.email} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="E-mail" required />
+            </Form.Group><br/>
+            <Form.Group>
+                <Form.Control name="organizacija" value={ucesnik.organizacija} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Organizacija" required />
+            </Form.Group><br/>
+            {/* <Form.Group>
+                <div className="d-flex justify-content-end">
+                    <Button onClick={handleDalje} variant="success">Dalje</Button>&nbsp;
+                </div><br/>
+            </Form.Group> */}
+        </Form>
+        </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleDodajUcesnika} variant="success">Dodaj učesnika</Button>&nbsp;
+          <Button onClick={handleCloseUcesnik} variant="danger">Završi</Button>&nbsp;
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showDialogUcesnik} onHide={handleCloseDialogUcesnik} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Dodavanje učesnika</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Row className="align-items-center">
+                    <Col className="col-sm-3">
+                      <Image
+                        src={ucesniciImage}
+                        alt="slika"
+                        width="45"
+                        height="45"
+                        className="text-center mx-1 mx-md-4"
+                      />
+                    </Col>
+                    <Col className="col-sm-9">
+                      <p>
+                        Da li želite da dodate učesnike? <br />
+                        {/* <b>
+                          <i>{deleteMestoDogadjaja.nazivSale}</i>
+                        </b>{" "}
+                        ? */}
+                      </p>
+                    </Col>
+                  </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="success" onClick={handleShowUcesnici}>
+                      Dodaj učesnike
+                    </Button>
+                    <Button variant="danger" onClick={handleCloseDialogUcesnik}>
+                        Zatvori
+                    </Button>
+                </Modal.Footer>
+            </Modal>
     </>
   );
 };
