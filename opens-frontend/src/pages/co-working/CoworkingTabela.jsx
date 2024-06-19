@@ -255,6 +255,7 @@ export const CoworkingTabela = () => {
                   size="sm"
                   role="status"
                   aria-hidden="true"
+                  className="mx-1"
                 />
                 PDF
               </>
@@ -278,6 +279,7 @@ export const CoworkingTabela = () => {
                   size="sm"
                   role="status"
                   aria-hidden="true"
+                  className="mx-1"
                 />
                 EXCEL
               </>

@@ -58,7 +58,7 @@ public class ObavestenjaController {
 	public ResponseEntity<Obavestenja> createObavestenje(@RequestBody Obavestenja obavestenje) {
 		try {
 			Obavestenja _obavestenje = obavestenjaRepository.save(new Obavestenja(obavestenje.getNaziv(),
-					obavestenje.getTekst(), obavestenje.getPocetakPrikazivanja(), obavestenje.getKrajPrikazivanja()));
+					obavestenje.getTekst(), obavestenje.getPocetakPrikazivanja(), obavestenje.getKrajPrikazivanja(), obavestenje.getPrioritet()));
 			return new ResponseEntity<>(_obavestenje, HttpStatus.CREATED);
 
 		} catch (Exception e) {
@@ -76,6 +76,7 @@ public class ObavestenjaController {
 			_obavestenje.setTekst(obavestenje.getTekst());
 			_obavestenje.setPocetakPrikazivanja(obavestenje.getPocetakPrikazivanja());
 			_obavestenje.setKrajPrikazivanja(obavestenje.getKrajPrikazivanja());
+			_obavestenje.setPrioritet(obavestenje.getPrioritet());
 			return new ResponseEntity<>(obavestenjaRepository.save(_obavestenje), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -10,13 +10,14 @@ export const AddObavestenjaForm = () => {
     tekst: "",
     pocetakPrikazivanja: "",
     krajPrikazivanja: "",
+    prioritet: 0,
   });
 
   const onInputChange = (e) => {
     setNewObavestenje({ ...newObavestenje, [e.target.name]: e.target.value });
   };
 
-  const { naziv, tekst, pocetakPrikazivanja, krajPrikazivanja } =
+  const { naziv, tekst, pocetakPrikazivanja, krajPrikazivanja, prioritet } =
     newObavestenje;
 
   const handleSubmit = (e) => {
@@ -65,6 +66,18 @@ export const AddObavestenjaForm = () => {
             value={krajPrikazivanja}
             onChange={(e) => onInputChange(e)}
             required
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="pinPriority">
+          <Form.Control
+            type="number"
+            placeholder="Prioritet prikazivanja obaveštenja"
+            name="prioritet"
+            value={prioritet}
+            onChange={(e) => onInputChange(e)}
+            min={0}
+            max={5}
+            step={1}
           />
         </Form.Group>
         <div className="d-grid gap-2 mt-4">
