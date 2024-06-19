@@ -28,6 +28,7 @@ const DogadjajList = () => {
   const [ucesnik, setUcesnik] = useState({ime: "", prezime: "", rod: "", godine: "", mestoBoravista: "", brojTelefona: "", email: "", organizacija: ""})
 
   const [currentPage, setCurrentPage] = useState(1)
+  const [limit, setLimit] = useState(10)
 
   const [dogadjajiPerPage] = useState(5)
 
@@ -46,13 +47,17 @@ const DogadjajList = () => {
     // console.log("idDogadjaja u dogadjaj list: " + dogadjajId)
   }, [organizacijaId, currentOrganizacija, dogadjajId]);
 
-  const indexOfLastDogadjaj = currentPage * dogadjajiPerPage
+  const indexOfLastDogadjaj = currentPage * limit
 
-  const indexOfFirstDogadjaj = indexOfLastDogadjaj - dogadjajiPerPage
+  const indexOfFirstDogadjaj = indexOfLastDogadjaj - limit
 
   const currentDogadjaji = sortedDogadjaji.slice(indexOfFirstDogadjaj, indexOfLastDogadjaj)
 
-  const totalPagesNumber = Math.ceil(sortedDogadjaji.length / dogadjajiPerPage)
+  const totalPagesNumber = Math.ceil(sortedDogadjaji.length / limit)
+
+  const onInputChange = (e) => {
+    setLimit(e.target.value);
+  };
 
   const [showDogadjaj, setShowDogadjaj] = useState(false)
   const handleShowDogadjaj = () => {
@@ -165,12 +170,44 @@ const handleDodajUcesnika = (event) => {
 
   return (
     <>
-      <div className="table-title">
+      {/* <div className="table-title">
         <div className="row">
           <div className="col-sm-6">
             <h2>
               <b>Događaji</b>
             </h2>
+          </div>
+          <div className="col-sm-6">
+            <Button onClick={handleShowOrganizacija} className="btn btn-success" data-toggle="modal">
+              <i className="material-icons">&#xE147;</i>
+              <span>Dodaj novi događaj</span>
+            </Button>
+          </div>
+        </div>
+      </div> */}
+      <div className="table-title">
+        <div className="row">
+          <div className="col-sm-6">
+            <div className="row align-items-center mb-3">
+              <div className="col-auto pe-0">
+                <span>Prikaži</span>
+              </div>
+              <div className="col-auto">
+                <Form.Select
+                  name="limit"
+                  value={limit}
+                  onChange={(e) => onInputChange(e)}
+                  style={{ width: "100%" }}
+                >
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                </Form.Select>
+              </div>
+              <div className="col-auto ps-0">
+                <span>unosa</span>
+              </div>
+            </div>
           </div>
           <div className="col-sm-6">
             <Button onClick={handleShowOrganizacija} className="btn btn-success" data-toggle="modal">
@@ -203,7 +240,7 @@ const handleDodajUcesnika = (event) => {
         </tbody>
       </table>
 
-      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} array={sortedDogadjaji}/>
+      <Pagination pages = {totalPagesNumber} setCurrentPage = {setCurrentPage} array={sortedDogadjaji} limit={dogadjajiPerPage} maxVisibleButtons={3}/>
 
       <Modal show={showOrganizacija} onHide={handleCloseOrganizacija}>
         <Modal.Header closeButton>
