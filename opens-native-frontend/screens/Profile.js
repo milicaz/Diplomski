@@ -1,13 +1,17 @@
 import { MaterialIcons } from '@expo/vector-icons'
+import { useFocusEffect } from '@react-navigation/native'
 import { useFonts } from "expo-font"
 import * as SplashScreen from "expo-splash-screen"
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import COLORS from '../constants/colors'
-import { useTranslation } from 'react-i18next'
+import httpCommon from '../http-common'
 
 export default function Profile({ navigation }) {
+
+  const [user, setUser] = useState(null);
 
   const { t } = useTranslation();
 
@@ -22,7 +26,19 @@ export default function Profile({ navigation }) {
       await SplashScreen.preventAutoHideAsync();
     }
     prepare();
-  }, [])
+    fetchUser(1);
+  }, []);
+
+  // useFocusEffect hook from @react-navigation/native to refetch the data whenever the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      fetchUser(1);
+    }, []));
+
+  const fetchUser = async (id) => {
+    const { data } = await httpCommon.get(`posetioci/${id}`);
+    setUser(data);
+  }
 
   if (!fontsLoaded) {
     return undefined;
@@ -42,7 +58,7 @@ export default function Profile({ navigation }) {
       </View>
       <View style={{ alignItems: 'center', marginBottom: 20 }}>
         <Image
-          source={require("../assets/profile.png")}
+          source={{ uri: `data:image/png;base64,${user && user.profileImage}` }}
           resizeMode='contain'
           style={{
             height: 155,
@@ -53,10 +69,10 @@ export default function Profile({ navigation }) {
           }}
         />
         <Text style={{ fontSize: 25, fontFamily: 'Montserrat-Bold', color: COLORS.yellow, }}>
-          Jovana Jovanović
+          {user && user.ime} {user && user.prezime}
         </Text>
         <Text style={{ fontSize: 16, fontFamily: 'Montserrat-Medium', color: COLORS.yellow }}>
-          jovana.jovanovic@mail.com
+          {user && user.email}
         </Text>
       </View>
       <View style={{ alignItems: 'center', marginBottom: 20 }}>
@@ -74,7 +90,7 @@ export default function Profile({ navigation }) {
           <Text
             style={{
               fontSize: 14,
-              fontFamily: 'Montserrat-Regular',
+              fontFamily: 'Montserrat-Bold',
               color: COLORS.white,
             }}
           >
@@ -88,17 +104,17 @@ export default function Profile({ navigation }) {
         </View>
         <View style={{ flexDirection: "row", marginVertical: 6, alignItems: 'center' }}>
           <MaterialIcons name="location-on" size={16} color="black" />
-          <Text style={{ fontSize: 16, color: COLORS.yellow, fontFamily: 'Montserrat-Medium', marginLeft: 4 }}>Novi Sad</Text>
+          <Text style={{ fontSize: 16, color: COLORS.yellow, fontFamily: 'Montserrat-Medium', marginLeft: 4 }}>{user && user.mestoBoravista}</Text>
         </View>
 
         <View style={{ flexDirection: "row", marginVertical: 6, alignItems: 'center' }}>
           <MaterialIcons name="smartphone" size={16} color="black" />
-          <Text style={{ fontSize: 16, color: COLORS.yellow, fontFamily: 'Montserrat-Medium', marginLeft: 4 }}>+381 61 2345678</Text>
+          <Text style={{ fontSize: 16, color: COLORS.yellow, fontFamily: 'Montserrat-Medium', marginLeft: 4 }}>{user && user.brojTelefona}</Text>
         </View>
 
         <View style={{ flexDirection: "row", marginVertical: 6, alignItems: 'center' }}>
           <MaterialIcons name="date-range" size={16} color="black" />
-          <Text style={{ fontSize: 16, color: COLORS.yellow, fontFamily: 'Montserrat-Medium', marginLeft: 4 }}>2011</Text>
+          <Text style={{ fontSize: 16, color: COLORS.yellow, fontFamily: 'Montserrat-Medium', marginLeft: 4 }}>{user && user.godine}</Text>
         </View>
       </View>
     </SafeAreaView>
