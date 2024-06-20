@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 @Immutable
 @Subselect("select * from ADMIN_COWORKING_MESECNE_POSETE_VIEW")
 public class AdminCoworkingMesecnePoseteView {
-	
+
 	@Id
 	private Long id;
 	private Integer mesec;
@@ -21,32 +21,16 @@ public class AdminCoworkingMesecnePoseteView {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public Integer getMesec() {
 		return mesec;
-	}
-
-	public void setMesec(Integer mesec) {
-		this.mesec = mesec;
 	}
 
 	public Integer getGodina() {
 		return godina;
 	}
 
-	public void setGodina(Integer godina) {
-		this.godina = godina;
-	}
-
 	public Integer getMesecniBroj() {
 		return mesecniBroj;
-	}
-
-	public void setMesecniBroj(Integer mesecniBroj) {
-		this.mesecniBroj = mesecniBroj;
 	}
 
 }

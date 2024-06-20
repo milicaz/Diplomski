@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   Button,
@@ -14,6 +14,7 @@ import { BiGame, BiSolidJoystick } from "react-icons/bi";
 import { FaHeadphones, FaLaptop } from "react-icons/fa";
 import { FaComputerMouse } from "react-icons/fa6";
 import httpCommon from "../../http-common";
+import Pagination from "../Pagination";
 
 export const OmladinskiKlubList = () => {
   const [trenutno, setTrenutno] = useState([]);
@@ -22,26 +23,28 @@ export const OmladinskiKlubList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [show, setShow] = useState(false);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(15);
+
   const now = new Date();
   const datumPosete = now.toISOString().split("T")[0]; // Formats the date as "YYYY-MM-DD"
 
-  useEffect(() => {
-    // eslint-disable-next-line
-    fetchTrenutno();
-    fetchTipoviOpreme();
-  }, []);
-
-  const fetchTrenutno = async () => {
+  const fetchTrenutno = useCallback(async () => {
     const { data } = await httpCommon.get("/posete/2/datum-posete", {
       params: { datum: datumPosete },
     });
     setTrenutno(data);
-  };
+  }, [setTrenutno, datumPosete]);
 
-  const fetchTipoviOpreme = async () => {
+  const fetchTipoviOpreme = useCallback(async () => {
     const { data } = await httpCommon.get("/tipoviOpreme");
     setTipoviOpreme(data);
-  };
+  }, [setTipoviOpreme]);
+
+  useEffect(() => {
+    fetchTrenutno();
+    fetchTipoviOpreme();
+  }, [fetchTrenutno, fetchTipoviOpreme]);
 
   const filteredTrenutno =
     trenutno.length > 0
@@ -61,6 +64,28 @@ export const OmladinskiKlubList = () => {
           );
         })
       : [];
+
+  const indexOfLastItem = currentPage * limit;
+  const indexOfFirstitem = indexOfLastItem - limit;
+  const currentItems = filteredTrenutno.slice(
+    indexOfFirstitem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(filteredTrenutno.length / limit);
+
+  const onInputChange = (e) => {
+    setLimit(e.target.value);
+  };
+
+  const shouldShowPagination =
+    searchQuery.trim() === "" && filteredTrenutno.length >= 10;
+
+  // Reset current page to 1 kad je search obrisan
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setCurrentPage(1);
+    }
+  }, [searchQuery]);
 
   const handleCheckOut = async (id) => {
     try {
@@ -104,21 +129,28 @@ export const OmladinskiKlubList = () => {
       </div>
       <div className="row my-2">
         <div className="col-sm-8">
-          <div className="row align-items-center mb-3">
-            <div className="col-auto pe-0">
-              <span>Prikaži</span>
+          {filteredTrenutno && shouldShowPagination && (
+            <div className="row align-items-center mb-3">
+              <div className="col-auto pe-0">
+                <span>Prikaži</span>
+              </div>
+              <div className="col-auto">
+                <Form.Select
+                  name="limit"
+                  value={limit}
+                  onChange={(e) => onInputChange(e)}
+                  style={{ width: "100%" }}
+                >
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                  <option value="25">25</option>
+                </Form.Select>
+              </div>
+              <div className="col-auto ps-0">
+                <span>unosa</span>
+              </div>
             </div>
-            <div className="col-auto">
-              <Form.Select name="limit" style={{ width: "100%" }}>
-                <option value="10">10</option>
-                <option value="15">15</option>
-                <option value="20">20</option>
-              </Form.Select>
-            </div>
-            <div className="col-auto ps-0">
-              <span>unosa</span>
-            </div>
-          </div>
+          )}
         </div>
         <div className="col-sm-4">
           <div className="row align-items-center mb-3">
@@ -157,7 +189,7 @@ export const OmladinskiKlubList = () => {
           <Row>
             <Col sm={4}>
               <ListGroup>
-                {filteredTrenutno.map((poseta) =>
+                {currentItems.map((poseta) =>
                   poseta.oprema.length === 0 ? (
                     <ListGroup.Item action key={poseta.id} eventKey={poseta.id}>
                       {poseta.posetilac.ime} {poseta.posetilac.prezime}
@@ -196,7 +228,7 @@ export const OmladinskiKlubList = () => {
             </Col>
             <Col sm={8}>
               <Tab.Content>
-                {filteredTrenutno.map((poseta) =>
+                {currentItems.map((poseta) =>
                   poseta.oprema.length === 0 ? (
                     <Tab.Pane key={poseta.id} eventKey={poseta.id}>
                       <Card>
@@ -273,6 +305,15 @@ export const OmladinskiKlubList = () => {
               </Tab.Content>
             </Col>
           </Row>
+          {trenutno && shouldShowPagination && (
+            <Pagination
+              pages={totalPages}
+              setCurrentPage={setCurrentPage}
+              array={filteredTrenutno}
+              limit={limit}
+              maxVisibleButtons={3}
+            />
+          )}
         </Tab.Container>
       )}
     </>

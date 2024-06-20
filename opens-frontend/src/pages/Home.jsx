@@ -1,42 +1,19 @@
 import "chart.js/auto";
 import React, { useEffect, useState } from "react";
-import { Card, Col, Row } from "react-bootstrap";
-import { Pie } from "react-chartjs-2";
+import { Card, Col, Container, Row } from "react-bootstrap";
 import httpCommon from "../http-common";
 import {
+  AdminGodisnjeAktivnosti,
   AdminMesecnePoseteCoworking,
   AdminMesecnePoseteOmladinski,
 } from "./admin dashboard";
 
-const data = {
-  labels: ["Interne aktivnosti", "Eksterne aktivnosti", "Kulturna stanica"],
-  datasets: [
-    {
-      label: "broj događaja",
-      data: [17, 21, 6],
-      backgroundColor: [
-        "rgba(245, 111, 102, 0.5)",
-        "rgba(97, 205, 220, 0.5)",
-        "rgba(161, 139, 189, 0.5)",
-      ],
-      borderColor: [
-        "rgba(245, 111, 102, 1)",
-        "rgba(97, 205, 220, 1)",
-        "rgba(161, 139, 189, 1)",
-      ],
-      borderWidth: 1,
-    },
-  ],
-};
-
 export const Home = () => {
   const [coworking, setCoworking] = useState([]);
   const [omladinski, setOmladinski] = useState([]);
-
-  useEffect(() => {
-    fetchCoworking();
-    fetchOmladinski();
-  }, []);
+  const [posete, setPosete] = useState([]);
+  const [ucesnici, setUcesnici] = useState([]);
+  const [dogadjaji, setDogadjaji] = useState([]);
 
   const fetchCoworking = async () => {
     const { data } = await httpCommon.get("/admin/coworking");
@@ -48,66 +25,109 @@ export const Home = () => {
     setOmladinski(data);
   };
 
+  const fetchPoseteCount = async () => {
+    const { data } = await httpCommon.get("/admin/posete");
+    setPosete(data);
+  };
+
+  const fetchUcesniciCount = async () => {
+    const { data } = await httpCommon.get("/admin/ucesnici");
+    setUcesnici(data);
+  };
+
+  const currentYear = new Date().getFullYear();
+  const fetchDogadjaji = async () => {
+    const { data } = await httpCommon.get(`/admin/dogadjaji/${currentYear}`);
+    setDogadjaji(data);
+  };
+
+  useEffect(() => {
+    fetchCoworking();
+    fetchOmladinski();
+    fetchPoseteCount();
+    fetchUcesniciCount();
+    fetchDogadjaji();
+  }, []);
+
+  const getCardColor = (tipDogadjaja) => {
+    switch (tipDogadjaja.toLowerCase()) {
+      case "interne aktivnosti":
+        return "card-shadow bg-c-red";
+      case "eksterne aktivnosti":
+        return "card-shadow bg-c-blue";
+      case "kulturna stanica":
+        return "card-shadow bg-c-purple";
+    }
+  };
+
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   return (
     <>
       <Row>
-        <Col>
-          <Card className="card-shadow bg-c-green">
-            <Card.Body>
-              <h6>Coworking prostor</h6>
-              <Row>
-                <Col>Ukupno poseta</Col>
-                <Col className="card-text">100</Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col>
-          <Card className="card-shadow bg-c-yellow">
-            <Card.Body>
-              <h6>Omladinski centar</h6>
-              <Row>
-                <Col>Ukupno poseta</Col>
-                <Col className="card-text">20</Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col>
-          <Card className="card-shadow bg-c-red">
-            <Card.Body>
-              <h6>Interne aktivnosti</h6>
-              <Row>
-                <Col>Ukupno učesnika</Col>
-                <Col className="card-text">150</Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col>
-          <Card className="card-shadow bg-c-blue">
-            <Card.Body>
-              <h6>Eksterne aktivnosti</h6>
-              <Row>
-                <Col>Ukupno učesnika</Col>
-                <Col className="card-text">123</Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col>
-          <Card className="card-shadow bg-c-purple">
-            <Card.Body>
-              <h6>Kulturna stanica</h6>
-              <Row>
-                <Col>Ukupno učesnika</Col>
-                <Col className="card-text">52</Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
+        {posete.map((p) => (
+          <Col key={p.mestoPoseteId}>
+            <Card
+              className={
+                p.mestoPoseteId % 2 === 0
+                  ? "card-shadow bg-c-yellow"
+                  : "card-shadow bg-c-green"
+              }
+            >
+              <Card.Body>
+                <h6 className="card-naslov">{p.nazivMesta}</h6>
+                <Row>
+                  <Col>Ukupno poseta</Col>
+                </Row>
+                <Row>
+                  <Col
+                    className={
+                      p.brojPoseta.toString().length >= 20
+                        ? "card-smallest-text"
+                        : p.brojPoseta.toString().length > 11
+                        ? "card-smaller-text"
+                        : "card-text"
+                    }
+                  >
+                    {p.brojPoseta}
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+
+        {ucesnici.map((u) => (
+          <Col key={u.tipDogadjajaId}>
+            <Card className={getCardColor(u.tipDogadjaja)}>
+              <Card.Body>
+                <h6 className="card-naslov">
+                  {capitalizeFirstLetter(u.tipDogadjaja)}
+                </h6>
+                <Row>
+                  <Col>Ukupno učesnika</Col>
+                </Row>
+                <Row>
+                  <Col
+                    className={
+                      u.brojUcesnika.toString().length >= 20
+                        ? "card-smallest-text"
+                        : u.brojUcesnika.toString().length > 11
+                        ? "card-smaller-text"
+                        : "card-text"
+                    }
+                  >
+                    {u.brojUcesnika}
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
       </Row>
-      <Row className="my-4">
+      {/* <Row className="mt-3">
         <Col>
           <Row className="mb-2">
             <Card className="card-shadow">
@@ -127,29 +147,42 @@ export const Home = () => {
         <Col>
           <Card className="card-shadow card-height">
             <Card.Body className="justify-content-center">
-              <Pie
-                data={data}
-                options={{
-                  plugins: {
-                    title: {
-                      display: true,
-                      position: "top",
-                      text: "Godišnji broj aktivnosti",
-                      font: {
-                        size: 20,
-                      },
-                      padding: {
-                        top: 30,
-                        bottom: 10,
-                      },
-                    },
-                  },
-                }}
-              />
+              <AdminGodisnjeAktivnosti aktivnosti={dogadjaji} />
             </Card.Body>
           </Card>
         </Col>
-      </Row>
+      </Row> */}
+      <Container className="mt-3">
+        <Row>
+          <Col md={6}>
+            <Row className="mb-3">
+              <Col>
+                <Card className="card-shadow">
+                  <Card.Body>
+                    <AdminMesecnePoseteCoworking mesecnePosete={coworking} />
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Card className="card-shadow">
+                  <Card.Body>
+                    <AdminMesecnePoseteOmladinski mesecnePosete={omladinski} />
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </Col>
+          <Col md={6}>
+            <Card className="card-shadow card-height">
+              <Card.Body className="justify-content-center">
+                <AdminGodisnjeAktivnosti aktivnosti={dogadjaji} />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 };

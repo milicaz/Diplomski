@@ -271,14 +271,36 @@ td {
   background: #a18bbd;
 }
 
+.card-naslov {
+  font-weight: bold;
+}
+
 .card-text {
   font-size: xx-large;
   font-weight: bold;
-  text-align: center;
+  display: flex;
+  align-items: flex-end; /* Vertically center align items */
+  justify-content: flex-end; /* Horizontally center align items */
+}
+
+.card-smaller-text {
+  font-size: large;
+  font-weight: bold;
+  display: flex;
+  align-items: flex-end; /* Vertically center align items */
+  justify-content: flex-end; /* Horizontally center align items */
+}
+
+.card-smallest-text {
+  font-size: medium;
+  font-weight: bold;
+  display: flex;
+  align-items: flex-end; /* Vertically center align items */
+  justify-content: flex-end; /* Horizontally center align items */
 }
 
 .card-height {
-  height: 680px;
+  height: 672px;
 }
 
 .tabela-izvestaj {
