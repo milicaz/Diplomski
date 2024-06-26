@@ -9,5 +9,7 @@ import com.opens.model.TipDogadjaja;
 public interface TipDogadjajaRepository extends JpaRepository<TipDogadjaja, Long> {
 	
 	TipDogadjaja findByNaziv(String naziv);
+	
+	TipDogadjaja findOneById(Long id);
 
 }

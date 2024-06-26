@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { DogadjajContext } from "./DogadjajContext";
-import { Button, Col, Form, Image, Modal, Row } from "react-bootstrap";
+import { Button, Col, Form, Image, Modal, Row, Spinner } from "react-bootstrap";
 import Dogadjaj from "./Dogadjaj";
 import Pagination from "../Pagination";
 import { LocalDate, LocalTime } from "@js-joda/core";
 import { ucesniciImage } from "../../assets";
+import { FaRegFilePdf } from "react-icons/fa";
+import { RiFileExcel2Fill } from "react-icons/ri";
 
 const DogadjajList = () => {
   const { sortedDogadjaji } = useContext(DogadjajContext);
@@ -18,6 +20,7 @@ const DogadjajList = () => {
   const {tipoviDogadjaja} = useContext(DogadjajContext);
   const {dogadjajId} = useContext(DogadjajContext);
   const {dodajUcesnika} = useContext(DogadjajContext);
+  const {kreirajPDF} = useContext(DogadjajContext);
 
   const [organizacija, setOrganizacija] = useState({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""})
 
@@ -39,6 +42,18 @@ const DogadjajList = () => {
   // const [mestoId, setMestoId] = useState();
 
   const [idDogadjaja, setIdDogadjaja] = useState()
+
+  const [datum, setDatum] = useState('')
+
+  const [mesec, setMesec] = useState('')
+
+  const [godina, setGodina] = useState('')
+
+  const [vrsta, setVrsta] = useState('')
+
+  const [ime, setIme] = useState('')
+
+  const [prezime, setPrezime] = useState('')
 
   useEffect(() => {
     setOrganizacijaEdit(currentOrganizacija)
@@ -168,6 +183,47 @@ const handleDodajUcesnika = (event) => {
   setUcesnik({ime: "", prezime: "", rod: "", godine: "", mestoBoravista: "", brojTelefona: "", email: "", organizacija: ""})
 }
 
+const handleChangeDatum = (event) => {
+  event.preventDefault();
+  const selectedDatum = event.target.value
+  setDatum(selectedDatum)
+
+  const [godinaPart, mesecPart] = selectedDatum.split('-')
+  setGodina(godinaPart)
+  
+  const cleanMesecPart = mesecPart.startsWith('0') ? mesecPart.substring(1) : mesecPart;
+  setMesec(cleanMesecPart);
+}
+
+console.log("Datum je: " + datum)
+console.log("Mesec je: " + mesec)
+
+const handleChangeVrsta = (event) => {
+  setVrsta(event.target.value)
+}
+
+const handleChangeOsoba = (event) => {
+  const { name, value } = event.target;
+  
+  if (name === "ime") {
+    setIme(value);
+  } else if (name === "prezime") {
+    setPrezime(value);
+  }
+}
+
+// const handlePDF = (event) => {
+//   event.preventDefault();
+//   kreirajPDF(mesec, godina, vrsta, ime, prezime)
+//   console.log("Mesec, godina, vrsta: " + mesec + "/" + godina + "/" + vrsta)
+// }
+
+const handlePDF = (event) => {
+  event.preventDefault();
+  const response = kreirajPDF(mesec, godina, vrsta, ime, prezime)
+};
+
+
   return (
     <>
       {/* <div className="table-title">
@@ -185,6 +241,44 @@ const handleDodajUcesnika = (event) => {
           </div>
         </div>
       </div> */}
+      <div className="row align-items-center mb-4">
+        <div className="col">
+          <Form.Label>Period za koji se generiše izveštaj:</Form.Label>
+          <Form.Control type="month" onChange={handleChangeDatum}/>
+        </div>
+        <div className="col">
+        {/* <Form.Group controlId="dropdown"> */}
+          <Form.Label>Tip događaja za koji se generiše izveštaj:</Form.Label>
+              <Form.Control as="select" name="vrsta" value={vrsta} onChange={handleChangeVrsta} style={{width:"80%", maxWidth:"90%"}} >
+                <option value="">Izaberite vrstu događaja</option>
+                  {tipoviDogadjaja.map((item, index) => (
+                <option key={item.id} value={item.id}>
+                  {item.naziv}
+                </option>
+                  ))}
+              </Form.Control>
+            {/* </Form.Group> */}
+        </div>
+        <div className="col">
+          <div className="row">
+            <div className="col">
+              <Form.Label>Osoba koja generiše izveštaj:</Form.Label>
+              <div className="d-flex">
+                <Form.Control name="ime" value={ime} type="text" onChange={handleChangeOsoba} style={{width: "45%", marginRight: "5px"}} placeholder="Ime"/>
+                <Form.Control name="prezime" value={prezime} type="text" onChange={handleChangeOsoba} style={{width: "45%"}} placeholder="Prezime" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-auto ps-0">
+          <Button className="mx-1" variant="danger" onClick={handlePDF}>
+          <FaRegFilePdf size={20} /> PDF
+          </Button>
+          <Button className="mx-1" variant="success">
+          <RiFileExcel2Fill size={20} /> EXCEL
+          </Button>
+        </div>
+      </div>
       <div className="table-title">
         <div className="row">
           <div className="col-sm-6">

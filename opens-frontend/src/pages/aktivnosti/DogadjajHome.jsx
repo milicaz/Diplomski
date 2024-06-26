@@ -3,15 +3,17 @@ import DogadjajList from "./DogadjajList";
 
 const DogadjajHome = () => {
   return (
-    <div className="container-xl">
-      <div className="table-responsive">
-        <div className="table-wrapper">
+    // <div className="container-xl">
+    //   <div className="table-responsive">
+    //     <div className="table-wrapper">
           <DogadjajContextProvider>
-              <DogadjajList />
+            <>              
+            <DogadjajList />
+            </>
           </DogadjajContextProvider>
-        </div>
-      </div>
-    </div>
+    //     </div>
+    //   </div>
+    // </div>
   );
 };
 

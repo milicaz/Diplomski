@@ -77,8 +77,48 @@ const DogadjajContextProvider = (props) => {
         await axios.post(`http://localhost:8080/api/ucesniciDogadjaja/${id}`, ucesnik)
     }
 
+    const kreirajPDF = async(mesec, godina, id, ime, prezime) => {
+        try {
+
+        const response = await axios.get(`http://localhost:8080/api/dogadjajiView/${mesec}/${godina}/${id}`, {
+            params: {
+                ime: ime,
+                prezime: prezime
+            },
+            responseType: "blob"
+        })
+
+        // console.log(response.data)
+        // Create a blob object from the response data
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+
+    // Create a URL for the blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create an anchor element
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'dogadjajireport.pdf');
+
+    // Append the link to the body
+    document.body.appendChild(link);
+
+    // Trigger the download
+    link.click();
+
+    // // Clean up
+    // document.body.removeChild(link);
+
+    link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+  } catch (error) {
+    console.error('Error downloading PDF:', error);
+  }
+    }
+
     return (
-        <DogadjajContext.Provider value={{sortedDogadjaji, addDogadjaj, addOrganizacija, editOrganizacija, organizacijaId, getOrganizacijaById, currentOrganizacija, mestaDogadjaja, tipoviDogadjaja, dogadjajId, dodajUcesnika}}>
+        <DogadjajContext.Provider value={{sortedDogadjaji, addDogadjaj, addOrganizacija, editOrganizacija, organizacijaId, getOrganizacijaById, currentOrganizacija, mestaDogadjaja, tipoviDogadjaja, dogadjajId, dodajUcesnika, kreirajPDF}}>
             {props.children}
         </DogadjajContext.Provider>
     )
