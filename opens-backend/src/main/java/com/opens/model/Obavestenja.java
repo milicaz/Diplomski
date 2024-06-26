@@ -35,17 +35,22 @@ public class Obavestenja {
 	@Temporal(TemporalType.DATE)
 	private LocalDate krajPrikazivanja;
 
+	@Column(name = "prioritet")
+	private Integer prioritet;
+
 	public Obavestenja() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Obavestenja(String naziv, String tekst, LocalDate pocetakPrikazivanja, LocalDate krajPrikazivanja) {
+	public Obavestenja(String naziv, String tekst, LocalDate pocetakPrikazivanja, LocalDate krajPrikazivanja,
+			Integer prioritet) {
 		super();
 		this.naziv = naziv;
 		this.tekst = tekst;
 		this.pocetakPrikazivanja = pocetakPrikazivanja;
 		this.krajPrikazivanja = krajPrikazivanja;
+		this.prioritet = prioritet;
 	}
 
 	public Long getId() {
@@ -86,6 +91,14 @@ public class Obavestenja {
 
 	public void setKrajPrikazivanja(LocalDate krajPrikazivanja) {
 		this.krajPrikazivanja = krajPrikazivanja;
+	}
+
+	public Integer getPrioritet() {
+		return prioritet;
+	}
+
+	public void setPrioritet(Integer prioritet) {
+		this.prioritet = prioritet;
 	}
 
 }

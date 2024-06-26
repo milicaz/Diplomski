@@ -34,6 +34,8 @@ import com.opens.view.PoseteOmladinskiView;
 import com.opens.view.repository.PoseteCoworkingViewRepository;
 import com.opens.view.repository.PoseteOmladinskiViewRepository;
 
+import jakarta.transaction.Transactional;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -94,6 +96,7 @@ public class PosetaController {
 		return new ResponseEntity<>(posete, HttpStatus.OK);
 	}
 	
+	@Transactional
 	@GetMapping("/posete/{mestoPoseteId}/datum-posete")
 	public ResponseEntity<List<Poseta>> getAllPosete(@PathVariable Long mestoPoseteId, @RequestParam LocalDate datum) {
 		List<Poseta> posete = new ArrayList<>();
@@ -107,6 +110,7 @@ public class PosetaController {
 
 	}
 
+	@Transactional
 	@PostMapping("/posete")
 	public ResponseEntity<Poseta> createPosetu(@RequestBody PosetaDTO posetaDTO) {
 		try {

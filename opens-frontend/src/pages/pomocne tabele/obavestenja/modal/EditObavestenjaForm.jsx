@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react'
-import { Button, Form } from 'react-bootstrap';
-import { ObavestenjeContext } from '../ObavestenjaContext';
+import React, { useContext, useState } from "react";
+import { Button, Form } from "react-bootstrap";
+import { ObavestenjeContext } from "../ObavestenjaContext";
 
-export const EditObavestenjaForm = ({updatedObavestenje}) => {
+export const EditObavestenjaForm = ({ updatedObavestenje }) => {
   const { editObavestenje } = useContext(ObavestenjeContext);
 
   const id = updatedObavestenje.id;
@@ -15,16 +15,19 @@ export const EditObavestenjaForm = ({updatedObavestenje}) => {
   const [krajPrikazivanja, setKrajPrikazivanja] = useState(
     updatedObavestenje.krajPrikazivanja
   );
+  const [prioritet, setPrioritet] = useState(updatedObavestenje.prioritet);
 
   const editedObavestenje = {
     naziv,
     tekst,
     pocetakPrikazivanja,
     krajPrikazivanja,
+    prioritet: parseInt(prioritet)
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Obavestenje: " + JSON.stringify(editedObavestenje))
     editObavestenje(id, editedObavestenje);
   };
 
@@ -71,6 +74,18 @@ export const EditObavestenjaForm = ({updatedObavestenje}) => {
             required
           />
         </Form.Group>
+        <Form.Group className="mb-3" controlId="prioritet">
+          <Form.Control
+            type="number"
+            placeholder="Prioritet prikazivanja obaveštenja"
+            name="prioritet"
+            value={prioritet}
+            onChange={(e) => setPrioritet(e.target.value)}
+            min={0}
+            max={5}
+            step={1}
+          />
+        </Form.Group>
         <div className="d-grid gap-2 mt-4">
           <Button variant="success" type="submit">
             Izmeni obaveštenje
@@ -79,5 +94,5 @@ export const EditObavestenjaForm = ({updatedObavestenje}) => {
       </Form>
     </>
   );
-}
+};
 export default EditObavestenjaForm;

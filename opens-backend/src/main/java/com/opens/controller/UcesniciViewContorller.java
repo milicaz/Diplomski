@@ -1,10 +1,10 @@
 package com.opens.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,7 +62,7 @@ public class UcesniciViewContorller {
 		
 		JRBeanCollectionDataSource ucesniciDataSource = new JRBeanCollectionDataSource(ucesniciOznaka);
 		
-		Map<String, Object> parameters = new HashedMap();
+		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("dogadjaj", dogadjaj.getNaziv());
 		parameters.put("organizator", dogadjaj.getOrganizacija().getNaziv());
 		parameters.put("datum", dogadjaj.getDatum());

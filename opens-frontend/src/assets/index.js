@@ -1,5 +1,6 @@
 export { default as  loginImage} from "../assets/images/login.jpg"
 export { default as  opensImage} from "../assets/images/opens.png"
+export { default as  opensBojaImage} from "../assets/images/opensBoja.png"
 export { default as  profileImage} from "../assets/images/profile.jpg"
 export { default as  qrCodeImage} from "../assets/images/qrcode.png"
 export { default as  registerImage} from "../assets/images/register.png"

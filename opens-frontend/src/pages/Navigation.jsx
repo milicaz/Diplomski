@@ -7,7 +7,7 @@ import {
   NavbarBrand,
 } from "react-bootstrap";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { opensImage } from "../assets";
+import { opensBojaImage } from "../assets";
 import { Home } from "./Home";
 import DogadjajHome from "./aktivnosti/DogadjajHome";
 import { CoworkingListHome, CoworkingTabelaHome } from "./co-working";
@@ -53,7 +53,7 @@ export const Navigation = () => {
       <Navbar bg="light">
         <Container>
           <NavbarBrand href="/">
-            <img src={opensImage} alt="OPENS" width="150" />
+            <img src={opensBojaImage} alt="OPENS" width="150" />
           </NavbarBrand>
           <Nav className="me-auto">
             <NavDropdown
