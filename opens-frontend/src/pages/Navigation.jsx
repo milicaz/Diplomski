@@ -28,6 +28,7 @@ import {
   TipOprHome,
 } from "./pomocne tabele";
 import LogoHome from "./pomocne tabele/logo/LogoHome";
+import Logovanje from "./korisnik/Logovanje";
 
 export const Navigation = () => {
   const coworkingPaths = ["/coworking-trenutno", "/coworking-tabela"];
@@ -243,6 +244,7 @@ export const Navigation = () => {
           <Route path="/dogadjaj" element={<DogadjajHome />} />
           <Route path="/logo" element={<LogoHome />} />
           <Route path="/obavestenja" element={<ObavestenjaHome />} />
+          <Route path="/logovanje" element={<Logovanje />} />
         </Routes>
       </div>
     </>
