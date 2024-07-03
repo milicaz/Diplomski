@@ -7,12 +7,12 @@ import { Route, Routes } from "react-router-dom/dist";
 function App() {
   return (
     <>
-      {/* <Navigation /> */}
+      <Navigation />
       {/* <Logovanje /> */}
-      <Routes>
+      {/* <Routes>
         <Route path="/home" element={<Navigation />} />
         <Route path="/" element={<Logovanje />} />
-      </Routes>
+      </Routes> */}
     </>
   );
 }
