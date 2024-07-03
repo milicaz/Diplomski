@@ -2,11 +2,14 @@ import { Button, Form } from "react-bootstrap";
 import { opensBojaImage } from "../../assets";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom/dist";
 
 const Logovanje = () => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+
+    const navigate = useNavigate()
 
     const handleLogin = async () => {
         const loginData = {
@@ -17,6 +20,7 @@ const Logovanje = () => {
         try {
             const response = await axios.post('http://localhost:8080/api/auth/login', loginData);
             console.log(response.data); // Log response from backend
+            navigate('/home');
 
             // Handle success or redirect to dashboard
             // Example: redirect to dashboard if login successful
@@ -53,7 +57,9 @@ const Logovanje = () => {
                         required/>
                 </Form.Group>
                 <br />
-                <Button variant="success" onClick={handleLogin}>Login</Button>
+                <div className="d-flex justify-content-center">
+                    <Button variant="success" onClick={handleLogin}>Login</Button>
+                </div>
             </Form>
             </div>
         </div>

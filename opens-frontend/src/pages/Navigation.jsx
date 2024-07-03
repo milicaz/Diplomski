@@ -45,6 +45,7 @@ export const Navigation = () => {
   ];
 
   const location = useLocation();
+
   const isActive = (pathname) => location.pathname === pathname;
   const isActiveDropdown = (pathsArray) =>
     pathsArray.includes(location.pathname);
