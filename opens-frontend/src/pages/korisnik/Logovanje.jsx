@@ -4,7 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom/dist";
 
-const Logovanje = () => {
+const Logovanje = ({onLoginSuccess}) => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -20,7 +20,7 @@ const Logovanje = () => {
         try {
             const response = await axios.post('http://localhost:8080/api/auth/login', loginData);
             console.log(response.data); // Log response from backend
-            navigate('/home');
+            onLoginSuccess();
 
             // Handle success or redirect to dashboard
             // Example: redirect to dashboard if login successful
