@@ -29,6 +29,7 @@ import {
 } from "./pomocne tabele";
 import LogoHome from "./pomocne tabele/logo/LogoHome";
 import Logovanje from "./korisnik/Logovanje";
+import ZaposleniHome from "./zaposleni/ZaposleniHome";
 
 export const Navigation = () => {
   const coworkingPaths = ["/coworking-trenutno", "/coworking-tabela"];
@@ -43,6 +44,7 @@ export const Navigation = () => {
     "/prigradskaNaselja",
     "/logo",
   ];
+  const zaposleniPaths = ["/zaposleni"];
 
   const location = useLocation();
 
@@ -193,6 +195,14 @@ export const Navigation = () => {
                 Logoi
               </NavDropdown.Item>
             </NavDropdown>
+            <Nav.Link
+              href="/zaposleni"
+              className={`zaposleni-dropdown-item ${
+                isActive("/zaposleni") ? "active" : ""
+              }`}
+            >
+              Zaposleni
+            </Nav.Link>
           </Nav>
           <Nav className="justify-content-end">
             <Nav.Link
@@ -246,6 +256,7 @@ export const Navigation = () => {
           <Route path="/logo" element={<LogoHome />} />
           <Route path="/obavestenja" element={<ObavestenjaHome />} />
           <Route path="/logovanje" element={<Logovanje />} />
+          <Route path="/zaposleni" element={<ZaposleniHome />} />
         </Routes>
       </div>
     </>
