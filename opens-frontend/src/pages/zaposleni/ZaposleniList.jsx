@@ -2,22 +2,28 @@ import { useContext, useEffect, useState } from "react"
 import { ZaposleniContext } from "./ZaposleniContext"
 import Zaposleni from "./Zaposleni";
 import Pagination from "../Pagination";
-import { Form } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
+import RegistracijaZaposleniForm from "./modal/RegistracijaZaposleniForm";
 
 const ZaposleniList = () => {
+
 
     const {sortedZaposleni} = useContext(ZaposleniContext);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [zaposleniPerPage, setZaposleniPerPage] = useState(10);
 
-    useEffect(() => {
+    const [show, setShow] = useState(false)
+    const handleShow = () => setShow(true)
+    const handleClose = () => setShow(false)
 
+    useEffect(() => {
+      handleClose();
     }, [sortedZaposleni]);
 
     const indexOfLastZaposleni = currentPage * zaposleniPerPage;
     const indexOfFirstZaposleni = indexOfLastZaposleni - zaposleniPerPage;
-    console.log("Sorted zaposleni: " + sortedZaposleni)
+    // console.log("Sorted zaposleni: " + sortedZaposleni)
     const currentZaposleni = sortedZaposleni.slice(
         indexOfFirstZaposleni,
         indexOfLastZaposleni
@@ -58,14 +64,14 @@ const ZaposleniList = () => {
             </div>
           </div>
           <div className="col-sm-6">
-            {/* <Button
+            <Button
               onClick={handleShow}
               className="btn btn-success"
               data-toggle="modal"
             >
               <i className="material-icons">&#xE147;</i>
-              <span>Dodaj novo mesto događaja</span>
-            </Button> */}
+              <span>Registruj novog zaposlenog</span>
+            </Button>
           </div>
         </div>
       </div>
@@ -97,14 +103,14 @@ const ZaposleniList = () => {
           limit={zaposleniPerPage}
           maxVisibleButtons={3} />
 
-        {/* <Modal show={show} onHide={handleClose} centered>
+        <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title>Dodaj logo</Modal.Title>
+          <Modal.Title>Registracija zaposlenog</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AddLogoForm />
+          <RegistracijaZaposleniForm handleClose = {handleClose}/>
         </Modal.Body>
-      </Modal> */}
+      </Modal>
       </div>
       </>
     )

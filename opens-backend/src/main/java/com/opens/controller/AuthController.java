@@ -100,6 +100,12 @@ public class AuthController {
 		} else {
 			strUloge.forEach(uloga -> {
 				switch (uloga) {
+				case "admin":
+					Uloga adminUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN)
+					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+					uloge.add(adminUloga);
+				
+					break;
 				case "dogadjaj_admin":
 					Uloga dogadjajUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN_DOGADJAJ)
 						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));

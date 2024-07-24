@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.opens.model.Uloga;
 import com.opens.model.Zaposleni;
 import com.opens.repository.ZaposleniRepository;
 
@@ -54,6 +55,9 @@ public class ZaposleniController {
 		upZaposleni.setGodine(zaposleni.getGodine());
 		upZaposleni.setBrojTelefona(zaposleni.getBrojTelefona());
 		upZaposleni.setUloge(zaposleni.getUloge());
+//		for(Uloga u : zaposleni.getUloge()) {
+//			upZaposleni.setUloge(u);
+//		}
 		
 		zaposleniRepo.save(upZaposleni);
 		
