@@ -1,7 +1,8 @@
 import { useContext, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, InputGroup } from "react-bootstrap";
 import { ZaposleniContext } from "../ZaposleniContext";
 import axios from "axios";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const RegistracijaZaposleniForm = ({handleClose}) => {
 
@@ -18,6 +19,9 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
   const [mestoBoravista, setMestoBoravista] = useState("");
   const [brojTelefon, setBrojTelefon] = useState("");
   const [uloge, setUloge] = useState(new Set()); // Assuming this is managed as a Set
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailValid, setEmailValid] = useState(true); // State variable to track email validity
 
   const r = [
     {id: 1, naziv: 'ZENSKO'},
@@ -37,9 +41,36 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
     setUloge(new Set(selectedValues)); // Update uloge with a Set of selected values
   };
 
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword); // Toggle showPassword state
+  };
+
+  const handleEmailChange = (e) => {
+    const { value } = e.target;
+    setEmail(value);
+
+    // Validate email format using regex
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    setEmailValid(isValid);
+  };
+
   const handleRegistracija = async (event) => {
     
     event.preventDefault();
+
+    if (!emailValid) {
+      // Display error message or handle invalid email format
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    // Check if password matches complexity criteria
+    if (!passwordRegex.test(password)) {
+        // Password does not meet complexity criteria
+        alert("Lozinka mora sadržati najmanje 8 karaktera, barem jedno veliko slovo, jedan broj i jedan poseban znak(@$!%*?&).");
+        return;
+    }
     
     const zaposleniDTO = {
       email,
@@ -83,22 +114,33 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
       <Form.Group>
         <Form.Control
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleEmailChange}
           type="text"
           placeholder="Email"
           required
+          isInvalid={!emailValid}
         />
+        {!emailValid && (
+          <Form.Control.Feedback type="invalid">
+            Morate uneti ispravnu e-mail adresu!
+          </Form.Control.Feedback>
+        )}
       </Form.Group>
       <br />
       <Form.Group>
+      <InputGroup>
         <Form.Control
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          type="password"
+          type={showPassword ? "text" : "password"} // Toggle password visibility
           aria-describedby="passwordHelpBlock"
           placeholder="Lozinka"
           required
         />
+        <InputGroup.Text onClick={handleTogglePasswordVisibility} style={{ cursor: "pointer" }}>
+            {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+          </InputGroup.Text>
+        </InputGroup>
       </Form.Group>
       <br />
       <Form.Group>

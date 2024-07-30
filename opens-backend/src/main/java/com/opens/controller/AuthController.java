@@ -2,6 +2,7 @@ package com.opens.controller;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,12 +23,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.opens.dto.LoginDTO;
+import com.opens.dto.PosetilacDTO;
 import com.opens.dto.ZaposleniDTO;
 import com.opens.model.EUloge;
+import com.opens.model.Posetilac;
 import com.opens.model.Uloga;
 import com.opens.model.Zaposleni;
 import com.opens.repository.UlogaRepository;
 import com.opens.repository.ZaposleniRepository;
+import com.opens.repository.PosetilacRepository;
 import com.opens.security.jwt.JwtUtils;
 import com.opens.security.service.ZaposleniDetailsImpl;
 
@@ -38,6 +42,9 @@ public class AuthController {
 	
 	@Autowired
 	AuthenticationManager authenticationManager;
+	
+	@Autowired
+	PosetilacRepository posetilacRepo;
 	
 	@Autowired
 	ZaposleniRepository zaposleniRepo;
@@ -134,5 +141,32 @@ public class AuthController {
 		logger.info("USER_REGISTRATION_SUCCESS - User registered successfully");
 		return ResponseEntity.ok("User registered successfully!");
 	}
-
+	
+	@PostMapping("/signupPosetilac")
+	public ResponseEntity<?> registerPosetilac(@Validated @RequestBody PosetilacDTO posetilacDTO){
+		if(posetilacRepo.existsByEmail(posetilacDTO.getEmail())) {
+			logger.warn("USER_REGISTRATION_FAIL - Email " + posetilacDTO.getEmail() + " is already in use");
+			return ResponseEntity.badRequest().body("Error: Email is already in use!");
+		}
+		
+		Uloga uloga = ulogaRepo.findOneByNaziv(EUloge.ROLE_POSETILAC);
+		
+		Posetilac posetilac = new Posetilac();
+		posetilac.setEmail(posetilacDTO.getEmail());
+		posetilac.setPassword(encoder.encode(posetilacDTO.getPassword()));
+		posetilac.setIme(posetilacDTO.getIme());
+		posetilac.setPrezime(posetilacDTO.getPrezime());
+		posetilac.setRod(posetilacDTO.getRod());
+		posetilac.setGodine(posetilacDTO.getGodine());
+		posetilac.setMestoBoravista(posetilacDTO.getMestoBoravista());
+		posetilac.setBrojTelefona(posetilacDTO.getBrojTelefona());
+		posetilac.setUloga(uloga);
+		
+		posetilacRepo.save(posetilac);
+		
+		logger.info("USER_REGISTRATION_SUCCESS - User registered successfully");
+		return ResponseEntity.ok("User registered successfully!");
+		
+	}
+	
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,6 +21,9 @@ public class Uloga {
 
 	@Enumerated(EnumType.STRING)
 	private EUloge naziv;
+	
+	@OneToOne(mappedBy = "uloga")
+	private Posetilac posetilac;
 
 	public Uloga() {
 	}
@@ -42,6 +46,14 @@ public class Uloga {
 
 	public void setNaziv(EUloge naziv) {
 		this.naziv = naziv;
+	}
+
+	public Posetilac getPosetilac() {
+		return posetilac;
+	}
+
+	public void setPosetilac(Posetilac posetilac) {
+		this.posetilac = posetilac;
 	}
 
 }

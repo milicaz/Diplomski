@@ -4,9 +4,25 @@ import { useEffect, useState } from "react";
 import { Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import COLORS from "../constants/colors";
+import httpCommon from "../http-common";
+import axios from "axios";
 
 
 export default function Registracija() {
+
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [ime, setIme] = useState("")
+  const [prezime, setPrezime] = useState("")
+  const [rod, setRod] = useState("")
+  const [godine, setGodine] = useState("")
+  const [mestoBoravista, setMestoBoravista] = useState("")
+  const [brojTelefona, setBrojTelefona] = useState("")
+  // const [uloga, setUloga] = useState([])
+
+  const [phoneCode, setPhoneCode] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
+
 
   const [fontsLoaded] = useFonts({
     'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
@@ -18,7 +34,9 @@ export default function Registracija() {
       await SplashScreen.preventAutoHideAsync();
     }
     prepare();
-  }, [])
+    setBrojTelefona(phoneCode + phoneNumber)
+    console.log("Broj telefona je: " + brojTelefona)
+  }, [phoneCode, phoneNumber])
 
   if (!fontsLoaded) {
     return undefined;
@@ -30,13 +48,13 @@ export default function Registracija() {
   const [isFocus, setIsFocus] = useState(false);
 
   const data = [
-    { label: 'Musko', value: '1' },
-    { label: 'Zensko', value: '2' },
-    { label: 'Drugo', value: '3' }
+    { label: 'muško', value: 'MUSKO' },
+    { label: 'žensko', value: 'ZENSKO' },
+    { label: 'drugo', value: 'DRUGO' }
   ]
 
   // State variable to hold the password 
-  const [password, setPassword] = useState('');
+  // const [password, setPassword] = useState('');
 
   // State variable to track password visibility 
   const [showPassword, setShowPassword] = useState(false);
@@ -95,6 +113,65 @@ export default function Registracija() {
 
   }
 
+  const onChangeEmail = (email) => {
+    setEmail(email)
+  }
+
+  const onChangePassword = (password) => {
+    setPassword(password)
+  }
+
+  const onChangeIme = (ime) => {
+    setIme(ime)
+  }
+
+  const onChangePrezime = (prezime) => {
+    setPrezime(prezime)
+  }
+
+  const onChangeGodine = (godine) => {
+    setGodine(godine)
+  }
+
+  const onChangeMestoBoravista = (mestoBoravista) => {
+    setMestoBoravista(mestoBoravista)
+  }
+
+  const onChanegePhoneCode = (phoneCode) => {
+    setPhoneCode(phoneCode)
+  }
+
+  const onChangePhoneNumber = (phoneNumber) => {
+    setPhoneNumber(phoneNumber)
+  }
+
+  const registracija = async () => {
+    try {
+    const posetilac = {
+      email,
+      password,
+      ime,
+      prezime,
+      rod,
+      godine,
+      mestoBoravista,
+      brojTelefona,
+    };
+
+    console.log("Posetilac je: " + posetilac)
+
+      const response = await axios.post('http://10.0.2.2:8080/api/auth/signupPosetilac', posetilac, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      alert("Uspešno ste se registrovali!");
+  } catch (error) {
+    console.error("Error during registration:", error);
+    alert("Registration failed. Please try again.");
+  }
+  }
+
   return (
     <ScrollView style={{ backgroundColor: COLORS.white }}>
       <View style={{ flex: 1 }}>
@@ -115,16 +192,16 @@ export default function Registracija() {
         <View style={{ alignItems: "center", justifyContent: "center", marginTop: "10%" }}>
           {/* <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 50, marginBottom: 40 }}>Registracija</Text> */}
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Email" />
+            <TextInput value={email} onChangeText={onChangeEmail} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Email" />
           </View>
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Lozinka" />
+            <TextInput value={password} onChangeText={onChangePassword} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Lozinka" />
           </View>
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Ime" />
+            <TextInput value={ime} onChangeText={onChangeIme} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Ime" />
           </View>
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Prezime" />
+            <TextInput value={prezime} onChangeText={onChangePrezime} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Prezime" />
           </View>
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
             <Dropdown
@@ -143,12 +220,13 @@ export default function Registracija() {
               onChange={item => {
                 setValue(item.value);
                 setIsFocus(false);
+                setRod(item.value)
               }}
             />
             {/* <TextInput style = {{height: 50, color: "black"}} placeholder="Rod" /> */}
           </View>
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} keyboardType="numeric" placeholder="Godina rodjenja" />
+            <TextInput value={godine} onChangeText={onChangeGodine} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} keyboardType="numeric" placeholder="Godina rodjenja" />
             {/* {showPicker && (
           <RNDateTimePicker mode = "date" display = "default" value={date} onChange={onChange} />
         )}
@@ -172,19 +250,19 @@ export default function Registracija() {
 
           </View>
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Mesto Boravista" />
+            <TextInput value={mestoBoravista} onChangeText={onChangeMestoBoravista} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Mesto Boravista" />
           </View>
           <View style={{ flexDirection: "row", width: "80%" }}>
             <View style={{ flex: 1, borderWidth: 1, height: 50, justifyContent: "center", marginBottom: 20, padding: 20, marginRight: 5 }}>
-              <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} keyboardType="numeric" placeholder="+381" />
+              <TextInput value={phoneCode} onChangeText={onChanegePhoneCode} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} keyboardType="numeric" placeholder="+381" />
             </View>
             <View style={{ flex: 4, borderWidth: 1, height: 50, justifyContent: "center", marginBottom: 20, padding: 20 }}>
-              <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} keyboardType="numeric" placeholder="631234567" />
+              <TextInput value={phoneNumber} onChangeText={onChangePhoneNumber} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} keyboardType="numeric" placeholder="631234567" />
             </View>
           </View>
           <View style={{ width: "50%", margin: 10 }}>
             {/* <Button title="Registracija"></Button> */}
-            <TouchableOpacity style={{ alignItems: 'center', backgroundColor: '#61CDCD', padding: 13 }}>
+            <TouchableOpacity onPress={registracija} style={{ alignItems: 'center', backgroundColor: '#61CDCD', padding: 13 }}>
               <Text style={{ fontFamily: "Montserrat-Regular" }}>Registracija</Text>
             </TouchableOpacity>
           </View>

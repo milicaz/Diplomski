@@ -11,5 +11,7 @@ import com.opens.model.Posetilac;
 public interface PosetilacRepository extends JpaRepository<Posetilac, Long> {
 	
 	Optional<Posetilac> findByEmail(String email);
+	
+	Boolean existsByEmail(String email);
 
 }

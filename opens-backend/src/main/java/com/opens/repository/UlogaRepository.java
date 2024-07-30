@@ -11,4 +11,6 @@ import com.opens.model.Uloga;
 @Repository
 public interface UlogaRepository extends JpaRepository<Uloga, Long> {
 	Optional<Uloga> findByNaziv(EUloge naziv);
+	
+	Uloga findOneByNaziv(EUloge naziv);
 }
