@@ -2,7 +2,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Image, Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import englishFlag from '../assets/flags/english.png';
 import serbianFlag from '../assets/flags/serbian.png';
 import COLORS from "../constants/colors";
