@@ -6,6 +6,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import COLORS from "../constants/colors";
 import httpCommon from "../http-common";
 import axios from "axios";
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 
 export default function Registracija() {
@@ -18,10 +19,12 @@ export default function Registracija() {
   const [godine, setGodine] = useState("")
   const [mestoBoravista, setMestoBoravista] = useState("")
   const [brojTelefona, setBrojTelefona] = useState("")
-  // const [uloga, setUloga] = useState([])
 
   const [phoneCode, setPhoneCode] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
+
+  const [emailError, setEmailError] = useState("")
+  const [passwordError, setPasswordError] = useState("")
 
 
   const [fontsLoaded] = useFonts({
@@ -35,7 +38,6 @@ export default function Registracija() {
     }
     prepare();
     setBrojTelefona(phoneCode + phoneNumber)
-    console.log("Broj telefona je: " + brojTelefona)
   }, [phoneCode, phoneNumber])
 
   if (!fontsLoaded) {
@@ -115,10 +117,12 @@ export default function Registracija() {
 
   const onChangeEmail = (email) => {
     setEmail(email)
+    validateEmail(email)
   }
 
   const onChangePassword = (password) => {
     setPassword(password)
+    validatePassword(password);
   }
 
   const onChangeIme = (ime) => {
@@ -142,10 +146,36 @@ export default function Registracija() {
   }
 
   const onChangePhoneNumber = (phoneNumber) => {
-    setPhoneNumber(phoneNumber)
+    const cleanedPhoneNumber = phoneNumber.startsWith('0') ? phoneNumber.slice(1) : phoneNumber;
+    setPhoneNumber(cleanedPhoneNumber)
+  }
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError('Neispravan format e-maila!');
+    } else {
+      setEmailError('');
+    }
+  }
+
+  const validatePassword = (password) => {
+    // Password must contain at least 8 characters, 1 uppercase letter, 1 number, and 1 special character
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      setPasswordError('Lozinka mora sadržati najmanje osam karaktera, od toga 1 veliko slovo, 1 broj i 1 specijalni karakter(@$!%*?&)');
+    } else {
+      setPasswordError('');
+    }
   }
 
   const registracija = async () => {
+
+    if (emailError || passwordError) {
+      alert("Morate uneti validnu e-mail adresu i validnu lozinku!");
+      return;
+    }
+
     try {
     const posetilac = {
       email,
@@ -157,8 +187,6 @@ export default function Registracija() {
       mestoBoravista,
       brojTelefona,
     };
-
-    console.log("Posetilac je: " + posetilac)
 
       const response = await axios.post('http://10.0.2.2:8080/api/auth/signupPosetilac', posetilac, {
         headers: {
@@ -194,9 +222,18 @@ export default function Registracija() {
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
             <TextInput value={email} onChangeText={onChangeEmail} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Email" />
           </View>
+          {emailError ? (
+            <Text style={{ color: 'red', marginBottom: 20, width: "80%", textAlign: 'center' }}>{emailError}</Text>
+          ) : null}
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput value={password} onChangeText={onChangePassword} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Lozinka" />
+            <TextInput value={password} onChangeText={onChangePassword} secureTextEntry={!showPassword} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Lozinka" />
+            <TouchableOpacity onPress={toggleShowPassword} style={{ position: 'absolute', right: 10 }}>
+              <Icon name={showPassword ? 'visibility-off' : 'visibility'} size={24} color="gray" />
+            </TouchableOpacity>
           </View>
+          {passwordError ? (
+            <Text style={{ color: 'red', marginBottom: 20, width: "80%", textAlign: 'center' }}>{passwordError}</Text>
+          ) : null}
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
             <TextInput value={ime} onChangeText={onChangeIme} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Ime" />
           </View>

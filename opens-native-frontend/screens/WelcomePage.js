@@ -45,6 +45,7 @@ export default function WelcomePage({ navigation }) {
   }
 
   return (
+    <ScrollView style={{ backgroundColor: COLORS.white }}>
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
 
       <View>
@@ -113,6 +114,6 @@ export default function WelcomePage({ navigation }) {
         </Pressable>
       </View>
     </View>
-
+    </ScrollView>
   );
 }
