@@ -21,6 +21,7 @@ export default function App() {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Main" component={BottomTabNavigation} options={{ headerShown: false }} />
           <Stack.Screen name="ProfileEdit" component={ProfileEdit} options={{ headerShown: false }} />
+          {/* <Stack.Screen name="Home" component={Home} /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </I18nextProvider>

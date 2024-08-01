@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.ctc.wstx.util.StringUtil;
+import com.opens.security.service.PosetilacDetailsServiceImpl;
 import com.opens.security.service.ZaposleniDetailsServiceImpl;
 
 import jakarta.servlet.FilterChain;
@@ -28,6 +29,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	@Autowired
 	private ZaposleniDetailsServiceImpl zaposleniDetailsService;
 	
+	@Autowired
+	private PosetilacDetailsServiceImpl posetilacDetailsService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 	
 	@Override
@@ -37,8 +41,24 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			String jwt = parseJwt(request);
 			if(jwt != null && jwtUtils.validateJwtToken(jwt)) {
 				String email = jwtUtils.getEmailFromJwtToken(jwt);
+				String userType = jwtUtils.getClaimFromJwtToken(jwt, "userType");
 				
-				UserDetails userDetails = zaposleniDetailsService.loadUserByUsername(email);
+//				UserDetails userDetails = zaposleniDetailsService.loadUserByUsername(email);
+//				UserDetails userDetails = null;
+				UserDetails userDetails;
+				System.out.println("Jeste ili nije: " + "Zaposleni".equals(userType));
+				if ("Zaposleni".equals(userType)) {
+					System.out.println("Usao je u if");
+	                userDetails = zaposleniDetailsService.loadUserByUsername(email);
+	                System.out.println("Korisnik je Zaposleni.");
+	            } else if ("Posetilac".equals(userType)) {
+	            	System.out.println("Usao je u else if");
+	                userDetails = posetilacDetailsService.loadUserByUsername(email);
+	                System.out.println("Korisnik je Posetilac.");
+	            } else {
+	                throw new RuntimeException("Unknown user type");
+	            }
+				
 				UsernamePasswordAuthenticationToken authentication = 
 						new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

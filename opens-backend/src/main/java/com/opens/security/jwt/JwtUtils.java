@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import com.opens.security.service.PosetilacDetailsImpl;
 import com.opens.security.service.ZaposleniDetailsImpl;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -43,11 +45,32 @@ public class JwtUtils {
 //	} 
 	
 	public String generateJwtToken(ZaposleniDetailsImpl zaposleniPrincipal) {
-		return Jwts.builder().setSubject(zaposleniPrincipal.getEmail()).setIssuedAt(new Date())
+		return Jwts.builder().setSubject(zaposleniPrincipal.getEmail()).claim("userType", "Zaposleni").setIssuedAt(new Date())
 				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
 				.signWith(key(), SignatureAlgorithm.HS512).compact();
 
 	}
+	
+	public String generateJwtToken(PosetilacDetailsImpl posetilacPrincipal) {
+		return Jwts.builder().setSubject(posetilacPrincipal.getEmail()).claim("userType", "Posetilac").setIssuedAt(new Date())
+				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+				.signWith(key(), SignatureAlgorithm.HS512).compact();
+		
+	}
+	
+	public String getClaimFromJwtToken(String token, String claimKey) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.get(claimKey, String.class); // Extracts the claim value
+        } catch (Exception e) {
+            logger.error("Could not extract claim {} from token: {}", claimKey, e.getMessage());
+            return null;
+        }
+    }
 	
 	private Key key() {
 		return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
