@@ -1,5 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { useFocusEffect } from '@react-navigation/native'
+import { Buffer } from 'buffer'
 import { useFonts } from "expo-font"
 import * as SplashScreen from "expo-splash-screen"
 import React, { useCallback, useEffect, useState } from 'react'
@@ -12,6 +13,7 @@ import httpCommon from '../http-common'
 export default function Profile({ navigation }) {
 
   const [user, setUser] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
 
   const { t } = useTranslation();
 
@@ -38,6 +40,13 @@ export default function Profile({ navigation }) {
   const fetchUser = async (id) => {
     const { data } = await httpCommon.get(`posetioci/${id}`);
     setUser(data);
+
+    const response = await httpCommon.get(`posetioci/${id}/profilna`, {
+      responseType: 'arraybuffer'
+    });
+    const contentType = response.headers['content-type'] || 'image/jpeg';
+    const base64Image = Buffer.from(response.data, 'binary').toString('base64');
+    setProfileImage(`data:${contentType};base64,${base64Image}`);
   }
 
   if (!fontsLoaded) {
@@ -57,17 +66,20 @@ export default function Profile({ navigation }) {
           }} />
       </View>
       <View style={{ alignItems: 'center', marginBottom: 20 }}>
-        <Image
-          source={{ uri: `data:image/png;base64,${user && user.profileImage}` }}
-          resizeMode='contain'
-          style={{
-            height: 155,
-            width: 155,
-            borderColor: COLORS.yellow,
-            borderWidth: 2,
-            marginTop: -90
-          }}
-        />
+        {profileImage ? (
+          <Image
+            source={{ uri: profileImage }}
+            style={{
+              height: 155,
+              width: 155,
+              borderColor: COLORS.yellow,
+              borderWidth: 2,
+              marginTop: -90
+            }}
+          />
+        ) : (
+          <Text>Loading image...</Text>
+        )}
         <Text style={{ fontSize: 25, fontFamily: 'Montserrat-Bold', color: COLORS.yellow, }}>
           {user && user.ime} {user && user.prezime}
         </Text>

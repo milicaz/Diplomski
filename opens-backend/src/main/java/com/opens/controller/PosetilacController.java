@@ -1,26 +1,26 @@
 package com.opens.controller;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.opens.dto.PosetilacEditDTO;
 import com.opens.model.Posetilac;
+import com.opens.model.ProfilnaSlika;
 import com.opens.repository.PosetilacRepository;
+import com.opens.repository.ProfilnaSlikaRepository;
 
 @RestController
 @RequestMapping("/api")
@@ -29,6 +29,9 @@ public class PosetilacController {
 
 	@Autowired
 	private PosetilacRepository posetilacRepository;
+	
+	@Autowired
+	private ProfilnaSlikaRepository profilnaSlikaRepository;
 
 	@GetMapping("/posetioci")
 	public ResponseEntity<List<Posetilac>> getAllPosetioci() {
@@ -47,30 +50,24 @@ public class PosetilacController {
 		return new ResponseEntity<>(posetilac, HttpStatus.OK);
 	}
 	
-	@PostMapping("/posetioci")
-	public ResponseEntity<Posetilac> createPosetilac(@RequestBody Posetilac posetilac){
-		try {
-			Posetilac _posetilac = new Posetilac();
-			_posetilac.setIme(posetilac.getIme());
-			_posetilac.setPrezime(posetilac.getPrezime());
-			_posetilac.setPassword(posetilac.getPassword());
-			_posetilac.setEmail(posetilac.getEmail());
-			_posetilac.setRod(posetilac.getRod());
-			_posetilac.setGodine(posetilac.getGodine());
-			_posetilac.setMestoBoravista(posetilac.getMestoBoravista());
-			_posetilac.setBrojTelefona(posetilac.getBrojTelefona());
-			Path imagePath = Paths.get(ResourceUtils.getURL("classpath:images/profile.png").toURI());
-			_posetilac.setProfileImage(Files.readAllBytes(imagePath));
+	@GetMapping("/posetioci/{id}/profilna")
+	public ResponseEntity<byte[]> getProfilna(@PathVariable Long id) {
+		
+		ProfilnaSlika profilna = profilnaSlikaRepository.findByPosetilacId(id);
+	    if (profilna == null || profilna.getProfilnaSlika() == null) {
+	        return ResponseEntity.notFound().build();
+	    }
+	    
+	    String tipSlike = profilna.getTipSlike();
+	    String contentType = validateAndCorrectMimeType(tipSlike);
 
-			posetilacRepository.save(_posetilac);
-			return new ResponseEntity<>(_posetilac, HttpStatus.CREATED);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.parseMediaType(contentType));
+	    return new ResponseEntity<>(profilna.getProfilnaSlika(), headers, HttpStatus.OK);
 	}
-	
+		
 	@PutMapping("/posetioci/{id}")
-	public ResponseEntity<Posetilac> updatePosetilac(@PathVariable Long id, @RequestBody Posetilac posetilac) {
+	public ResponseEntity<Posetilac> updatePosetilac(@PathVariable Long id, @RequestBody PosetilacEditDTO posetilac) {
 		try {
 			
 			Posetilac _posetilac = posetilacRepository.findById(id).get();
@@ -80,14 +77,38 @@ public class PosetilacController {
 			_posetilac.setGodine(posetilac.getGodine());
 			_posetilac.setMestoBoravista(posetilac.getMestoBoravista());
 			_posetilac.setBrojTelefona(posetilac.getBrojTelefona());
-			_posetilac.setProfileImage(posetilac.getProfileImage());
 			
 			posetilacRepository.save(_posetilac);
+			
+			ProfilnaSlika profilna = profilnaSlikaRepository.findByPosetilacId(id);
+			profilna.setProfilnaSlika(posetilac.getProfileImage());
+			
+			profilnaSlikaRepository.save(profilna);
 						
 			return new ResponseEntity<>(_posetilac, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	private String validateAndCorrectMimeType(String mimeType) {
+	    if (mimeType == null || mimeType.isEmpty()) {
+	        return "application/octet-stream"; // Fallback MIME type
+	    }
+	    
+	    switch (mimeType.toLowerCase()) {
+	        case "jpeg":
+	        case "jpg":
+	            return "image/jpeg";
+	        case "png":
+	            return "image/png";
+	        case "gif":
+	            return "image/gif";
+	        case "bmp":
+	            return "image/bmp";
+	        default:
+	            return "application/octet-stream"; // Default fallback
+	    }
 	}
 
 }

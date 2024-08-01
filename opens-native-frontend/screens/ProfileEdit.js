@@ -1,4 +1,5 @@
 import { MaterialIcons } from '@expo/vector-icons';
+import { Buffer } from 'buffer';
 import * as FileSystem from 'expo-file-system';
 import { useFonts } from "expo-font";
 import * as ImagePicker from "expo-image-picker";
@@ -45,7 +46,14 @@ export default function ProfileEdit({ navigation }) {
     setGodine(data.godine);
     setMestoBoravista(data.mestoBoravista);
     setBrojTelefona(data.brojTelefona);
-    setProfileImage(`data:image/png;base64, ${data.profileImage}`);
+    const response = await httpCommon.get(`posetioci/${id}/profilna`, {
+      responseType: 'arraybuffer'
+    });
+
+    const contentType = response.headers['content-type'] || 'image/jpeg';
+
+    const base64Image = Buffer.from(response.data, 'binary').toString('base64');
+    setProfileImage(`data:${contentType};base64, ${base64Image}`);
   }
 
   if (!fontsLoaded) {

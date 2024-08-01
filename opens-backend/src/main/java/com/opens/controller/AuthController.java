@@ -1,8 +1,10 @@
 package com.opens.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -15,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.ResourceUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,11 +30,13 @@ import com.opens.dto.PosetilacDTO;
 import com.opens.dto.ZaposleniDTO;
 import com.opens.model.EUloge;
 import com.opens.model.Posetilac;
+import com.opens.model.ProfilnaSlika;
 import com.opens.model.Uloga;
 import com.opens.model.Zaposleni;
+import com.opens.repository.PosetilacRepository;
+import com.opens.repository.ProfilnaSlikaRepository;
 import com.opens.repository.UlogaRepository;
 import com.opens.repository.ZaposleniRepository;
-import com.opens.repository.PosetilacRepository;
 import com.opens.security.jwt.JwtUtils;
 import com.opens.security.service.ZaposleniDetailsImpl;
 
@@ -57,6 +62,9 @@ public class AuthController {
 	
 	@Autowired
 	JwtUtils jwtUtils;
+	
+	@Autowired
+	private ProfilnaSlikaRepository profilnaSlikaRepository;
 	
 	private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 	
@@ -164,9 +172,30 @@ public class AuthController {
 		
 		posetilacRepo.save(posetilac);
 		
+		try {
+			ProfilnaSlika profilnaSlika = new ProfilnaSlika();
+			
+			Path imagePath = Paths.get(ResourceUtils.getURL("classpath:images/profile.png").toURI());
+			String imageName = imagePath.getFileName().toString();
+			profilnaSlika.setTipSlike(getFileExtension(imageName));
+			profilnaSlika.setProfilnaSlika(Files.readAllBytes(imagePath));
+			
+			profilnaSlika.setPosetilac(posetilac);
+			
+			profilnaSlikaRepository.save(profilnaSlika);
+		}catch(Exception e) {}
+				
 		logger.info("USER_REGISTRATION_SUCCESS - User registered successfully");
 		return ResponseEntity.ok("User registered successfully!");
 		
+	}
+	
+	private String getFileExtension(String fileName) {
+	    int lastIndexOfDot = fileName.lastIndexOf('.');
+	    if (lastIndexOfDot > 0 && lastIndexOfDot < fileName.length() - 1) {
+	        return fileName.substring(lastIndexOfDot + 1).toLowerCase();
+	    }
+	    return "";
 	}
 	
 }

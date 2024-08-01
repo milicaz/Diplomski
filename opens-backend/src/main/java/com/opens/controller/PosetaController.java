@@ -110,7 +110,7 @@ public class PosetaController {
 
 	}
 
-	@Transactional
+//	@Transactional
 	@PostMapping("/posete")
 	public ResponseEntity<Poseta> createPosetu(@RequestBody PosetaDTO posetaDTO) {
 		try {
