@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,6 +39,7 @@ import com.opens.repository.ProfilnaSlikaRepository;
 import com.opens.repository.UlogaRepository;
 import com.opens.repository.ZaposleniRepository;
 import com.opens.security.jwt.JwtUtils;
+import com.opens.security.service.PosetilacDetailsImpl;
 import com.opens.security.service.ZaposleniDetailsImpl;
 
 @RestController
@@ -188,6 +190,50 @@ public class AuthController {
 		logger.info("USER_REGISTRATION_SUCCESS - User registered successfully");
 		return ResponseEntity.ok("User registered successfully!");
 		
+	}
+		    
+	@PostMapping("/loginPosetilac")
+	public ResponseEntity<?> loginPosetilac(@Validated @RequestBody LoginDTO loginDTO) {
+		
+		System.out.println("Email je: " + loginDTO.getEmail());
+		System.out.println("Password je: " + loginDTO.getPassword());
+		
+		Authentication authentication = authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
+		
+		System.out.println("Prosao je Authentication");
+		
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		PosetilacDetailsImpl posetilacDetails = (PosetilacDetailsImpl) authentication.getPrincipal();
+		
+		System.out.println("Prosao je Security");
+		
+		String jwt = jwtUtils.generateJwtToken(posetilacDetails);
+		
+		System.out.println();
+		
+		String roleToCheck = "ROLE_POSETILAC";
+		
+		 boolean hasRole = posetilacDetails.getAuthorities().stream()
+		            .map(item -> item.getAuthority())
+		            .anyMatch(authority -> authority.equals(roleToCheck));
+
+		    // Log information and return response based on role presence
+		    if (hasRole) {
+		        logger.info("USER_LOGIN_SUCCESS - User with role '{}' logged in successfully", roleToCheck);
+		        return ResponseEntity.ok("User with role '" + roleToCheck + "' logged in successfully!");
+		    } else {
+		        logger.info("USER_LOGIN_FAILURE - User with role '{}' not found", roleToCheck);
+		        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User with role '" + roleToCheck + "' not found.");
+		    }
+		
+//		List<String> uloge = posetilacDetails.getAuthorities().stream().map(item -> item.getAuthority())
+//				.collect(Collectors.toList());
+		
+//		logger.info("USER_LOGIN_SUCCESS - User logged in successfully");
+//		return (ResponseEntity<?>) ResponseEntity
+//				.ok("User logged in successfully!");
+	
 	}
 	
 	private String getFileExtension(String fileName) {

@@ -7,9 +7,12 @@ import COLORS from "../constants/colors";
 import httpCommon from "../http-common";
 import axios from "axios";
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from "@react-navigation/native";
 
 
 export default function Registracija() {
+
+  const navigation = useNavigation();
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -194,6 +197,7 @@ export default function Registracija() {
         }
       })
       alert("Uspešno ste se registrovali!");
+      navigation.navigate('Welcome')
   } catch (error) {
     console.error("Error during registration:", error);
     alert("Registration failed. Please try again.");

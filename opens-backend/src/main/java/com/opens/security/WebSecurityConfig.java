@@ -16,29 +16,40 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.opens.security.jwt.AuthEntryPointJwt;
 import com.opens.security.jwt.AuthTokenFilter;
+import com.opens.security.service.CustomeDetailsService;
+import com.opens.security.service.PosetilacDetailsServiceImpl;
 import com.opens.security.service.ZaposleniDetailsServiceImpl;
 
 @Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig {
-
+	
+	@Autowired
+	private AuthEntryPointJwt unauthorizedHandler;
+	
 	@Autowired
 	ZaposleniDetailsServiceImpl zaposleniDetailsService;
 	
 	@Autowired
-	private AuthEntryPointJwt unauthorizedHandler;
+	PosetilacDetailsServiceImpl posetilacDetailsService;
+	
+	@Autowired
+    private CustomeDetailsService customeDetailsService;
+	
 	
 	@Bean
 	public AuthTokenFilter authenticationJwtTokenFilter() {
 	    return new AuthTokenFilter();
 	  }
 	
+	
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
 		
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 		
-		authProvider.setUserDetailsService(zaposleniDetailsService);
+//		authProvider.setUserDetailsService(zaposleniDetailsService);
+		authProvider.setUserDetailsService(customeDetailsService);
 		authProvider.setPasswordEncoder(PasswordEncoder());
 		
 		return authProvider;
