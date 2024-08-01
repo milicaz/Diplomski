@@ -22,8 +22,8 @@ public class Uloga {
 	@Enumerated(EnumType.STRING)
 	private EUloge naziv;
 	
-	@OneToOne(mappedBy = "uloga")
-	private Posetilac posetilac;
+//	@OneToOne(mappedBy = "uloga")
+//	private Posetilac posetilac;
 
 	public Uloga() {
 	}
@@ -48,12 +48,12 @@ public class Uloga {
 		this.naziv = naziv;
 	}
 
-	public Posetilac getPosetilac() {
-		return posetilac;
-	}
-
-	public void setPosetilac(Posetilac posetilac) {
-		this.posetilac = posetilac;
-	}
+//	public Posetilac getPosetilac() {
+//		return posetilac;
+//	}
+//
+//	public void setPosetilac(Posetilac posetilac) {
+//		this.posetilac = posetilac;
+//	}
 
 }
