@@ -10,14 +10,11 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { opensBojaImage } from "../assets";
 import { Home } from "./Home";
 import DogadjajHome from "./aktivnosti/DogadjajHome";
-import { CoworkingListHome, CoworkingTabelaHome } from "./co-working";
+import Logovanje from "./korisnik/Logovanje";
 import MainCheckIn from "./korisnik/MainCheckIn";
 import { Profile } from "./korisnik/Profile";
 import Registracija from "./korisnik/Registracija";
-import {
-  OmladinskiKlubListHome,
-  OmladinskiKlubTabelaHome,
-} from "./omladinski klub";
+import OmladinskiCentar from "./omladinski centar/OmladinskiCentar";
 import {
   MestoDogadjajaHome,
   MestoPoseteHome,
@@ -28,14 +25,12 @@ import {
   TipOprHome,
 } from "./pomocne tabele";
 import LogoHome from "./pomocne tabele/logo/LogoHome";
-import Logovanje from "./korisnik/Logovanje";
 import ZaposleniHome from "./zaposleni/ZaposleniHome";
 
 export const Navigation = () => {
-  const coworkingPaths = ["/coworking-trenutno", "/coworking-tabela"];
-  const omladinskiPaths = ["/omladinski-trenutno", "/omladinski-tabela"];
   const aktivnostiPaths = ["/dogadjaj"];
   const sifarnikPaths = [
+    "/obavestenja",
     "/tipOpreme",
     "/oprema",
     "/mestoPosete",
@@ -44,7 +39,6 @@ export const Navigation = () => {
     "/prigradskaNaselja",
     "/logo",
   ];
-  const zaposleniPaths = ["/zaposleni"];
 
   const location = useLocation();
 
@@ -60,52 +54,14 @@ export const Navigation = () => {
             <img src={opensBojaImage} alt="OPENS" width="150" />
           </NavbarBrand>
           <Nav className="me-auto">
-            <NavDropdown
-              title="Co-working"
-              className={
-                isActiveDropdown(coworkingPaths) ? "coworking-dropdown" : ""
-              }
+            <Nav.Link
+              href="/omladinski"
+              className={`coworking-dropdown-item ${
+                isActive("/omladinski") ? "active" : ""
+              }`}
             >
-              <NavDropdown.Item
-                href="/coworking-trenutno"
-                className={`coworking-dropdown-item ${
-                  isActive("/coworking-trenutno") ? "active" : ""
-                }`}
-              >
-                Trenutno
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                href="/coworking-tabela"
-                className={`coworking-dropdown-item ${
-                  isActive("/coworking-tabela") ? "active" : ""
-                }`}
-              >
-                Tabela poseta
-              </NavDropdown.Item>
-            </NavDropdown>
-            <NavDropdown
-              title="Omladinski centar"
-              className={
-                isActiveDropdown(omladinskiPaths) ? "omladinski-dropdown" : ""
-              }
-            >
-              <NavDropdown.Item
-                href="/omladinski-trenutno"
-                className={`omladinski-dropdown-item ${
-                  isActive("/omladinski-trenutno") ? "active" : ""
-                }`}
-              >
-                Trenutno
-              </NavDropdown.Item>
-              <NavDropdown.Item
-                href="/omladinski-tabela"
-                className={`omladinski-dropdown-item ${
-                  isActive("/omladinski-tabela") ? "active" : ""
-                }`}
-              >
-                Tabela poseta
-              </NavDropdown.Item>
-            </NavDropdown>
+              Omladinski centar OPENS
+            </Nav.Link>
             <NavDropdown
               title="Aktivnosti"
               className={
@@ -231,16 +187,6 @@ export const Navigation = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/coworking-trenutno" element={<CoworkingListHome />} />
-          <Route path="/coworking-tabela" element={<CoworkingTabelaHome />} />
-          <Route
-            path="/omladinski-trenutno"
-            element={<OmladinskiKlubListHome />}
-          />
-          <Route
-            path="/omladinski-tabela"
-            element={<OmladinskiKlubTabelaHome />}
-          />
           <Route path="/registracija" element={<Registracija />} />
           <Route path="/check-in" element={<MainCheckIn />} />
           <Route path="/tipOpreme" element={<TipOprHome />} />
@@ -257,6 +203,7 @@ export const Navigation = () => {
           <Route path="/obavestenja" element={<ObavestenjaHome />} />
           <Route path="/logovanje" element={<Logovanje />} />
           <Route path="/zaposleni" element={<ZaposleniHome />} />
+          <Route path="/omladinski" element={<OmladinskiCentar />} />
         </Routes>
       </div>
     </>

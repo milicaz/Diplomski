@@ -1,11 +1,16 @@
 package com.opens.controller;
 
+import java.awt.Image;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,20 +22,17 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.opens.view.DirektniCoworkingView;
-import com.opens.view.DirektniOmladinskiView;
-import com.opens.view.DirektniUkupnoCoworkingView;
-import com.opens.view.DirektniUkupnoOmladinskiView;
-import com.opens.view.UkupnoPosetaCoworkingView;
-import com.opens.view.UkupnoPosetaOmladinskiView;
-import com.opens.view.repository.DirektniCoworkingViewRepository;
-import com.opens.view.repository.DirektniOmladinskiViewRepository;
-import com.opens.view.repository.DirektniUkupnoCoworkingViewRepository;
-import com.opens.view.repository.DirektniUkupnoOmladinskiViewRepository;
-import com.opens.view.repository.UkupnoPosetaCoworkingViewRepository;
-import com.opens.view.repository.UkupnoPosetaOmladinskiViewRepository;
+import com.opens.model.Logo;
+import com.opens.repository.LogoRepository;
+import com.opens.view.DirektniUkupnoView;
+import com.opens.view.DirektniView;
+import com.opens.view.UkupnoPosetaView;
+import com.opens.view.repository.DirektniUkupnoViewRepository;
+import com.opens.view.repository.DirektniViewRepository;
+import com.opens.view.repository.UkupnoPosetaViewRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -52,47 +54,58 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 public class DirektnePoseteController {
 
 	@Autowired
-	private DirektniCoworkingViewRepository direktniCoworkingViewRepository;
+	private DirektniViewRepository direktniViewRepository;
 
 	@Autowired
-	private DirektniUkupnoCoworkingViewRepository direktniUkupnoCoworkingViewRepository;
+	private DirektniUkupnoViewRepository direktniUkupnoViewRepository;
 
 	@Autowired
-	private UkupnoPosetaCoworkingViewRepository ukupnoPosetaCoworkingViewRepository;
+	private UkupnoPosetaViewRepository ukupnoPosetaViewRepository;
 
 	@Autowired
-	private DirektniOmladinskiViewRepository direktniOmladinskiViewRepository;
+	private LogoRepository logoRepository;
 
-	@Autowired
-	private DirektniUkupnoOmladinskiViewRepository direktniUkupnoOmladinskiViewRepository;
+	@GetMapping("/{mestoPoseteId}/pdf/{mesecPosete}/godina/{godinaPosete}")
+	public ResponseEntity<byte[]> pdfReport(@PathVariable Long mestoPoseteId, @PathVariable Integer mesecPosete,
+			@PathVariable Integer godinaPosete, @RequestParam(required = false) Long headerImageId,
+			@RequestParam(required = false) Long footerImageId) throws JRException, FileNotFoundException {
 
-	@Autowired
-	private UkupnoPosetaOmladinskiViewRepository ukupnoPosetaOmladinskiViewRepository;
-
-	@GetMapping("/coworking/pdf/{mesecPosete}/godina/{godinaPosete}")
-	public ResponseEntity<byte[]> coworkingPDFReport(@PathVariable Integer mesecPosete,
-			@PathVariable Integer godinaPosete) throws JRException, FileNotFoundException {
-
-		List<DirektniCoworkingView> direktniCoworkingList = direktniCoworkingViewRepository
-				.findByMesecPoseteAndGodinaPosete(mesecPosete, godinaPosete);
+		List<DirektniView> direktniList = direktniViewRepository
+				.findByMestoPoseteIdAndMesecPoseteAndGodinaPosete(mestoPoseteId, mesecPosete, godinaPosete);
 		File file = ResourceUtils.getFile("classpath:direktniKorisnici.jrxml");
-		JRBeanCollectionDataSource direktniCoworkingDataSource = new JRBeanCollectionDataSource(direktniCoworkingList);
+		JRBeanCollectionDataSource direktniCoworkingDataSource = new JRBeanCollectionDataSource(direktniList);
 
 		// subreport za direktne posete
-		List<DirektniUkupnoCoworkingView> direktniUkupnoList = direktniUkupnoCoworkingViewRepository
-				.findByMesecPoseteAndGodinaPosete(mesecPosete, godinaPosete);
+		List<DirektniUkupnoView> direktniUkupnoList = direktniUkupnoViewRepository
+				.findByMestoPoseteIdAndMesecPoseteAndGodinaPosete(mestoPoseteId, mesecPosete, godinaPosete);
 		JRBeanCollectionDataSource ukupnoDataSource = new JRBeanCollectionDataSource(direktniUkupnoList);
 
 		Map<String, Object> direktniUkupnoParameter = new HashMap<>();
 		direktniUkupnoParameter.put("ukupnoDataset", ukupnoDataSource);
 
 		// subreport za ukupne posete
-		List<UkupnoPosetaCoworkingView> ukupnoPosetaList = ukupnoPosetaCoworkingViewRepository
-				.findByMesecPoseteAndGodinaPosete(mesecPosete, godinaPosete);
+		List<UkupnoPosetaView> ukupnoPosetaList = ukupnoPosetaViewRepository
+				.findByMestoPoseteIdAndMesecPoseteAndGodinaPosete(mestoPoseteId, mesecPosete, godinaPosete);
 		JRBeanCollectionDataSource ukupnoPosetaDataSource = new JRBeanCollectionDataSource(ukupnoPosetaList);
 
 		Map<String, Object> ukupnoPoseteParameter = new HashMap<>();
 		ukupnoPoseteParameter.put("poseteDataset", ukupnoPosetaDataSource);
+
+		byte[] headerImageByte = null;
+		if (headerImageId != null) {
+			Optional<Logo> header = logoRepository.findById(headerImageId);
+			if (header.isPresent()) {
+				headerImageByte = header.get().getPicByte();
+			}
+		}
+
+		byte[] footerImageByte = null;
+		if (footerImageId != null) {
+			Optional<Logo> footer = logoRepository.findById(footerImageId);
+			if (footer.isPresent()) {
+				footerImageByte = footer.get().getPicByte();
+			}
+		}
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("direktniDataSet", direktniCoworkingDataSource);
@@ -100,6 +113,15 @@ public class DirektnePoseteController {
 		parameters.put("direktniUkupnoParametar", direktniUkupnoParameter);
 		parameters.put("ukupnoPosetaReport", getUkupnoPosetaReport());
 		parameters.put("ukupnoPosetaParametar", ukupnoPoseteParameter);
+
+		try {
+			Image headerImage = ImageIO.read(new ByteArrayInputStream(headerImageByte));
+			Image footerImage = ImageIO.read(new ByteArrayInputStream(footerImageByte));
+			parameters.put("headerImage", headerImage);
+			parameters.put("footerImage", footerImage);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
@@ -112,26 +134,26 @@ public class DirektnePoseteController {
 		return new ResponseEntity<byte[]>(JasperExportManager.exportReportToPdf(jasperPrint), headers, HttpStatus.OK);
 	}
 
-	@GetMapping("/coworking/xlsx/{mesecPosete}/godina/{godinaPosete}")
-	public void coworkingXLSXReport(@PathVariable Integer mesecPosete, @PathVariable Integer godinaPosete,
-			HttpServletResponse response) throws JRException, IOException {
+	@GetMapping("/{mestoPoseteId}/xlsx/{mesecPosete}/godina/{godinaPosete}")
+	public void xlsxReport(@PathVariable Long mestoPoseteId, @PathVariable Integer mesecPosete,
+			@PathVariable Integer godinaPosete, HttpServletResponse response) throws JRException, IOException {
 
-		List<DirektniCoworkingView> direktniCoworkingList = direktniCoworkingViewRepository
-				.findByMesecPoseteAndGodinaPosete(mesecPosete, godinaPosete);
+		List<DirektniView> direktniCoworkingList = direktniViewRepository
+				.findByMestoPoseteIdAndMesecPoseteAndGodinaPosete(mestoPoseteId, mesecPosete, godinaPosete);
 		File file = ResourceUtils.getFile("classpath:direktniKorisnici.jrxml");
 		JRBeanCollectionDataSource direktniCoworkingDataSource = new JRBeanCollectionDataSource(direktniCoworkingList);
 
 		// subreport za direktne posete
-		List<DirektniUkupnoCoworkingView> direktniUkupnoList = direktniUkupnoCoworkingViewRepository
-				.findByMesecPoseteAndGodinaPosete(mesecPosete, godinaPosete);
+		List<DirektniUkupnoView> direktniUkupnoList = direktniUkupnoViewRepository
+				.findByMestoPoseteIdAndMesecPoseteAndGodinaPosete(mestoPoseteId, mesecPosete, godinaPosete);
 		JRBeanCollectionDataSource ukupnoDataSource = new JRBeanCollectionDataSource(direktniUkupnoList);
 
 		Map<String, Object> direktniUkupnoParameter = new HashMap<>();
 		direktniUkupnoParameter.put("ukupnoDataset", ukupnoDataSource);
 
 		// subreport za ukupne posete
-		List<UkupnoPosetaCoworkingView> ukupnoPosetaList = ukupnoPosetaCoworkingViewRepository
-				.findByMesecPoseteAndGodinaPosete(mesecPosete, godinaPosete);
+		List<UkupnoPosetaView> ukupnoPosetaList = ukupnoPosetaViewRepository
+				.findByMestoPoseteIdAndMesecPoseteAndGodinaPosete(mestoPoseteId, mesecPosete, godinaPosete);
 		JRBeanCollectionDataSource ukupnoPosetaDataSource = new JRBeanCollectionDataSource(ukupnoPosetaList);
 
 		Map<String, Object> ukupnoPoseteParameter = new HashMap<>();
@@ -149,101 +171,7 @@ public class DirektnePoseteController {
 
 		JRXlsxExporter exporter = new JRXlsxExporter();
 		SimpleXlsxReportConfiguration reportConfigXLS = new SimpleXlsxReportConfiguration();
-		reportConfigXLS.setSheetNames(new String[] { "Direktni korisnici Coworking prostora" });
-		exporter.setConfiguration(reportConfigXLS);
-		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
-		response.setContentType("application/vnd.ms-excel");
-		response.setHeader("Content-Disposition", "attachment; filename=\"direktni.xlsx\"");
-		exporter.exportReport();
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-	}
-
-	@GetMapping("/omladinski/pdf/{mesecPosete}/godina/{godinaPosete}")
-	public ResponseEntity<byte[]> omladinskiPDFReport(@PathVariable Integer mesecPosete,
-			@PathVariable Integer godinaPosete) throws JRException, FileNotFoundException {
-
-		List<DirektniOmladinskiView> direktniOmladinskiList = direktniOmladinskiViewRepository
-				.findByMesecPoseteAndGodinaPosete(mesecPosete, godinaPosete);
-		File file = ResourceUtils.getFile("classpath:direktniKorisnici.jrxml");
-		JRBeanCollectionDataSource direktniOmladinskiDataSource = new JRBeanCollectionDataSource(
-				direktniOmladinskiList);
-
-		// subreport za direktne posete
-		List<DirektniUkupnoOmladinskiView> direktniUkupnoList = direktniUkupnoOmladinskiViewRepository
-				.findByMesecPoseteAndGodinaPosete(mesecPosete, godinaPosete);
-		JRBeanCollectionDataSource ukupnoDataSource = new JRBeanCollectionDataSource(direktniUkupnoList);
-
-		Map<String, Object> direktniUkupnoParameter = new HashMap<>();
-		direktniUkupnoParameter.put("ukupnoDataset", ukupnoDataSource);
-
-		// subreport za ukupne posete
-		List<UkupnoPosetaOmladinskiView> ukupnoPosetaList = ukupnoPosetaOmladinskiViewRepository
-				.findByMesecPoseteAndGodinaPosete(mesecPosete, godinaPosete);
-		JRBeanCollectionDataSource ukupnoPosetaDataSource = new JRBeanCollectionDataSource(ukupnoPosetaList);
-
-		Map<String, Object> ukupnoPoseteParameter = new HashMap<>();
-		ukupnoPoseteParameter.put("poseteDataset", ukupnoPosetaDataSource);
-
-		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("direktniDataSet", direktniOmladinskiDataSource);
-		parameters.put("direktniUkupnoReport", getDirektniUkupnoReport());
-		parameters.put("direktniUkupnoParametar", direktniUkupnoParameter);
-		parameters.put("ukupnoPosetaReport", getUkupnoPosetaReport());
-		parameters.put("ukupnoPosetaParametar", ukupnoPoseteParameter);
-
-		JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
-		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
-
-		HttpHeaders headers = new HttpHeaders();
-		// set the PDF format
-		headers.setContentType(MediaType.APPLICATION_PDF);
-		headers.setContentDispositionFormData("attachment", "direktni.pdf");
-
-		return new ResponseEntity<byte[]>(JasperExportManager.exportReportToPdf(jasperPrint), headers, HttpStatus.OK);
-	}
-
-	@GetMapping("/omladinski/xlsx/{mesecPosete}/godina/{godinaPosete}")
-	public void omladinskiXLSXReport(@PathVariable Integer mesecPosete, @PathVariable Integer godinaPosete,
-			HttpServletResponse response) throws JRException, IOException {
-
-		List<DirektniOmladinskiView> direktniOmladinskiList = direktniOmladinskiViewRepository
-				.findByMesecPoseteAndGodinaPosete(mesecPosete, godinaPosete);
-		File file = ResourceUtils.getFile("classpath:direktniKorisnici.jrxml");
-		JRBeanCollectionDataSource direktniOmladinskiDataSource = new JRBeanCollectionDataSource(
-				direktniOmladinskiList);
-
-		// subreport za direktne posete
-		List<DirektniUkupnoOmladinskiView> direktniUkupnoList = direktniUkupnoOmladinskiViewRepository
-				.findByMesecPoseteAndGodinaPosete(mesecPosete, godinaPosete);
-		JRBeanCollectionDataSource ukupnoDataSource = new JRBeanCollectionDataSource(direktniUkupnoList);
-
-		Map<String, Object> direktniUkupnoParameter = new HashMap<>();
-		direktniUkupnoParameter.put("ukupnoDataset", ukupnoDataSource);
-
-		// subreport za ukupne posete
-		List<UkupnoPosetaOmladinskiView> ukupnoPosetaList = ukupnoPosetaOmladinskiViewRepository
-				.findByMesecPoseteAndGodinaPosete(mesecPosete, godinaPosete);
-		JRBeanCollectionDataSource ukupnoPosetaDataSource = new JRBeanCollectionDataSource(ukupnoPosetaList);
-
-		Map<String, Object> ukupnoPoseteParameter = new HashMap<>();
-		ukupnoPoseteParameter.put("poseteDataset", ukupnoPosetaDataSource);
-
-		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("direktniDataSet", direktniOmladinskiDataSource);
-		parameters.put("direktniUkupnoReport", getDirektniUkupnoReport());
-		parameters.put("direktniUkupnoParametar", direktniUkupnoParameter);
-		parameters.put("ukupnoPosetaReport", getUkupnoPosetaReport());
-		parameters.put("ukupnoPosetaParametar", ukupnoPoseteParameter);
-
-		JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
-		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
-
-		JRXlsxExporter exporter = new JRXlsxExporter();
-		SimpleXlsxReportConfiguration reportConfigXLS = new SimpleXlsxReportConfiguration();
-		reportConfigXLS.setSheetNames(new String[] { "Direktni korisnici Coworking prostora" });
+		reportConfigXLS.setSheetNames(new String[] { "Direktni korisnici" });
 		exporter.setConfiguration(reportConfigXLS);
 		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));

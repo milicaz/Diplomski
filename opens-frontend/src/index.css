@@ -236,6 +236,17 @@ td {
 }
 
 /*CSS ZA NAVIGACIJU ZA REGISTRACIJU I CHECKIN*/
+.zaposleni-dropdown-item {
+  color: #495057;
+}
+
+.zaposleni-dropdown-item.active {
+  background-color: #61cddc;
+  color: #000000; 
+  font-weight: bolder;
+}
+
+/*CSS ZA NAVIGACIJU ZA REGISTRACIJU I CHECKIN*/
 .registracija-dropdown-item {
   color: #495057;
 }
@@ -339,4 +350,24 @@ td {
 .nav-tabs .nav-link.active {
   background-color: #a18bbd;
   color: #fff; 
+}
+
+.first-tab .nav-link.active {
+  background-color: #a3c57b;
+}
+
+.second-tab .nav-link.active {
+  background-color: #fbb537;
+}
+
+.third-tab .nav-link.active {
+  background-color: #f56f66;
+}
+
+.fourth-tab .nav-link.active {
+  background-color: #61cddc;
+}
+
+.fifth-tab .nav-link.active {
+  background-color: #a18bbd;
 }

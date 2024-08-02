@@ -1,29 +1,14 @@
 import "chart.js/auto";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import httpCommon from "../http-common";
-import {
-  AdminGodisnjeAktivnosti,
-  AdminMesecnePoseteCoworking,
-  AdminMesecnePoseteOmladinski,
-} from "./admin dashboard";
+import { AdminGodisnjeAktivnosti, AdminMesecnePosete } from "./admin dashboard";
 
 export const Home = () => {
-  const [coworking, setCoworking] = useState([]);
-  const [omladinski, setOmladinski] = useState([]);
   const [posete, setPosete] = useState([]);
   const [ucesnici, setUcesnici] = useState([]);
   const [dogadjaji, setDogadjaji] = useState([]);
-
-  const fetchCoworking = async () => {
-    const { data } = await httpCommon.get("/admin/coworking");
-    setCoworking(data);
-  };
-
-  const fetchOmladinski = async () => {
-    const { data } = await httpCommon.get("/admin/omladinski");
-    setOmladinski(data);
-  };
+  const [mestaPosete, setMestaPosete] = useState([]);
 
   const fetchPoseteCount = async () => {
     const { data } = await httpCommon.get("/admin/posete");
@@ -36,18 +21,27 @@ export const Home = () => {
   };
 
   const currentYear = new Date().getFullYear();
-  const fetchDogadjaji = async () => {
+  const fetchDogadjaji = useCallback(async () => {
     const { data } = await httpCommon.get(`/admin/dogadjaji/${currentYear}`);
     setDogadjaji(data);
+  }, [currentYear, setDogadjaji]);
+
+  const fetchMestaPosete = async () => {
+    const { data } = await httpCommon.get("/mestaPosete");
+    setMestaPosete(data);
   };
 
   useEffect(() => {
-    fetchCoworking();
-    fetchOmladinski();
     fetchPoseteCount();
     fetchUcesniciCount();
     fetchDogadjaji();
-  }, []);
+    fetchMestaPosete();
+  }, [fetchDogadjaji]);
+
+  const sortedMestaPosete =
+    mestaPosete.length > 0
+      ? mestaPosete.sort((a, b) => (a.id < b.id ? -1 : 1))
+      : [];
 
   const getCardColor = (tipDogadjaja) => {
     switch (tipDogadjaja.toLowerCase()) {
@@ -127,52 +121,20 @@ export const Home = () => {
           </Col>
         ))}
       </Row>
-      {/* <Row className="mt-3">
-        <Col>
-          <Row className="mb-2">
-            <Card className="card-shadow">
-              <Card.Body>
-                <AdminMesecnePoseteCoworking mesecnePosete={coworking} />
-              </Card.Body>
-            </Card>
-          </Row>
-          <Row>
-            <Card className="card-shadow">
-              <Card.Body>
-                <AdminMesecnePoseteOmladinski mesecnePosete={omladinski} />
-              </Card.Body>
-            </Card>
-          </Row>
-        </Col>
-        <Col>
-          <Card className="card-shadow card-height">
-            <Card.Body className="justify-content-center">
-              <AdminGodisnjeAktivnosti aktivnosti={dogadjaji} />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row> */}
       <Container className="mt-3">
         <Row>
           <Col md={6}>
-            <Row className="mb-3">
-              <Col>
-                <Card className="card-shadow">
-                  <Card.Body>
-                    <AdminMesecnePoseteCoworking mesecnePosete={coworking} />
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Card className="card-shadow">
-                  <Card.Body>
-                    <AdminMesecnePoseteOmladinski mesecnePosete={omladinski} />
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
+            {sortedMestaPosete.map((mestoPosete) => (
+              <Row className="mb-3" key={mestoPosete.id}>
+                <Col>
+                  <Card className="card-shadow">
+                    <Card.Body>
+                      <AdminMesecnePosete mestoPoseteId={mestoPosete.id} />
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+            ))}
           </Col>
           <Col md={6}>
             <Card className="card-shadow card-height">

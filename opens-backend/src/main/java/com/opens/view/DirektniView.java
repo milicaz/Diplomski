@@ -8,8 +8,8 @@ import jakarta.persistence.Id;
 
 @Entity
 @Immutable
-@Subselect("select * from DIREKTNI_COWORKING_VIEW")
-public class DirektniCoworkingView {
+@Subselect("select * from DIREKTNI_VIEW")
+public class DirektniView {
 
 	@Id
 	private Long id;
@@ -17,6 +17,7 @@ public class DirektniCoworkingView {
 	private String prezime;
 	private Integer godine;
 	private String rod;
+	private Long mestoPoseteId;
 	private Integer mesecPosete;
 	private Integer godinaPosete;
 	private String nazivMesta;
@@ -39,6 +40,10 @@ public class DirektniCoworkingView {
 
 	public String getRod() {
 		return rod;
+	}
+	
+	public Long getMestoPoseteId() {
+		return mestoPoseteId;
 	}
 
 	public Integer getMesecPosete() {

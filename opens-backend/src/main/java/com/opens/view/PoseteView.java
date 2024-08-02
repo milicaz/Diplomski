@@ -8,8 +8,8 @@ import jakarta.persistence.Id;
 
 @Entity
 @Immutable
-@Subselect("select * from POSETE_OMLADINSKI_VIEW")
-public class PoseteOmladinskiView {
+@Subselect("select * from POSETE_VIEW")
+public class PoseteView {
 
 	@Id
 	private Long id;
@@ -17,6 +17,7 @@ public class PoseteOmladinskiView {
 	private String ime;
 	private String prezime;
 	private Integer godine;
+	private Long mestoPoseteId;
 	private Integer mesecPosete;
 	private Integer godinaPosete;
 	private Integer mesecniBrojPoseta;
@@ -44,6 +45,10 @@ public class PoseteOmladinskiView {
 
 	public Integer getGodine() {
 		return godine;
+	}
+	
+	public Long getMestoPoseteId() {
+		return mestoPoseteId;
 	}
 
 	public Integer getMesecPosete() {

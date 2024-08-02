@@ -29,10 +29,8 @@ import com.opens.repository.MestoPoseteRepository;
 import com.opens.repository.OpremaRepository;
 import com.opens.repository.PosetaRepository;
 import com.opens.repository.PosetilacRepository;
-import com.opens.view.PoseteCoworkingView;
-import com.opens.view.PoseteOmladinskiView;
-import com.opens.view.repository.PoseteCoworkingViewRepository;
-import com.opens.view.repository.PoseteOmladinskiViewRepository;
+import com.opens.view.PoseteView;
+import com.opens.view.repository.PoseteViewRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -54,11 +52,8 @@ public class PosetaController {
 	private OpremaRepository opremaRepository;
 	
 	@Autowired
-	private PoseteCoworkingViewRepository poseteCoworkingViewRepository;
+	private PoseteViewRepository poseteViewRepository;
 	
-	@Autowired
-	private PoseteOmladinskiViewRepository poseteOmladinskiViewRepository;
-
 	@GetMapping("/posete")
 	public ResponseEntity<List<Poseta>> getAllPosete() {
 		List<Poseta> posete = new ArrayList<>();
@@ -72,30 +67,18 @@ public class PosetaController {
 
 	}
 	
-	@GetMapping("/posete/coworking")
-	public ResponseEntity<List<PoseteCoworkingView>> getCoworkingPosete(){
-		List<PoseteCoworkingView> posete = new ArrayList<>();
+	@GetMapping("/posete/{mestoPoseteId}")
+	public ResponseEntity<List<PoseteView>> getPosete(@PathVariable Long mestoPoseteId){
+		List<PoseteView> posete = new ArrayList<>();
 
-		poseteCoworkingViewRepository.findAll().forEach(posete::add);
-
-		if (posete.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<>(posete, HttpStatus.OK);
-	}
-	
-	@GetMapping("/posete/omladinski")
-	public ResponseEntity<List<PoseteOmladinskiView>> getOmladinskiPosete(){
-		List<PoseteOmladinskiView> posete = new ArrayList<>();
-
-		poseteOmladinskiViewRepository.findAll().forEach(posete::add);
+		poseteViewRepository.findByMestoPoseteId(mestoPoseteId).forEach(posete::add);
 
 		if (posete.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<>(posete, HttpStatus.OK);
 	}
-	
+		
 	@Transactional
 	@GetMapping("/posete/{mestoPoseteId}/datum-posete")
 	public ResponseEntity<List<Poseta>> getAllPosete(@PathVariable Long mestoPoseteId, @RequestParam LocalDate datum) {

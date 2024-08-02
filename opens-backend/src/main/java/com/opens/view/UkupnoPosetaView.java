@@ -8,8 +8,8 @@ import jakarta.persistence.Id;
 
 @Entity
 @Immutable
-@Subselect("select * from UKUPNO_POSETA_OMLADINSKI_VIEW")
-public class UkupnoPosetaOmladinskiView {
+@Subselect("select * from UKUPNO_POSETA_VIEW")
+public class UkupnoPosetaView {
 
 	@Id
 	private Long id;

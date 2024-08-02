@@ -9,14 +9,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.opens.view.AdminCoworkingMesecnePoseteView;
 import com.opens.view.AdminGodisnjeAktivnostiView;
-import com.opens.view.AdminOmladinskiMesecnePoseteView;
+import com.opens.view.AdminMesecnePoseteView;
 import com.opens.view.AdminPoseteCountView;
 import com.opens.view.AdminUcesniciCountView;
-import com.opens.view.repository.AdminCoworkingMesecnePoseteViewRepository;
 import com.opens.view.repository.AdminGodisnjeAktivnostiViewRepository;
-import com.opens.view.repository.AdminOmladinskiMesecnePoseteViewRepository;
+import com.opens.view.repository.AdminMesecnePoseteViewRepository;
 import com.opens.view.repository.AdminPoseteCountViewRepository;
 import com.opens.view.repository.AdminUcesniciCountViewRepository;
 
@@ -26,11 +24,8 @@ import com.opens.view.repository.AdminUcesniciCountViewRepository;
 public class AdminController {
 
 	@Autowired
-	private AdminCoworkingMesecnePoseteViewRepository adminCoworkingMesecnePoseteViewRepository;
+	private AdminMesecnePoseteViewRepository adminMesecnePoseteViewRepository;
 
-	@Autowired
-	private AdminOmladinskiMesecnePoseteViewRepository adminOmladinskiMesecnePoseteViewRepository;
-	
 	@Autowired
 	private AdminPoseteCountViewRepository adminPoseteCountViewRepository;
 	
@@ -40,16 +35,11 @@ public class AdminController {
 	@Autowired
 	private AdminGodisnjeAktivnostiViewRepository adminGodisnjeAktivnostiViewRepository;
 
-	@GetMapping("/admin/coworking")
-	public List<AdminCoworkingMesecnePoseteView> getCoworking() {
-		return adminCoworkingMesecnePoseteViewRepository.findAll();
+	@GetMapping("/admin/{mestoPoseteId}")
+	public List<AdminMesecnePoseteView> getMesecnePosete(@PathVariable Long mestoPoseteId) {
+		return adminMesecnePoseteViewRepository.findByMestoPoseteId(mestoPoseteId);
 	}
 
-	@GetMapping("/admin/omladinski")
-	public List<AdminOmladinskiMesecnePoseteView> getOmladinski() {
-		return adminOmladinskiMesecnePoseteViewRepository.findAll();
-	}
-	
 	@GetMapping("/admin/posete")
 	public List<AdminPoseteCountView> getUkupnePosete() {
 		return adminPoseteCountViewRepository.findAll();
