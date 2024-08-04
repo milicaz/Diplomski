@@ -23,6 +23,7 @@ const MestoPoseteList = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [mestaPosetePerPage, setMestaPosetePerPage] = useState(10);
+
   const indexOfLastMestoPosete = currentPage * mestaPosetePerPage;
   const indexOfFirstMestoPosete = indexOfLastMestoPosete - mestaPosetePerPage;
   const currentMestaPosete = sortedMestaPosete.slice(
@@ -33,6 +34,8 @@ const MestoPoseteList = () => {
     sortedMestaPosete.length / mestaPosetePerPage
   );
 
+  const shouldShowPagination = sortedMestaPosete >= 10;
+
   const onInputChange = (e) => {
     setMestaPosetePerPage(e.target.value);
   };
@@ -42,26 +45,28 @@ const MestoPoseteList = () => {
       <div className="table-title">
         <div className="row">
           <div className="col-sm-6">
-            <div className="row align-items-center mb-3">
-              <div className="col-auto pe-0">
-                <span>Prikaži</span>
+            {sortedMestaPosete && shouldShowPagination && (
+              <div className="row align-items-center mb-3">
+                <div className="col-auto pe-0">
+                  <span>Prikaži</span>
+                </div>
+                <div className="col-auto">
+                  <Form.Select
+                    name="mestaPosetePerPage"
+                    value={mestaPosetePerPage}
+                    onChange={(e) => onInputChange(e)}
+                    style={{ width: "100%" }}
+                  >
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                  </Form.Select>
+                </div>
+                <div className="col-auto ps-0">
+                  <span>unosa</span>
+                </div>
               </div>
-              <div className="col-auto">
-                <Form.Select
-                  name="mestaPosetePerPage"
-                  value={mestaPosetePerPage}
-                  onChange={(e) => onInputChange(e)}
-                  style={{ width: "100%" }}
-                >
-                  <option value="10">10</option>
-                  <option value="15">15</option>
-                  <option value="20">20</option>
-                </Form.Select>
-              </div>
-              <div className="col-auto ps-0">
-                <span>unosa</span>
-              </div>
-            </div>
+            )}
           </div>
           <div className="col-sm-6">
             <Button className="btn btn-success" onClick={handleShow}>
@@ -97,13 +102,15 @@ const MestoPoseteList = () => {
         )}
       </table>
 
-      <Pagination
-        pages={totalPagesNumber}
-        setCurrentPage={setCurrentPage}
-        array={sortedMestaPosete}
-        limit={mestaPosetePerPage}
-        maxVisibleButtons={3}
-      />
+      {sortedMestaPosete && shouldShowPagination && (
+        <Pagination
+          pages={totalPagesNumber}
+          setCurrentPage={setCurrentPage}
+          array={sortedMestaPosete}
+          limit={mestaPosetePerPage}
+          maxVisibleButtons={3}
+        />
+      )}
 
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
@@ -112,12 +119,6 @@ const MestoPoseteList = () => {
         <Modal.Body>
           <AddMestoPoseteForm />
         </Modal.Body>
-        {/* <Modal.Footer>
-          <Button variant="success">Dodaj</Button>
-          <Button variant="danger" onClick={handleClose}>
-            Zatvori
-          </Button>
-        </Modal.Footer> */}
       </Modal>
     </>
   );

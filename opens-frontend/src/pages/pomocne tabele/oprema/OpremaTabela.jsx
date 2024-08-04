@@ -29,6 +29,8 @@ export const OpremaTabela = () => {
   const currentOpreme = sortedOprema.slice(indexOfFirst, indexOfLast);
   const totalPagesNumber = Math.ceil(sortedOprema.length / limit);
 
+  const shouldShowPagination = sortedOprema.length >= 10;
+
   const onInputChange = (e) => {
     setLimit(e.target.value);
   };
@@ -38,26 +40,28 @@ export const OpremaTabela = () => {
       <div className="table-title">
         <div className="row">
           <div className="col-sm-6">
-            <div className="row align-items-center mb-3">
-              <div className="col-auto pe-0">
-                <span>Prikaži</span>
+            {sortedOprema && shouldShowPagination && (
+              <div className="row align-items-center mb-3">
+                <div className="col-auto pe-0">
+                  <span>Prikaži</span>
+                </div>
+                <div className="col-auto">
+                  <Form.Select
+                    name="limit"
+                    value={limit}
+                    onChange={(e) => onInputChange(e)}
+                    style={{ width: "100%" }}
+                  >
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                  </Form.Select>
+                </div>
+                <div className="col-auto ps-0">
+                  <span>unosa</span>
+                </div>
               </div>
-              <div className="col-auto">
-                <Form.Select
-                  name="limit"
-                  value={limit}
-                  onChange={(e) => onInputChange(e)}
-                  style={{ width: "100%" }}
-                >
-                  <option value="10">10</option>
-                  <option value="15">15</option>
-                  <option value="20">20</option>
-                </Form.Select>
-              </div>
-              <div className="col-auto ps-0">
-                <span>unosa</span>
-              </div>
-            </div>
+            )}
           </div>
           <div className="col-sm-6">
             <Button className="btn btn-success" onClick={handleShow}>
@@ -93,13 +97,15 @@ export const OpremaTabela = () => {
         )}
       </Table>
 
-      <Pagination
-        pages={totalPagesNumber}
-        setCurrentPage={setCurrentPage}
-        array={sortedOprema}
-        limit={limit}
-        maxVisibleButtons={3}
-      />
+      {sortedOprema && shouldShowPagination && (
+        <Pagination
+          pages={totalPagesNumber}
+          setCurrentPage={setCurrentPage}
+          array={sortedOprema}
+          limit={limit}
+          maxVisibleButtons={3}
+        />
+      )}
 
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
@@ -108,11 +114,6 @@ export const OpremaTabela = () => {
         <Modal.Body>
           <AddOpremaForm />
         </Modal.Body>
-        {/* <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Zatvori
-          </Button>
-        </Modal.Footer> */}
       </Modal>
     </>
   );

@@ -58,6 +58,17 @@ public class OpremaController {
 		}
 		return new ResponseEntity<>(opreme, HttpStatus.OK);
 	}
+	
+	@GetMapping("/oprema/{serijskiBroj}/check")
+	public ResponseEntity<String> checkIfSerijskiBrojExists(@PathVariable String serijskiBroj) {
+		Boolean serijskiBrojExists = opremaRepository.existsBySerijskiBroj(serijskiBroj);
+		
+		if (serijskiBrojExists) {
+			return new ResponseEntity<>("exists", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("do-not-exist", HttpStatus.OK);
+		}
+	}
 
 	@PostMapping("/oprema")
 	public ResponseEntity<Oprema> createOpremu(@RequestBody OpremaDTO opremaDTO) {
@@ -77,14 +88,13 @@ public class OpremaController {
 
 	@PutMapping("/oprema/{id}")
 	public ResponseEntity<Oprema> updateOpremu(@PathVariable Long id, @RequestBody OpremaDTO opremaDTO) {
-		// Optional<TipOpreme> tipOpreme =
-		// tipOpremeRepository.findById(opremaDTO.getTipOpremeID());
+		Optional<TipOpreme> tipOpreme = tipOpremeRepository.findById(opremaDTO.getTipOpremeID());
 		Optional<Oprema> opremaData = opremaRepository.findById(id);
 
 		if (opremaData.isPresent()) {
 			Oprema _oprema = opremaData.get();
+			_oprema.setTipOpreme(tipOpreme.get());
 			_oprema.setSerijskiBroj(opremaDTO.getSerijskiBroj());
-			// _oprema.setTipOpreme(tipOpreme.get());
 			return new ResponseEntity<>(opremaRepository.save(_oprema), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

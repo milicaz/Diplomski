@@ -5,6 +5,7 @@ import { MestoPoseteContext } from "../MestoPoseteContext";
 const AddMestoPoseteForm = () => {
   const { addMestoPosete } = useContext(MestoPoseteContext);
 
+  const [validated, setValidated] = useState(false);
   const [newMestoPosete, setNewMestoPosete] = useState({
     nazivMesta: "",
     ukupanBrojMesta: 0,
@@ -18,12 +19,16 @@ const AddMestoPoseteForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addMestoPosete(newMestoPosete);
+    const form = e.currentTarget;
+    if (form.checkValidity()) {
+      addMestoPosete(newMestoPosete);
+    }
+    setValidated(true);
   };
 
   return (
     <>
-      <Form onSubmit={handleSubmit}>
+      <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="nazivMesta">
           <Form.Control
             type="text"
@@ -32,7 +37,11 @@ const AddMestoPoseteForm = () => {
             value={nazivMesta}
             onChange={(e) => onInputChange(e)}
             required
+            isInvalid={validated && !nazivMesta}
           />
+          <Form.Control.Feedback type="invalid">
+            Unesite naziv mesta posete.
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="ukupanBrojMesta">
           <Form.Control
@@ -41,7 +50,14 @@ const AddMestoPoseteForm = () => {
             name="ukupanBrojMesta"
             value={ukupanBrojMesta}
             onChange={(e) => onInputChange(e)}
+            min={1}
+            step={1}
+            required
+            isInvalid={validated && (!ukupanBrojMesta || ukupanBrojMesta <=0)}
           />
+          <Form.Control.Feedback type="invalid">
+            Unesite ukupan broj mesta.
+          </Form.Control.Feedback>
         </Form.Group>
         <div className="d-grid gap-2">
           <Button variant="success" type="submit">

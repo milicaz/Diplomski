@@ -5,6 +5,7 @@ import { MestoPoseteContext } from "../MestoPoseteContext";
 export const EditMestoPoseteForm = ({ updatedMestoPosete }) => {
   const { editMestoPosete } = useContext(MestoPoseteContext);
 
+  const [validated, setValidated] = useState(false);
   const id = updatedMestoPosete.id;
   const [nazivMesta, setNazivMesta] = useState(updatedMestoPosete.nazivMesta);
   const [ukupanBrojMesta, setUkupanBrojMesta] = useState(
@@ -15,11 +16,15 @@ export const EditMestoPoseteForm = ({ updatedMestoPosete }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    editMestoPosete(id, editedMestoPosete);
+    const form = e.currentTarget;
+    if (form.checkValidity() && ukupanBrojMesta > 0) {
+      editMestoPosete(id, editedMestoPosete);
+    }
+    setValidated(true);
   };
   return (
     <>
-      <Form onSubmit={handleSubmit}>
+      <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="nazivMesta">
           <Form.Control
             type="text"
@@ -28,7 +33,11 @@ export const EditMestoPoseteForm = ({ updatedMestoPosete }) => {
             value={nazivMesta}
             onChange={(e) => setNazivMesta(e.target.value)}
             required
+            isInvalid={validated && !nazivMesta}
           />
+          <Form.Control.Feedback type="invalid">
+            Unesite naziv mesta posete.
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="ukupanBrojMesta">
           <Form.Control
@@ -37,8 +46,14 @@ export const EditMestoPoseteForm = ({ updatedMestoPosete }) => {
             name="ukupanBrojMesta"
             value={ukupanBrojMesta}
             onChange={(e) => setUkupanBrojMesta(e.target.value)}
+            min={1}
+            step={1}
             required
+            isInvalid={validated && (!ukupanBrojMesta || ukupanBrojMesta <= 0)}
           />
+          <Form.Control.Feedback type="invalid">
+            Unesite ukupan broj mesta.
+          </Form.Control.Feedback>
         </Form.Group>
         <div className="d-grid gap-2">
           <Button variant="success" type="submit">

@@ -42,11 +42,6 @@ export const Oprema = ({ oprema }) => {
         <Modal.Body>
           <EditOpremaForm updatedOprema={oprema} />
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseEdit}>
-            Zatvori
-          </Button>
-        </Modal.Footer>
       </Modal>
 
       <Modal show={showDelete} onHide={handleCloseDelete} centered>

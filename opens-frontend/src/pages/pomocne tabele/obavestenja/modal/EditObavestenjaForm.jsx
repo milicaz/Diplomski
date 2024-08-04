@@ -5,6 +5,8 @@ import { ObavestenjeContext } from "../ObavestenjaContext";
 export const EditObavestenjaForm = ({ updatedObavestenje }) => {
   const { editObavestenje } = useContext(ObavestenjeContext);
 
+  const [validated, setValidated] = useState(false);
+
   const id = updatedObavestenje.id;
 
   const [naziv, setNaziv] = useState(updatedObavestenje.naziv);
@@ -22,18 +24,21 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
     tekst,
     pocetakPrikazivanja,
     krajPrikazivanja,
-    prioritet: parseInt(prioritet)
+    prioritet: parseInt(prioritet),
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Obavestenje: " + JSON.stringify(editedObavestenje))
-    editObavestenje(id, editedObavestenje);
+    const form = e.currentTarget;
+    if (form.checkValidity()) {
+      editObavestenje(id, editedObavestenje);
+    }
+    setValidated(true);
   };
 
   return (
     <>
-      <Form onSubmit={handleSubmit}>
+      <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="naziv">
           <Form.Control
             type="text"
@@ -42,7 +47,11 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
             value={naziv}
             onChange={(e) => setNaziv(e.target.value)}
             required
+            isInvalid={validated && !naziv}
           />
+          <Form.Control.Feedback type="invalid">
+            Unesite naslov obaveštenja.
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="tekst">
           <Form.Control
@@ -50,11 +59,17 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
             placeholder="Tekst obaveštenja *"
             name="tekst"
             value={tekst}
+            rows={10}
             onChange={(e) => setTekst(e.target.value)}
             required
+            isInvalid={validated && !tekst}
           />
+          <Form.Control.Feedback type="invalid">
+            Unesite tekst obaveštenja.
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="pocetakPrikazivanja">
+          <Form.Label>Početak prikazivanja obaveštenja:</Form.Label>
           <Form.Control
             type="date"
             placeholder="Početak prikazivanja obaveštenja *"
@@ -62,7 +77,11 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
             value={pocetakPrikazivanja}
             onChange={(e) => setPocetakPrikazivanja(e.target.value)}
             required
+            isInvalid={validated && !pocetakPrikazivanja}
           />
+          <Form.Control.Feedback type="invalid">
+            Izaberite datum početka prikazivanja obaveštenja.
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="krajPrikazivanja">
           <Form.Control
@@ -72,7 +91,11 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
             value={krajPrikazivanja}
             onChange={(e) => setKrajPrikazivanja(e.target.value)}
             required
+            isInvalid={validated && !krajPrikazivanja}
           />
+          <Form.Control.Feedback type="invalid">
+            Izaberite datum kraja prikazivanja obaveštenja.
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="prioritet">
           <Form.Control
@@ -81,10 +104,18 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
             name="prioritet"
             value={prioritet}
             onChange={(e) => setPrioritet(e.target.value)}
-            min={0}
+            min={1}
             max={5}
             step={1}
+            isInvalid={validated && (!prioritet || prioritet <= 0)}
           />
+          <Form.Text className="text-muted">
+            Unesite broj između 1 i 5 koji označava prioritet prikazivanja
+            obaveštenja (Veći prioritet se prikazuje prvi).
+          </Form.Text>
+          <Form.Control.Feedback type="invalid">
+            Unesite prioritet prikazivanja obaveštenja.
+          </Form.Control.Feedback>
         </Form.Group>
         <div className="d-grid gap-2 mt-4">
           <Button variant="success" type="submit">

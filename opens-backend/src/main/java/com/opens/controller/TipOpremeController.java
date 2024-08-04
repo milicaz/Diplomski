@@ -38,6 +38,17 @@ public class TipOpremeController {
 		}
 		return new ResponseEntity<>(tipoviOpreme, HttpStatus.OK);
 	}
+	
+	@GetMapping("/tipoviOpreme/{naziv}")
+	public ResponseEntity<String> checkIfTipOpremeExists(@PathVariable String naziv) {
+		Boolean tipOpremeExists = tipOpremeRepository.existsByNaziv(naziv);
+		
+		if (tipOpremeExists) {
+			return new ResponseEntity<>("exists", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("do-not-exist", HttpStatus.OK);
+		}
+	}
 
 	@PostMapping("/tipoviOpreme")
 	public ResponseEntity<TipOpreme> createTipOpreme(@RequestBody TipOpreme tipOpreme) {

@@ -7,5 +7,7 @@ import com.opens.model.TipOpreme;
 
 @Repository
 public interface TipOpremeRepository extends JpaRepository<TipOpreme, Long> {
+	
+	Boolean existsByNaziv(String naziv);
 
 }

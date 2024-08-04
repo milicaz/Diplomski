@@ -32,6 +32,8 @@ const TipOprList = () => {
   );
   const totalPagesNumber = Math.ceil(sortedTipoviOpreme.length / tipPerPage);
 
+  const shouldShowPagination = sortedTipoviOpreme.length >= 10;
+
   const onInputChange = (e) => {
     setTipPerPage(e.target.value);
   };
@@ -41,26 +43,28 @@ const TipOprList = () => {
       <div className="table-title">
         <div className="row">
           <div className="col-sm-6">
-            <div className="row align-items-center mb-3">
-              <div className="col-auto pe-0">
-                <span>Prikaži</span>
+            {sortedTipoviOpreme && shouldShowPagination && (
+              <div className="row align-items-center mb-3">
+                <div className="col-auto pe-0">
+                  <span>Prikaži</span>
+                </div>
+                <div className="col-auto">
+                  <Form.Select
+                    name="tipPerPage"
+                    value={tipPerPage}
+                    onChange={(e) => onInputChange(e)}
+                    style={{ width: "100%" }}
+                  >
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                  </Form.Select>
+                </div>
+                <div className="col-auto ps-0">
+                  <span>unosa</span>
+                </div>
               </div>
-              <div className="col-auto">
-                <Form.Select
-                  name="tipPerPage"
-                  value={tipPerPage}
-                  onChange={(e) => onInputChange(e)}
-                  style={{ width: "100%" }}
-                >
-                  <option value="10">10</option>
-                  <option value="15">15</option>
-                  <option value="20">20</option>
-                </Form.Select>
-              </div>
-              <div className="col-auto ps-0">
-                <span>unosa</span>
-              </div>
-            </div>
+            )}
           </div>
           <div className="col-sm-6">
             <Button className="btn btn-success" onClick={handleShow}>
@@ -96,13 +100,15 @@ const TipOprList = () => {
         )}
       </table>
 
-      <Pagination
-        pages={totalPagesNumber}
-        setCurrentPage={setCurrentPage}
-        array={sortedTipoviOpreme}
-        limit={tipPerPage}
-        maxVisibleButtons={3}
-      />
+      {sortedTipoviOpreme && shouldShowPagination && (
+        <Pagination
+          pages={totalPagesNumber}
+          setCurrentPage={setCurrentPage}
+          array={sortedTipoviOpreme}
+          limit={tipPerPage}
+          maxVisibleButtons={3}
+        />
+      )}
 
       <Modal show={show} onHide={handleClose} centered size="sm">
         <Modal.Header closeButton>

@@ -11,5 +11,7 @@ import com.opens.model.Oprema;
 public interface OpremaRepository extends JpaRepository<Oprema, Long> {
 
 	List<Oprema> findByIsZauzeta(Boolean isZauzeta);
+	
+	Boolean existsBySerijskiBroj(String serijskiBroj);
 
 }
