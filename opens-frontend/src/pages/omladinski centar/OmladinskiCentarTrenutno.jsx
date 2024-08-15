@@ -1,4 +1,3 @@
-import { LocalDate } from "@js-joda/core";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
@@ -33,17 +32,12 @@ export const OmladinskiCentarTrenutno = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(15);
 
-  const datumPosete = LocalDate.now();
-
   const fetchTrenutno = useCallback(async () => {
     const { data } = await httpCommon.get(
-      `/posete/${mestoPoseteId}/datum-posete`,
-      {
-        params: { datum: datumPosete },
-      }
+      `/posete/${mestoPoseteId}/datumPosete`
     );
     setTrenutno(data);
-  }, [setTrenutno, datumPosete, mestoPoseteId]);
+  }, [setTrenutno, mestoPoseteId]);
 
   const fetchTipoviOpreme = useCallback(async () => {
     const { data } = await httpCommon.get("/tipoviOpreme");

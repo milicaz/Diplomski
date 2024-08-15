@@ -84,6 +84,7 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="krajPrikazivanja">
+          <Form.Label>Kraj prikazivanja obaveštenja:</Form.Label>
           <Form.Control
             type="date"
             placeholder="Kraj prikazivanja obaveštenja *"
@@ -98,6 +99,7 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="prioritet">
+          <Form.Label>Prioritet prikazivanja obaveštenja:</Form.Label>
           <Form.Control
             type="number"
             placeholder="Prioritet prikazivanja obaveštenja"

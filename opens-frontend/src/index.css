@@ -371,3 +371,9 @@ td {
 .fifth-tab .nav-link.active {
   background-color: #a18bbd;
 }
+
+.prve-table th, 
+.prve-table td {
+  text-align: center;
+  vertical-align: middle;
+}

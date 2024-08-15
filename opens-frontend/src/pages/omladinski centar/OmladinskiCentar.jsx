@@ -3,6 +3,7 @@ import httpCommon from "../../http-common";
 import { Tab, Tabs } from "react-bootstrap";
 import OmladinskiCentarTabela from "./OmladinskiCentarTabela";
 import OmladinskiCentarTrenutno from "./OmladinskiCentarTrenutno";
+import OmladinskiCentarPrvePoseteTabela from "./OmladinskiCentarPrvePoseteTabela";
 
 export const OmladinskiCentar = () => {
   const [mestaPosete, setMestaPosete] = useState([]);
@@ -17,7 +18,13 @@ export const OmladinskiCentar = () => {
   };
 
   const getTabColorClass = (index) => {
-    const colorClasses = ['first-tab', 'second-tab', 'third-tab', 'fourth-tab', 'fifth-tab'];
+    const colorClasses = [
+      "first-tab",
+      "second-tab",
+      "third-tab",
+      "fourth-tab",
+      "fifth-tab",
+    ];
     const colorIndex = index % colorClasses.length; // Use modulo to cycle through colors
     return colorClasses[colorIndex];
   };
@@ -51,6 +58,15 @@ export const OmladinskiCentar = () => {
                 <OmladinskiCentarTabela
                   mestoPoseteId={mestoPosete.id}
                   mestoPoseteNaziv={mestoPosete.nazivMesta}
+                />
+              </Tab>
+              <Tab
+                eventKey="3"
+                title={`${mestoPosete.nazivMesta} - tabela prvih poseta`}
+                key="3"
+              >
+                <OmladinskiCentarPrvePoseteTabela
+                  mestoPoseteId={mestoPosete.id}
                 />
               </Tab>
             </Tabs>

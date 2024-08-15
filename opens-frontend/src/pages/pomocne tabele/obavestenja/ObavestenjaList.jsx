@@ -22,7 +22,6 @@ export const ObavestenjaList = () => {
   }, [sortedObavestenja]);
 
   const sortPoPrioritetu = [...sortedObavestenja].sort((a,b) => b.prioritet - a.prioritet);
-  console.log(JSON.stringify(sortPoPrioritetu));
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(6);

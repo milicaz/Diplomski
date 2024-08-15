@@ -12,6 +12,7 @@ import {
 } from "react-bootstrap";
 import { FaRegFilePdf } from "react-icons/fa";
 import { RiFileExcel2Fill } from "react-icons/ri";
+
 import httpCommon from "../../http-common";
 import Pagination from "../Pagination";
 import OmladinskiCentarTabelaItem from "./OmladinskiCentarTabelaItem";
@@ -59,7 +60,6 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
   const fetchPosete = async () => {
     const { data } = await httpCommon.get(`/posete/${mestoPoseteId}`);
     setPosete(data);
-    console.log(data);
   };
 
   const fetchLogo = async () => {
@@ -312,9 +312,6 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
 
   return (
     <>
-      {/* <Button className="mx-1 mb-2" variant="danger" onClick={handleShow}>
-        Dodaj prvu posetu
-      </Button> */}
       <div className="row align-items-center my-4">
         <div className="col">
           <Form.Control
@@ -402,9 +399,6 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
                 <RiFileExcel2Fill size={20} /> EXCEL
               </>
             )}
-          </Button>
-          <Button className="mx-1" variant="success">
-            Dodaj prvu posetu
           </Button>
         </div>
       </div>
@@ -626,71 +620,6 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      {/* <Modal show={show} onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Dodaj prvu posetu</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleSubmit}>
-            <Select
-              className="mb-3"
-              value={posetilac}
-              onChange={handlePosetilacChange}
-              options={options}
-              placeholder={"Posetilac"}
-              isSearchable
-            />
-            <div className="mb-3">
-              <span className="mx-3">Mesto posete:</span>
-              {mestaPosete.map((mesto) => (
-                <Form.Check
-                  inline
-                  key={mesto.id}
-                  label={`${mesto.nazivMesta}`}
-                  name="mestoPoseteID"
-                  type="radio"
-                  value={mesto.id}
-                  onChange={() => setMestaPoseteId(mesto.id)}
-                  checked={mestoPoseteId === mesto.id}
-                />
-              ))}
-            </div>
-            <Form.Group>
-              <Form.Control
-                className="mb-3"
-                name="datumPosete"
-                value={datumPosete}
-                onChange={(e) => setDatumPosete(e.target.value)}
-                type="date"
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Control
-                className="mb-3"
-                name="vremePosete"
-                value={vremePosete}
-                onChange={(e) => setVremePosete(e.target.value)}
-                type="time"
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Control
-                className="mb-3"
-                name="vremeOdjave"
-                value={vremeOdjave}
-                onChange={(e) => setVremeOdjave(e.target.value)}
-                type="time"
-              />
-            </Form.Group>
-            <div className="d-grid gap-2 mt-3">
-              <Button variant="success" type="submit" size="lg">
-                Dodaj posetu
-              </Button>
-            </div>
-          </Form>
-        </Modal.Body>
-      </Modal> */}
     </>
   );
 };

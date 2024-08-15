@@ -10,6 +10,8 @@ import com.opens.view.DirektniView;
 @Repository
 public interface DirektniViewRepository extends JpaRepository<DirektniView, Long> {
 	
+	List<DirektniView> findByMestoPoseteId(Long mestoPoseteId);
+	
 	List<DirektniView> findByMestoPoseteIdAndMesecPoseteAndGodinaPosete(Long mestoPoseteId, Integer mesecPosete, Integer godinaPosete);
 
 }
