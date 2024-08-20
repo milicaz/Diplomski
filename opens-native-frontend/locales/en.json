@@ -6,6 +6,7 @@
         },
         "text": {
             "forgot-password": "Forgot password?",
+            "login": "Login",
             "no-account": "Don't have an account yet?",
             "register": "Register",
             "language": "Choose language"
@@ -52,17 +53,21 @@
     "dostupnost-page": {
         "text": {
             "availability": "Availability",
-            "space": "1 free space",
-            "space_plural": "{{count}} free spaces",
+            "space_one": "{{count}} free space",
+            "space_few": "{{count}} free spaces",
+            "space_other": "{{count}} free spaces",
             "space_negative": "There is no free spaces",
-            "laptop": "1 free laptop",
-            "laptop_plural": "{{count}} free laptops",
+            "laptop_one": "{{count}} free laptop",
+            "laptop_few": "{{count}} free laptops",
+            "laptop_other": "{{count}} free laptops",
             "laptop_negative": "There is no free laptops",
-            "mouse": "1 free mouse",
-            "mouse_plural": "{{count}} free mouses",
+            "mouse_one": "{{count}} free mouse",
+            "mouse_few": "{{count}} free mouses",
+            "mouse_other": "{{count}} free mouses",
             "mouse_negative": "There is no free mouses",
-            "headphone": "1 free headphone",
-            "headphone_plural": "{{count}} free headphones",
+            "headphone_one": "{{count}} free headphone",
+            "headphone_few": "{{count}} free headphones",
+            "headphone_other": "{{count}} free headphones",
             "headphone_negative": "There is no free headphones",
             "sony": "Sony is free",
             "sony_negative": "Sony is occupied"

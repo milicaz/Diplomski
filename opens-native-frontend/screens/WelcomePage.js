@@ -50,12 +50,12 @@ export default function WelcomePage({ navigation }) {
   }
 
   const onChangeEmail = (email) => {
-    console.log("Email je: " + email)
+    // console.log("Email je: " + email)
     setEmail(email)
   }
 
   const onChangePassword = (password) => {
-    console.log("Password je: " + password)
+    // console.log("Password je: " + password)
     setPassword(password)
   }
 
@@ -65,7 +65,7 @@ export default function WelcomePage({ navigation }) {
       password
     }
 
-    console.log("login je: " + loginDTO)
+    // console.log("login je: " + loginDTO)
 
     const response = await axios.post('http://10.0.2.2:8080/api/auth/loginPosetilac', loginDTO, {
         headers: {
@@ -73,7 +73,7 @@ export default function WelcomePage({ navigation }) {
         }
       })
 
-      // console.log("Response je: " + response)
+      console.log("Response je: " + response)
       navigation.navigate('Main')
   }
 
@@ -114,31 +114,31 @@ export default function WelcomePage({ navigation }) {
           </Pressable>
         </View> */}
         <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-          <TextInput value={email} onChangeText={onChangeEmail} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Email" />
+          <TextInput value={email} onChangeText={onChangeEmail} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder={t('welcome-page.input.email')} />
         </View>
         <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-          <TextInput value={password} onChangeText={onChangePassword} secureTextEntry={!showPassword} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Password" />
+          <TextInput value={password} onChangeText={onChangePassword} secureTextEntry={!showPassword} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder={t('welcome-page.input.password')} />
           <TouchableOpacity onPress={toggleShowPassword} style={{ position: 'absolute', right: 10 }}>
               <Icon name={showPassword ? 'visibility-off' : 'visibility'} size={24} color="gray" />
             </TouchableOpacity>
         </View>
         <View style={{ width: "90%", alignItems: "center", justifyContent: "center" }}>
           <TouchableOpacity>
-            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }}>Zaboravili ste lozinku?</Text>
+            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }}>{t('welcome-page.text.forgot-password')}</Text>
           </TouchableOpacity>
         </View>
         <View style={{ width: "50%", margin: 10 }}>
           <TouchableOpacity onPress={handleLogin} style={{ alignItems: 'center', backgroundColor: '#61CDCD', padding: 13 }}>
-            <Text style={{ fontFamily: "Montserrat-Bold" }}>Login</Text>
+            <Text style={{ fontFamily: "Montserrat-Bold" }}>{t('welcome-page.text.login')}</Text>
           </TouchableOpacity>
         </View>
         <View style={{ width: "80%", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }}>Nemate nalog?</Text>
+            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }}>{t('welcome-page.text.no-account')}</Text>
           </View>
           <View style={{ flex: 1, marginLeft: 30 }}>
             <TouchableOpacity>
-              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold" }} onPress={() => navigation.navigate("Registracija")}>Registracija</Text>
+              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold" }} onPress={() => navigation.navigate("Registracija")}>{t('welcome-page.text.register')}</Text>
             </TouchableOpacity>
           </View>
         </View>
