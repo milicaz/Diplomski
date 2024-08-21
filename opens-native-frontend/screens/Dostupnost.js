@@ -36,25 +36,25 @@ export default function Dostupnost() {
             await SplashScreen.preventAutoHideAsync();
         }
         prepare();
-        // Define the fetch function
-        const fetchMesto = async () => {
-            try {
-                const response = await axios.get('http://10.0.2.2:8080/api/dostupnostMestoView');
-                console.log("Mesto " + response.data[0].slobodna_mesta)
-                setSpaceCount(response.data[0].slobodna_mesta)
-            } catch (error) {
-                console.error('Error fetching mesto:', error);
-                Alert.alert('Error', 'Failed to fetch mesto');
-            }
-        }
+        //Define the fetch function
+        // const fetchMesto = async () => {
+        //     try {
+        //         const response = await axios.get('http://10.0.2.2:8080/api/dostupnostMestoView');
+        //         console.log("Mesto " + response.data[0].slobodna_mesta)
+        //         setSpaceCount(response.data[0].slobodna_mesta)
+        //     } catch (error) {
+        //         console.error('Error fetching mesto:', error);
+        //         Alert.alert('Error', 'Failed to fetch mesto');
+        //     }
+        // }
 
-        fetchMesto();
+        // fetchMesto();
 
-        // Set up interval to fetch data every 10 seconds
-        const intervalMesto = setInterval(fetchMesto, 10000); // 10000 milliseconds = 10 seconds
+        // //Set up interval to fetch data every 10 seconds
+        // const intervalMesto = setInterval(fetchMesto, 10000); // 10000 milliseconds = 10 seconds
 
-        // Cleanup on component unmount
-        return () => clearInterval(intervalMesto);
+        // // Cleanup on component unmount
+        // return () => clearInterval(intervalMesto);
 
          const fetchData = async () => {
             try {
@@ -86,6 +86,15 @@ export default function Dostupnost() {
                 console.error('Error fetching data:', error);
                 Alert.alert('Error', 'Failed to fetch data');
             }
+            try {
+                const response = await axios.get('http://10.0.2.2:8080/api/dostupnostMestoView');
+                console.log("Mesto " + response.data[0].slobodna_mesta)
+                setSpaceCount(response.data[0].slobodna_mesta)
+            } catch (error) {
+                console.error('Error fetching mesto:', error);
+                Alert.alert('Error', 'Failed to fetch mesto');
+            }
+            
         };
 
         fetchData(); // Fetch data initially
