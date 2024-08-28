@@ -123,8 +123,8 @@ export default function WelcomePage({ navigation }) {
             </TouchableOpacity>
         </View>
         <View style={{ width: "90%", alignItems: "center", justifyContent: "center" }}>
-          <TouchableOpacity>
-            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }}>{t('welcome-page.text.forgot-password')}</Text>
+          <TouchableOpacity >
+            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }} onPress={() => navigation.navigate("ResetPassword")}>{t('welcome-page.text.forgot-password')}</Text>
           </TouchableOpacity>
         </View>
         <View style={{ width: "50%", margin: 10 }}>

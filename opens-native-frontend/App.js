@@ -7,6 +7,7 @@ import ProfileEdit from './screens/ProfileEdit';
 import Registracija from './screens/Registracije';
 import WelcomePage from './screens/WelcomePage';
 import { i18next } from './services/i18next';
+import ResetPasswordPage from './screens/ResetPassword';
 
 
 const Stack = createNativeStackNavigator();
@@ -19,6 +20,7 @@ export default function App() {
           <Stack.Screen name="Welcome" component={WelcomePage} />
           <Stack.Screen name="Registracija" component={Registracija} />
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="ResetPassword" component={ResetPasswordPage} />
           <Stack.Screen name="Main" component={BottomTabNavigation} options={{ headerShown: false }} />
           <Stack.Screen name="ProfileEdit" component={ProfileEdit} options={{ headerShown: false }} />
           {/* <Stack.Screen name="Home" component={Home} /> */}
