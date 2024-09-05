@@ -316,6 +316,25 @@ public class AuthController {
 	    }
 	}
 	
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(@Validated @RequestBody TokenRefreshRequest request) {
+	    String refreshToken = request.getRefreshToken();
+
+	    // Check if the refresh token exists
+	    Optional<RefreshToken> optionalRefreshToken = refreshTokenService.findByToken(refreshToken);
+	    
+	    if (optionalRefreshToken.isPresent()) {
+	        RefreshToken token = optionalRefreshToken.get();
+	        
+	        // Invalidate the token by deleting it
+	        refreshTokenService.delete(token);
+	        
+	        return ResponseEntity.ok(new MessageResponse("Logout successful."));
+	    } else {
+	        return ResponseEntity.badRequest().body("Invalid refresh token.");
+	    }
+	}
+	
 	private String getFileExtension(String fileName) {
 	    int lastIndexOfDot = fileName.lastIndexOf('.');
 	    if (lastIndexOfDot > 0 && lastIndexOfDot < fileName.length() - 1) {

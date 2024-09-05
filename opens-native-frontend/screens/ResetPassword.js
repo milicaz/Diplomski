@@ -7,7 +7,18 @@ const ResetPasswordPage = () => {
    const [confirmPassword, setConfirmPassword] = useState('');
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={{ backgroundColor: COLORS.white }}>
+    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <View>
+        <Image
+          source={require("../assets/opens2.png")}
+          style={{
+            height: 300,
+            width: "100%",
+            position: "absolute",
+          }}
+        />
+      </View>
       <Text style={styles.title}>Reset Password</Text>
       <TextInput
         style={styles.input}
@@ -25,6 +36,7 @@ const ResetPasswordPage = () => {
       />
       <Button title="Reset Password" />
     </View>
+    </ScrollView>
   );
 };
 

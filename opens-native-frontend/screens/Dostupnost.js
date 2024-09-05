@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, Text, View } from 'react-native';
+import { Alert, Image, Text, TouchableOpacity, View } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useTranslation } from 'react-i18next';
 import COLORS from "../constants/colors";
 import i18next from 'i18next';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Dostupnost() {
+
+    const navigation = useNavigation();
 
     const { t } = useTranslation();
 
@@ -276,6 +279,11 @@ export default function Dostupnost() {
                     </Text>
                 </View>
             </View>
+            <View style={{ flex: 1, marginLeft: 30 }}>
+            <TouchableOpacity>
+              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold" }} onPress={() => navigation.navigate("Logout")}>Logout</Text>
+            </TouchableOpacity>
+          </View>
         </View>
     );
 }

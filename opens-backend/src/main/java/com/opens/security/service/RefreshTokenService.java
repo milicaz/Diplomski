@@ -69,6 +69,10 @@ public class RefreshTokenService {
 	    return token;
 	  }
 	
+	public void delete(RefreshToken refreshToken) {
+        refreshRepository.delete(refreshToken);
+    }
+	
 	@Transactional
 	  public int deleteByZaposleni(String email) {
 	    return refreshRepository.deleteByZaposleni(zaposleniRepo.findByEmail(email).get());

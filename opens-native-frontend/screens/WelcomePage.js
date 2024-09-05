@@ -2,13 +2,14 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Image, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import englishFlag from '../assets/flags/english.png';
 import serbianFlag from '../assets/flags/serbian.png';
 import COLORS from "../constants/colors";
 import i18next from '../services/i18next';
 import axios from "axios";
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function WelcomePage({ navigation }) {
 
@@ -67,14 +68,49 @@ export default function WelcomePage({ navigation }) {
 
     // console.log("login je: " + loginDTO)
 
-    const response = await axios.post('http://10.0.2.2:8080/api/auth/loginPosetilac', loginDTO, {
+    // const response = await axios.post('http://10.0.2.2:8080/api/auth/loginPosetilac', loginDTO, {
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     }
+    //   })
+
+    //   console.log("Response je: " + response)
+    //   navigation.navigate('Main')
+
+    try {
+      // Make the API request
+      const response = await axios.post('http://10.0.2.2:8080/api/auth/loginPosetilac', loginDTO, {
         headers: {
           'Content-Type': 'application/json'
         }
-      })
+      });
+  
+      // Log the response for debugging
+      console.log("Response:", response.data);
+  
+      // Extract JWT and refreshToken from response
+      const { accessToken, refreshToken } = response.data;
+  
+      // Store JWT and refreshToken in AsyncStorage
+      await AsyncStorage.setItem('accessToken', accessToken);
+      await AsyncStorage.setItem('refreshToken', refreshToken);
+  
+      // Navigate to the main screen
+      navigation.navigate('Main');
+    } catch (error) {
+      // Handle errors here
+      if (error.response) {
+        // Server responded with a status other than 200 range
+        Alert.alert('Error', error.response.data.message || 'Login failed.');
+      } else if (error.request) {
+        // Request was made but no response received
+        Alert.alert('Error', 'No response from the server.');
+      } else {
+        // Something happened in setting up the request
+        Alert.alert('Error', 'An error occurred during login.');
+      }
+    }
 
-      console.log("Response je: " + response)
-      navigation.navigate('Main')
   }
 
   return (
@@ -122,16 +158,21 @@ export default function WelcomePage({ navigation }) {
               <Icon name={showPassword ? 'visibility-off' : 'visibility'} size={24} color="gray" />
             </TouchableOpacity>
         </View>
-        <View style={{ width: "90%", alignItems: "center", justifyContent: "center" }}>
-          <TouchableOpacity >
-            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }} onPress={() => navigation.navigate("ResetPassword")}>{t('welcome-page.text.forgot-password')}</Text>
-          </TouchableOpacity>
-        </View>
         <View style={{ width: "50%", margin: 10 }}>
           <TouchableOpacity onPress={handleLogin} style={{ alignItems: 'center', backgroundColor: '#61CDCD', padding: 13 }}>
             <Text style={{ fontFamily: "Montserrat-Bold" }}>{t('welcome-page.text.login')}</Text>
           </TouchableOpacity>
         </View>
+        <View style={{ width: "90%", alignItems: "center", justifyContent: "center" }}>
+          <TouchableOpacity >
+            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }} onPress={() => navigation.navigate("ForgotPassword")}>{t('welcome-page.text.forgot-password')}</Text>
+          </TouchableOpacity>
+        </View>
+        {/* <View style={{ width: "50%", margin: 10 }}>
+          <TouchableOpacity onPress={handleLogin} style={{ alignItems: 'center', backgroundColor: '#61CDCD', padding: 13 }}>
+            <Text style={{ fontFamily: "Montserrat-Bold" }}>{t('welcome-page.text.login')}</Text>
+          </TouchableOpacity>
+        </View> */}
         <View style={{ width: "80%", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }}>{t('welcome-page.text.no-account')}</Text>
