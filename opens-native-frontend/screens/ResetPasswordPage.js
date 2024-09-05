@@ -3,8 +3,11 @@ import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, Touchabl
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import COLORS from '../constants/colors';
+import { useTranslation } from 'react-i18next';
 
 const ResetPasswordPage = () => {
+
+    const { t } = useTranslation();
 
     const navigation = useNavigation();
   const route = useRoute();
@@ -58,7 +61,7 @@ const ResetPasswordPage = () => {
       <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
         <TextInput
         style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }}
-        placeholder="Token"
+        placeholder={t('reset-password-page.input.token')}
         // secureTextEntry
         value={token}
         onChangeText={setToken}
@@ -67,7 +70,7 @@ const ResetPasswordPage = () => {
       <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
       <TextInput
         style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }}
-        placeholder="New Password"
+        placeholder={t('reset-password-page.input.newPassword')}
         secureTextEntry
         value={password}
         onChangeText={setPassword}
@@ -76,7 +79,7 @@ const ResetPasswordPage = () => {
       <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
       <TextInput
         style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }}
-        placeholder="Confirm New Password"
+        placeholder={t('reset-password-page.input.confirmPassword')}
         secureTextEntry
         value={confirmPassword}
         onChangeText={setConfirmPassword}
@@ -85,7 +88,7 @@ const ResetPasswordPage = () => {
       {/* <Button title="Reset Password" onPress={resetPassword} /> */}
       <View style={{ width: "50%", margin: 10 }}>
           <TouchableOpacity onPress={resetPassword} style={{ alignItems: 'center', backgroundColor: '#61CDCD', padding: 13 }}>
-            <Text style={{ fontFamily: "Montserrat-Bold" }}>Resetovanje lozinke</Text>
+            <Text style={{ fontFamily: "Montserrat-Bold" }}>{t('reset-password-page.button.reset')}</Text>
           </TouchableOpacity>
         </View>
     </View>

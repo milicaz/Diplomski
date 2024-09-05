@@ -8,9 +8,12 @@ import httpCommon from "../http-common";
 import axios from "axios";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 
 export default function Registracija() {
+
+  const { t } = useTranslation();
 
   const navigation = useNavigation();
 
@@ -53,9 +56,9 @@ export default function Registracija() {
   const [isFocus, setIsFocus] = useState(false);
 
   const data = [
-    { label: 'muško', value: 'MUSKO' },
-    { label: 'žensko', value: 'ZENSKO' },
-    { label: 'drugo', value: 'DRUGO' }
+    { label: t('gender-label.male'), value: 'MUSKO' },
+    { label: t('gender-label.female'), value: 'ZENSKO' },
+    { label: t('gender-label.other'), value: 'DRUGO' }
   ]
 
   // State variable to hold the password 
@@ -224,13 +227,13 @@ export default function Registracija() {
         <View style={{ alignItems: "center", justifyContent: "center", marginTop: "10%" }}>
           {/* <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 50, marginBottom: 40 }}>Registracija</Text> */}
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput value={email} onChangeText={onChangeEmail} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Email" />
+            <TextInput value={email} onChangeText={onChangeEmail} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder={t('register-page.input.email')} />
           </View>
           {emailError ? (
             <Text style={{ color: 'red', marginBottom: 20, width: "80%", textAlign: 'center' }}>{emailError}</Text>
           ) : null}
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput value={password} onChangeText={onChangePassword} secureTextEntry={!showPassword} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Lozinka" />
+            <TextInput value={password} onChangeText={onChangePassword} secureTextEntry={!showPassword} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder={t('register-page.input.password')} />
             <TouchableOpacity onPress={toggleShowPassword} style={{ position: 'absolute', right: 10 }}>
               <Icon name={showPassword ? 'visibility-off' : 'visibility'} size={24} color="gray" />
             </TouchableOpacity>
@@ -239,10 +242,10 @@ export default function Registracija() {
             <Text style={{ color: 'red', marginBottom: 20, width: "80%", textAlign: 'center' }}>{passwordError}</Text>
           ) : null}
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput value={ime} onChangeText={onChangeIme} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Ime" />
+            <TextInput value={ime} onChangeText={onChangeIme} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder={t('register-page.input.name')} />
           </View>
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput value={prezime} onChangeText={onChangePrezime} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Prezime" />
+            <TextInput value={prezime} onChangeText={onChangePrezime} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder={t('register-page.input.surname')} />
           </View>
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
             <Dropdown
@@ -253,7 +256,7 @@ export default function Registracija() {
               maxHeight={300}
               labelField="label"
               valueField="value"
-              placeholder={!isFocus ? 'Rod' : '...'}
+              placeholder={!isFocus ? t('register-page.input.gender') : '...'}
               // searchPlaceholder="Search..."
               value={value}
               onFocus={() => setIsFocus(true)}
@@ -267,7 +270,7 @@ export default function Registracija() {
             {/* <TextInput style = {{height: 50, color: "black"}} placeholder="Rod" /> */}
           </View>
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput value={godine} onChangeText={onChangeGodine} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} keyboardType="numeric" placeholder="Godina rodjenja" />
+            <TextInput value={godine} onChangeText={onChangeGodine} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} keyboardType="numeric" placeholder={t('register-page.input.yearOfBirth')} />
             {/* {showPicker && (
           <RNDateTimePicker mode = "date" display = "default" value={date} onChange={onChange} />
         )}
@@ -291,7 +294,7 @@ export default function Registracija() {
 
           </View>
           <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput value={mestoBoravista} onChangeText={onChangeMestoBoravista} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder="Mesto Boravista" />
+            <TextInput value={mestoBoravista} onChangeText={onChangeMestoBoravista} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder={t('register-page.input.placeOfResidence')} />
           </View>
           <View style={{ flexDirection: "row", width: "80%" }}>
             <View style={{ flex: 1, borderWidth: 1, height: 50, justifyContent: "center", marginBottom: 20, padding: 20, marginRight: 5 }}>
@@ -304,7 +307,7 @@ export default function Registracija() {
           <View style={{ width: "50%", margin: 10 }}>
             {/* <Button title="Registracija"></Button> */}
             <TouchableOpacity onPress={registracija} style={{ alignItems: 'center', backgroundColor: '#61CDCD', padding: 13 }}>
-              <Text style={{ fontFamily: "Montserrat-Regular" }}>Registracija</Text>
+              <Text style={{ fontFamily: "Montserrat-Regular" }}>{t('register-page.button.register')}</Text>
             </TouchableOpacity>
           </View>
         </View>

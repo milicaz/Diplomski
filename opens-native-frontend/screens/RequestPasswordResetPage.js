@@ -3,8 +3,11 @@ import React, { useState } from 'react';
 import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import COLORS from '../constants/colors';
 import { useFonts } from 'expo-font';
+import { useTranslation } from 'react-i18next';
 
 const RequestPasswordResetPage = () => {
+
+    const { t } = useTranslation();
 
     const navigation = useNavigation();
   const [email, setEmail] = useState('');
@@ -43,7 +46,7 @@ navigation.navigate('ResetPassword')
       <View style={{ justifyContent: "center", alignItems: "center", height: 950 }}>
       <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
       <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }}
-        placeholder="Enter your email"
+        placeholder={t('forgot-password-page.input.emailField')}
         value={email}
         onChangeText={setEmail}
       />
@@ -51,7 +54,7 @@ navigation.navigate('ResetPassword')
       {/* <Button title="Request Password Reset" onPress={requestPasswordReset} /> */}
       <View style={{ width: "50%", margin: 10 }}>
           <TouchableOpacity onPress={requestPasswordReset} style={{ alignItems: 'center', backgroundColor: '#61CDCD', padding: 13 }}>
-            <Text style={{ fontFamily: "Montserrat-Bold" }}>Zahtev za resetovanje lozinke</Text>
+            <Text style={{ fontFamily: "Montserrat-Bold" }}>{t('forgot-password-page.button.request')}</Text>
           </TouchableOpacity>
         </View>
       </View>

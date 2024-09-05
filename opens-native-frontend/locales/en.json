@@ -72,5 +72,30 @@
             "sony": "Sony is free",
             "sony_negative": "Sony is occupied"
         }
-    }
+    },
+    "forgot-password-page": {
+        "input" : {
+            "emailField" : "Enter your email"
+        },
+        "button" : {
+            "request" : "Request Password Reset"
+        }
+    },
+
+    "reset-password-page": {
+        "input" : {
+            "token" : "Token",
+            "newPassword": "New password",
+            "confirmPassword": "Confirm new password"
+        },
+        "button" : {
+            "reset" : "Reset password"
+        }
+    },
+
+    "gender-label" : {
+        "male" : "male",
+        "female" : "female",
+        "other" : "other"
+    } 
 }

@@ -72,5 +72,30 @@
             "sony": "Sony je slobodan",
             "sony_negative": "Sony je zauzet"
         }
-    }
+    },
+    "forgot-password-page": {
+        "input" : {
+            "emailField" : "Unesite svoju email adresu"
+        },
+        "button" : {
+            "request" : "Zahtev za promenu lozinke"
+        }
+    },
+
+    "reset-password-page": {
+        "input" : {
+            "token" : "Token",
+            "newPassword": "Nova lozinka",
+            "confirmPassword": "Potvrdi novu lozinku"
+        },
+        "button" : {
+            "reset" : "Promeni lozinku"
+        }
+    },
+
+    "gender-label" : {
+        "male" : "muško",
+        "female" : "žensko",
+        "other" : "drugo"
+    } 
 }
