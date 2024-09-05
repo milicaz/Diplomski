@@ -168,9 +168,11 @@ td {
 }
 
 /*CSS ZA NAVIGACIJU ZA COWORKING DROPDOWN*/
-.coworking-dropdown > a {
-  color: #000000 !important; /* Example: Change the text color */
-  background-color: #a3c57b !important; /* Example: Change the background color */
+.coworking-dropdown>a {
+  color: #000000 !important;
+  /* Example: Change the text color */
+  background-color: #a3c57b !important;
+  /* Example: Change the background color */
   font-weight: bolder;
 }
 
@@ -180,14 +182,16 @@ td {
 
 .coworking-dropdown-item.active {
   background-color: #a3c57b;
-  color: #000000; 
+  color: #000000;
   font-weight: bolder;
 }
 
 /*CSS ZA NAVIGACIJU ZA OMLADINSKI CENTAR DROPDOWN*/
-.omladinski-dropdown > a {
-  color: #000000 !important; /* Example: Change the text color */
-  background-color: #fbb537 !important; /* Example: Change the background color */
+.omladinski-dropdown>a {
+  color: #000000 !important;
+  /* Example: Change the text color */
+  background-color: #fbb537 !important;
+  /* Example: Change the background color */
   font-weight: bolder;
 }
 
@@ -197,14 +201,16 @@ td {
 
 .omladinski-dropdown-item.active {
   background-color: #fbb537;
-  color: #000000; 
+  color: #000000;
   font-weight: bolder;
 }
 
 /*CSS ZA NAVIGACIJU ZA AKTIVNOSTI DROPDOWN*/
-.aktivnosti-dropdown > a {
-  color: #000000 !important; /* Example: Change the text color */
-  background-color: #f56f66 !important; /* Example: Change the background color */
+.aktivnosti-dropdown>a {
+  color: #000000 !important;
+  /* Example: Change the text color */
+  background-color: #f56f66 !important;
+  /* Example: Change the background color */
   font-weight: bolder;
 }
 
@@ -214,14 +220,16 @@ td {
 
 .aktivnosti-dropdown-item.active {
   background-color: #f56f66;
-  color: #000000; 
+  color: #000000;
   font-weight: bolder;
 }
 
 /*CSS ZA NAVIGACIJU ZA SIFARNIK DROPDOWN*/
-.sifarnik-dropdown > a {
-  color: #000000 !important; /* Example: Change the text color */
-  background-color: #61cddc !important; /* Example: Change the background color */
+.sifarnik-dropdown>a {
+  color: #000000 !important;
+  /* Example: Change the text color */
+  background-color: #61cddc !important;
+  /* Example: Change the background color */
   font-weight: bolder;
 }
 
@@ -231,7 +239,7 @@ td {
 
 .sifarnik-dropdown-item.active {
   background-color: #61cddc;
-  color: #000000; 
+  color: #000000;
   font-weight: bolder;
 }
 
@@ -242,7 +250,7 @@ td {
 
 .zaposleni-dropdown-item.active {
   background-color: #61cddc;
-  color: #000000; 
+  color: #000000;
   font-weight: bolder;
 }
 
@@ -253,7 +261,7 @@ td {
 
 .registracija-dropdown-item.active {
   background-color: #a18bbd;
-  color: #000000; 
+  color: #000000;
   font-weight: bolder;
 }
 
@@ -290,24 +298,30 @@ td {
   font-size: xx-large;
   font-weight: bold;
   display: flex;
-  align-items: flex-end; /* Vertically center align items */
-  justify-content: flex-end; /* Horizontally center align items */
+  align-items: flex-end;
+  /* Vertically center align items */
+  justify-content: flex-end;
+  /* Horizontally center align items */
 }
 
 .card-smaller-text {
   font-size: large;
   font-weight: bold;
   display: flex;
-  align-items: flex-end; /* Vertically center align items */
-  justify-content: flex-end; /* Horizontally center align items */
+  align-items: flex-end;
+  /* Vertically center align items */
+  justify-content: flex-end;
+  /* Horizontally center align items */
 }
 
 .card-smallest-text {
   font-size: medium;
   font-weight: bold;
   display: flex;
-  align-items: flex-end; /* Vertically center align items */
-  justify-content: flex-end; /* Horizontally center align items */
+  align-items: flex-end;
+  /* Vertically center align items */
+  justify-content: flex-end;
+  /* Horizontally center align items */
 }
 
 .card-height {
@@ -331,7 +345,8 @@ td {
   width: 100%;
 }
 
-.image-table th, .image-table td {
+.image-table th,
+.image-table td {
   border: 1px solid #dddddd;
   text-align: center;
   padding: 8px;
@@ -343,13 +358,13 @@ td {
 
 /* CSS ZA MAINCHECKIN TAB-OVE */
 .tab-content {
-  background-color: #fff; 
+  background-color: #fff;
   color: #000;
 }
 
 .nav-tabs .nav-link.active {
   background-color: #a18bbd;
-  color: #fff; 
+  color: #fff;
 }
 
 .first-tab .nav-link.active {
@@ -372,8 +387,17 @@ td {
   background-color: #a18bbd;
 }
 
-.prve-table th, 
+.prve-table th,
 .prve-table td {
   text-align: center;
   vertical-align: middle;
+}
+
+.nedojavljene h5 {
+  text-decoration: underline;
+}
+
+.nedojavljene .dugme {
+  display: flex;
+  justify-content: flex-end;
 }
