@@ -4,6 +4,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import COLORS from '../constants/colors';
 import { useTranslation } from 'react-i18next';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const ResetPasswordPage = () => {
 
@@ -20,6 +21,20 @@ const ResetPasswordPage = () => {
     'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
     'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf')
   });
+
+  // State variable to track password visibility 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Function to toggle the password visibility state 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  }
+
+  const toggleShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  } 
 
 
   useEffect( () => {
@@ -71,19 +86,25 @@ const ResetPasswordPage = () => {
       <TextInput
         style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }}
         placeholder={t('reset-password-page.input.newPassword')}
-        secureTextEntry
+        secureTextEntry={!showPassword}
         value={password}
         onChangeText={setPassword}
       />
+      <TouchableOpacity onPress={toggleShowPassword} style={{ position: 'absolute', right: 10 }}>
+              <Icon name={showPassword ? 'visibility-off' : 'visibility'} size={24} color="gray" />
+            </TouchableOpacity>
       </View>
       <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
       <TextInput
         style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }}
         placeholder={t('reset-password-page.input.confirmPassword')}
-        secureTextEntry
+        secureTextEntry={!showConfirmPassword}
         value={confirmPassword}
         onChangeText={setConfirmPassword}
       />
+      <TouchableOpacity onPress={toggleShowConfirmPassword} style={{ position: 'absolute', right: 10 }}>
+              <Icon name={showConfirmPassword ? 'visibility-off' : 'visibility'} size={24} color="gray" />
+            </TouchableOpacity>
       </View>
       {/* <Button title="Reset Password" onPress={resetPassword} /> */}
       <View style={{ width: "50%", margin: 10 }}>
