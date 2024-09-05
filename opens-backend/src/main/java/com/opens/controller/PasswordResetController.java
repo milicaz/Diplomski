@@ -27,11 +27,6 @@ public class PasswordResetController {
 		
 	}
 	
-//	@GetMapping("/ResetPassword")
-//	public ResponseEntity<?> chengePassword(@RequestParam String token) {
-//		
-//	}
-	
 	@PostMapping("/reset-password")
 	public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
 		
