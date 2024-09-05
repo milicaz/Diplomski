@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Nav,
@@ -26,6 +26,8 @@ import {
 } from "./pomocne tabele";
 import LogoHome from "./pomocne tabele/logo/LogoHome";
 import ZaposleniHome from "./zaposleni/ZaposleniHome";
+import httpCommon from "../http-common";
+import NeodjavljenePoseteTabela from "./neodjavljene posete/NeodjavljenePoseteTabela";
 
 export const Navigation = () => {
   const aktivnostiPaths = ["/dogadjaj"];
@@ -46,6 +48,30 @@ export const Navigation = () => {
   const isActiveDropdown = (pathsArray) =>
     pathsArray.includes(location.pathname);
 
+  const [hasPosete, setHasPosete] = useState(false);
+  const [neodjavljene, setNeodjavljene] = useState([]);
+
+  useEffect(() => {
+    const fetchNeodjavljenePosete = async () => {
+      try {
+        const response = await httpCommon.get("/posete/neodjavljene");
+        if (response.status === 200) {
+          setNeodjavljene(response.data);
+        } else {
+          throw new Error("Greška tokom fetch-ovanja neodjavljenih posete");
+        }
+      } catch (error) {
+        console.error(error);
+        setNeodjavljene([]);
+      }
+    };
+    fetchNeodjavljenePosete();
+  }, []);
+
+  useEffect(() => {
+    setHasPosete(neodjavljene.length > 0);
+  }, [neodjavljene]);
+
   return (
     <>
       <Navbar bg="light">
@@ -62,6 +88,16 @@ export const Navigation = () => {
             >
               Omladinski centar OPENS
             </Nav.Link>
+            {hasPosete && (
+              <Nav.Link
+                href="/posete"
+                className={`omladinski-dropdown-item ${
+                  isActive("/posete") ? "active" : ""
+                }`}
+              >
+                Nevraćena oprema
+              </Nav.Link>
+            )}
             <NavDropdown
               title="Aktivnosti"
               className={
@@ -204,6 +240,7 @@ export const Navigation = () => {
           <Route path="/logovanje" element={<Logovanje />} />
           <Route path="/zaposleni" element={<ZaposleniHome />} />
           <Route path="/omladinski" element={<OmladinskiCentar />} />
+          <Route path="/posete" element={<NeodjavljenePoseteTabela />} />
         </Routes>
       </div>
     </>
