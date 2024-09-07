@@ -1,5 +1,9 @@
+import { marked } from "marked";
 import React, { useContext, useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
+import TurndownService from "turndown";
 import { ObavestenjeContext } from "../ObavestenjaContext";
 
 export const EditObavestenjaForm = ({ updatedObavestenje }) => {
@@ -10,7 +14,7 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
   const id = updatedObavestenje.id;
 
   const [naziv, setNaziv] = useState(updatedObavestenje.naziv);
-  const [tekst, setTekst] = useState(updatedObavestenje.tekst);
+  const [tekst, setTekst] = useState(marked(updatedObavestenje.tekst));
   const [pocetakPrikazivanja, setPocetakPrikazivanja] = useState(
     updatedObavestenje.pocetakPrikazivanja
   );
@@ -30,11 +34,47 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.currentTarget;
+    if (tekst.trim() === "") {
+      setValidated(true);
+      return;
+    }
     if (form.checkValidity()) {
-      editObavestenje(id, editedObavestenje);
+      const turndownService = new TurndownService();
+      const markdownText = turndownService.turndown(tekst);
+      const updatedObavestenje = {
+        ...editedObavestenje,
+        tekst: markdownText,
+      };
+      editObavestenje(id, updatedObavestenje);
     }
     setValidated(true);
   };
+
+  const modules = {
+    toolbar: [
+      ["bold", "italic", "underline"],
+      [{ color: [] }, { background: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ align: [] }],
+      ["link", "image"],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "underline",
+    "color",
+    "background",
+    "list",
+    "bullet",
+    "link",
+    "image",
+    "align",
+  ];
 
   return (
     <>
@@ -54,7 +94,7 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="tekst">
-          <Form.Control
+          {/* <Form.Control
             as="textarea"
             placeholder="Tekst obaveštenja *"
             name="tekst"
@@ -66,7 +106,20 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
           />
           <Form.Control.Feedback type="invalid">
             Unesite tekst obaveštenja.
-          </Form.Control.Feedback>
+          </Form.Control.Feedback> */}
+          <ReactQuill
+            value={tekst}
+            onChange={(value) => setTekst(value)}
+            placeholder="Tekst obaveštenja *"
+            style={{ height: "200px", marginBottom: "50px" }}
+            modules={modules}
+            formats={formats}
+          />
+          {validated && tekst.trim() === "" && (
+            <div className="invalid-feedback d-block">
+              Unesite tekst obaveštenja.
+            </div>
+          )}
         </Form.Group>
         <Form.Group className="mb-3" controlId="pocetakPrikazivanja">
           <Form.Label>Početak prikazivanja obaveštenja:</Form.Label>

@@ -1,6 +1,9 @@
 import React, { useContext, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { ObavestenjeContext } from "../ObavestenjaContext";
+import TurndownService from "turndown";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Import React Quill's CSS
 
 export const AddObavestenjaForm = () => {
   const { addObavestenje } = useContext(ObavestenjeContext);
@@ -18,17 +21,56 @@ export const AddObavestenjaForm = () => {
     setNewObavestenje({ ...newObavestenje, [e.target.name]: e.target.value });
   };
 
+  const handleQuillChange = (value) => {
+    setNewObavestenje({ ...newObavestenje, tekst: value });
+  };
+
   const { naziv, tekst, pocetakPrikazivanja, krajPrikazivanja, prioritet } =
     newObavestenje;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.currentTarget;
+    if (tekst.trim() === "") {
+      setValidated(true);
+      return;
+    }
     if (form.checkValidity()) {
-      addObavestenje(newObavestenje);
+      const turndownService = new TurndownService();
+      const markdownText = turndownService.turndown(tekst);
+      const updatedObavestenje = {
+        ...newObavestenje,
+        tekst: markdownText,
+      };
+      addObavestenje(updatedObavestenje);
     }
     setValidated(true);
   };
+
+  const modules = {
+    toolbar: [
+      ["bold", "italic", "underline"],
+      [{ color: [] }, { background: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ align: [] }],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "underline",
+    "color",
+    "background",
+    "list",
+    "bullet",
+    "link",
+    "image",
+    "align",
+  ];
 
   return (
     <>
@@ -48,7 +90,7 @@ export const AddObavestenjaForm = () => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="tekst">
-          <Form.Control
+          {/* <Form.Control
             as="textarea"
             placeholder="Tekst obaveštenja *"
             name="tekst"
@@ -60,7 +102,20 @@ export const AddObavestenjaForm = () => {
           />
           <Form.Control.Feedback type="invalid">
             Unesite tekst obaveštenja.
-          </Form.Control.Feedback>
+          </Form.Control.Feedback> */}
+          <ReactQuill
+            value={tekst}
+            onChange={handleQuillChange}
+            placeholder="Tekst obaveštenja *"
+            style={{ height: "200px", marginBottom: "50px" }}
+            modules={modules}
+            formats={formats}
+          />
+          {validated && tekst.trim() === "" && (
+            <div className="invalid-feedback d-block">
+              Unesite tekst obaveštenja.
+            </div>
+          )}
         </Form.Group>
         <Form.Group className="mb-3" controlId="pocetakPrikazivanja">
           <Form.Label>Početak prikazivanja obaveštenja:</Form.Label>
@@ -103,7 +158,7 @@ export const AddObavestenjaForm = () => {
             min={1}
             max={5}
             step={1}
-            isInvalid={validated && (!prioritet || prioritet <=0)}
+            isInvalid={validated && (!prioritet || prioritet <= 0)}
           />
           <Form.Text className="text-muted">
             Unesite broj između 1 i 5 koji označava prioritet prikazivanja

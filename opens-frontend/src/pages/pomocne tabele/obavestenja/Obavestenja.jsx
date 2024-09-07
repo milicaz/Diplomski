@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Card, Modal } from "react-bootstrap";
 import { MdDelete, MdEdit } from "react-icons/md";
+import ReactMarkdown from "react-markdown";
 import { ObavestenjeContext } from "./ObavestenjaContext";
 import DeleteObavestenjaForm from "./modal/DeleteObavestenjaForm";
 import EditObavestenjaForm from "./modal/EditObavestenjaForm";
@@ -43,9 +44,9 @@ export const Obavestenja = ({ obavestenje }) => {
             {new Date(obavestenje.krajPrikazivanja).toLocaleDateString("sr-SR")}
           </Card.Subtitle>
           {isTruncated ? (
-            <p style={{textAlign: 'justify'}}>{obavestenje.tekst.slice(0, 200)}...</p>
+            <ReactMarkdown>{obavestenje.tekst.slice(0,200)+'...'}</ReactMarkdown>
           ) : (
-            <p style={{textAlign: 'justify'}}>{obavestenje.tekst}</p>
+            <ReactMarkdown>{obavestenje.tekst}</ReactMarkdown>
           )}
           <div className="row align-items-center">
             <div className="col">
