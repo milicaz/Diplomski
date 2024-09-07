@@ -43,7 +43,7 @@ const ResetPasswordPage = () => {
 
   const resetPassword = async () => {
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match.');
+      Alert.alert(t("alertResetPassword"));
       return;
     }
 
@@ -52,10 +52,10 @@ const ResetPasswordPage = () => {
         method: 'PUT'
       });
       const result = await response.text();
-      Alert.alert('Success', result);
+      Alert.alert(t("alertResetPasswordSuccess"), result);
       navigation.navigate('Welcome');
     } catch (error) {
-      Alert.alert('Error', 'An error occurred while resetting the password.');
+      Alert.alert(t("alertResetPasswordError"));
     }
   };
 

@@ -10,6 +10,7 @@ import { i18next } from './services/i18next';
 import RequestPasswordResetPage from './screens/RequestPasswordResetPage';
 import ResetPasswordPage from './screens/ResetPasswordPage';
 import LogoutPage from './screens/LogoutPage';
+import Izjava from './screens/Izjava';
 
 
 const Stack = createNativeStackNavigator();
@@ -27,6 +28,7 @@ export default function App() {
           <Stack.Screen name="Main" component={BottomTabNavigation} options={{ headerShown: false }} />
           <Stack.Screen name="ProfileEdit" component={ProfileEdit} options={{ headerShown: false }} />
           <Stack.Screen name="Logout" component={LogoutPage} />
+          <Stack.Screen name="Izjava" component={Izjava} />
           {/* <Stack.Screen name="Home" component={Home} /> */}
         </Stack.Navigator>
       </NavigationContainer>
