@@ -20,15 +20,15 @@ export default function App() {
     <I18nextProvider i18n={i18next}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName='Welcome'>
-          <Stack.Screen name="Welcome" component={WelcomePage} />
-          <Stack.Screen name="Registracija" component={Registracija} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="ForgotPassword" component={RequestPasswordResetPage} />
-          <Stack.Screen name="ResetPassword" component={ResetPasswordPage} />
+          <Stack.Screen name="Welcome" component={WelcomePage} options={{ headerShown: false }}/>
+          <Stack.Screen name="Registracija" component={Registracija} options={{ headerShown: false }}/>
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
+          <Stack.Screen name="ForgotPassword" component={RequestPasswordResetPage} options={{ headerShown: false }}/>
+          <Stack.Screen name="ResetPassword" component={ResetPasswordPage} options={{ headerShown: false }}/>
           <Stack.Screen name="Main" component={BottomTabNavigation} options={{ headerShown: false }} />
           <Stack.Screen name="ProfileEdit" component={ProfileEdit} options={{ headerShown: false }} />
-          <Stack.Screen name="Logout" component={LogoutPage} />
-          <Stack.Screen name="Izjava" component={Izjava} />
+          <Stack.Screen name="Logout" component={LogoutPage} options={{ headerShown: false }}/>
+          <Stack.Screen name="Izjava" component={Izjava} options={{ headerShown: false }}/>
           {/* <Stack.Screen name="Home" component={Home} /> */}
         </Stack.Navigator>
       </NavigationContainer>
