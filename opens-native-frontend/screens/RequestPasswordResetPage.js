@@ -23,10 +23,10 @@ const RequestPasswordResetPage = () => {
         method: 'POST',
       });
       const result = await response.text();
-      Alert.alert('Success', result);
-navigation.navigate('ResetPassword')
+      Alert.alert(t("alertResetPasswordSuccess"), result);
+      navigation.navigate('ResetPassword')
     } catch (error) {
-      Alert.alert('Error', 'An error occurred while requesting the password reset.');
+      Alert.alert(t("alertRequestResetPasswordError"));
     }
   };
 

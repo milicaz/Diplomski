@@ -97,5 +97,68 @@
         "male" : "male",
         "female" : "female",
         "other" : "other"
-    } 
+    },
+    "consent" : {
+        "title": "INFORMATION FOR ACCEPTING TERMS \n",
+        "firstParagraph" : 
+        "Pursuant to Article 23 of the Personal Data Protection Act (“Official Gazette of RS”, No. 87/2018), and in connection with the collection of personal data when filling out requests, complaints, or objections, the Youth Allance “OPENS”, with registration number 28202717, as the data controller, provides the following notification about the processing of personal data:\n\n ",
+        "secondParagraph" : 
+        "1) Data Controller Information\n - Legal Entity: Youth Allance “OPENS”\n - Address: Bulevar Despota Stefana No. 5, Novi Sad\n - Registration Number: 28202717\n - Legal Representative: Executive Director Vukašin Grozdanović\n\n",
+        "thirdParagraph" : 
+        "2) Purpose of Data Collection and Processing\n - The purpose of data collection is to monitor, record, and report the number of activities, space usage hours, and the number of visits by members to the Youth Center OPENS.\n\n",
+        "fourthParagraph":
+        "3) Method of Data Use\n - The Youth Allance “OPENS” collects personal data during participation in activities, use of the space, and visits to the Youth Center OPENS. The collected personal data is used solely for the purposes of monitoring project monthly and annual reports of the Youth Allance “OPENS”.\n\n",
+        "fifthParagraph" :
+        "4) Persons Using the Data\n - Personal data is processed by employees of the Youth Allance “OPENS”, in accordance with internal legal acts.\n\n",
+        "sixthParagraph" :
+        "5) Legal Basis for Data Collection and Processing\n - The legal basis for the collection and processing of personal data is the internal acts of the Youth Allance “OPENS”.\n\n",
+        "seventhParagraph" :
+        "6) Withdrawal of Consent for Data Processing and Legal Consequences of Withdrawal\n - Any individual whose personal data is processed by the Youth Allance “OPENS” has the right to withdraw their previously given consent for processing.\n\n",
+        "eighthParagraph" :
+        "7) Right to Access, Correction, or Deletion of Personal Data\n - Users have the right to request from the data controller access to, correction or deletion of their personal data, restriction of processing, data portability, and the right to object, in accordance with the laws relating to the resolution of user requests.\n\n",
+        "ninethParagraph" :
+        "8) Automated Decisions and Profiling, and Transfer of Personal Data to Another Country or International Organization\n -Youth Allance “OPENS” does not make automated decisions, perform profiling, or transfer personal data collected via the website, request forms, complaints, and objections to another country or international organization.\n\n",
+        "tenthParagraph" : 
+        "9) Rights in Case of Unauthorized Processing\n - In case of unauthorized processing of data, the individual is entitled to all rights under the Personal Data Protection Act, which is overseen by the Commissioner for Information of Public Importance and Personal Data Protection, including the right to file a complaint with the Commissioner.\n\n"
+    },
+    "statementOfConsent" : {
+        "title" : "CONSENT STATEMENT \n",
+        "firstParagraph" : 
+        "- I declare that I consent to the processing of my personal data by the Youth Allance “OPENS”in accordance with the Personal Data Protection Act (“Official Gazette of RS”, No. 87/2018).\n\n",
+        "secondParagraph" : 
+        "- I declare that I have provided my data voluntarily.\n\n",
+        "thirdParagraph" : 
+        "- I declare that I have been informed and agree that my data will be managed by employees of the Youth Allance “OPENS” and that the data will be stored within the Youth Allance “OPENS” for the period prescribed by specific RS laws and the general acts of the Youth Allance “OPENS” related to my request.\n\n",
+        "fourthParagraph" : 
+        "- I agree that the Youth Allance “OPENS” collects, stores in its database, and uses the aforementioned data solely for the purpose for which the data was collected.\n\n",
+        "fifthParagraph" : 
+        "- I declare that I agree for my data to be stored, processed, and used for the following purposes: communication with me, processing of my request, record-keeping, data storage, and usage for project reporting of the Youth Allance “OPENS”.\n\n",
+        "sixthParagraph" :
+        "- The Youth Allance “OPENS” guarantees to individuals whose data it processes all rights provided under the Personal Data Protection Act.\n\n"
+    },
+    "consentButton" : {
+        "button" : "I have read and accept the Terms of Use. I am familiar with the Privacy Policy and agree to the processing of personal data."
+    },
+
+    "setEmailError" : "Incorrect email format!",
+
+    "setPasswordError" : "Password must contain at least eight characters, including 1 capital letter, 1 number and 1 special character(@$!%*?&)!",
+
+    "alertEmailPasswordError": "You must enter a valid e-mail address and a valid password!",
+
+    "alertCheckbox" : "You must agree to the terms of use before proceeding!",
+
+    "alertRegistrationSuccess": "You have registered successfully!",
+
+    "alertRegistrationFailed" : "Registration failed. Please try again!",
+
+    "consoleRegistrationError" : "Error during registration:",
+
+    "alertResetPassword" : "Passwords do not match.",
+
+    "alertResetPasswordSuccess" : "Success!",
+
+    "alertResetPasswrodError" : "An error occurred while resetting the password.",
+
+    "alertRequestResetPasswordError" : "An error occurred while requesting the password reset."
 }

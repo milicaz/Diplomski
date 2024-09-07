@@ -5,6 +5,7 @@ import {
   Alert,
   Platform,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -17,6 +18,7 @@ import axios from "axios";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import Checkbox from "expo-checkbox";
 
 
 export default function Registracija() {
@@ -38,6 +40,8 @@ export default function Registracija() {
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  const [isChecked, setIsChecked] = useState(false)
 
 
   const [fontsLoaded] = useFonts({
@@ -169,7 +173,7 @@ export default function Registracija() {
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setEmailError("Neispravan format e-maila!");
+      setEmailError(t("setEmailError"));
     } else {
       setEmailError("");
     }
@@ -180,19 +184,21 @@ export default function Registracija() {
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) {
-      setPasswordError(
-        "Lozinka mora sadržati najmanje osam karaktera, od toga 1 veliko slovo, 1 broj i 1 specijalni karakter(@$!%*?&)"
-      );
+      setPasswordError(t("setPasswordError"));
     } else {
       setPasswordError("");
     }
   };
 
   const registracija = async () => {
-    if (emailError || passwordError) {
-      alert("Morate uneti validnu e-mail adresu i validnu lozinku!");
-      return;
-    }
+      if (emailError || passwordError) {
+        // alert("Morate uneti validnu e-mail adresu i validnu lozinku!");
+        Alert.alert(t("alertEmailPasswordError"))
+        return;
+      } else if(!isChecked){
+        Alert.alert(t("alertCheckbox"));
+        return;
+      }
 
     try {
       const posetilac = {
@@ -215,17 +221,12 @@ export default function Registracija() {
           },
         }
       );
-      alert("Uspešno ste se registrovali!");
+      Alert.alert(t("alertRegistrationSuccess"));
       navigation.navigate("Welcome");
     } catch (error) {
-      console.error("Error during registration:", error);
-      alert("Registration failed. Please try again.");
+      console.error(t("consoleRegistrationError"), error);
+      Alert.alert(t("alertRegistrationFailed"));
     }
-  };
-
-  const handleLinkPress = () => {
-    // Handle the link press, e.g., navigate to another screen or open a URL
-    Alert.alert('Link pressed', 'You pressed the link!');
   };
 
   return (
@@ -512,6 +513,18 @@ export default function Registracija() {
               />
             </View>
           </View>
+          <View style = {styles.container}>
+            <View style={styles.checkboxContainer}>
+              <Checkbox 
+                value={isChecked}
+                onValueChange={setIsChecked}
+                tintColors={{ true: COLORS.blue, false: undefined }}
+              />
+              <TouchableOpacity onPress={() => navigation.navigate("Izjava")}>
+                <Text style={styles.text}>{t("consentButton.button")}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
           <View style={{ width: "50%", margin: 10 }}>
             {/* <Button title="Registracija"></Button> */}
             <TouchableOpacity
@@ -532,3 +545,23 @@ export default function Registracija() {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: "90%",
+    marginBottom: 20,
+    justifyContent: "center",
+    padding: 20
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center' // Aligns children vertically centered
+  },
+  text: {
+    fontFamily: "Montserrat-Regular",
+    marginLeft: 8, // Adjust spacing between checkbox and text
+    color: '#0000FF',
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  }
+});
