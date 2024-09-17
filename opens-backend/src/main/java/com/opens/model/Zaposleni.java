@@ -20,6 +20,9 @@ public class Zaposleni extends Korisnik{
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "zaposleni_uloge", joinColumns = @JoinColumn(name = "zaposleni_id"), inverseJoinColumns = @JoinColumn(name = "uloga_id"))
 	private Set<Uloga> uloge = new HashSet<>();
+	
+	@Column(nullable = false)
+	private boolean deleted = false;
 
 	public Zaposleni() {
 	}
@@ -45,6 +48,14 @@ public class Zaposleni extends Korisnik{
 
 	public void setUloge(Set<Uloga> uloge) {
 		this.uloge = uloge;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 	
 	

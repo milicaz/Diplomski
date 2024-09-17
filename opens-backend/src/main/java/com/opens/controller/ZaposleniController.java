@@ -1,8 +1,10 @@
 package com.opens.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.opens.model.Uloga;
 import com.opens.model.Zaposleni;
+import com.opens.repository.UlogaRepository;
 import com.opens.repository.ZaposleniRepository;
 
 @RestController
@@ -29,10 +32,13 @@ public class ZaposleniController {
 	@Autowired
 	private ZaposleniRepository zaposleniRepo;
 	
+	@Autowired
+	private UlogaRepository ulogaRepo;
+	
 	@GetMapping("/zaposleni")
 	public ResponseEntity<List<Zaposleni>> getAll() {
 		List<Zaposleni> zaposleni = new ArrayList<>();
-		zaposleni = zaposleniRepo.findAll();
+		zaposleni = zaposleniRepo.findAllActive();
 		
 		return new ResponseEntity<>(zaposleni, HttpStatus.OK);
 	}
@@ -49,15 +55,26 @@ public class ZaposleniController {
 		Optional<Zaposleni> updateZaposleni = zaposleniRepo.findById(id);
 		
 		Zaposleni upZaposleni = updateZaposleni.get();
+		upZaposleni.setEmail(zaposleni.getEmail());
 		upZaposleni.setIme(zaposleni.getIme());
 		upZaposleni.setPrezime(zaposleni.getPrezime());
 		upZaposleni.setRod(zaposleni.getRod());
 		upZaposleni.setGodine(zaposleni.getGodine());
 		upZaposleni.setBrojTelefona(zaposleni.getBrojTelefona());
-		upZaposleni.setUloge(zaposleni.getUloge());
-//		for(Uloga u : zaposleni.getUloge()) {
-//			upZaposleni.setUloge(u);
-//		}
+//		upZaposleni.setUloge(zaposleni.getUloge());
+		if (zaposleni.getUloge() != null) {
+	        // Assuming you have a method to fetch Uloga by name
+	        Set<Uloga> roles = new HashSet<>();
+	        for (Uloga uloga : zaposleni.getUloge()) {
+	            Uloga existingRole = ulogaRepo.findByNaziv(uloga.getNaziv()).get();
+	            if (existingRole != null) {
+	                roles.add(existingRole);
+	            } else {
+	                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	            }
+	        }
+	        upZaposleni.setUloge(roles);
+	    }
 		
 		zaposleniRepo.save(upZaposleni);
 		
@@ -69,5 +86,21 @@ public class ZaposleniController {
 		zaposleniRepo.deleteById(id);
 		return new ResponseEntity<>("Zaposleni je obrisan!", HttpStatus.OK);
 	}
+	
+	//Logicko brisanje
+	@PutMapping("/zaposleni/delete/{id}")
+	public ResponseEntity<String> logicalDelete(@PathVariable Long id) {
+        Optional<Zaposleni> optionalZaposleni = zaposleniRepo.findById(id);
+
+        if (!optionalZaposleni.isPresent()) {
+            return new ResponseEntity<>("Zaposleni not found", HttpStatus.NOT_FOUND);
+        }
+
+        Zaposleni zaposleni = optionalZaposleni.get();
+        zaposleni.setDeleted(true);
+        zaposleniRepo.save(zaposleni);
+
+        return new ResponseEntity<>("Zaposleni marked as deleted", HttpStatus.OK);
+    }
 
 }

@@ -43,6 +43,14 @@ public class OrganizacijaController {
 		return new ResponseEntity<>(org, HttpStatus.OK);
 	}
 	
+	@GetMapping("/organizacija/search/{naziv}")
+	public ResponseEntity<Organizacija> getByNaziv(@PathVariable String naziv) {
+		Optional<Organizacija> organizacija = organizacijaRepo.findByNaziv(naziv);
+		
+		return organizacija.map(o -> new ResponseEntity<>(o, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+	
 	@PostMapping("/organizacije")
 	public ResponseEntity<Organizacija> save(@RequestBody Organizacija organizacija){
 		Organizacija org = organizacijaRepo.save(organizacija);
@@ -74,5 +82,6 @@ public class OrganizacijaController {
 		
 		return new ResponseEntity<>("Organizacija je obrisana.", HttpStatus.OK);
 	}
+	
 
 }

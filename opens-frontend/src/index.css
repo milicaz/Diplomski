@@ -249,7 +249,7 @@ td {
 }
 
 .zaposleni-dropdown-item.active {
-  background-color: #61cddc;
+  background-color: #a18bbd;
   color: #000000;
   font-weight: bolder;
 }
@@ -353,7 +353,8 @@ td {
 }
 
 .image-table th {
-  background-color: #f2f2f2;
+  /* background-color: #f2f2f2; */
+  background-color: #ffffff
 }
 
 /* CSS ZA MAINCHECKIN TAB-OVE */

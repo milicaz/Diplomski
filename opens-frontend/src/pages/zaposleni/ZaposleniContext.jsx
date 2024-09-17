@@ -31,8 +31,37 @@ const ZaposleniContextProvider = (props) => {
         getZaposleni();
     }
 
+    const deleteZaposleni = async(id) => {
+        await axios.put(`http://localhost:8080/api/zaposleni/delete/${id}`);
+        getZaposleni();
+    }
+
+    const editZaposleni = async(id, zaposleni) => {
+        // await axios.put(`http://localhost:8080/api/zaposleni/${id}`, editZaposleni);
+        // getZaposleni();
+        try {
+            await axios.put(`http://localhost:8080/api/zaposleni/${id}`, {
+                email: zaposleni.email,
+                ime: zaposleni.ime,
+                prezime: zaposleni.prezime,
+                rod: zaposleni.rod,
+                godine: zaposleni.godine,
+                mestoBoravista: zaposleni.mestoBoravista,
+                brojTelefona: zaposleni.brojTelefona,
+                uloge: zaposleni.uloge.map(role => ({ naziv: role })) // Format uloge correctly
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            getZaposleni(); // Refresh or fetch data after successful update
+        } catch (error) {
+            console.error('Error updating zaposleni:', error.response || error);
+        }
+    }
+
     return (
-        <ZaposleniContext.Provider value={{sortedZaposleni, uloga, registracija}}>
+        <ZaposleniContext.Provider value={{sortedZaposleni, uloga, registracija, deleteZaposleni, editZaposleni}}>
             {props.children}
         </ZaposleniContext.Provider>
     )

@@ -7,6 +7,8 @@ import { LocalDate, LocalTime } from "@js-joda/core";
 import { ucesniciImage } from "../../assets";
 import { FaRegFilePdf } from "react-icons/fa";
 import { RiFileExcel2Fill } from "react-icons/ri";
+import axios from "axios";
+import debounce from 'lodash/debounce';
 
 const DogadjajList = () => {
   const { sortedDogadjaji } = useContext(DogadjajContext);
@@ -55,12 +57,46 @@ const DogadjajList = () => {
 
   const [prezime, setPrezime] = useState('')
 
+  //search organizacija by name
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     setOrganizacijaEdit(currentOrganizacija)
     setId(organizacijaId)
     setIdDogadjaja(dogadjajId)
     // console.log("idDogadjaja u dogadjaj list: " + dogadjajId)
-  }, [organizacijaId, currentOrganizacija, dogadjajId]);
+
+    if (organizacija.naziv) {
+      setLoading(true);
+      axios.get(`http://localhost:8080/api/organizacija/search/${organizacija.naziv}`)
+          .then(response => {
+              if (response.status === 200) {
+                  setOrganizacija(response.data);
+              }
+          })
+          .catch(error => {
+              if (error.response && error.response.status === 404) {
+                  // Organization not found, handle as needed
+                  setOrganizacija(prevState => ({ ...prevState, naziv: organizacija.naziv }));
+              } else {
+                  setError('An error occurred');
+              }
+          })
+          .finally(() => setLoading(false));
+  } else if(organizacija.naziv === "") {
+    setOrganizacija({
+      naziv: '',
+      odgovornaOsoba: '',
+      brojTelefona: '',
+      email: '',
+      delatnost: '',
+      opis: '',
+      link: ''
+  });
+  }
+
+  }, [organizacijaId, currentOrganizacija, dogadjajId, organizacija.naziv]);
 
   const indexOfLastDogadjaj = currentPage * limit
 
@@ -126,6 +162,23 @@ const DogadjajList = () => {
   const handleChange = (event) => {
     const {name, value} = event.target
     setOrganizacija({...organizacija, [name]:value})
+
+    // const { name, value } = event.target;
+
+    //     if (name === 'naziv') {
+    //         // Update naziv and trigger useEffect
+    //         setOrganizacija(prevState => ({
+    //             ...prevState,
+    //             // naziv: value
+    //             naziv : value
+    //         }));
+    //     } else {
+    //         // Update other fields
+    //         setOrganizacija(prevState => ({
+    //             ...prevState,
+    //             [name]: value
+    //         }));
+    //     }
 }
 
 const handleDalje = (event) => {
@@ -223,6 +276,14 @@ const handlePDF = (event) => {
   const response = kreirajPDF(mesec, godina, vrsta, ime, prezime)
 };
 
+const formatTimeRange = (start, end) => {
+  // Assuming start and end are in 'HH:mm:ss' format
+  // Create Date objects in local time zone
+  const startTime = new Date(`1970-01-01T${start}`).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  const endTime = new Date(`1970-01-01T${end}`).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  return `${startTime} - ${endTime}`;
+};
+
 
   return (
     <>
@@ -311,14 +372,15 @@ const handlePDF = (event) => {
           </div>
         </div>
       </div>
-      <table className="table table-striped table-hover">
+      <table className="table table-striped table-hover image-table">
         <thead>
           <tr>
             <th>Id</th>
             <th>Naziv</th>
             <th>Datum</th>
-            <th>Početak događaja</th>
-            <th>Kraj događaja</th>
+            {/* <th>Početak događaja</th>
+            <th>Kraj događaja</th> */}
+            <th>Vreme događaja</th>
             <th>Mesto</th>
             <th>Vrsta</th>
             <th>Organizacija</th>

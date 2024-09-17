@@ -28,9 +28,10 @@ import LogoHome from "./pomocne tabele/logo/LogoHome";
 import ZaposleniHome from "./zaposleni/ZaposleniHome";
 import httpCommon from "../http-common";
 import NeodjavljenePoseteTabela from "./neodjavljene posete/NeodjavljenePoseteTabela";
+import DogadjajiTrenutno from "./aktivnosti/DogadjajTrenutno";
 
 export const Navigation = () => {
-  const aktivnostiPaths = ["/dogadjaj"];
+  const aktivnostiPaths = ["/dogadjaj", "/dogadjajiTrenutno"];
   const sifarnikPaths = [
     "/obavestenja",
     "/tipOpreme",
@@ -104,7 +105,11 @@ export const Navigation = () => {
                 isActiveDropdown(aktivnostiPaths) ? "aktivnosti-dropdown" : ""
               }
             >
-              <NavDropdown.Item>Trenutno</NavDropdown.Item>
+              <NavDropdown.Item href="/dogadjajiTrenutno" className={`aktivnosti-dropdown-item ${
+                  isActive("/dogadjajiTrenutno") ? "active" : ""
+                }`}>
+                  Trenutno
+                  </NavDropdown.Item>
               <NavDropdown.Item
                 href="/dogadjaj"
                 className={`aktivnosti-dropdown-item ${
@@ -235,6 +240,7 @@ export const Navigation = () => {
             element={<PrigradskaNaseljaHome />}
           />
           <Route path="/dogadjaj" element={<DogadjajHome />} />
+          <Route path="/dogadjajiTrenutno" element={<DogadjajiTrenutno />}/>
           <Route path="/logo" element={<LogoHome />} />
           <Route path="/obavestenja" element={<ObavestenjaHome />} />
           <Route path="/logovanje" element={<Logovanje />} />

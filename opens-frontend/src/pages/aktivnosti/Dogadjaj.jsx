@@ -30,13 +30,21 @@ const Dogadjaj = ({ dogadjaj }) => {
     setUcesnik({ime: "", prezime: "", rod: "", godine: "", mestoBoravista: "", brojTelefona: "", email: "", organizacija: ""})
   }
 
+  const formatTimeRange = (start, end) => {
+    // Create Date objects in local time zone
+    const startTime = new Date(`1970-01-01T${start}`).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    const endTime = new Date(`1970-01-01T${end}`).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    return `${startTime} - ${endTime}`;
+};
+
   return (
     <>
       <td>{dogadjaj.id}</td>
       <td>{dogadjaj.naziv}</td>
       <td>{dogadjaj.datum}</td>
-      <td>{dogadjaj.pocetakDogadjaja}</td>
-      <td>{dogadjaj.krajDogadjaja}</td>
+      {/* <td>{dogadjaj.pocetakDogadjaja}</td>
+      <td>{dogadjaj.krajDogadjaja}</td> */}
+      <td>{formatTimeRange(dogadjaj.pocetakDogadjaja, dogadjaj.krajDogadjaja)}</td>
       <td>{dogadjaj.mesto.nazivSale}</td>
       <td>{dogadjaj.vrsta.naziv}</td>
       <td>{dogadjaj.organizacija.naziv}</td>
