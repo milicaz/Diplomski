@@ -10,13 +10,16 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "mesta_dogadjaja")
 public class MestoDogadjaja {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "naziv_sale")
 	private String nazivSale;
+
+	@Column(nullable = false)
+	private boolean deleted = false;
 
 	public MestoDogadjaja() {
 		super();
@@ -42,9 +45,13 @@ public class MestoDogadjaja {
 	public void setNazivSale(String nazivSale) {
 		this.nazivSale = nazivSale;
 	}
-	
-	
-	
-	
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
 
 }

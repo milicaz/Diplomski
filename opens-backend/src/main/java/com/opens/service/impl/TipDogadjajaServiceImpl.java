@@ -12,7 +12,7 @@ import com.opens.service.TipDogadjajaService;
 
 @Service
 public class TipDogadjajaServiceImpl implements TipDogadjajaService {
-	
+
 	@Autowired
 	private TipDogadjajaRepository tipRepo;
 
@@ -29,9 +29,9 @@ public class TipDogadjajaServiceImpl implements TipDogadjajaService {
 	}
 
 	@Override
-	public List<TipDogadjaja> findAll() {
+	public List<TipDogadjaja> findAllActive() {
 		// TODO Auto-generated method stub
-		return tipRepo.findAll();
+		return tipRepo.findAllActive();
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class TipDogadjajaServiceImpl implements TipDogadjajaService {
 	@Override
 	public TipDogadjaja updateTip(Long id, TipDogadjaja tip) {
 		Optional<TipDogadjaja> upTip = tipRepo.findById(id);
-		
+
 		TipDogadjaja updateTip = upTip.get();
 		updateTip.setNaziv(tip.getNaziv());
 		tipRepo.save(updateTip);
@@ -52,8 +52,22 @@ public class TipDogadjajaServiceImpl implements TipDogadjajaService {
 
 	@Override
 	public String deleteTip(Long id) {
+		Optional<TipDogadjaja> optionalTip = tipRepo.findById(id);
+
+		if (!optionalTip.isPresent()) {
+			return "Tip događaja nije pronađen!";
+		}
+
+		TipDogadjaja tip = optionalTip.get();
+		tip.setDeleted(true);
+		tipRepo.save(tip);
+		return "Tip događaja je obrisan!";
+	}
+
+	@Override
+	public TipDogadjaja findActiveById(Long id) {
 		// TODO Auto-generated method stub
-		return null;
+		return tipRepo.findActiveById(id);
 	}
 
 }

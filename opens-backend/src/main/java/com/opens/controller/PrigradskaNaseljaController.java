@@ -1,8 +1,6 @@
 package com.opens.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,50 +16,40 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.opens.model.PrigradskaNaselja;
-import com.opens.repository.PrigradskaNaseljaRepository;
 import com.opens.service.PrigradskaNaseljaService;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class PrigradskaNaseljaController {
-	
-	@Autowired
-	private PrigradskaNaseljaRepository prigradskaNaseljaRepo;
-	
+
+
 	@Autowired
 	private PrigradskaNaseljaService naseljeService;
-	
+
 	@GetMapping("/prigradskaNaselja")
 	public ResponseEntity<List<PrigradskaNaselja>> getAll() {
-//		List<PrigradskaNaselja> naselja = new ArrayList<>();
-//		naselja = prigradskaNaseljaRepo.findAll();
-		
-		return new ResponseEntity<>(naseljeService.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(naseljeService.findAllActive(), HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/prigradskaNaselja")
 	public ResponseEntity<PrigradskaNaselja> save(@RequestBody PrigradskaNaselja prigradskaNaselja) {
 		PrigradskaNaselja naselje = naseljeService.addNaselje(prigradskaNaselja);
-		
-		return  new ResponseEntity<>(naselje, HttpStatus.OK);
+
+		return new ResponseEntity<>(naselje, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/prigradskaNaselja/{id}")
-	public ResponseEntity<PrigradskaNaselja> updateNaselje(@PathVariable Long id, @RequestBody PrigradskaNaselja naselje) {
-//		Optional<PrigradskaNaselja> upNaselje = prigradskaNaseljaRepo.findById(id);
-//		PrigradskaNaselja updateNaselje = upNaselje.get();
-//		
-//		updateNaselje.setNaziv(naselje.getNaziv());
-//		prigradskaNaseljaRepo.save(updateNaselje);
-		
+	public ResponseEntity<PrigradskaNaselja> updateNaselje(@PathVariable Long id,
+			@RequestBody PrigradskaNaselja naselje) {
+
 		return new ResponseEntity<>(naseljeService.updateNaselje(id, naselje), HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/prigradskaNaselja/{id}")
 	public ResponseEntity<String> deleteNaselje(@PathVariable Long id) {
-		prigradskaNaseljaRepo.deleteById(id);
-		return new ResponseEntity<>("Naselje je obrisano", HttpStatus.OK);
+//		prigradskaNaseljaRepo.deleteById(id);
+		return new ResponseEntity<>(naseljeService.deleteNaselje(id), HttpStatus.OK);
 	}
 
 }
