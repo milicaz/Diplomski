@@ -50,6 +50,11 @@ const DogadjajContextProvider = (props) => {
         // setDogadjajId(null)
     }
 
+    const deleteDogadjaj = async (id) => {
+        const response = await axios.delete(`http://localhost:8080/api/dogadjaj/delete/${id}`)
+        getDogadjaji();
+    }
+
     const editOrganizacija = async(id, editOrg) => {
         await axios.put(`http://localhost:8080/api/organizacije/${id}`, editOrg)
     }
@@ -118,7 +123,7 @@ const DogadjajContextProvider = (props) => {
     }
 
     return (
-        <DogadjajContext.Provider value={{sortedDogadjaji, addDogadjaj, addOrganizacija, editOrganizacija, organizacijaId, getOrganizacijaById, currentOrganizacija, mestaDogadjaja, tipoviDogadjaja, dogadjajId, dodajUcesnika, kreirajPDF}}>
+        <DogadjajContext.Provider value={{sortedDogadjaji, addDogadjaj, addOrganizacija, editOrganizacija, organizacijaId, getOrganizacijaById, currentOrganizacija, mestaDogadjaja, tipoviDogadjaja, dogadjajId, dodajUcesnika, kreirajPDF, deleteDogadjaj}}>
             {props.children}
         </DogadjajContext.Provider>
     )

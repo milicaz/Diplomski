@@ -2,10 +2,13 @@ import { useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { MdDelete, MdEdit, MdPeople } from "react-icons/md";
 import { DogadjajContext } from "./DogadjajContext";
+import DeleteDogadjajForm from "./modal/DeleteDogadjajForm";
 
 const Dogadjaj = ({ dogadjaj }) => {
 
   const {dodajUcesnika} = useContext(DogadjajContext);
+
+  const {deleteDogadjaj} = useContext(DogadjajContext);
 
   const [ucesnik, setUcesnik] = useState({ime: "", prezime: "", rod: "", godine: "", mestoBoravista: "", brojTelefona: "", email: "", organizacija: ""})
 
@@ -18,6 +21,10 @@ const Dogadjaj = ({ dogadjaj }) => {
   const handleCloseUcesnik = () => {
     setShowUcesnik(false)
   }
+
+  const [showDelete, setShowDelete] = useState(false);
+    const handleShowDelete = () => setShowDelete(true);
+    const handleCloseDelete = () => setShowDelete(false);
 
   const handleChangeUcesnik = (event) => {
     const {name, value} = event.target
@@ -52,6 +59,9 @@ const Dogadjaj = ({ dogadjaj }) => {
       <button className="btn text-warning btn-act" onClick={handleShowUcesnik}>
         <MdPeople />
       </button>
+      <button className="btn text-danger btn-act" onClick={handleShowDelete}>
+                    <MdDelete />
+                </button>
         {/* <a href="#editDogadjaj" className="edit">
             <i className="react-icons" title="Edit">
                 <MdEdit />
@@ -109,6 +119,23 @@ const Dogadjaj = ({ dogadjaj }) => {
           <Button onClick={handleCloseUcesnik} variant="danger">Završi</Button>&nbsp;
         </Modal.Footer>
       </Modal>
+
+      <Modal show={showDelete} onHide={handleCloseDelete} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Obriši događaj</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <DeleteDogadjajForm deleteDogadjaj={dogadjaj} />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button className="btn btn-danger" onClick={() => deleteDogadjaj(dogadjaj.id)}>
+                        Obriši
+                    </Button>
+                    <Button variant="secondary" onClick={handleCloseDelete}>
+                        Zatvori
+                    </Button>
+                </Modal.Footer>
+            </Modal>   
     </>
   );
 };
