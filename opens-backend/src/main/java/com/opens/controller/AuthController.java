@@ -49,6 +49,9 @@ import com.opens.security.response.TokenRefreshResponse;
 import com.opens.security.service.PosetilacDetailsImpl;
 import com.opens.security.service.ZaposleniDetailsImpl;
 import com.opens.security.service.RefreshTokenService;
+import com.opens.service.ZaposleniService;
+import com.opens.service.AuthService;
+import com.opens.service.PosetilacService;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -63,6 +66,15 @@ public class AuthController {
 	
 	@Autowired
 	ZaposleniRepository zaposleniRepo;
+	
+	@Autowired
+	ZaposleniService zaposleniService;
+	
+	@Autowired
+	PosetilacService posetilacService;
+	
+	@Autowired
+	AuthService authService;
 	
 	@Autowired
 	UlogaRepository ulogaRepo;
@@ -95,10 +107,6 @@ public class AuthController {
 		List<String> uloge = zaposleniDetails.getAuthorities().stream().map(item -> item.getAuthority())
 				.collect(Collectors.toList());
 		
-//		logger.info("USER_LOGIN_SUCCESS - User logged in successfully");
-//		return (ResponseEntity<?>) ResponseEntity
-//				.ok("User logged in successfully!");
-		
 		RefreshToken refreshToken = refreshTokenService.createRefreshToken(zaposleniDetails.getEmail());
 		
 		return ResponseEntity.ok(new JwtResponse(jwt, 
@@ -111,62 +119,66 @@ public class AuthController {
 	
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerZaposleni(@Validated @RequestBody ZaposleniDTO zaposleniDTO) {
-		if(zaposleniRepo.existsByEmail(zaposleniDTO.getEmail()) || posetilacRepo.existsByEmail(zaposleniDTO.getEmail())) {
+//		if(zaposleniRepo.existsByEmail(zaposleniDTO.getEmail()) || posetilacRepo.existsByEmail(zaposleniDTO.getEmail())) {
+//			logger.warn("USER_REGISTRATION_FAIL - Email " + zaposleniDTO.getEmail() + " is already in use");
+//			return ResponseEntity.badRequest().body("Error: Email is already in use!");
+//		}
+		if(zaposleniService.existsByEmail(zaposleniDTO.getEmail()) || posetilacService.existsByEmail(zaposleniDTO.getEmail())) {
 			logger.warn("USER_REGISTRATION_FAIL - Email " + zaposleniDTO.getEmail() + " is already in use");
 			return ResponseEntity.badRequest().body("Error: Email is already in use!");
 		}
 		
-		Zaposleni zaposleni = new Zaposleni();
-		zaposleni.setEmail(zaposleniDTO.getEmail());
-		zaposleni.setPassword(encoder.encode(zaposleniDTO.getPassword()));
-		zaposleni.setIme(zaposleniDTO.getIme());
-		zaposleni.setPrezime(zaposleniDTO.getPrezime());
-		zaposleni.setRod(zaposleniDTO.getRod());
-		zaposleni.setGodine(zaposleniDTO.getGodine());
-		zaposleni.setMestoBoravista(zaposleniDTO.getMestoBoravista());
-		zaposleni.setBrojTelefona(zaposleniDTO.getBrojTelefon());
-		
-		Set<String> strUloge = zaposleniDTO.getUloge();
-		Set<Uloga> uloge = new HashSet<>();
-		
-		if(strUloge == null) {
-			Uloga zaposleniUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN)
-					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-			uloge.add(zaposleniUloga);
-		} else {
-			strUloge.forEach(uloga -> {
-				switch (uloga) {
-				case "admin":
-					Uloga adminUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN)
-					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-					uloge.add(adminUloga);
-				
-					break;
-				case "dogadjaj_admin":
-					Uloga dogadjajUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN_DOGADJAJ)
-						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-					uloge.add(dogadjajUloga);
-					
-					break;
-					
-				case "super_admin":
-					Uloga superUloga = ulogaRepo.findByNaziv(EUloge.ROLE_SUPER_ADMIN)
-						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-					uloge.add(superUloga);
-					
-					break;
-					
-				default:
-					Uloga zaposleniUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN)
-						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-					uloge.add(zaposleniUloga);
-				}
-			});
-		}
-		
-		zaposleni.setUloge(uloge);
-		zaposleniRepo.save(zaposleni);
-		
+//		Zaposleni zaposleni = new Zaposleni();
+//		zaposleni.setEmail(zaposleniDTO.getEmail());
+//		zaposleni.setPassword(encoder.encode(zaposleniDTO.getPassword()));
+//		zaposleni.setIme(zaposleniDTO.getIme());
+//		zaposleni.setPrezime(zaposleniDTO.getPrezime());
+//		zaposleni.setRod(zaposleniDTO.getRod());
+//		zaposleni.setGodine(zaposleniDTO.getGodine());
+//		zaposleni.setMestoBoravista(zaposleniDTO.getMestoBoravista());
+//		zaposleni.setBrojTelefona(zaposleniDTO.getBrojTelefon());
+//		
+//		Set<String> strUloge = zaposleniDTO.getUloge();
+//		Set<Uloga> uloge = new HashSet<>();
+//		
+//		if(strUloge == null) {
+//			Uloga zaposleniUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN)
+//					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//			uloge.add(zaposleniUloga);
+//		} else {
+//			strUloge.forEach(uloga -> {
+//				switch (uloga) {
+//				case "admin":
+//					Uloga adminUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN)
+//					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//					uloge.add(adminUloga);
+//				
+//					break;
+//				case "dogadjaj_admin":
+//					Uloga dogadjajUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN_DOGADJAJ)
+//						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//					uloge.add(dogadjajUloga);
+//					
+//					break;
+//					
+//				case "super_admin":
+//					Uloga superUloga = ulogaRepo.findByNaziv(EUloge.ROLE_SUPER_ADMIN)
+//						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//					uloge.add(superUloga);
+//					
+//					break;
+//					
+//				default:
+//					Uloga zaposleniUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN)
+//						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//					uloge.add(zaposleniUloga);
+//				}
+//			});
+//		}
+//		
+//		zaposleni.setUloge(uloge);
+//		zaposleniRepo.save(zaposleni);
+		authService.registerZaposleni(zaposleniDTO);
 //		logger.info("USER_REGISTRATION_SUCCESS - User registered successfully");
 //		return ResponseEntity.ok("User registered successfully!");
 		
@@ -175,41 +187,47 @@ public class AuthController {
 	
 	@PostMapping("/signupPosetilac")
 	public ResponseEntity<?> registerPosetilac(@Validated @RequestBody PosetilacDTO posetilacDTO){
-		if(posetilacRepo.existsByEmail(posetilacDTO.getEmail()) || zaposleniRepo.existsByEmail(posetilacDTO.getEmail())) {
+//		if(posetilacRepo.existsByEmail(posetilacDTO.getEmail()) || zaposleniRepo.existsByEmail(posetilacDTO.getEmail())) {
+//			logger.warn("USER_REGISTRATION_FAIL - Email " + posetilacDTO.getEmail() + " is already in use");
+//			return ResponseEntity.badRequest().body("Error: Email is already in use!");
+//		}
+		if(posetilacService.existsByEmail(posetilacDTO.getEmail()) || zaposleniService.existsByEmail(posetilacDTO.getEmail())) {
 			logger.warn("USER_REGISTRATION_FAIL - Email " + posetilacDTO.getEmail() + " is already in use");
 			return ResponseEntity.badRequest().body("Error: Email is already in use!");
 		}
 		
-		Uloga uloga = ulogaRepo.findOneByNaziv(EUloge.ROLE_POSETILAC);
+//		Uloga uloga = ulogaRepo.findOneByNaziv(EUloge.ROLE_POSETILAC);
+//		
+//		Posetilac posetilac = new Posetilac();
+//		posetilac.setEmail(posetilacDTO.getEmail());
+//		posetilac.setPassword(encoder.encode(posetilacDTO.getPassword()));
+//		posetilac.setIme(posetilacDTO.getIme());
+//		posetilac.setPrezime(posetilacDTO.getPrezime());
+//		posetilac.setRod(posetilacDTO.getRod());
+//		posetilac.setGodine(posetilacDTO.getGodine());
+//		posetilac.setMestoBoravista(posetilacDTO.getMestoBoravista());
+//		posetilac.setBrojTelefona(posetilacDTO.getBrojTelefona());
+//		posetilac.setUloga(uloga);
+//		
+//		posetilacRepo.save(posetilac);
 		
-		Posetilac posetilac = new Posetilac();
-		posetilac.setEmail(posetilacDTO.getEmail());
-		posetilac.setPassword(encoder.encode(posetilacDTO.getPassword()));
-		posetilac.setIme(posetilacDTO.getIme());
-		posetilac.setPrezime(posetilacDTO.getPrezime());
-		posetilac.setRod(posetilacDTO.getRod());
-		posetilac.setGodine(posetilacDTO.getGodine());
-		posetilac.setMestoBoravista(posetilacDTO.getMestoBoravista());
-		posetilac.setBrojTelefona(posetilacDTO.getBrojTelefona());
-		posetilac.setUloga(uloga);
-		
-		posetilacRepo.save(posetilac);
-		
-		try {
-			ProfilnaSlika profilnaSlika = new ProfilnaSlika();
-			
-			Path imagePath = Paths.get(ResourceUtils.getURL("classpath:images/profile.png").toURI());
-			String imageName = imagePath.getFileName().toString();
-			profilnaSlika.setTipSlike(getFileExtension(imageName));
-			profilnaSlika.setProfilnaSlika(Files.readAllBytes(imagePath));
-			
-			profilnaSlika.setPosetilac(posetilac);
-			
-			profilnaSlikaRepository.save(profilnaSlika);
-		}catch(Exception e) {}
+//		try {
+//			ProfilnaSlika profilnaSlika = new ProfilnaSlika();
+//			
+//			Path imagePath = Paths.get(ResourceUtils.getURL("classpath:images/profile.png").toURI());
+//			String imageName = imagePath.getFileName().toString();
+//			profilnaSlika.setTipSlike(getFileExtension(imageName));
+//			profilnaSlika.setProfilnaSlika(Files.readAllBytes(imagePath));
+//			
+//			profilnaSlika.setPosetilac(posetilac);
+//			
+//			profilnaSlikaRepository.save(profilnaSlika);
+//		}catch(Exception e) {}
 				
 //		logger.info("USER_REGISTRATION_SUCCESS - User registered successfully");
 //		return ResponseEntity.ok("User registered successfully!");
+		
+		authService.registerPosetilac(posetilacDTO);
 		
 		return ResponseEntity.ok(new MessageResponse("Posetilac je uspešno registrovan!"));
 		
@@ -335,12 +353,12 @@ public class AuthController {
 	    }
 	}
 	
-	private String getFileExtension(String fileName) {
-	    int lastIndexOfDot = fileName.lastIndexOf('.');
-	    if (lastIndexOfDot > 0 && lastIndexOfDot < fileName.length() - 1) {
-	        return fileName.substring(lastIndexOfDot + 1).toLowerCase();
-	    }
-	    return "";
-	}
+//	private String getFileExtension(String fileName) {
+//	    int lastIndexOfDot = fileName.lastIndexOf('.');
+//	    if (lastIndexOfDot > 0 && lastIndexOfDot < fileName.length() - 1) {
+//	        return fileName.substring(lastIndexOfDot + 1).toLowerCase();
+//	    }
+//	    return "";
+//	}
 	
 }
