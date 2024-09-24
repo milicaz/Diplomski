@@ -31,6 +31,7 @@ import com.opens.repository.OrganizacijaRepository;
 import com.opens.repository.PrigradskaNaseljaRepository;
 import com.opens.repository.TipDogadjajaRepository;
 import com.opens.repository.UcesnikRepository;
+import com.opens.service.DogadjajService;
 
 @RestController
 @RequestMapping("/api")
@@ -54,35 +55,38 @@ public class DogadjajController {
 
 	@Autowired
 	private PrigradskaNaseljaRepository pnRepo;
+	
+	@Autowired
+	private DogadjajService dogadjajService;
 
 	@GetMapping("/dogadjaji")
 	public ResponseEntity<List<Dogadjaj>> getAll() {
-		List<Dogadjaj> dogadjaji = new ArrayList<>();
-		dogadjaji = dogadjajRepo.findAll();
+//		List<Dogadjaj> dogadjaji = new ArrayList<>();
+//		dogadjaji = dogadjajRepo.findAll();
 
-		return new ResponseEntity<>(dogadjaji, HttpStatus.OK);
+		return new ResponseEntity<>(dogadjajService.findAll(), HttpStatus.OK);
 
 	}
 
 	@PostMapping("/dogadjaji")
 	public ResponseEntity<Dogadjaj> save(@RequestBody DogadjajDTO dogadjajDTO) {
-		Optional<MestoDogadjaja> mestoDogadjaja = mestoDogadjajaRepo.findById(dogadjajDTO.getMestoDogadjajaId());
-		Optional<TipDogadjaja> tipDogadjaja = tipDogadjajaRepo.findById(dogadjajDTO.getVrstaDogadjajaId());
-		Optional<Organizacija> organizacija = organizacijaRepo.findById(dogadjajDTO.getOrganizacijaId());
-
-		Dogadjaj dogadjaj = new Dogadjaj();
-		dogadjaj.setNaziv(dogadjajDTO.getNaziv());
-		dogadjaj.setDatum(dogadjajDTO.getDatum());
-		dogadjaj.setPocetakDogadjaja(dogadjajDTO.getPocetakDogadjaja());
-		dogadjaj.setKrajDogadjaja(dogadjajDTO.getKrajDogadjaja());
-		dogadjaj.setMesto(mestoDogadjaja.get());
-		dogadjaj.setVrsta(tipDogadjaja.get());
-		dogadjaj.setOrganizacija(organizacija.get());
-		dogadjajRepo.save(dogadjaj);
+//		Optional<MestoDogadjaja> mestoDogadjaja = mestoDogadjajaRepo.findById(dogadjajDTO.getMestoDogadjajaId());
+//		Optional<TipDogadjaja> tipDogadjaja = tipDogadjajaRepo.findById(dogadjajDTO.getVrstaDogadjajaId());
+//		Optional<Organizacija> organizacija = organizacijaRepo.findById(dogadjajDTO.getOrganizacijaId());
+//
+//		Dogadjaj dogadjaj = new Dogadjaj();
+//		dogadjaj.setNaziv(dogadjajDTO.getNaziv());
+//		dogadjaj.setDatum(dogadjajDTO.getDatum());
+//		dogadjaj.setPocetakDogadjaja(dogadjajDTO.getPocetakDogadjaja());
+//		dogadjaj.setKrajDogadjaja(dogadjajDTO.getKrajDogadjaja());
+//		dogadjaj.setMesto(mestoDogadjaja.get());
+//		dogadjaj.setVrsta(tipDogadjaja.get());
+//		dogadjaj.setOrganizacija(organizacija.get());
+//		dogadjajRepo.save(dogadjaj);
 		
 //		System.out.println("Id dogadjaja je: " + dogadjaj.getId());
 
-		return new ResponseEntity<>(dogadjaj, HttpStatus.OK);
+		return new ResponseEntity<>(dogadjajService.addDogadjaj(dogadjajDTO), HttpStatus.OK);
 
 	}
 

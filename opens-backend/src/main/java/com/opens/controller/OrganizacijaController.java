@@ -1,6 +1,5 @@
 package com.opens.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.opens.model.Organizacija;
 import com.opens.repository.OrganizacijaRepository;
+import com.opens.service.OrganizacijaService;
 
 @RestController
 @RequestMapping("/api")
@@ -28,24 +28,27 @@ public class OrganizacijaController {
 	@Autowired
 	private OrganizacijaRepository organizacijaRepo;
 	
+	@Autowired
+	private OrganizacijaService organizacijaService;
+	
 	@GetMapping("/organizacije")
 	public ResponseEntity<List<Organizacija>> getAll() {
-		List<Organizacija> organizacije = new ArrayList<>();
-		organizacije = organizacijaRepo.findAll();
+//		List<Organizacija> organizacije = new ArrayList<>();
+//		organizacije = organizacijaRepo.findAll();
 		
-		return new ResponseEntity<>(organizacije, HttpStatus.OK);
+		return new ResponseEntity<>(organizacijaService.findAll(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/organizacije/{id}")
 	public ResponseEntity<Optional<Organizacija>> getOne(@PathVariable Long id) {
-		Optional<Organizacija> org = organizacijaRepo.findById(id);
+//		Optional<Organizacija> org = organizacijaRepo.findById(id);
 		
-		return new ResponseEntity<>(org, HttpStatus.OK);
+		return new ResponseEntity<>(organizacijaService.findById(id), HttpStatus.OK);
 	}
 	
 	@GetMapping("/organizacija/search/{naziv}")
 	public ResponseEntity<Organizacija> getByNaziv(@PathVariable String naziv) {
-		Optional<Organizacija> organizacija = organizacijaRepo.findByNaziv(naziv);
+		Optional<Organizacija> organizacija = organizacijaService.findByNaziv(naziv);
 		
 		return organizacija.map(o -> new ResponseEntity<>(o, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -53,27 +56,27 @@ public class OrganizacijaController {
 	
 	@PostMapping("/organizacije")
 	public ResponseEntity<Organizacija> save(@RequestBody Organizacija organizacija){
-		Organizacija org = organizacijaRepo.save(organizacija);
+//		Organizacija org = organizacijaRepo.save(organizacija);
 		
-		return new ResponseEntity<>(org, HttpStatus.OK);
+		return new ResponseEntity<>(organizacijaService.addOrganizacija(organizacija), HttpStatus.OK);
 	}
 	
 	@PutMapping("/organizacije/{id}")
 	public ResponseEntity<Organizacija> updateOrganizacija(@PathVariable Long id, @RequestBody Organizacija organizacija) {
-		Optional<Organizacija> upOrganizacija = organizacijaRepo.findById(id);
+//		Optional<Organizacija> upOrganizacija = organizacijaRepo.findById(id);
+//		
+//		Organizacija updateOrganizacija = upOrganizacija.get();
+//		updateOrganizacija.setNaziv(organizacija.getNaziv());
+//		updateOrganizacija.setBrojTelefona(organizacija.getBrojTelefona());
+//		updateOrganizacija.setDelatnost(organizacija.getDelatnost());
+//		updateOrganizacija.setEmail(organizacija.getEmail());
+//		updateOrganizacija.setLink(organizacija.getLink());
+//		updateOrganizacija.setOdgovornaOsoba(organizacija.getOdgovornaOsoba());
+//		updateOrganizacija.setOpis(organizacija.getOpis());
+//		
+//		organizacijaRepo.save(updateOrganizacija);
 		
-		Organizacija updateOrganizacija = upOrganizacija.get();
-		updateOrganizacija.setNaziv(organizacija.getNaziv());
-		updateOrganizacija.setBrojTelefona(organizacija.getBrojTelefona());
-		updateOrganizacija.setDelatnost(organizacija.getDelatnost());
-		updateOrganizacija.setEmail(organizacija.getEmail());
-		updateOrganizacija.setLink(organizacija.getLink());
-		updateOrganizacija.setOdgovornaOsoba(organizacija.getOdgovornaOsoba());
-		updateOrganizacija.setOpis(organizacija.getOpis());
-		
-		organizacijaRepo.save(updateOrganizacija);
-		
-		return new ResponseEntity<>(updateOrganizacija, HttpStatus.OK);
+		return new ResponseEntity<>(organizacijaService.updateOrganizacija(id, organizacija), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/organizacije/{id}")

@@ -4,7 +4,6 @@ import { Navigation } from "./pages/Navigation";
 import Logovanje from "./pages/korisnik/Logovanje";
 import { Route, Routes } from "react-router-dom/dist";
 import { useEffect, useState } from "react";
-import ReportGenerator from "./pages/ReportGenerator";
 
 function App() {
 
