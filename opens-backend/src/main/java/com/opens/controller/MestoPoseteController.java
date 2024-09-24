@@ -2,7 +2,6 @@ package com.opens.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.opens.model.MestoPosete;
-import com.opens.repository.MestoPoseteRepository;
+import com.opens.service.MestoPoseteService;
 
 @RestController
 @RequestMapping("/api")
@@ -26,13 +25,13 @@ import com.opens.repository.MestoPoseteRepository;
 public class MestoPoseteController {
 
 	@Autowired
-	private MestoPoseteRepository mestoPoseteRepository;
+	private MestoPoseteService mestoPoseteService;
 
 	@GetMapping("/mestaPosete")
 	public ResponseEntity<List<MestoPosete>> getAllMestaPosete() {
 		List<MestoPosete> mestaPosete = new ArrayList<MestoPosete>();
 
-		mestoPoseteRepository.findAll().forEach(mestaPosete::add);
+		mestoPoseteService.findAll().forEach(mestaPosete::add);
 
 		if (mestaPosete.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -44,8 +43,7 @@ public class MestoPoseteController {
 	@PostMapping("/mestaPosete")
 	public ResponseEntity<MestoPosete> createMestoPosete(@RequestBody MestoPosete mestoPosete) {
 		try {
-			MestoPosete _mestoPosete = mestoPoseteRepository
-					.save(new MestoPosete(mestoPosete.getNazivMesta(), mestoPosete.getUkupanBrojMesta()));
+			MestoPosete _mestoPosete = mestoPoseteService.addMestoPosete(mestoPosete);
 			return new ResponseEntity<>(_mestoPosete, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -54,22 +52,20 @@ public class MestoPoseteController {
 
 	@PutMapping("/mestaPosete/{id}")
 	public ResponseEntity<MestoPosete> updateMestoPosete(@PathVariable Long id, @RequestBody MestoPosete mestoPosete) {
-		Optional<MestoPosete> mestoPoseteData = mestoPoseteRepository.findById(id);
+		MestoPosete updatedMestoPosete = mestoPoseteService.updateMestoPosete(id, mestoPosete);
 
-		if (mestoPoseteData.isPresent()) {
-			MestoPosete _mestoPosete = mestoPoseteData.get();
-			_mestoPosete.setNazivMesta(mestoPosete.getNazivMesta());
-			_mestoPosete.setUkupanBrojMesta(mestoPosete.getUkupanBrojMesta());
-			return new ResponseEntity<>(mestoPoseteRepository.save(_mestoPosete), HttpStatus.OK);
-		} else {
+		if (updatedMestoPosete == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(updatedMestoPosete, HttpStatus.OK);
 		}
 	}
 
 	@DeleteMapping("/mestaPosete/{id}")
 	public ResponseEntity<HttpStatus> deleteMestoPosete(@PathVariable Long id) {
 		try {
-			mestoPoseteRepository.deleteById(id);
+			// TODO Odraditi logicko brisanje
+			// mestoPoseteRepository.deleteById(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

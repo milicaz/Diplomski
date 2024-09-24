@@ -2,7 +2,6 @@ package com.opens.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,20 +17,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.opens.model.TipOpreme;
-import com.opens.repository.TipOpremeRepository;
+import com.opens.service.TipOpremeService;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class TipOpremeController {
-
+	
 	@Autowired
-	private TipOpremeRepository tipOpremeRepository;
+	private TipOpremeService tipOpremeService;
 
 	@GetMapping("/tipoviOpreme")
 	public ResponseEntity<List<TipOpreme>> getAllTipoveOpreme() {
 		List<TipOpreme> tipoviOpreme = new ArrayList<>();
-		tipOpremeRepository.findAll().forEach(tipoviOpreme::add);
+		tipOpremeService.findAll().forEach(tipoviOpreme::add);
 
 		if (tipoviOpreme.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -41,7 +40,7 @@ public class TipOpremeController {
 	
 	@GetMapping("/tipoviOpreme/{naziv}")
 	public ResponseEntity<String> checkIfTipOpremeExists(@PathVariable String naziv) {
-		Boolean tipOpremeExists = tipOpremeRepository.existsByNaziv(naziv);
+		Boolean tipOpremeExists = tipOpremeService.existsByNaziv(naziv);
 		
 		if (tipOpremeExists) {
 			return new ResponseEntity<>("exists", HttpStatus.OK);
@@ -53,7 +52,7 @@ public class TipOpremeController {
 	@PostMapping("/tipoviOpreme")
 	public ResponseEntity<TipOpreme> createTipOpreme(@RequestBody TipOpreme tipOpreme) {
 		try {
-			TipOpreme _tipOpreme = tipOpremeRepository.save(new TipOpreme(tipOpreme.getNaziv()));
+			TipOpreme _tipOpreme = tipOpremeService.addTipOpreme(tipOpreme);
 			return new ResponseEntity<>(_tipOpreme, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -62,21 +61,20 @@ public class TipOpremeController {
 	
 	@PutMapping("/tipoviOpreme/{id}")
 	public ResponseEntity<TipOpreme> updateTipOpreme(@PathVariable Long id, @RequestBody TipOpreme tipOpreme) {
-		Optional<TipOpreme> tipOpremeData = tipOpremeRepository.findById(id);
+		TipOpreme updatedTipOpreme = tipOpremeService.updatedTipOpreme(id, tipOpreme);
 				
-		if (tipOpremeData.isPresent()) {
-			TipOpreme _tipOpreme = tipOpremeData.get();
-			_tipOpreme.setNaziv(tipOpreme.getNaziv());
-			return new ResponseEntity<>(tipOpremeRepository.save(_tipOpreme), HttpStatus.OK);
-		} else {
+		if (updatedTipOpreme == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(updatedTipOpreme, HttpStatus.OK);
 		}
 	}
 	
 	@DeleteMapping("/tipoviOpreme/{id}")
 	public ResponseEntity<HttpStatus> deleteOpremu(@PathVariable Long id) {
 		try {
-			tipOpremeRepository.deleteById(id);
+			// TODO Logicko brisanje
+			//tipOpremeRepository.deleteById(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
