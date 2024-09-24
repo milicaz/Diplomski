@@ -32,7 +32,7 @@ const ZaposleniContextProvider = (props) => {
     }
 
     const deleteZaposleni = async(id) => {
-        await axios.put(`http://localhost:8080/api/zaposleni/delete/${id}`);
+        await axios.delete(`http://localhost:8080/api/zaposleni/delete/${id}`);
         getZaposleni();
     }
 

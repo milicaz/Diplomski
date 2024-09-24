@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.opens.model.PrigradskaNaselja;
 import com.opens.repository.PrigradskaNaseljaRepository;
+import com.opens.service.PrigradskaNaseljaService;
 
 @RestController
 @RequestMapping("/api")
@@ -28,30 +29,33 @@ public class PrigradskaNaseljaController {
 	@Autowired
 	private PrigradskaNaseljaRepository prigradskaNaseljaRepo;
 	
+	@Autowired
+	private PrigradskaNaseljaService naseljeService;
+	
 	@GetMapping("/prigradskaNaselja")
 	public ResponseEntity<List<PrigradskaNaselja>> getAll() {
-		List<PrigradskaNaselja> naselja = new ArrayList<>();
-		naselja = prigradskaNaseljaRepo.findAll();
+//		List<PrigradskaNaselja> naselja = new ArrayList<>();
+//		naselja = prigradskaNaseljaRepo.findAll();
 		
-		return new ResponseEntity<>(naselja, HttpStatus.OK);
+		return new ResponseEntity<>(naseljeService.findAll(), HttpStatus.OK);
 	}
 	
 	@PostMapping("/prigradskaNaselja")
 	public ResponseEntity<PrigradskaNaselja> save(@RequestBody PrigradskaNaselja prigradskaNaselja) {
-		PrigradskaNaselja naselje = prigradskaNaseljaRepo.save(prigradskaNaselja);
+		PrigradskaNaselja naselje = naseljeService.addNaselje(prigradskaNaselja);
 		
 		return  new ResponseEntity<>(naselje, HttpStatus.OK);
 	}
 	
 	@PutMapping("/prigradskaNaselja/{id}")
 	public ResponseEntity<PrigradskaNaselja> updateNaselje(@PathVariable Long id, @RequestBody PrigradskaNaselja naselje) {
-		Optional<PrigradskaNaselja> upNaselje = prigradskaNaseljaRepo.findById(id);
-		PrigradskaNaselja updateNaselje = upNaselje.get();
+//		Optional<PrigradskaNaselja> upNaselje = prigradskaNaseljaRepo.findById(id);
+//		PrigradskaNaselja updateNaselje = upNaselje.get();
+//		
+//		updateNaselje.setNaziv(naselje.getNaziv());
+//		prigradskaNaseljaRepo.save(updateNaselje);
 		
-		updateNaselje.setNaziv(naselje.getNaziv());
-		prigradskaNaseljaRepo.save(updateNaselje);
-		
-		return new ResponseEntity<>(updateNaselje, HttpStatus.OK);
+		return new ResponseEntity<>(naseljeService.updateNaselje(id, naselje), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/prigradskaNaselja/{id}")

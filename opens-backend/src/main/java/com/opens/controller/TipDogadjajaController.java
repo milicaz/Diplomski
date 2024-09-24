@@ -1,8 +1,6 @@
 package com.opens.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.opens.model.TipDogadjaja;
 import com.opens.repository.TipDogadjajaRepository;
+import com.opens.service.TipDogadjajaService;
 
 @RestController
 @RequestMapping("/api")
@@ -28,37 +27,40 @@ public class TipDogadjajaController {
 	@Autowired
 	private TipDogadjajaRepository tipDogadjajaRepo;
 	
+	@Autowired
+	private TipDogadjajaService tipService;
+	
 	@GetMapping("/tipoviDogadjaja")
 	public ResponseEntity<List<TipDogadjaja>> getAll() {
-		List<TipDogadjaja> tipovi = new ArrayList<>();
-		tipovi = tipDogadjajaRepo.findAll();
+//		List<TipDogadjaja> tipovi = new ArrayList<>();
+//		tipovi = tipDogadjajaRepo.findAll();
 		
-		return new ResponseEntity<>(tipovi, HttpStatus.OK);
+		return new ResponseEntity<>(tipService.findAll(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/tipoviDogadjaja/{naziv}")
 	public ResponseEntity<Long> getOneByNaziv(@PathVariable String naziv ) {
-		TipDogadjaja tip = tipDogadjajaRepo.findByNaziv(naziv);
+		TipDogadjaja tip = tipService.findByNaziv(naziv);
 		
 		return new ResponseEntity<>(tip.getId(), HttpStatus.OK);
 	}
 	
 	@PostMapping("/tipoviDogadjaja")
 	public ResponseEntity<TipDogadjaja> save(@RequestBody TipDogadjaja tipDogadjaja ) {
-		TipDogadjaja tip = tipDogadjajaRepo.save(tipDogadjaja);
+		TipDogadjaja tip = tipService.addTip(tipDogadjaja);
 		
 		return new ResponseEntity<>(tip, HttpStatus.OK);
 	}
 	
 	@PutMapping("/tipoviDogadjaja/{id}")
 	public ResponseEntity<TipDogadjaja> updateTip(@PathVariable Long id, @RequestBody TipDogadjaja tip) {
-		Optional<TipDogadjaja> upTip = tipDogadjajaRepo.findById(id);
+//		Optional<TipDogadjaja> upTip = tipDogadjajaRepo.findById(id);
+//		
+//		TipDogadjaja updateTip = upTip.get();
+//		updateTip.setNaziv(tip.getNaziv());
+//		tipDogadjajaRepo.save(updateTip);
 		
-		TipDogadjaja updateTip = upTip.get();
-		updateTip.setNaziv(tip.getNaziv());
-		tipDogadjajaRepo.save(updateTip);
-		
-		return new ResponseEntity<>(updateTip, HttpStatus.OK);
+		return new ResponseEntity<>(tipService.updateTip(id, tip), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/tipoviDogadjaja/{id}")

@@ -88,7 +88,7 @@ public class ZaposleniController {
 	}
 	
 	//Logicko brisanje
-	@PutMapping("/zaposleni/delete/{id}")
+	@DeleteMapping("/zaposleni/delete/{id}")
 	public ResponseEntity<String> logicalDelete(@PathVariable Long id) {
         Optional<Zaposleni> optionalZaposleni = zaposleniRepo.findById(id);
 

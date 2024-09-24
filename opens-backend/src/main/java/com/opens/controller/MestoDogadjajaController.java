@@ -2,7 +2,6 @@ package com.opens.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.opens.model.MestoDogadjaja;
 import com.opens.repository.MestoDogadjajaRepository;
+import com.opens.service.MestoDogadjajaService;
 
 @RestController
 @RequestMapping("/api")
@@ -28,36 +28,33 @@ public class MestoDogadjajaController {
 	@Autowired
 	private MestoDogadjajaRepository mestoDogadjajaRepo;
 	
+	@Autowired
+	private MestoDogadjajaService mestoService;
+	
 	@GetMapping("/mestaDogadjaja")
 	public ResponseEntity<List<MestoDogadjaja>> getAll() {
 		List<MestoDogadjaja> mesta = new ArrayList<>();
-		mesta = mestoDogadjajaRepo.findAll();
+		mesta = mestoService.findAll();
 		
 		return new ResponseEntity<>(mesta, HttpStatus.OK);
 	}
 	
 	@GetMapping("/mestoDogadjaja/{nazivSale}")
 	public ResponseEntity<Long> getMesto(@PathVariable String nazivSale) {
-		MestoDogadjaja mesto = mestoDogadjajaRepo.findByNazivSale(nazivSale);
+		MestoDogadjaja mesto = mestoService.findByNazivSale(nazivSale);
 		return new ResponseEntity<>(mesto.getId(), HttpStatus.OK);
 	}
 	
 	@PostMapping("/mestaDogadjaja")
 	public ResponseEntity<MestoDogadjaja> save(@RequestBody MestoDogadjaja mestoDogadjaja) {
-		MestoDogadjaja mesto = mestoDogadjajaRepo.save(mestoDogadjaja);
+		MestoDogadjaja mesto = mestoService.addMesto(mestoDogadjaja);
 		
 		return new ResponseEntity<>(mesto, HttpStatus.OK);
 	}
 	
 	@PutMapping("/mestaDogadjaja/{id}")
-	public ResponseEntity<MestoDogadjaja> updateMesto(@PathVariable Long id, @RequestBody MestoDogadjaja mesto) {
-		Optional<MestoDogadjaja> updateMesto = mestoDogadjajaRepo.findById(id);
-		
-		MestoDogadjaja upMesto = updateMesto.get();
-		upMesto.setNazivSale(mesto.getNazivSale());
-		mestoDogadjajaRepo.save(upMesto);
-		
-		return new ResponseEntity<>(upMesto, HttpStatus.OK);
+	public ResponseEntity<MestoDogadjaja> updateMesto(@PathVariable Long id, @RequestBody MestoDogadjaja mesto) {		
+		return new ResponseEntity<>(mestoService.updateMesto(id, mesto), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/mestaDogadjaja/{id}")
