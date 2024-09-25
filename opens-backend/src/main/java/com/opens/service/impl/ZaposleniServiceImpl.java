@@ -57,6 +57,7 @@ public class ZaposleniServiceImpl implements ZaposleniService {
 		upZaposleni.setPrezime(zaposleni.getPrezime());
 		upZaposleni.setRod(zaposleni.getRod());
 		upZaposleni.setGodine(zaposleni.getGodine());
+		upZaposleni.setMestoBoravista(zaposleni.getMestoBoravista());
 		upZaposleni.setBrojTelefona(zaposleni.getBrojTelefona());
 //		upZaposleni.setUloge(zaposleni.getUloge());
 		if (zaposleni.getUloge() != null) {
