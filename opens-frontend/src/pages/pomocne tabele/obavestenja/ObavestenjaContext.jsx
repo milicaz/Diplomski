@@ -14,14 +14,9 @@ const ObavestenjeContextProvider = (props) => {
     obavestenja.length > 0
       ? obavestenja.sort((a, b) => (a.id < b.id ? -1 : 1))
       : [];
-
-  const now = new Date();
-  const datumObavestenja = now.toISOString().split("T")[0]; // Formats the date as "YYYY-MM-DD"
-
+  
   const fetchObavestenja = async () => {
-    const { data } = await httpCommon.get("/obavestenja/validna", {
-      params: { currentDate: datumObavestenja },
-    });
+    const { data } = await httpCommon.get("/obavestenja/validna");
     setObavestenja(data);
   };
 
