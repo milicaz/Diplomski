@@ -10,24 +10,23 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "ucesnici")
 public class Ucesnik extends Korisnik {
-	
+
 	@Column(name = "organizacija")
 	private String organizacija;
 	private boolean isPrigradskoNaselje;
-	
+
 	@ManyToMany
-	@JoinTable(
-		name = "ucesnici_dogadjaji",
-		joinColumns = @JoinColumn(name = "ucesnik_id"),
-		inverseJoinColumns = @JoinColumn(name = "dogadjaj_id"))
+	@JoinTable(name = "ucesnici_dogadjaji", joinColumns = @JoinColumn(name = "ucesnik_id"), inverseJoinColumns = @JoinColumn(name = "dogadjaj_id"))
 	@JsonIgnore
 	private Set<Dogadjaj> dogadjaji = new HashSet<>();
+
+	@Column(nullable = false)
+	private boolean deleted = false;
 
 	public Ucesnik() {
 		super();
@@ -71,6 +70,12 @@ public class Ucesnik extends Korisnik {
 				+ dogadjaji + "]";
 	}
 
-	
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
 
 }

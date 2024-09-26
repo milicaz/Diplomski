@@ -17,6 +17,9 @@ public class PrigradskaNaselja {
 	
 	@Column(name = "naziv")
 	private String naziv;
+	
+	@Column(nullable = false)
+	private boolean deleted = false;
 
 	public PrigradskaNaselja() {
 		super();
@@ -41,6 +44,14 @@ public class PrigradskaNaselja {
 
 	public void setNaziv(String naziv) {
 		this.naziv = naziv;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 	
 	

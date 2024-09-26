@@ -84,8 +84,10 @@ const ZaposleniList = () => {
               <th>Prezime</th>
               <th>Rod</th>
               <th>Godine</th>
+              <th>Mesto boravišta</th>
               <th>Broj telefona</th>
               <th>Uloge</th>
+              <th>Akcije</th>
             </tr>
           </thead>
           <tbody>

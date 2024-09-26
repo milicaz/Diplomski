@@ -6,66 +6,62 @@ import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "dogadjaji")
 public class Dogadjaj {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", unique = true)
 	private Long id;
-	
+
 	@Column(name = "naziv")
 	private String naziv;
-	
+
 	@Column(name = "datum")
 	@Temporal(TemporalType.DATE)
 	private LocalDate datum;
-	
+
 	@Column(name = "pocetak_dogadjaja")
 	@Temporal(TemporalType.TIME)
 	private LocalTime pocetakDogadjaja;
-	
+
 	@Column(name = "kraj_dogadjaja")
 	@Temporal(TemporalType.TIME)
 	private LocalTime krajDogadjaja;
-	
+
 //	@OneToOne(cascade = CascadeType.ALL)
 //	@PrimaryKeyJoinColumn
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "mesto_id")
 	private MestoDogadjaja mesto;
-	
+
 //	@OneToOne(cascade = CascadeType.ALL)
 //	@PrimaryKeyJoinColumn
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "vrsta_id")
 	private TipDogadjaja vrsta;
-	
+
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "organizacija_id")
 	private Organizacija organizacija;
-	
+
 	@ManyToMany(mappedBy = "dogadjaji")
 	private Set<Ucesnik> ucesnici;
+
+	@Column(nullable = false)
+	private boolean deleted = false;
 
 	public Dogadjaj() {
 		super();
@@ -154,7 +150,13 @@ public class Dogadjaj {
 	public void setUcesnici(Set<Ucesnik> ucesnici) {
 		this.ucesnici = ucesnici;
 	}
-	
-	
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
 
 }

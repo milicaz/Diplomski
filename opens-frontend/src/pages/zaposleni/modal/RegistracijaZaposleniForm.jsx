@@ -23,22 +23,59 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [emailValid, setEmailValid] = useState(true); // State variable to track email validity
 
+  // const r = [
+  //   {id: 1, naziv: 'ZENSKO'},
+  //   {id: 2, naziv: "MUSKO"},
+  //   {id: 3, naziv: "DRUGO"},
+  // ];
+
+  // const u = [
+  //   {id: 1, naziv: 'admin'},
+  //   {id: 2, naziv: "dogadjaj_admin"},
+  //   {id: 3, naziv: "super_admin"},
+  // ]
+
+  // const handleUlogeChange = (e) => {
+  //   const selectedOptions = e.target.selectedOptions;
+  //   const selectedValues = Array.from(selectedOptions, option => option.value);
+  //   setUloge(new Set(selectedValues)); // Update uloge with a Set of selected values
+  // };
+
   const r = [
-    {id: 1, naziv: 'ZENSKO'},
-    {id: 2, naziv: "MUSKO"},
-    {id: 3, naziv: "DRUGO"},
+    { id: 1, naziv: "ZENSKO" },
+    { id: 2, naziv: "MUSKO" },
+    { id: 3, naziv: "DRUGO" },
   ];
 
-  const u = [
-    {id: 1, naziv: 'admin'},
-    {id: 2, naziv: "dogadjaj_admin"},
-    {id: 3, naziv: "super_admin"},
-  ]
+  const rodMapping = {
+    ZENSKO: "žensko",
+    MUSKO: "muško",
+    DRUGO: "drugo",
+  };
+
+  const roleMapping = {
+    admin: "Admin",
+    dogadjaj_admin: "Admin događaj",
+    super_admin: "Super admin",
+  };
+
+  const u = Object.keys(roleMapping).map((key, index) => ({
+    id: index + 1,
+    naziv: key,
+    displayName: roleMapping[key],
+  }));
 
   const handleUlogeChange = (e) => {
-    const selectedOptions = e.target.selectedOptions;
-    const selectedValues = Array.from(selectedOptions, option => option.value);
-    setUloge(new Set(selectedValues)); // Update uloge with a Set of selected values
+    const { value } = e.target;
+    const newUloge = new Set(uloge); // Copy current set
+
+    if (newUloge.has(value)) {
+      newUloge.delete(value); // Remove if already exists
+    } else {
+      newUloge.add(value); // Add if not present
+    }
+
+    setUloge(newUloge); // Update state
   };
 
   const handleTogglePasswordVisibility = () => {
@@ -143,7 +180,7 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
         </InputGroup>
       </Form.Group>
       <br />
-      <Form.Group>
+      {/* <Form.Group>
         <Form.Control
             as="select"
           value={Array.from(uloge)}
@@ -158,6 +195,19 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
                 </option>
                   ))}
         </Form.Control>
+      </Form.Group> */}
+      <Form.Group>
+        <Form.Label>Uloge</Form.Label>
+        {u.map((item) => (
+          <Form.Check
+            key={item.id}
+            type="checkbox"
+            label={item.displayName} // Display user-friendly name
+            value={item.naziv} // Use server value for submission
+            checked={uloge.has(item.naziv)}
+            onChange={handleUlogeChange}
+          />
+        ))}
       </Form.Group>
       <br />
       <Form.Group>
@@ -180,7 +230,7 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
         />
       </Form.Group>
       <br />
-      <Form.Group>
+      {/* <Form.Group>
         <Form.Control
             as="select"
           value={rod}
@@ -195,6 +245,15 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
                 </option>
                   ))}
         </Form.Control>
+      </Form.Group> */}
+      <Form.Group>
+        
+        <Form.Control as="select" value={rod} onChange={(e) => setRod(e.target.value)} required>
+          <option value="">Izaberite rod</option>
+          {Object.entries(rodMapping).map(([key, value]) => (
+            <option key={key} value={key}>{value}</option> // Send server value, display friendly name
+          ))}
+        </Form.Control>
       </Form.Group>
       <br />
       <Form.Group>
@@ -203,6 +262,16 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
           onChange={(e) => setGodine(e.target.value)}
           type="text"
           placeholder="Godina rođenja"
+          required
+        />
+      </Form.Group>
+      <br />
+      <Form.Group>
+        <Form.Control
+          value={mestoBoravista}
+          onChange={(e) => setMestoBoravista(e.target.value)}
+          type="text"
+          placeholder="Mesto boravišta"
           required
         />
       </Form.Group>

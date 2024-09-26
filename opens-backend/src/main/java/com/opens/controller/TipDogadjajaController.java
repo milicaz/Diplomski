@@ -16,57 +16,45 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.opens.model.TipDogadjaja;
-import com.opens.repository.TipDogadjajaRepository;
 import com.opens.service.TipDogadjajaService;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class TipDogadjajaController {
-	
-	@Autowired
-	private TipDogadjajaRepository tipDogadjajaRepo;
-	
+
 	@Autowired
 	private TipDogadjajaService tipService;
-	
+
 	@GetMapping("/tipoviDogadjaja")
 	public ResponseEntity<List<TipDogadjaja>> getAll() {
-//		List<TipDogadjaja> tipovi = new ArrayList<>();
-//		tipovi = tipDogadjajaRepo.findAll();
-		
-		return new ResponseEntity<>(tipService.findAll(), HttpStatus.OK);
+
+		return new ResponseEntity<>(tipService.findAllActive(), HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/tipoviDogadjaja/{naziv}")
-	public ResponseEntity<Long> getOneByNaziv(@PathVariable String naziv ) {
+	public ResponseEntity<Long> getOneByNaziv(@PathVariable String naziv) {
 		TipDogadjaja tip = tipService.findByNaziv(naziv);
-		
+
 		return new ResponseEntity<>(tip.getId(), HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/tipoviDogadjaja")
-	public ResponseEntity<TipDogadjaja> save(@RequestBody TipDogadjaja tipDogadjaja ) {
-		TipDogadjaja tip = tipService.addTip(tipDogadjaja);
-		
-		return new ResponseEntity<>(tip, HttpStatus.OK);
+	public ResponseEntity<TipDogadjaja> save(@RequestBody TipDogadjaja tipDogadjaja) {
+//		TipDogadjaja tip = tipService.addTip(tipDogadjaja);
+
+		return new ResponseEntity<>(tipService.addTip(tipDogadjaja), HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/tipoviDogadjaja/{id}")
 	public ResponseEntity<TipDogadjaja> updateTip(@PathVariable Long id, @RequestBody TipDogadjaja tip) {
-//		Optional<TipDogadjaja> upTip = tipDogadjajaRepo.findById(id);
-//		
-//		TipDogadjaja updateTip = upTip.get();
-//		updateTip.setNaziv(tip.getNaziv());
-//		tipDogadjajaRepo.save(updateTip);
-		
+
 		return new ResponseEntity<>(tipService.updateTip(id, tip), HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/tipoviDogadjaja/{id}")
 	public ResponseEntity<String> deleteTip(@PathVariable Long id) {
-		tipDogadjajaRepo.deleteById(id);
-		return new ResponseEntity<>("Tip dogadjaja je obrisan.", HttpStatus.OK);
+		return new ResponseEntity<>(tipService.deleteTip(id), HttpStatus.OK);
 	}
 
 }

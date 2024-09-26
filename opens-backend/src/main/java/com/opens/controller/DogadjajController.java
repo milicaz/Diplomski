@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,9 +65,14 @@ public class DogadjajController {
 //		List<Dogadjaj> dogadjaji = new ArrayList<>();
 //		dogadjaji = dogadjajRepo.findAll();
 
-		return new ResponseEntity<>(dogadjajService.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(dogadjajService.findAllActive(), HttpStatus.OK);
 
 	}
+	
+//	@GetMapping("/dogadjaj/{id}")
+//	public ResponseEntity<Dogadjaj> findOne(@PathVariable Long id){
+//		
+//	}
 
 	@PostMapping("/dogadjaji")
 	public ResponseEntity<Dogadjaj> save(@RequestBody DogadjajDTO dogadjajDTO) {
@@ -196,6 +202,11 @@ public class DogadjajController {
 		dogadjajRepo.save(updateDogadjaj);
 
 		return new ResponseEntity<>("Dogadjaj je izmenjen!", HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/dogadjaj/delete/{id}")
+	public String deleteDogadjaj(@PathVariable Long id) {
+		return dogadjajService.deleteDogadjaj(id);
 	}
 
 }

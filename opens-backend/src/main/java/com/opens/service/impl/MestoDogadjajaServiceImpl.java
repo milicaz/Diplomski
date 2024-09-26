@@ -22,8 +22,8 @@ public class MestoDogadjajaServiceImpl implements MestoDogadjajaService {
 	}
 
 	@Override
-	public List<MestoDogadjaja> findAll() {
-		return mestoDogadjajaRepo.findAll();
+	public List<MestoDogadjaja> findAllActive() {
+		return mestoDogadjajaRepo.findAllActive();
 	}
 
 	@Override
@@ -32,9 +32,17 @@ public class MestoDogadjajaServiceImpl implements MestoDogadjajaService {
 	}
 
 	@Override
-	public MestoDogadjaja deleteMesto(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public String deleteMesto(Long id) {
+		Optional<MestoDogadjaja> optionalMesto = mestoDogadjajaRepo.findById(id);
+
+        if (!optionalMesto.isPresent()) {
+        	return "Mesto događaja nije pronađeno!";
+        }
+
+        MestoDogadjaja mesto = optionalMesto.get();
+        mesto.setDeleted(true);
+        mestoDogadjajaRepo.save(mesto);
+		return "Mesto događaja je obrisano!";
 	}
 
 	@Override
@@ -47,6 +55,12 @@ public class MestoDogadjajaServiceImpl implements MestoDogadjajaService {
 		mestoDogadjajaRepo.save(upMesto);
 		
 		return upMesto;
+	}
+
+	@Override
+	public MestoDogadjaja findActiveById(Long id) {
+		// TODO Auto-generated method stub
+		return mestoDogadjajaRepo.findActiveById(id);
 	}
 
 }

@@ -17,9 +17,9 @@ public class PrigradskaNaseljaServiceImpl implements PrigradskaNaseljaService {
 	private PrigradskaNaseljaRepository prigradskaNaseljaRepo;
 
 	@Override
-	public List<PrigradskaNaselja> findAll() {
+	public List<PrigradskaNaselja> findAllActive() {
 		// TODO Auto-generated method stub
-		return prigradskaNaseljaRepo.findAll();
+		return prigradskaNaseljaRepo.findAllActive();
 	}
 
 	@Override
@@ -40,8 +40,22 @@ public class PrigradskaNaseljaServiceImpl implements PrigradskaNaseljaService {
 
 	@Override
 	public String deleteNaselje(Long id) {
+		Optional<PrigradskaNaselja> optionalNaselje = prigradskaNaseljaRepo.findById(id);
+
+        if (!optionalNaselje.isPresent()) {
+        	return "Prigradsko naselje nije pronađeno!";
+        }
+
+        PrigradskaNaselja naselje = optionalNaselje.get();
+        naselje.setDeleted(true);
+        prigradskaNaseljaRepo.save(naselje);
+		return "Zaposleni je obrisan!";
+	}
+
+	@Override
+	public PrigradskaNaselja findActiveById(Long id) {
 		// TODO Auto-generated method stub
-		return null;
+		return prigradskaNaseljaRepo.findActiveById(id);
 	}
 
 }
