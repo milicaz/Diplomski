@@ -131,7 +131,7 @@ const Registracija = () => {
               <Col className="d-flex justify-content-center">
             <Form.Group>
               <Button className="btn-reg" variant="success" onClick={handleRegistracija}>
-                Registruj se
+                Registracija
               </Button>
             </Form.Group>
             </Col>
