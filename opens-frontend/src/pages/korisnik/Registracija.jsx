@@ -9,37 +9,52 @@ const Registracija = () => {
   const [password, setPassword] = useState("");
   const [ime, setIme] = useState("");
   const [prezime, setPrezime] = useState("");
+  const [rod, setRod] = useState("");
   const [godine, setGodine] = useState("");
   const [mestoBoravista, setMestoBoravista] = useState("");
-  const [brojTelefon, setBrojTelefon] = useState("");
-  const [uloge, setUloge] = useState(""); // Assuming this is managed as a Set
+  const [brojTelefona, setBrojTelefona] = useState("");
+  // const [uloge, setUloge] = useState(""); // Assuming this is managed as a Set
+
+  const r = [
+    { id: 1, naziv: "ZENSKO" },
+    { id: 2, naziv: "MUSKO" },
+    { id: 3, naziv: "DRUGO" },
+  ];
+
+  const rodMapping = {
+    ZENSKO: "žensko",
+    MUSKO: "muško",
+    DRUGO: "drugo",
+  };
 
   const handleRegistracija = async (e) => {
     e.preventDefault();
 
-    const zaposleniDTO = {
+    const posetilacDTO = {
       email,
       password,
       ime,
       prezime,
+      rod,
       godine,
       mestoBoravista,
-      brojTelefon,
-      uloge: Array.from(uloge), // Convert Set to Array assuming DTO structure
+      brojTelefona,
+      // uloge: Array.from(uloge), // Convert Set to Array assuming DTO structure
     };
 
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/signup", zaposleniDTO);
+      const response = await axios.post("http://localhost:8080/api/auth/signupPosetilac", posetilacDTO);
       console.log(response.data); // Log success message or handle accordingly
       // Optionally, redirect to another page or show success message
       setEmail("")
       setPassword("")
       setIme("")
       setPrezime("")
+      setRod("")
       setGodine("")
       setMestoBoravista("")
-      setBrojTelefon("")
-      setUloge("")
+      setBrojTelefona("")
+      // setUloge("")
     } catch (error) {
       console.error("Error registering user:", error);
       // Handle error, show error message, etc.
@@ -53,7 +68,7 @@ const Registracija = () => {
             <Col md={6} className="px-3">
           <Form.Group className="mb-3">
               <Form.Label>Email adresa</Form.Label>
-              <Form.Control value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: "90%" }} type="email" placeholder="Unesite vašu e-mail adresu" required />
+              <Form.Control value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: "90%" }} type="email" placeholder="Unesite e-mail adresu" required />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Lozinka</Form.Label>
@@ -61,16 +76,28 @@ const Registracija = () => {
                 type="password"
                 aria-describedby="passwordHelpBlock"
                 required
-                placeholder="Unesite vašu lozinku"
+                placeholder="Unesite lozinku"
               />
             </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Uloga</Form.Label>
-              <Form.Control value={uloge} onChange={(e) => setUloge(e.target.value)} style={{ width: "90%" }}
-                type="text"
-                placeholder="Izaverite ulogu"
-                required
-              />
+            <Form.Group>
+              <Form.Label>Rod</Form.Label>
+                        <Form.Control
+                            style={{ width: "90%" }}
+                            as="select"
+                            name="rod"
+                            value={rod}
+                            onChange={(e) => setRod(e.target.value)}
+                            required
+                        >
+                            <option value="">Izaberite rod</option>
+                            {Object.entries(rodMapping).map(([key, value]) => (
+                                <option key={key} value={key}>{value}</option>
+                            ))}
+                        </Form.Control>
+                    </Form.Group><br />
+                    <Form.Group className="mb-3">
+              <Form.Label>Godina rođenja</Form.Label>
+              <Form.Control value={godine} onChange={(e) => setGodine(e.target.value)} style={{ width: "90%" }} type="text" placeholder="Unesite godinu rođenja" required />
             </Form.Group>
             </Col>
             <Col md={6} className="px-3">
@@ -78,7 +105,7 @@ const Registracija = () => {
               <Form.Label>Ime</Form.Label>
               <Form.Control value={ime} onChange={(e) => setIme(e.target.value)} style={{ width: "90%" }}
                 type="text"
-                placeholder="Unesite vaše ime"
+                placeholder="Unesite ime"
                 required
               />
             </Form.Group>
@@ -86,17 +113,17 @@ const Registracija = () => {
               <Form.Label>Prezime</Form.Label>
               <Form.Control value={prezime} onChange={(e) => setPrezime(e.target.value)} style={{ width: "90%" }}
                 type="text"
-                placeholder="Unesite vaše prezime"
+                placeholder="Unesite prezime"
                 required
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Godina rođenja</Form.Label>
-              <Form.Control value={godine} onChange={(e) => setGodine(e.target.value)} style={{ width: "90%" }} type="text" placeholder="Unesite vašu godinu rođenja" required />
+              <Form.Label>Mesto boravišta</Form.Label>
+              <Form.Control value={mestoBoravista} onChange={(e) => setMestoBoravista(e.target.value)} style={{ width: "90%" }} type="text" placeholder="Unesite mesto boravišta" required />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Broj telefona</Form.Label>
-              <Form.Control value={brojTelefon} onChange={(e) => setBrojTelefon(e.target.value)} style={{ width: "90%" }} type="text" placeholder="Unesite vaš broj telefona" />
+              <Form.Control value={brojTelefona} onChange={(e) => setBrojTelefona(e.target.value)} style={{ width: "90%" }} type="text" placeholder="Unesite broj telefona" />
             </Form.Group>
             </Col>
             </Row>

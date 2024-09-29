@@ -12,6 +12,18 @@ const Dogadjaj = ({ dogadjaj }) => {
 
   const [ucesnik, setUcesnik] = useState({ime: "", prezime: "", rod: "", godine: "", mestoBoravista: "", brojTelefona: "", email: "", organizacija: ""})
 
+  const r = [
+    { id: 1, naziv: "ZENSKO" },
+    { id: 2, naziv: "MUSKO" },
+    { id: 3, naziv: "DRUGO" },
+  ];
+
+  const rodMapping = {
+    ZENSKO: "žensko",
+    MUSKO: "muško",
+    DRUGO: "drugo",
+  };
+
   const [showUcesnik, setShowUcesnik] = useState(false)
 
   const handleShowUcesnik = () => {
@@ -38,7 +50,6 @@ const Dogadjaj = ({ dogadjaj }) => {
   }
 
   const formatTimeRange = (start, end) => {
-    // Create Date objects in local time zone
     const startTime = new Date(`1970-01-01T${start}`).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     const endTime = new Date(`1970-01-01T${end}`).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     return `${startTime} - ${endTime}`;
@@ -49,8 +60,6 @@ const Dogadjaj = ({ dogadjaj }) => {
       <td>{dogadjaj.id}</td>
       <td>{dogadjaj.naziv}</td>
       <td>{dogadjaj.datum}</td>
-      {/* <td>{dogadjaj.pocetakDogadjaja}</td>
-      <td>{dogadjaj.krajDogadjaja}</td> */}
       <td>{formatTimeRange(dogadjaj.pocetakDogadjaja, dogadjaj.krajDogadjaja)}</td>
       <td>{dogadjaj.mesto.nazivSale}</td>
       <td>{dogadjaj.vrsta.naziv}</td>
@@ -62,16 +71,6 @@ const Dogadjaj = ({ dogadjaj }) => {
       <button className="btn text-danger btn-act" onClick={handleShowDelete}>
                     <MdDelete />
                 </button>
-        {/* <a href="#editDogadjaj" className="edit">
-            <i className="react-icons" title="Edit">
-                <MdEdit />
-            </i>
-        </a>&nbsp;
-        <a href="#deleteDogadjaj" className="delete">
-            <i className="react-icons" title="Delete">
-                <MdDelete />
-            </i>
-        </a> */}
       </td>
 
       <Modal show={showUcesnik} onHide={handleCloseUcesnik}>
@@ -79,7 +78,6 @@ const Dogadjaj = ({ dogadjaj }) => {
             <Modal.Title>Dodaj učesnika</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            {/* <AddOrganizacijaForm handleCloseOrg={handleCloseOrg}/> */}
             <div>
         <Form>
             <Form.Group>
@@ -89,10 +87,21 @@ const Dogadjaj = ({ dogadjaj }) => {
                 <Form.Control name="prezime" value={ucesnik.prezime} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Prezime" required />
             </Form.Group><br/>
             <Form.Group>
-                <Form.Control name="rod" value={ucesnik.rod} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Rod" required />
-            </Form.Group><br/>
+                        <Form.Control
+                            as="select"
+                            name="rod"
+                            value={ucesnik.rod}
+                            onChange={handleChangeUcesnik}
+                            required
+                        >
+                            <option value="">Izaberite rod</option>
+                            {Object.entries(rodMapping).map(([key, value]) => (
+                                <option key={key} value={key}>{value}</option>
+                            ))}
+                        </Form.Control>
+                    </Form.Group><br />
             <Form.Group>
-                <Form.Control name="godine" value={ucesnik.godine} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="number" placeholder="Godine" required />
+                <Form.Control name="godine" value={ucesnik.godine} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="number" placeholder="Godina rođenja" required />
             </Form.Group><br/>
             <Form.Group>
                 <Form.Control name="mestoBoravista" value={ucesnik.mestoBoravista} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Mesto boravišta" required />
@@ -106,11 +115,6 @@ const Dogadjaj = ({ dogadjaj }) => {
             <Form.Group>
                 <Form.Control name="organizacija" value={ucesnik.organizacija} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Organizacija" required />
             </Form.Group><br/>
-            {/* <Form.Group>
-                <div className="d-flex justify-content-end">
-                    <Button onClick={handleDalje} variant="success">Dalje</Button>&nbsp;
-                </div><br/>
-            </Form.Group> */}
         </Form>
         </div>
         </Modal.Body>

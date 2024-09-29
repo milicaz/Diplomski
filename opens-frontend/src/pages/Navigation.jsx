@@ -207,7 +207,7 @@ export const Navigation = () => {
                 isActive("/ucesnici") ? "active" : ""
               }`}
             >
-              Ucesnici
+              Učesnici
             </Nav.Link>
           </Nav>
           <Nav className="justify-content-end">

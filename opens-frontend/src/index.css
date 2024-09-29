@@ -243,13 +243,24 @@ td {
   font-weight: bolder;
 }
 
-/*CSS ZA NAVIGACIJU ZA REGISTRACIJU I CHECKIN*/
+/*CSS ZA NAVIGACIJU ZA ZAPOSLENE*/
 .zaposleni-dropdown-item {
   color: #495057;
 }
 
 .zaposleni-dropdown-item.active {
   background-color: #a18bbd;
+  color: #000000;
+  font-weight: bolder;
+}
+
+/*CSS ZA NAVIGACIJU ZA UCESNICI*/
+.ucesnici-dropdown-item {
+  color: #495057;
+}
+
+.ucesnici-dropdown-item.active {
+  background-color: #a3c57b;
   color: #000000;
   font-weight: bolder;
 }

@@ -61,6 +61,18 @@ const DogadjajList = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const r = [
+    { id: 1, naziv: "ZENSKO" },
+    { id: 2, naziv: "MUSKO" },
+    { id: 3, naziv: "DRUGO" },
+  ];
+
+  const rodMapping = {
+    ZENSKO: "žensko",
+    MUSKO: "muško",
+    DRUGO: "drugo",
+  };
+
   useEffect(() => {
     setOrganizacijaEdit(currentOrganizacija)
     setId(organizacijaId)
@@ -123,8 +135,8 @@ const DogadjajList = () => {
   const [showOrganizacija, setShowOrganizacija] = useState(false)
   const handleShowOrganizacija = () => {
     setShowOrganizacija(true)
-    // console.log("Mesta dogadjaja: " + JSON.stringify(mestaDogadjaja))
   }
+
   const handleCloseOrganizacija = () => {
     setShowOrganizacija(false)
     setOrganizacija({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""});
@@ -134,8 +146,8 @@ const DogadjajList = () => {
   const [showEditOrganizacija, setShowEditOrganizacija] = useState(false)
   const handleShowEditOrganizacija = () => {
     setShowEditOrganizacija(true)
-    // setShowDogadjaj(false)
   }
+
   const handleCloseEditOrganizacija = () => {
     setShowEditOrganizacija(false)
   }
@@ -162,23 +174,6 @@ const DogadjajList = () => {
   const handleChange = (event) => {
     const {name, value} = event.target
     setOrganizacija({...organizacija, [name]:value})
-
-    // const { name, value } = event.target;
-
-    //     if (name === 'naziv') {
-    //         // Update naziv and trigger useEffect
-    //         setOrganizacija(prevState => ({
-    //             ...prevState,
-    //             // naziv: value
-    //             naziv : value
-    //         }));
-    //     } else {
-    //         // Update other fields
-    //         setOrganizacija(prevState => ({
-    //             ...prevState,
-    //             [name]: value
-    //         }));
-    //     }
 }
 
 const handleDalje = (event) => {
@@ -196,10 +191,6 @@ const handleChangeDogadjaj = (event) => {
 const handleDodaj = (event) => {
   event.preventDefault();
   dogadjaj.organizacijaId = organizacijaId
-  // dogadjaj.mestoDogadjajaId = mestoId
-  // dogadjaj.vrstaDogadjajaId = "1"
-  // console.log("Vrsta id je: " + dogadjaj.vrstaDogadjajaId)
-  // console.log("Dogadjaj je: " + JSON.stringify(dogadjaj))
   addDogadjaj(dogadjaj)
   handleCloseDogadjaj();
   setOrganizacija({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""});
@@ -265,20 +256,12 @@ const handleChangeOsoba = (event) => {
   }
 }
 
-// const handlePDF = (event) => {
-//   event.preventDefault();
-//   kreirajPDF(mesec, godina, vrsta, ime, prezime)
-//   console.log("Mesec, godina, vrsta: " + mesec + "/" + godina + "/" + vrsta)
-// }
-
 const handlePDF = (event) => {
   event.preventDefault();
   const response = kreirajPDF(mesec, godina, vrsta, ime, prezime)
 };
 
 const formatTimeRange = (start, end) => {
-  // Assuming start and end are in 'HH:mm:ss' format
-  // Create Date objects in local time zone
   const startTime = new Date(`1970-01-01T${start}`).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   const endTime = new Date(`1970-01-01T${end}`).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   return `${startTime} - ${endTime}`;
@@ -287,28 +270,12 @@ const formatTimeRange = (start, end) => {
 
   return (
     <>
-      {/* <div className="table-title">
-        <div className="row">
-          <div className="col-sm-6">
-            <h2>
-              <b>Događaji</b>
-            </h2>
-          </div>
-          <div className="col-sm-6">
-            <Button onClick={handleShowOrganizacija} className="btn btn-success" data-toggle="modal">
-              <i className="material-icons">&#xE147;</i>
-              <span>Dodaj novi događaj</span>
-            </Button>
-          </div>
-        </div>
-      </div> */}
       <div className="row align-items-center mb-4">
         <div className="col">
           <Form.Label>Period za koji se generiše izveštaj:</Form.Label>
           <Form.Control type="month" onChange={handleChangeDatum}/>
         </div>
         <div className="col">
-        {/* <Form.Group controlId="dropdown"> */}
           <Form.Label>Tip događaja za koji se generiše izveštaj:</Form.Label>
               <Form.Control as="select" name="vrsta" value={vrsta} onChange={handleChangeVrsta} style={{width:"80%", maxWidth:"90%"}} >
                 <option value="">Izaberite vrstu događaja</option>
@@ -318,7 +285,6 @@ const formatTimeRange = (start, end) => {
                 </option>
                   ))}
               </Form.Control>
-            {/* </Form.Group> */}
         </div>
         <div className="col">
           <div className="row">
@@ -403,7 +369,6 @@ const formatTimeRange = (start, end) => {
             <Modal.Title>Dodaj organizaciju</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            {/* <AddOrganizacijaForm handleCloseOrg={handleCloseOrg}/> */}
             <div>
         <Form>
             <Form.Group>
@@ -440,7 +405,6 @@ const formatTimeRange = (start, end) => {
               <Modal.Title>Dodaj događaj</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              {/* <AddNoviDogadjajForm /> */}
               <Form>
             <Form.Group>
                 <Form.Control name="naziv" value={dogadjaj.naziv} onChange={handleChangeDogadjaj} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Naziv" required />
@@ -474,9 +438,6 @@ const formatTimeRange = (start, end) => {
                   ))}
               </Form.Control>
             </Form.Group><br />
-            {/* <Form.Group>
-                <Form.Control name="organizacijaId" value={organizacijaId} onChange={handleChangeDogadjaj} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Organizacija" required />
-            </Form.Group> */}
         </Form>
             </Modal.Body>
             <Modal.Footer>
@@ -494,7 +455,6 @@ const formatTimeRange = (start, end) => {
             <Modal.Title>Dodaj organizaciju</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            {/* <AddOrganizacijaForm handleCloseOrg={handleCloseOrg}/> */}
             <div>
         <Form>
             <Form.Group>
@@ -518,11 +478,6 @@ const formatTimeRange = (start, end) => {
             <Form.Group>
                 <Form.Control name="link" value={organizacijaEdit.link} onChange={handleChangeEditOrganziacija} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Link" required />
             </Form.Group><br/>
-            {/* <Form.Group>
-                <div className="d-flex justify-content-end">
-                    <Button onClick={handleDalje} variant="success">Dalje</Button>&nbsp;
-                </div><br/>
-            </Form.Group> */}
         </Form>
         </div>
         </Modal.Body>
@@ -536,7 +491,6 @@ const formatTimeRange = (start, end) => {
             <Modal.Title>Dodaj učesnika</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            {/* <AddOrganizacijaForm handleCloseOrg={handleCloseOrg}/> */}
             <div>
         <Form>
             <Form.Group>
@@ -546,10 +500,21 @@ const formatTimeRange = (start, end) => {
                 <Form.Control name="prezime" value={ucesnik.prezime} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Prezime" required />
             </Form.Group><br/>
             <Form.Group>
-                <Form.Control name="rod" value={ucesnik.rod} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Rod" required />
-            </Form.Group><br/>
+                <Form.Control
+                  style={{width:"80%", maxWidth:"90%"}}
+                  as="select"
+                  name="rod"
+                  value={ucesnik.rod}
+                  onChange={handleChangeUcesnik}
+                  required>
+                    <option value="">Izaberite rod</option>
+                    {Object.entries(rodMapping).map(([key, value]) => (
+                    <option key={key} value={key}>{value}</option>
+                    ))}
+                  </Form.Control>
+                </Form.Group><br />
             <Form.Group>
-                <Form.Control name="godine" value={ucesnik.godine} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="number" placeholder="Godine" required />
+                <Form.Control name="godine" value={ucesnik.godine} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="number" placeholder="Godina rođenja" required />
             </Form.Group><br/>
             <Form.Group>
                 <Form.Control name="mestoBoravista" value={ucesnik.mestoBoravista} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Mesto boravišta" required />
@@ -563,11 +528,6 @@ const formatTimeRange = (start, end) => {
             <Form.Group>
                 <Form.Control name="organizacija" value={ucesnik.organizacija} onChange={handleChangeUcesnik} style={{width:"80%", maxWidth:"90%"}} type="text" placeholder="Organizacija" required />
             </Form.Group><br/>
-            {/* <Form.Group>
-                <div className="d-flex justify-content-end">
-                    <Button onClick={handleDalje} variant="success">Dalje</Button>&nbsp;
-                </div><br/>
-            </Form.Group> */}
         </Form>
         </div>
         </Modal.Body>
@@ -595,10 +555,6 @@ const formatTimeRange = (start, end) => {
                     <Col className="col-sm-9">
                       <p>
                         Da li želite da dodate učesnike? <br />
-                        {/* <b>
-                          <i>{deleteMestoDogadjaja.nazivSale}</i>
-                        </b>{" "}
-                        ? */}
                       </p>
                     </Col>
                   </Row>
