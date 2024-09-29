@@ -117,7 +117,7 @@ const Ucesnici = () => {
                     </Form.Group><br />
                     <Form.Group style={{width: "100%"}}>
                         <div className="d-flex justify-content-center">
-                            <Button onClick={handleDodajUcesnik} variant="success">Dodaj učesnika</Button>&nbsp;
+                            <Button onClick={handleDodajUcesnik} variant="success">Prijavi se</Button>&nbsp;
                         </div>
                     </Form.Group>
                 </>
