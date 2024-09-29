@@ -6,7 +6,7 @@ import {
   Navbar,
   NavbarBrand,
 } from "react-bootstrap";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { opensBojaImage } from "../assets";
 import { Home } from "./Home";
 import DogadjajHome from "./aktivnosti/DogadjajHome";
@@ -30,6 +30,7 @@ import httpCommon from "../http-common";
 import NeodjavljenePoseteTabela from "./neodjavljene posete/NeodjavljenePoseteTabela";
 import DogadjajiTrenutno from "./aktivnosti/DogadjajTrenutno";
 import Ucesnici from "./Ucesnici";
+import axios from "axios";
 
 export const Navigation = () => {
   const aktivnostiPaths = ["/dogadjaj", "/dogadjajiTrenutno"];
@@ -52,6 +53,32 @@ export const Navigation = () => {
 
   const [hasPosete, setHasPosete] = useState(false);
   const [neodjavljene, setNeodjavljene] = useState([]);
+
+  const handleLogout = async () => {
+
+    const refreshToken = localStorage.getItem('refreshToken'); // Get the refresh token
+
+    if (!refreshToken) {
+      console.error("No refresh token found");
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://localhost:8080/api/auth/logout", {refreshToken}, {
+        headers: {
+          'Content-Type': 'application/json' // Ensure JSON content type
+        }
+      })
+      if (response.status === 200) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('isLoggedIn');
+        window.location.href = '/';
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  }
 
   useEffect(() => {
     const fetchNeodjavljenePosete = async () => {
@@ -230,6 +257,12 @@ export const Navigation = () => {
             {/*<Nav.Link>Logout</Nav.Link>
             <Nav.Link href="/profile">Profil</Nav.Link> */}
           </Nav>
+          <Nav.Link
+            onClick={handleLogout}
+            className={`registracija-dropdown-item`}
+          >
+            Logout
+        </Nav.Link>
         </Container>
       </Navbar>
 

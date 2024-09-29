@@ -353,12 +353,4 @@ public class AuthController {
 	    }
 	}
 	
-//	private String getFileExtension(String fileName) {
-//	    int lastIndexOfDot = fileName.lastIndexOf('.');
-//	    if (lastIndexOfDot > 0 && lastIndexOfDot < fileName.length() - 1) {
-//	        return fileName.substring(lastIndexOfDot + 1).toLowerCase();
-//	    }
-//	    return "";
-//	}
-	
 }

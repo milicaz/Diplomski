@@ -20,6 +20,13 @@ const Logovanje = ({onLoginSuccess}) => {
         try {
             const response = await axios.post('http://localhost:8080/api/auth/login', loginData);
             console.log(response.data); // Log response from backend
+
+            const { accessToken, refreshToken } = response.data;
+
+            // Store tokens in localStorage
+            localStorage.setItem('accessToken', accessToken);         // Store the JWT
+            localStorage.setItem('refreshToken', refreshToken); // Store the refresh token
+
             onLoginSuccess();
 
             // Handle success or redirect to dashboard
