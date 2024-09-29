@@ -73,8 +73,7 @@ public class TipOpremeController {
 	@DeleteMapping("/tipoviOpreme/{id}")
 	public ResponseEntity<HttpStatus> deleteOpremu(@PathVariable Long id) {
 		try {
-			// TODO Logicko brisanje
-			//tipOpremeRepository.deleteById(id);
+			tipOpremeService.deleteTipOpreme(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -46,7 +46,7 @@ export const QRCheckIn = () => {
 
   const fetchOprema = async () => {
     try {
-      const { data } = await httpCommon.get("/oprema/false");
+      const { data } = await httpCommon.get("/oprema/slobodna");
       setOprema(data);
     } catch (error) {
       console.error("Greška prilikom fetching opreme:", error);

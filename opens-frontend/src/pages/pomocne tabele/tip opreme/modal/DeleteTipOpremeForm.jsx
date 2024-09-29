@@ -17,12 +17,17 @@ export const DeleteTipOpremeForm = ({ tipOpreme }) => {
         </Col>
         <Col className="col-sm-9">
           <p>
-            Da li ste sigurni da želite da obrišete <br />
+            Da li ste sigurni da želite da obrišete tip opreme
+            <br />
             <b>
-              <i>{tipOpreme.naziv}</i>
+              <i>{tipOpreme.naziv}*</i>
             </b>{" "}
             ?
           </p>
+          <small className="text-muted">
+            * Uklanjanjem ovog tipa opreme, sva povezana oprema će takođe biti
+            obrisana.
+          </small>
         </Col>
       </Row>
     </>

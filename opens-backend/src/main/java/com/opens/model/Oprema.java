@@ -21,7 +21,10 @@ public class Oprema {
 	private TipOpreme tipOpreme;
 	@Column(name = "serijski_broj")
 	private String serijskiBroj;
-	private Boolean isZauzeta;
+	@Column(nullable = false)
+	private boolean isZauzeta;
+	@Column(nullable = false)
+	private boolean deleted;
 
 	public Oprema() {
 
@@ -58,12 +61,20 @@ public class Oprema {
 		this.serijskiBroj = serijskiBroj;
 	}
 
-	public Boolean getIsZauzeta() {
+	public boolean getIsZauzeta() {
 		return isZauzeta;
 	}
 
-	public void setIsZauzeta(Boolean isZauzeta) {
+	public void setIsZauzeta(boolean isZauzeta) {
 		this.isZauzeta = isZauzeta;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 }

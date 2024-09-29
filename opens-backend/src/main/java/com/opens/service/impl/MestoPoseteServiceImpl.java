@@ -18,7 +18,7 @@ public class MestoPoseteServiceImpl implements MestoPoseteService {
 
 	@Override
 	public List<MestoPosete> findAll() {
-		return mestoPoseteRepository.findAll();
+		return mestoPoseteRepository.findByDeletedFalse();
 	}
 
 	@Override
@@ -42,8 +42,9 @@ public class MestoPoseteServiceImpl implements MestoPoseteService {
 
 	@Override
 	public void deleteMestoPosete(Long id) {
-		// TODO Auto-generated method stub
-
+		MestoPosete mestoPosete = mestoPoseteRepository.findById(id).get();
+		mestoPosete.setDeleted(true);
+		mestoPoseteRepository.save(mestoPosete);
 	}
 
 }

@@ -15,16 +15,16 @@ import com.opens.service.OpremaService;
 
 @Service
 public class OpremaServiceImpl implements OpremaService {
-	
+
 	@Autowired
 	private OpremaRepository opremaRepository;
-	
+
 	@Autowired
 	private TipOpremeRepository tipOpremeRepository;
 
 	@Override
 	public List<Oprema> findAll() {
-		return opremaRepository.findAll();
+		return opremaRepository.findByDeletedFalse();
 	}
 
 	@Override
@@ -54,18 +54,20 @@ public class OpremaServiceImpl implements OpremaService {
 
 	@Override
 	public void deleteOprema(Long id) {
-		// TODO Auto-generated method stub
+		Oprema _oprema = opremaRepository.findById(id).get();
+		_oprema.setDeleted(true);
+		opremaRepository.save(_oprema);
 
 	}
 
 	@Override
-	public List<Oprema> findByIsZauzeta(Boolean isZauzeta) {
-		return opremaRepository.findByIsZauzeta(isZauzeta);
+	public List<Oprema> findByIsZauzeta() {
+		return opremaRepository.findByIsZauzetaFalseAndDeletedFalseOrderByTipOpremeId();
 	}
 
 	@Override
 	public Boolean existsBySerijskiBroj(String serijskiBroj) {
-		return opremaRepository.existsBySerijskiBroj(serijskiBroj);
+		return opremaRepository.existsBySerijskiBrojAndDeletedFalse(serijskiBroj);
 	}
 
 }

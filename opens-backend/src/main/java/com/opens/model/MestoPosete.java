@@ -18,6 +18,8 @@ public class MestoPosete {
 	private String nazivMesta;
 	@Column(name = "ukupan_broj_mesta")
 	private Integer ukupanBrojMesta;
+	@Column(nullable = false)
+	private boolean deleted;
 
 	public MestoPosete() {
 	}
@@ -50,6 +52,14 @@ public class MestoPosete {
 
 	public void setUkupanBrojMesta(Integer ukupanBrojMesta) {
 		this.ukupanBrojMesta = ukupanBrojMesta;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 }

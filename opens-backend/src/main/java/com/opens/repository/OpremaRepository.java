@@ -10,8 +10,12 @@ import com.opens.model.Oprema;
 @Repository
 public interface OpremaRepository extends JpaRepository<Oprema, Long> {
 
-	List<Oprema> findByIsZauzeta(Boolean isZauzeta);
+	List<Oprema> findByDeletedFalse();
 	
-	Boolean existsBySerijskiBroj(String serijskiBroj);
+	List<Oprema> findByTipOpremeId(Long tipOpremeId);
+	
+	List<Oprema> findByIsZauzetaFalseAndDeletedFalseOrderByTipOpremeId();
+	
+	Boolean existsBySerijskiBrojAndDeletedFalse(String serijskiBroj);
 
 }
