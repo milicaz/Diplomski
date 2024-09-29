@@ -1,8 +1,5 @@
 package com.opens.controller;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,17 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.opens.dto.PosetaDTO;
 import com.opens.dto.PosetaPrvaDTO;
 import com.opens.model.MestoPosete;
-import com.opens.model.Oprema;
 import com.opens.model.Poseta;
 import com.opens.model.Posetilac;
 import com.opens.repository.MestoPoseteRepository;
-import com.opens.repository.OpremaRepository;
 import com.opens.repository.PosetaRepository;
 import com.opens.repository.PosetilacRepository;
+import com.opens.service.PosetaService;
 import com.opens.view.DirektniView;
 import com.opens.view.PoseteView;
 import com.opens.view.repository.DirektniViewRepository;
-import com.opens.view.repository.PoseteViewRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -40,6 +35,9 @@ import jakarta.transaction.Transactional;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class PosetaController {
+
+	@Autowired
+	private PosetaService posetaService;
 
 	@Autowired
 	private PosetaRepository posetaRepository;
@@ -51,34 +49,25 @@ public class PosetaController {
 	private PosetilacRepository posetilacRepository;
 
 	@Autowired
-	private OpremaRepository opremaRepository;
-
-	@Autowired
-	private PoseteViewRepository poseteViewRepository;
-
-	@Autowired
 	private DirektniViewRepository direktniViewRepository;
 
 	@GetMapping("/posete")
 	public ResponseEntity<List<Poseta>> getAllPosete() {
 		List<Poseta> posete = new ArrayList<>();
 
-		posetaRepository.findAll().forEach(posete::add);
+		posetaService.findAll().forEach(posete::add);
 
 		if (posete.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<>(posete, HttpStatus.OK);
-
 	}
-	
+
 	@GetMapping("/posete/neodjavljene")
 	public ResponseEntity<List<Poseta>> getNeodjavljenePosete() {
-		LocalDate danas = LocalDate.now();
-		
 		List<Poseta> posete = new ArrayList<>();
 
-		posetaRepository.findByVremeOdjaveIsNullAndDatumPoseteBefore(danas).forEach(posete::add);
+		posetaService.getNeodjavljenePosete().forEach(posete::add);
 
 		return new ResponseEntity<>(posete, HttpStatus.OK);
 	}
@@ -87,7 +76,7 @@ public class PosetaController {
 	public ResponseEntity<List<PoseteView>> getPosete(@PathVariable Long mestoPoseteId) {
 		List<PoseteView> posete = new ArrayList<>();
 
-		poseteViewRepository.findByMestoPoseteId(mestoPoseteId).forEach(posete::add);
+		posetaService.getPosetePoMestuPosete(mestoPoseteId).forEach(posete::add);
 
 		if (posete.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -99,15 +88,14 @@ public class PosetaController {
 	@GetMapping("/posete/{mestoPoseteId}/datumPosete")
 	public ResponseEntity<List<Poseta>> getAllPosete(@PathVariable Long mestoPoseteId) {
 
-		LocalDate datum = LocalDate.now();
-
 		List<Poseta> posete = new ArrayList<>();
 
-		posetaRepository.findByMestoPoseteIdAndDatumPosete(mestoPoseteId, datum).forEach(posete::add);
+		posetaService.getTrenutnePosetePoMestuPosete(mestoPoseteId).forEach(posete::add);
 
 		if (posete.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
+
 		return new ResponseEntity<>(posete, HttpStatus.OK);
 
 	}
@@ -127,28 +115,7 @@ public class PosetaController {
 	@PostMapping("/posete")
 	public ResponseEntity<Poseta> createPosetu(@RequestBody PosetaDTO posetaDTO) {
 		try {
-			Optional<MestoPosete> mestoPosete = mestoPoseteRepository.findById(posetaDTO.getMestoPoseteID());
-			Optional<Posetilac> posetilac = posetilacRepository.findByEmail(posetaDTO.getPosetilacEmail());
-
-			List<Oprema> oprema = new ArrayList<>();
-
-			Poseta _poseta = new Poseta();
-			_poseta.setDatumPosete(LocalDate.now());
-			_poseta.setVremePosete(LocalTime.now().truncatedTo(ChronoUnit.SECONDS));
-			_poseta.setMestoPosete(mestoPosete.get());
-			_poseta.setPosetilac(posetilac.get());
-
-			if (posetaDTO.getOprema() != null) {
-				for (int i = 0; i < posetaDTO.getOprema().size(); i++) {
-					Optional<Oprema> _oprema = opremaRepository.findById(posetaDTO.getOprema().get(i).getId());
-					_oprema.get().setIsZauzeta(true);
-					oprema.add(_oprema.get());
-				}
-			}
-
-			_poseta.setOprema(oprema);
-
-			posetaRepository.save(_poseta);
+			Poseta _poseta = posetaService.addPoseta(posetaDTO);
 
 			return new ResponseEntity<>(_poseta, HttpStatus.CREATED);
 
@@ -181,71 +148,40 @@ public class PosetaController {
 
 	@PutMapping("/posete/{id}/oprema")
 	public ResponseEntity<Poseta> odjaviOpremu(@PathVariable Long id) {
-		Optional<Poseta> posetaData = posetaRepository.findById(id);
+		Poseta posetaData = posetaService.odjaviOpremuTrenutno(id);
 
-		if (posetaData.isPresent()) {
-			Poseta poseta = posetaData.get();
-
-			for (Oprema oprema : poseta.getOprema()) {
-				oprema.setIsZauzeta(false);
-				opremaRepository.save(oprema);
-			}
-
-			poseta.setOprema(null);
-			posetaRepository.save(poseta);
-			return new ResponseEntity<>(poseta, HttpStatus.OK);
-		} else {
+		if (posetaData == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(posetaData, HttpStatus.OK);
 		}
 	}
 
 	@PutMapping("/posete/{id}/odjava")
 	public ResponseEntity<Poseta> checkOut(@PathVariable Long id) {
-		Optional<Poseta> posetaData = posetaRepository.findById(id);
+		Poseta posetaData = posetaService.checkOutTrenutno(id);
 
-		if (posetaData.isPresent()) {
-			Poseta poseta = posetaData.get();
-
-			LocalTime vremeOdjave = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
-			poseta.setVremeOdjave(vremeOdjave);
-
-			posetaRepository.save(poseta);
-			return new ResponseEntity<>(poseta, HttpStatus.OK);
-		} else {
+		if (posetaData == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(posetaData, HttpStatus.OK);
 		}
 	}
-	
+
 	@PutMapping("/posete/{id}/nevracene")
 	public ResponseEntity<Poseta> checkOutNevracene(@PathVariable Long id) {
-		Optional<Poseta> posetaData = posetaRepository.findById(id);
+		Poseta posetaData = posetaService.checkOutNevracene(id);
 
-		if (posetaData.isPresent()) {
-			Poseta poseta = posetaData.get();
-
-			LocalTime vremeOdjave = LocalTime.of(22, 0).truncatedTo(ChronoUnit.SECONDS);
-			poseta.setVremeOdjave(vremeOdjave);
-			
-			for (Oprema oprema : poseta.getOprema()) {
-				oprema.setIsZauzeta(false);
-				opremaRepository.save(oprema);
-			}
-
-			poseta.setOprema(null);
-
-			posetaRepository.save(poseta);
-			return new ResponseEntity<>(poseta, HttpStatus.OK);
-		} else {
+		if (posetaData == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(posetaData, HttpStatus.OK);
 		}
 	}
 
 	@GetMapping("/posete/{email}/status")
 	public ResponseEntity<String> checkStatus(@PathVariable String email) {
-		LocalDate danas = LocalDate.now();
-
-		Poseta poseta = posetaRepository
-				.findTopByPosetilacEmailAndDatumPoseteAndVremeOdjaveIsNullOrderByVremePoseteDesc(email, danas);
+		Poseta poseta = posetaService.checkStatus(email);
 
 		if (poseta == null) {
 			return new ResponseEntity<String>("not-checked-in", HttpStatus.OK);
@@ -267,48 +203,22 @@ public class PosetaController {
 
 	@GetMapping("/posete/{email}/oprema")
 	public ResponseEntity<Poseta> findPoseta(@PathVariable String email) {
-		LocalDate danas = LocalDate.now();
-
-		Poseta poseta = posetaRepository
-				.findTopByPosetilacEmailAndDatumPoseteAndVremeOdjaveIsNullOrderByVremePoseteDesc(email, danas);
+		Poseta poseta = posetaService.findPoseta(email);
 
 		return new ResponseEntity<>(poseta, HttpStatus.OK);
 	}
 
 	@PutMapping("/posete/{email}")
 	public ResponseEntity<Poseta> checkOutEmail(@PathVariable String email) {
-		LocalDate danas = LocalDate.now();
-
-		Poseta poseta = posetaRepository
-				.findTopByPosetilacEmailAndDatumPoseteAndVremeOdjaveIsNullOrderByVremePoseteDesc(email, danas);
-
-		LocalTime vremeOdjave = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
-		poseta.setVremeOdjave(vremeOdjave);
-
-		posetaRepository.save(poseta);
+		Poseta poseta = posetaService.checkOutQRcode(email);
 
 		return new ResponseEntity<>(poseta, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/posete/{email}/checkOprema")
 	public ResponseEntity<Poseta> checkOutEmailOprema(@PathVariable String email) {
-		LocalDate danas = LocalDate.now();
-		
-		Poseta poseta = posetaRepository
-				.findTopByPosetilacEmailAndDatumPoseteAndVremeOdjaveIsNullOrderByVremePoseteDesc(email, danas);
-		
-		for (Oprema oprema : poseta.getOprema()) {
-			oprema.setIsZauzeta(false);
-			opremaRepository.save(oprema);
-		}
+		Poseta poseta = posetaService.checkOutOpremaQRcode(email);
 
-		poseta.setOprema(null);
-
-		LocalTime vremeOdjave = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
-		poseta.setVremeOdjave(vremeOdjave);
-
-		posetaRepository.save(poseta);
-		
 		return new ResponseEntity<>(poseta, HttpStatus.OK);
 
 	}

@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.ctc.wstx.util.StringUtil;
 import com.opens.security.service.PosetilacDetailsServiceImpl;
 import com.opens.security.service.ZaposleniDetailsServiceImpl;
 
