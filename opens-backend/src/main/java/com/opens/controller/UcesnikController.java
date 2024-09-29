@@ -43,13 +43,7 @@ public class UcesnikController {
 	
 	
 	@GetMapping("/sviUcesniciDogadjaja/{id}")
-	public ResponseEntity<List<Ucesnik>> getAll(@PathVariable Long id){
-//		Dogadjaj dogadjaj = dogadjajRepo.findOneById(id);
-//		List<Ucesnik> ucesnici = new ArrayList<>();
-//		for(Ucesnik u : dogadjaj.getUcesnici()) {
-//			ucesnici.add(u);
-//		}
-		
+	public ResponseEntity<List<Ucesnik>> getAll(@PathVariable Long id){		
 		return new ResponseEntity<>(ucesnikService.sviUcesniciDogadjaja(id), HttpStatus.OK);
 		
 	} 
@@ -57,54 +51,6 @@ public class UcesnikController {
 	@PostMapping("/ucesniciDogadjaja/{id}")
 	public String createUcesnikForDogadjaj(@RequestBody Ucesnik ucesnik,
 			@PathVariable(name = "id") Long id) {
-//		Ucesnik uc = new Ucesnik(ucesnik.getIme(), ucesnik.getPrezime(),
-//				ucesnik.getRod(), ucesnik.getGodine(), ucesnik.getBrojTelefona(),
-//				ucesnik.getEmail(), ucesnik.getMestoBoravista(), ucesnik.getOrganizacija(),
-//				ucesnik.isPrigradskoNaselje());
-//		
-//		
-//		Dogadjaj dogadjaj = dogadjajRepo.getReferenceById(id);
-//		System.out.println("Dogadjaj by id je: " + dogadjaj.getNaziv());
-//		
-//		List<PrigradskaNaselja> pn = new ArrayList<>();
-//		pn = pnRepo.findAll();
-//		
-//		System.out.println("Prigradska Naselja su: " + pn);
-//		
-//		for(PrigradskaNaselja n : pn) {
-//			System.out.println("Mesto boravista je: " + ucesnik.getMestoBoravista());
-//			System.out.println("Naselje je: " + n.getNaziv());
-//			System.out.println("Boolean je: " + ucesnik.getMestoBoravista().equals(n.getNaziv()));
-//			if(ucesnik.getMestoBoravista().equals(n.getNaziv())) {
-//				uc.setPrigradskoNaselje(true);
-//				break;
-//			} else {
-//				uc.setPrigradskoNaselje(false);
-//			}
-//		}
-//		
-//		//System.out.println("Ucesnik je:  " + ucesnik.toString());
-//		
-//		Set<Ucesnik> ucesnici = new HashSet<>();
-//		ucesnici.add(ucesnik);
-//		
-//		Set<Dogadjaj> dogadjaji = new HashSet<>();
-//		dogadjaji.add(dogadjaj);
-//		
-//		uc.setDogadjaji(dogadjaji);
-//		
-//		uc = ucesnikRepo.save(uc);
-//		
-////		System.out.println("Ucesnik je: " + ucesnik.getIme());
-//		
-////		System.out.println("Ucesnici su: " + ucesnici);
-//		
-//		dogadjaj.setUcesnici(ucesnici);
-//		
-//		dogadjajRepo.save(dogadjaj);
-
-		
-		
 		return ucesnikService.addUcesnik(ucesnik, id);
 	}
 

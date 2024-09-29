@@ -29,6 +29,7 @@ import ZaposleniHome from "./zaposleni/ZaposleniHome";
 import httpCommon from "../http-common";
 import NeodjavljenePoseteTabela from "./neodjavljene posete/NeodjavljenePoseteTabela";
 import DogadjajiTrenutno from "./aktivnosti/DogadjajTrenutno";
+import Ucesnici from "./Ucesnici";
 
 export const Navigation = () => {
   const aktivnostiPaths = ["/dogadjaj", "/dogadjajiTrenutno"];
@@ -200,6 +201,14 @@ export const Navigation = () => {
             >
               Zaposleni
             </Nav.Link>
+            <Nav.Link
+              href="/ucesnici"
+              className={`ucesnici-dropdown-item ${
+                isActive("/ucesnici") ? "active" : ""
+              }`}
+            >
+              Ucesnici
+            </Nav.Link>
           </Nav>
           <Nav className="justify-content-end">
             <Nav.Link
@@ -216,7 +225,7 @@ export const Navigation = () => {
                 isActive("/registracija") ? "active" : ""
               }`}
             >
-              Registracija
+              Registracija posetioca
             </Nav.Link>
             {/*<Nav.Link>Logout</Nav.Link>
             <Nav.Link href="/profile">Profil</Nav.Link> */}
@@ -247,6 +256,7 @@ export const Navigation = () => {
           <Route path="/zaposleni" element={<ZaposleniHome />} />
           <Route path="/omladinski" element={<OmladinskiCentar />} />
           <Route path="/posete" element={<NeodjavljenePoseteTabela />} />
+          <Route path="/ucesnici" element={<Ucesnici />} />
         </Routes>
       </div>
     </>
