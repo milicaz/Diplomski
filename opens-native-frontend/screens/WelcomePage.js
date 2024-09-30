@@ -37,11 +37,25 @@ export default function WelcomePage({ navigation }) {
     'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf')
   });
 
+  const checkLoggedInUser = async () => {
+    const accessToken = await AsyncStorage.getItem('accessToken');
+    const refreshToken = await AsyncStorage.getItem('refreshToken');
+
+    if (accessToken && refreshToken) {
+      // Optionally, you could validate the access token or refresh it if needed
+      navigation.navigate('Main');
+    } else {
+      navigation.navigate('Login'); // Redirect to login screen
+    }
+  };
+
   useEffect(() => {
     async function prepare() {
       await SplashScreen.preventAutoHideAsync();
+      await checkLoggedInUser(); // Ensure the function is called here
     }
     prepare();
+
   }, [])
 
   if (!fontsLoaded) {
@@ -60,58 +74,52 @@ export default function WelcomePage({ navigation }) {
     setPassword(password)
   }
 
+
   const handleLogin = async () => {
-    const loginDTO = {
-      email,
-      password
-    }
-
-    // console.log("login je: " + loginDTO)
-
-    // const response = await axios.post('http://10.0.2.2:8080/api/auth/loginPosetilac', loginDTO, {
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     }
-    //   })
-
-    //   console.log("Response je: " + response)
-    //   navigation.navigate('Main')
+    const loginDTO = { email, password };
 
     try {
-      // Make the API request
       const response = await axios.post('http://10.0.2.2:8080/api/auth/loginPosetilac', loginDTO, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
       });
-  
-      // Log the response for debugging
+
       console.log("Response:", response.data);
-  
-      // Extract JWT and refreshToken from response
       const { accessToken, refreshToken } = response.data;
-  
-      // Store JWT and refreshToken in AsyncStorage
+
+      // Store tokens in AsyncStorage
       await AsyncStorage.setItem('accessToken', accessToken);
       await AsyncStorage.setItem('refreshToken', refreshToken);
-  
+
       // Navigate to the main screen
       navigation.navigate('Main');
     } catch (error) {
-      // Handle errors here
       if (error.response) {
-        // Server responded with a status other than 200 range
         Alert.alert('Error', error.response.data.message || 'Login failed.');
       } else if (error.request) {
-        // Request was made but no response received
         Alert.alert('Error', 'No response from the server.');
       } else {
-        // Something happened in setting up the request
         Alert.alert('Error', 'An error occurred during login.');
       }
     }
+  };
 
-  }
+// const refreshAccessToken = async () => {
+//   const refreshToken = await AsyncStorage.getItem('refreshToken');
+//   if (!refreshToken) return null;
+
+//   try {
+//     const response = await axios.post('http://10.0.2.2:8080/api/auth/refresh', { token: refreshToken });
+//     const { accessToken } = response.data;
+
+//     // Store the new access token
+//     await AsyncStorage.setItem('accessToken', accessToken);
+//     return accessToken;
+//   } catch (error) {
+//     console.error("Failed to refresh access token:", error);
+//     return null; // Handle the case where refreshing fails
+//   }
+// };
+
 
   return (
     <ScrollView style={{ backgroundColor: COLORS.white }}>

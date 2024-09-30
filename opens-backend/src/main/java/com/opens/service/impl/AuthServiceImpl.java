@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -14,14 +15,19 @@ import com.opens.dto.ZaposleniDTO;
 import com.opens.model.EUloge;
 import com.opens.model.Posetilac;
 import com.opens.model.ProfilnaSlika;
+import com.opens.model.RefreshToken;
 import com.opens.model.Uloga;
 import com.opens.model.Zaposleni;
 import com.opens.service.AuthService;
 import com.opens.repository.UlogaRepository;
 import com.opens.repository.ZaposleniRepository;
+import com.opens.security.jwt.JwtUtils;
+import com.opens.security.service.RefreshTokenService;
 import com.opens.repository.PosetilacRepository;
 import com.opens.repository.ProfilnaSlikaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
@@ -39,6 +45,9 @@ public class AuthServiceImpl implements AuthService {
 	
 	@Autowired
 	private ProfilnaSlikaRepository profilnaSlikaRepository;
+	
+	@Autowired
+	private RefreshTokenService refreshTokenService;
 	
 	@Autowired
 	PasswordEncoder encoder;

@@ -30,18 +30,7 @@ public class JwtUtils {
 
 	@Value("${opens.jwtExpirationMs}")
 	private int jwtExpirationMs;
-	  
-//	public String generateJwtToken(Authentication authentication) {
-//		ZaposleniDetailsImpl zaposleniPrincipal = (ZaposleniDetailsImpl) authentication.getPrincipal();
-//		
-//		return Jwts.builder()
-//				.setSubject((zaposleniPrincipal.getUsername()))
-//				.setIssuedAt(new Date())
-//				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-//				.signWith(key(), SignatureAlgorithm.HS512)
-//				.compact();
-//		
-//	} 
+	   
 	
 	public String generateJwtToken(ZaposleniDetailsImpl zaposleniPrincipal) {
 		return Jwts.builder().setSubject(zaposleniPrincipal.getEmail()).claim("userType", "Zaposleni").setIssuedAt(new Date())

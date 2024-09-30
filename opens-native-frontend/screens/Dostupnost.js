@@ -279,11 +279,11 @@ export default function Dostupnost() {
                     </Text>
                 </View>
             </View>
-            {/* <View style={{ flex: 1, marginLeft: 30 }}>
+            <View style={{ flex: 1, marginLeft: 30 }}>
             <TouchableOpacity>
               <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold" }} onPress={() => navigation.navigate("Logout")}>Logout</Text>
             </TouchableOpacity>
-          </View> */}
+          </View>
         </View>
     );
 }

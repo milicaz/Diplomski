@@ -3,6 +3,8 @@ package com.opens.controller;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -308,7 +310,7 @@ public class AuthController {
 
 	    if (optionalRefreshToken.isPresent()) {
 	        RefreshToken refreshToken = optionalRefreshToken.get();
-	        
+	        System.out.println("Usao je u prvi if " + optionalRefreshToken.get().getExpiryDate());
 	        // Verify the token's expiration
 	        RefreshToken verifiedToken = refreshTokenService.verifyExpiration(refreshToken);
 	        if (verifiedToken != null) {
@@ -338,6 +340,26 @@ public class AuthController {
 	                );
 	                token = jwtUtils.generateJwtToken(zaposleniDetails);
 	            } else {
+	            	if(Instant.now().compareTo(optionalRefreshToken.get().getExpiryDate().minus(1, ChronoUnit.DAYS)) >= 0 && 
+	                        Instant.now().compareTo(optionalRefreshToken.get().getExpiryDate()) < 0){
+	                	System.out.println("Usao je u dobar if");
+	                	RefreshToken refToken = optionalRefreshToken.get();
+	                	String newAccessToken= "";
+	                	RefreshToken newRefreshToken = new RefreshToken();
+	                	if(refToken.getPosetilac() != null) {
+	                		email = refToken.getPosetilac().getEmail();
+	    	                userType = "Posetilac";
+	    	                PosetilacDetailsImpl posetilacDetails = new PosetilacDetailsImpl(refToken.getPosetilac().getId(), 
+	    	                		email, refToken.getPosetilac().getPassword(), null);
+	    	                refreshTokenService.delete(refToken);
+	    	                newRefreshToken = refreshTokenService.createRefreshToken(email);
+	    	                newAccessToken = jwtUtils.generateJwtToken(posetilacDetails);
+	                	}
+	                	return ResponseEntity.ok(new TokenRefreshResponse(newAccessToken, newRefreshToken.getToken()));
+	                }  
+	            	
+	            	
+	            	System.out.println("Usao je u else");
 	                // Create a PosetilacDetailsImpl instance for the user
 	                PosetilacDetailsImpl posetilacDetails = new PosetilacDetailsImpl(
 	                    verifiedToken.getPosetilac().getId(),
@@ -350,10 +372,13 @@ public class AuthController {
 
 	            // Return a response with the new JWT token and the old refresh token
 	            return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
-	        } else {
+	        }  
+	        else {
+	        	System.out.println("Usao je u else kad refresh token ne postoji");
 	            throw new TokenRefreshException(requestRefreshToken, "Refresh token has expired!");
 	        }
 	    } else {
+	    	System.out.println("Usao je u else kad refresh token ne postoji u bazi ");
 	        throw new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!");
 	    }
 	}
