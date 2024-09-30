@@ -3,7 +3,6 @@ import httpCommon from "../../http-common";
 import { Tab, Tabs } from "react-bootstrap";
 import OmladinskiCentarTabela from "./OmladinskiCentarTabela";
 import OmladinskiCentarTrenutno from "./OmladinskiCentarTrenutno";
-import OmladinskiCentarPrvePoseteTabela from "./OmladinskiCentarPrvePoseteTabela";
 
 export const OmladinskiCentar = () => {
   const [mestaPosete, setMestaPosete] = useState([]);
@@ -58,15 +57,6 @@ export const OmladinskiCentar = () => {
                 <OmladinskiCentarTabela
                   mestoPoseteId={mestoPosete.id}
                   mestoPoseteNaziv={mestoPosete.nazivMesta}
-                />
-              </Tab>
-              <Tab
-                eventKey="3"
-                title={`${mestoPosete.nazivMesta} - tabela prvih poseta`}
-                key="3"
-              >
-                <OmladinskiCentarPrvePoseteTabela
-                  mestoPoseteId={mestoPosete.id}
                 />
               </Tab>
             </Tabs>

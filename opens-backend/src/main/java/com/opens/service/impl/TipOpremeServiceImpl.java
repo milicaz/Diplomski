@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.opens.model.Oprema;
 import com.opens.model.TipOpreme;
+import com.opens.repository.OpremaRepository;
 import com.opens.repository.TipOpremeRepository;
 import com.opens.service.TipOpremeService;
 
@@ -16,9 +18,12 @@ public class TipOpremeServiceImpl implements TipOpremeService {
 	@Autowired
 	private TipOpremeRepository tipOpremeRepository;
 
+	@Autowired
+	private OpremaRepository opremaRepository;
+
 	@Override
 	public List<TipOpreme> findAll() {
-		return tipOpremeRepository.findAll();
+		return tipOpremeRepository.findAllActive();
 	}
 
 	@Override
@@ -40,13 +45,23 @@ public class TipOpremeServiceImpl implements TipOpremeService {
 
 	@Override
 	public void deleteTipOpreme(Long id) {
-		// TODO Auto-generated method stub
+		TipOpreme _tipOpreme = tipOpremeRepository.findById(id).get();
+		_tipOpreme.setDeleted(true);
+
+		tipOpremeRepository.save(_tipOpreme);
+
+		List<Oprema> opreme = opremaRepository.findByTipOpremeId(id);
+
+		for (Oprema o : opreme) {
+			o.setDeleted(true);
+			opremaRepository.save(o);
+		}
 
 	}
 
 	@Override
 	public Boolean existsByNaziv(String naziv) {
-		return tipOpremeRepository.existsByNaziv(naziv);
+		return tipOpremeRepository.existsByNazivAndDeletedFalse(naziv);
 	}
 
 }

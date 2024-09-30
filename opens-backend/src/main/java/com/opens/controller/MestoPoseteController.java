@@ -64,8 +64,7 @@ public class MestoPoseteController {
 	@DeleteMapping("/mestaPosete/{id}")
 	public ResponseEntity<HttpStatus> deleteMestoPosete(@PathVariable Long id) {
 		try {
-			// TODO Odraditi logicko brisanje
-			// mestoPoseteRepository.deleteById(id);
+			mestoPoseteService.deleteMestoPosete(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

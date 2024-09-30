@@ -16,6 +16,8 @@ public class TipOpreme {
 	private Long id;
 	@Column(name = "naziv")
 	private String naziv;
+	@Column(nullable = false)
+	private boolean deleted = false;
 
 	public TipOpreme() {
 	}
@@ -38,6 +40,14 @@ public class TipOpreme {
 
 	public void setNaziv(String naziv) {
 		this.naziv = naziv;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 }

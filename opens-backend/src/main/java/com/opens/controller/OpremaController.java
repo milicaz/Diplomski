@@ -41,11 +41,11 @@ public class OpremaController {
 
 	}
 
-	@GetMapping("/oprema/{isZauzeta}")
-	public ResponseEntity<List<Oprema>> getSlobodnuOpremu(@PathVariable Boolean isZauzeta) {
+	@GetMapping("/oprema/slobodna")
+	public ResponseEntity<List<Oprema>> getSlobodnuOpremu() {
 		List<Oprema> opreme = new ArrayList<>();
 
-		opremaService.findByIsZauzeta(isZauzeta).forEach(opreme::add);
+		opremaService.findByIsZauzeta().forEach(opreme::add);
 
 		if (opreme.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -88,8 +88,7 @@ public class OpremaController {
 	@DeleteMapping("/oprema/{id}")
 	public ResponseEntity<HttpStatus> deleteOpremu(@PathVariable Long id) {
 		try {
-			// TODO Odraditi logicko brisanje
-			// opremaRepository.deleteById(id);
+			opremaService.deleteOprema(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

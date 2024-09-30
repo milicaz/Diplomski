@@ -9,7 +9,7 @@ public interface OpremaService {
 	
 	public List<Oprema> findAll();
 	
-	public List<Oprema> findByIsZauzeta(Boolean isZauzeta);
+	public List<Oprema> findByIsZauzeta();
 	
 	public Boolean existsBySerijskiBroj(String serijskiBroj);
 	

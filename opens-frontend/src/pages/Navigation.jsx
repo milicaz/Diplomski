@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
   Container,
@@ -6,14 +7,17 @@ import {
   Navbar,
   NavbarBrand,
 } from "react-bootstrap";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { opensBojaImage } from "../assets";
-import { Home } from "./Home";
+import httpCommon from "../http-common";
 import DogadjajHome from "./aktivnosti/DogadjajHome";
+import DogadjajiTrenutno from "./aktivnosti/DogadjajTrenutno";
+import { Home } from "./Home";
 import Logovanje from "./korisnik/Logovanje";
 import MainCheckIn from "./korisnik/MainCheckIn";
 import { Profile } from "./korisnik/Profile";
 import Registracija from "./korisnik/Registracija";
+import NeodjavljenePoseteTabela from "./neodjavljene posete/NeodjavljenePoseteTabela";
 import OmladinskiCentar from "./omladinski centar/OmladinskiCentar";
 import {
   MestoDogadjajaHome,
@@ -25,12 +29,8 @@ import {
   TipOprHome,
 } from "./pomocne tabele";
 import LogoHome from "./pomocne tabele/logo/LogoHome";
-import ZaposleniHome from "./zaposleni/ZaposleniHome";
-import httpCommon from "../http-common";
-import NeodjavljenePoseteTabela from "./neodjavljene posete/NeodjavljenePoseteTabela";
-import DogadjajiTrenutno from "./aktivnosti/DogadjajTrenutno";
 import Ucesnici from "./Ucesnici";
-import axios from "axios";
+import ZaposleniHome from "./zaposleni/ZaposleniHome";
 
 export const Navigation = () => {
   const aktivnostiPaths = ["/dogadjaj", "/dogadjajiTrenutno"];
@@ -206,6 +206,7 @@ export const Navigation = () => {
               >
                 Prigradska naselja
               </NavDropdown.Item>
+              <NavDropdown.Divider />
               <NavDropdown.Item
                 href="/logo"
                 className={`sifarnik-dropdown-item ${
