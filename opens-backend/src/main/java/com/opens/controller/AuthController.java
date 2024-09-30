@@ -50,6 +50,11 @@ import com.opens.security.service.PosetilacDetailsImpl;
 import com.opens.security.service.ZaposleniDetailsImpl;
 import com.opens.security.service.RefreshTokenService;
 import com.opens.service.ZaposleniService;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import com.opens.service.AuthService;
 import com.opens.service.PosetilacService;
 
@@ -94,27 +99,53 @@ public class AuthController {
 	private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 	
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@Validated @RequestBody LoginDTO loginDTO) {
-		
-		Authentication authentication = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
-		
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		ZaposleniDetailsImpl zaposleniDetails = (ZaposleniDetailsImpl) authentication.getPrincipal();
-		
-		String jwt = jwtUtils.generateJwtToken(zaposleniDetails);
-		
-		List<String> uloge = zaposleniDetails.getAuthorities().stream().map(item -> item.getAuthority())
-				.collect(Collectors.toList());
-		
-		RefreshToken refreshToken = refreshTokenService.createRefreshToken(zaposleniDetails.getEmail());
-		
-		return ResponseEntity.ok(new JwtResponse(jwt, 
-				refreshToken.getToken(),
-                zaposleniDetails.getId(), 
-                zaposleniDetails.getEmail(), 
-                uloge));
-		
+	public ResponseEntity<?> login(@Validated @RequestBody LoginDTO loginDTO, HttpServletResponse response) {
+	    try {
+	        Authentication authentication = authenticationManager.authenticate(
+	                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
+	        
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	        
+	        System.out.println("Authentication u login je: " + authentication);
+	    
+	        
+	        ZaposleniDetailsImpl zaposleniDetails = (ZaposleniDetailsImpl) authentication.getPrincipal();
+	        
+	        System.out.println("Authenticated user: " + zaposleniDetails.getEmail());
+	        System.out.println("Auth principal login: " + authentication.getPrincipal());
+	        
+	        String jwt = jwtUtils.generateJwtToken(zaposleniDetails);
+	        RefreshToken refreshToken = refreshTokenService.createRefreshToken(zaposleniDetails.getEmail());
+
+	        // Create cookies for the tokens
+	        Cookie jwtCookie = new Cookie("accessToken", jwt);
+	        jwtCookie.setHttpOnly(true);
+	        jwtCookie.setSecure(true);
+	        jwtCookie.setPath("/");
+	        jwtCookie.setMaxAge(3600);
+
+	        Cookie refreshCookie = new Cookie("refreshToken", refreshToken.getToken());
+	        refreshCookie.setHttpOnly(true);
+//	        refreshCookie.setSecure(true);
+	        refreshCookie.setPath("/");
+	        refreshCookie.setMaxAge(86400);
+
+	        // Add cookies to the response
+	        response.addCookie(jwtCookie);
+	        response.addCookie(refreshCookie);
+	        
+	        List<String> uloge = zaposleniDetails.getAuthorities().stream()
+	                .map(item -> item.getAuthority())
+	                .collect(Collectors.toList());
+
+	        return ResponseEntity.ok(new JwtResponse(null, null, 
+	                zaposleniDetails.getId(), 
+	                zaposleniDetails.getEmail(), 
+	                uloge));
+	    } catch (Exception e) {
+	        System.out.println("Login failed: " + e.getMessage());
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
+	    }
 	}
 	
 	@PostMapping("/signup")
@@ -265,13 +296,6 @@ public class AuthController {
 		        logger.info("USER_LOGIN_FAILURE - User with role '{}' not found", roleToCheck);
 		        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User with role '" + roleToCheck + "' not found.");
 		    }
-		
-//		List<String> uloge = posetilacDetails.getAuthorities().stream().map(item -> item.getAuthority())
-//				.collect(Collectors.toList());
-		
-//		logger.info("USER_LOGIN_SUCCESS - User logged in successfully");
-//		return (ResponseEntity<?>) ResponseEntity
-//				.ok("User logged in successfully!");
 	
 	}
 	
@@ -353,4 +377,43 @@ public class AuthController {
 	    }
 	}
 	
+	@PostMapping("/logoutZaposleniNovi")
+	public ResponseEntity<?> logout(HttpServletRequest request) {
+	    // Read the refresh token from the HttpOnly cookie
+		
+	    Cookie[] cookies = request.getCookies();
+	    System.out.println("Cookies: " + cookies);
+	    String refreshToken = null;
+
+	    if (cookies != null) {
+	        for (Cookie cookie : cookies) {
+	            if ("refreshToken".equals(cookie.getName())) {
+	                refreshToken = cookie.getValue();
+	                break;
+	            }
+	        }
+	    }
+
+	    // Check if the refresh token was found
+	    if (refreshToken != null) {
+	        // Check if the refresh token exists in the database
+	        Optional<RefreshToken> optionalRefreshToken = refreshTokenService.findByToken(refreshToken);
+	        
+	        if (optionalRefreshToken.isPresent()) {
+	            RefreshToken token = optionalRefreshToken.get();
+	            
+	            // Invalidate the token by deleting it
+	            refreshTokenService.delete(token);
+	            
+	            // Optionally, clear the security context if needed
+	            // SecurityContextHolder.clearContext(); // Uncomment if needed
+	            
+	            return ResponseEntity.ok(new MessageResponse("Logout successful."));
+	        } else {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token.");
+	        }
+	    } else {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No refresh token found.");
+	    }
+	}
 }

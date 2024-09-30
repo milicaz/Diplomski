@@ -1,5 +1,6 @@
 package com.opens.repository;
 
+import java.lang.StackWalker.Option;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,8 @@ import com.opens.model.Zaposleni;
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
 
 	Optional<RefreshToken> findByToken(String token);
+	
+	Optional<RefreshToken> findByZaposleniEmail(String email);
 	
 	@Modifying
 	int deleteByZaposleni(Zaposleni zaposleni);

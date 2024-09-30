@@ -16,22 +16,22 @@ const Logovanje = ({onLoginSuccess}) => {
             email: email,
             password: password
         };
-
+    
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/login', loginData);
+            // Make the login request
+            const response = await axios.post('http://localhost:8080/api/auth/login', loginData, {
+                withCredentials: true // Important: send cookies with the request
+            });
+            
             console.log(response.data); // Log response from backend
-
-            const { accessToken, refreshToken } = response.data;
-
-            // Store tokens in localStorage
-            localStorage.setItem('accessToken', accessToken);         // Store the JWT
-            localStorage.setItem('refreshToken', refreshToken); // Store the refresh token
-
-            onLoginSuccess();
-
-            // Handle success or redirect to dashboard
-            // Example: redirect to dashboard if login successful
+    
+            // No need to store tokens in localStorage anymore
+    
+            onLoginSuccess(); // Call your success handler
+    
+            // Redirect to the desired page
             // history.push('/dashboard');
+    
         } catch (error) {
             console.error('Error logging in:', error);
             // Handle error, show error message, etc.

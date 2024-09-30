@@ -55,30 +55,25 @@ export const Navigation = () => {
   const [neodjavljene, setNeodjavljene] = useState([]);
 
   const handleLogout = async () => {
-
-    const refreshToken = localStorage.getItem('refreshToken'); // Get the refresh token
-
-    if (!refreshToken) {
-      console.error("No refresh token found");
-      return;
-    }
-
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/logout", {refreshToken}, {
-        headers: {
-          'Content-Type': 'application/json' // Ensure JSON content type
+        const response = await axios.post("http://localhost:8080/api/auth/logoutZaposleniNovi", {}, {
+            withCredentials: true, // Ensure cookies are sent
+            headers: {
+                'Content-Type': 'application/json' // Ensure JSON content type
+            }
+        });
+
+        if (response.status === 200) {
+            // Clear local state if you are managing any login state
+            localStorage.removeItem('isLoggedIn');
+            // Redirect to the home page or another route
+            window.location.href = '/'; 
         }
-      })
-      if (response.status === 200) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('isLoggedIn');
-        window.location.href = '/';
-      }
     } catch (error) {
-      console.error("Logout failed:", error);
+        console.error("Logout failed:", error);
+        // Optionally handle the error
     }
-  }
+};
 
   useEffect(() => {
     const fetchNeodjavljenePosete = async () => {

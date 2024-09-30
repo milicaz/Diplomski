@@ -82,4 +82,9 @@ public class RefreshTokenService {
 	  public int deleteByPosetilac(String email) {
 	    return refreshRepository.deleteByPosetilac(posetilacRepo.findByEmail(email).get());
 	  }
+	
+	@Transactional
+	public Optional<RefreshToken> findByEmail(String email) {
+	    return refreshRepository.findByZaposleniEmail(email);
+	}
 }
