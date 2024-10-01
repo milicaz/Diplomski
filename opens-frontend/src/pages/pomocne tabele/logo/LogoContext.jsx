@@ -1,53 +1,78 @@
-import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import httpCommon from "../../../http-common";
+import eventBus from "../../../utils/eventBus";
 
-export const LogoContext = createContext()
+export const LogoContext = createContext();
 
 const LogoContextProvider = (props) => {
-    
-    const [base64, setBase64] = useState([]);
+  const [base64, setBase64] = useState([]);
 
-    useEffect(() => {
-        getImage();
-      }, []);
+  useEffect(() => {
+    getImage();
+  }, []);
 
-    const getImage = async () => {
-
-        const result = await axios.get("http://localhost:8080/api/logoi");
-        setBase64(result.data)
+  const getImage = async () => {
+    try {
+      const result = await httpCommon.get("/logoi");
+      setBase64(result.data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching logoa: ", error);
+      }
     }
+  };
 
-    const addLogo = async(file) => {
+  const addLogo = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("imageFile", file);
 
-        try {
-            const formData = new FormData();
-            formData.append("imageFile", file);
-            
-            const response = await axios.post("http://localhost:8080/api/logoi", formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            });
-            
-            return response.data;
-          } catch (error) {
-                console.error("Greška:", error);
-            throw error;
-          }
-        getImage();
+      const response = await httpCommon.post("/logoi", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška:", error);
+        throw error;
+      }
     }
+    getImage();
+  };
 
-    const deleteLogo = async(id) => {
-        await axios.delete(`http://localhost:8080/api/logoi/${id}`);
-        getImage();
+  const deleteLogo = async (id) => {
+    try {
+      await httpCommon.delete(`/logoi/${id}`);
+      getImage();
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom brisanja logoa: ", error);
+      }
     }
+  };
 
-    return(
-        <LogoContext.Provider value={{base64, addLogo, deleteLogo}}>
-            {props.children}
-        </LogoContext.Provider>
-    )
-
-}
+  return (
+    <LogoContext.Provider value={{ base64, addLogo, deleteLogo }}>
+      {props.children}
+    </LogoContext.Provider>
+  );
+};
 
 export default LogoContextProvider;

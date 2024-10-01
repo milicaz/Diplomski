@@ -12,24 +12,24 @@ const LogoList = () => {
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
 
-  const [currentPage, setCurrentPage] = useState(1)
-  const [limit, setLimit] = useState(10)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
 
   const indexOfLastLogo = currentPage * limit;
   const indexOfFirstLogo = currentPage - limit;
   const currentLogo = base64.slice(indexOfFirstLogo, indexOfLastLogo);
-  const totalPagesNumber = Math.ceil(base64.length / limit)
+  const totalPagesNumber = Math.ceil(base64.length / limit);
 
   const onInputChange = (event) => {
-    setLimit(event.target.value)
-  }
+    setLimit(event.target.value);
+  };
 
   return (
     <>
       <div className="table-title">
         <div className="row">
           <div className="col-sm-6">
-          <div className="row align-items-center mb-3">
+            <div className="row align-items-center mb-3">
               <div className="col-auto pe-0">
                 <span>Prikaži</span>
               </div>
@@ -51,7 +51,11 @@ const LogoList = () => {
             </div>
           </div>
           <div className="col-sm-6">
-            <Button onClick={handleShow} className="btn btn-success" data-toggle="modal">
+            <Button
+              onClick={handleShow}
+              className="btn btn-success"
+              data-toggle="modal"
+            >
               <i className="material-icons">&#xE147;</i>
               <span>Dodaj novi logo</span>
             </Button>
@@ -78,20 +82,22 @@ const LogoList = () => {
           </tbody>
         </table>
 
-        <Pagination pages={totalPagesNumber}
+        <Pagination
+          pages={totalPagesNumber}
           setCurrentPage={setCurrentPage}
           array={base64}
           limit={limit}
-          maxVisibleButtons={3} />
+          maxVisibleButtons={3}
+        />
 
         <Modal show={show} onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Dodaj logo</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <AddLogoForm />
-        </Modal.Body>
-      </Modal>
+          <Modal.Header closeButton>
+            <Modal.Title>Dodaj logo</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <AddLogoForm />
+          </Modal.Body>
+        </Modal>
       </div>
     </>
   );

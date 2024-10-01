@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 
-const Pagination = ({ pages, setCurrentPage, array, limit, maxVisibleButtons }) => {
+const Pagination = ({
+  pages,
+  setCurrentPage,
+  array,
+  limit,
+  maxVisibleButtons,
+}) => {
   const numOfPages = [];
   const [currentButton, setCurrentButton] = useState(1);
 
@@ -64,7 +70,9 @@ const Pagination = ({ pages, setCurrentPage, array, limit, maxVisibleButtons }) 
       buttons.push(
         <li
           key={i}
-          className={`${currentButton === i ? "page-item active" : "page-item"}`}
+          className={`${
+            currentButton === i ? "page-item active" : "page-item"
+          }`}
         >
           <button className="page-link" onClick={() => setCurrentButton(i)}>
             {i}
@@ -83,10 +91,7 @@ const Pagination = ({ pages, setCurrentPage, array, limit, maxVisibleButtons }) 
       }
       buttons.push(
         <li key={pages} className="page-item">
-          <button
-            className="page-link"
-            onClick={() => setCurrentButton(pages)}
-          >
+          <button className="page-link" onClick={() => setCurrentButton(pages)}>
             {pages}
           </button>
         </li>
@@ -106,7 +111,11 @@ const Pagination = ({ pages, setCurrentPage, array, limit, maxVisibleButtons }) 
         od <b>{array.length}</b> unosa
       </div>
       <ul className="pagination justify-content-end">
-        <li className={`${currentButton === 1 ? "page-item disabled" : "page-item"}`}>
+        <li
+          className={`${
+            currentButton === 1 ? "page-item disabled" : "page-item"
+          }`}
+        >
           <button
             className="page-link"
             onClick={() =>
@@ -127,9 +136,7 @@ const Pagination = ({ pages, setCurrentPage, array, limit, maxVisibleButtons }) 
           <button
             className="page-link"
             onClick={() =>
-              setCurrentButton((next) =>
-                next === pages ? next : next + 1
-              )
+              setCurrentButton((next) => (next === pages ? next : next + 1))
             }
           >
             Sledeća

@@ -1,76 +1,106 @@
-import { Button, Form } from "react-bootstrap";
+import { useContext, useState } from "react";
+import { Button, Card, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { opensBojaImage } from "../../assets";
-import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom/dist";
+import { AuthContext } from "../../contexts/AuthContext";
 
-const Logovanje = ({onLoginSuccess}) => {
+const Logovanje = () => {
+  const { login } = useContext(AuthContext);
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+  const [validated, setValidated] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailValid, setEmailValid] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
 
-    const navigate = useNavigate()
+  let navigate = useNavigate();
 
-    const handleLogin = async () => {
-        const loginData = {
-            email: email,
-            password: password
-        };
-    
-        try {
-            // Make the login request
-            const response = await axios.post('http://localhost:8080/api/auth/login', loginData, {
-                withCredentials: true // Important: send cookies with the request
-            });
-            
-            console.log(response.data); // Log response from backend
-    
-            // No need to store tokens in localStorage anymore
-    
-            onLoginSuccess(); // Call your success handler
-    
-            // Redirect to the desired page
-            // history.push('/dashboard');
-    
-        } catch (error) {
-            console.error('Error logging in:', error);
-            // Handle error, show error message, etc.
-        }
-    };
+  const validateForm = () => {
+    let valid = true;
 
-    return (
-        <div className="d-flex flex-column align-items-center justify-content-center" style={{ minHeight: "100vh" }}>
-            <div className="mb-4"> {/* Wrapper div for the image */}
-                <img src={opensBojaImage} alt="OPENS" style={{ width: "300px", marginBottom: "20px"}} />
-            </div>
-            <div style={{ width: "300px" }}> {/* Wrapper div for the form */}
-            <Form>
-                <Form.Group>
-                    <Form.Label>Email: </Form.Label>
-                    <Form.Control style={{ width: "150%", maxWidth: "150%" }}
-                        type="text"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Unesite vaš email"
-                        required/>
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Lozinka: </Form.Label>
-                    <Form.Control style={{ width: "150%", maxWidth: "150%" }}
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Unesite vašu lozinku"
-                        required/>
-                </Form.Group>
-                <br />
-                <div className="d-flex justify-content-center">
-                    <Button variant="success" onClick={handleLogin}>Login</Button>
-                </div>
+    // Validate email
+    if (!email || !/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) {
+      setEmailValid(false);
+      valid = false;
+    } else {
+      setEmailValid(true);
+    }
+
+    // Validate password
+    if (!password) {
+      setPasswordValid(false);
+      valid = false;
+    } else {
+      setPasswordValid(true);
+    }
+
+    return valid;
+  };
+
+  const handleLogin = async (e) => {
+    const form = e.currentTarget;
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (validateForm()) {
+      const loginData = { email, password };
+      await login(loginData); // Ensure this function exists and handles login
+      navigate("/");
+    }
+
+    setValidated(true);
+  };
+
+  return (
+    <div className="d-flex align-items-center justify-content-center logovanje">
+      <Card>
+        <Card.Header>
+          <div style={{ marginTop: "100px" }}>
+            <img src={opensBojaImage} alt="OPENS" />
+          </div>
+        </Card.Header>
+        <Card.Body>
+          <div style={{ marginTop: "100px" }}>
+            <Form noValidate validated={validated} onSubmit={handleLogin}>
+              <Form.Group className="mb-3">
+                <Form.Label>Email:</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Unesite Vaš email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  isInvalid={validated && !emailValid}
+                />
+                <Form.Control.Feedback type="invalid">
+                  Unesite ispravnu email adresu.
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="my-3">
+                <Form.Label>Lozinka: </Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Unesite Vašu lozinku"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  isInvalid={validated && !passwordValid}
+                />
+                <Form.Control.Feedback type="invalid">
+                  Lozinka je obavezna.
+                </Form.Control.Feedback>
+              </Form.Group>
+              <div className="d-grid gap-2 my-4">
+                <Button variant="success" type="submit" size="lg">
+                  Login
+                </Button>
+              </div>
             </Form>
-            </div>
-        </div>
-    )
-}
+          </div>
+        </Card.Body>
+      </Card>
+    </div>
+  );
+};
 
 export default Logovanje;

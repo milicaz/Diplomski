@@ -1,47 +1,89 @@
-import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import httpCommon from "../../../http-common";
+import eventBus from "../../../utils/eventBus";
 
-export const TipDogadjajaContext = createContext()
+export const TipDogadjajaContext = createContext();
 
 const TipDogadjajaContextProvider = (props) => {
+  const [tipoviDogadjaja, setTipoviDogadjaja] = useState([]);
 
-    const [tipoviDogadjaja, setTipoviDogadjaja] = useState([
-        // {id:'1', naziv: 'Eksterna aktivnost'},
-        // {id:'2', naziv: 'Interna aktivnost'},
-        // {id:'3', naziv: 'Kulturna stanica'}
-    ])
+  useEffect(() => {
+    getTipovi();
+  }, []);
 
-    useEffect(() => {
-        getTipovi();
-    }, [])
+  const sortedTipoviDogadjaja = tipoviDogadjaja.sort((a, b) => a.id - b.id);
 
-    const sortedTipoviDogadjaja = tipoviDogadjaja.sort((a, b) => a.id - b.id)
-
-    const getTipovi = async () => {
-        const {data} = await axios.get("http://localhost:8080/api/tipoviDogadjaja")
-        setTipoviDogadjaja(data)
+  const getTipovi = async () => {
+    try {
+      const { data } = await httpCommon.get("/tipoviDogadjaja");
+      setTipoviDogadjaja(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching tipova događaja: ", error);
+      }
     }
+  };
 
-    const addTip = async (addTip) => {
-        await axios.post("http://localhost:8080/api/tipoviDogadjaja", addTip)
-        getTipovi();
+  const addTip = async (addTip) => {
+    try {
+      await httpCommon.post("/tipoviDogadjaja", addTip);
+      getTipovi();
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom dodavanja tipa događaja: ", error);
+      }
     }
+  };
 
-    const editTip = async (id, editTip) => {
-        await axios.put(`http://localhost:8080/api/tipoviDogadjaja/${id}`, editTip)
-        getTipovi();
+  const editTip = async (id, editTip) => {
+    try {
+      await httpCommon.put(`/tipoviDogadjaja/${id}`, editTip);
+      getTipovi();
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom izmene tipa događaja: ", error);
+      }
     }
+  };
 
-    const deleteTip = async (id) => {
-        await axios.delete(`http://localhost:8080/api/tipoviDogadjaja/${id}`);
-        getTipovi();
+  const deleteTip = async (id) => {
+    try {
+      await httpCommon.delete(`/tipoviDogadjaja/${id}`);
+      getTipovi();
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom brisanja tipova događaja: ", error);
+      }
     }
+  };
 
-    return (
-        <TipDogadjajaContext.Provider value={{sortedTipoviDogadjaja, addTip, editTip, deleteTip}}>
-            {props.children}
-        </TipDogadjajaContext.Provider>
-    )
-}
+  return (
+    <TipDogadjajaContext.Provider
+      value={{ sortedTipoviDogadjaja, addTip, editTip, deleteTip }}
+    >
+      {props.children}
+    </TipDogadjajaContext.Provider>
+  );
+};
 
 export default TipDogadjajaContextProvider;

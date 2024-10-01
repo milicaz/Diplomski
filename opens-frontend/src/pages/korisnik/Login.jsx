@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import Select from "react-select";
 import httpCommon from "../../http-common";
+import eventBus from "../../utils/eventBus";
 
 const Login = () => {
   const [oprema, setOprema] = useState([]);
@@ -28,13 +29,31 @@ const Login = () => {
       }));
       setOptions(formattedOptions);
     } catch (error) {
-      console.error("Greška prilikom fetching posetioci:", error);
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching posetioci:", error);
+      }
     }
   };
 
   const fetchMestaPosete = async () => {
-    const { data } = await httpCommon.get("/mestaPosete");
-    setMestaPosete(data);
+    try {
+      const { data } = await httpCommon.get("/mestaPosete");
+      setMestaPosete(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching mesta posete: ", error);
+      }
+    }
   };
 
   const fetchOprema = async () => {
@@ -42,7 +61,14 @@ const Login = () => {
       const { data } = await httpCommon.get("/oprema/slobodna");
       setOprema(data);
     } catch (error) {
-      console.error("Greška prilikom fetching opreme:", error);
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching opreme:", error);
+      }
     }
   };
 
@@ -55,7 +81,18 @@ const Login = () => {
   };
 
   const addPosetu = async (newPoseta) => {
-    httpCommon.post("/posete", newPoseta);
+    try {
+      const response = await httpCommon.post("/posete", newPoseta);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška tokom kreiranja posete:", error);
+      }
+    }
   };
 
   const handleSubmit = (e) => {
@@ -68,7 +105,9 @@ const Login = () => {
         mestoPoseteID: mestoPoseteId,
       };
       addPosetu(posetaData);
-      window.location.reload();
+      setPosetilac(null);
+      setMestaPoseteId(null);
+      setSelectedOprema(null);
     } catch (error) {
       console.error("Greska tokom kreiranja posete:", error);
     }

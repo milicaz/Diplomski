@@ -17,7 +17,6 @@ const MestoDogadjajaList = () => {
 
   useEffect(() => {
     handleClose();
-    console.log("Handle close uradjen");
   }, [sortedMestaDogadjaja]);
 
   const indexOfLastMestoDogadjaja = currentPage * mestaDogadjajaPerPage;

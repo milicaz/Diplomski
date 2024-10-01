@@ -1,132 +1,244 @@
-import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import httpCommon from "../../http-common";
+import eventBus from "../../utils/eventBus";
 
 export const DogadjajContext = createContext();
 
 const DogadjajContextProvider = (props) => {
+  const [dogadjaji, setDogadjaji] = useState([]);
+  const [organizacijaId, setOrganizacijaId] = useState(null);
+  const [currentOrganizacija, setCurrentOrganizacija] = useState({
+    naziv: "",
+    odgovornaOsoba: "",
+    brojTelefona: "",
+    email: "",
+    delatnost: "",
+    opis: "",
+    link: "",
+  });
+  const [mestaDogadjaja, setMestaDogadjaja] = useState([]);
+  const [tipoviDogadjaja, setTipoviDogadjaja] = useState([]);
+  const [dogadjajId, setDogadjajId] = useState(null);
 
-
-    const [dogadjaji, setDogadjaji] = useState([])
-
-    const [organizacijaId, setOrganizacijaId] = useState(null)
-
-    const [currentOrganizacija, setCurrentOrganizacija] = useState({naziv: "", odgovornaOsoba: "", brojTelefona: "", email: "", delatnost: "", opis: "", link: ""})
-
-    const [mestaDogadjaja, setMestaDogadjaja] = useState([])
-
-    const [tipoviDogadjaja, setTipoviDogadjaja] = useState([])
-
-    const [dogadjajId, setDogadjajId] = useState(null)
-
-    useEffect(() => {
-        getDogadjaji();
-        getMesta();
-        getTipovi();
-        if (organizacijaId !== null) {
-            console.log("Organizacija id je: " + organizacijaId);
-          }
-          if(dogadjajId !== null){
-              console.log("Dogadjaj id je: " + dogadjajId);
-          }
-    }, [organizacijaId, currentOrganizacija, dogadjajId]);
-
-    const sortedDogadjaji = dogadjaji.sort((a, b) => a.id-b.id)
-
-    const getDogadjaji = async () => {
-        const { data } = await axios.get("http://localhost:8080/api/dogadjaji")
-        setDogadjaji(data)
+  useEffect(() => {
+    getDogadjaji();
+    getMesta();
+    getTipovi();
+    if (organizacijaId !== null) {
+      console.log("Organizacija id je: " + organizacijaId);
     }
-
-    const addOrganizacija = async (addOrg) => {
-        const response = await axios.post("http://localhost:8080/api/organizacije", addOrg)
-        setOrganizacijaId(response.data.id)
+    if (dogadjajId !== null) {
+      console.log("Dogadjaj id je: " + dogadjajId);
     }
+  }, [organizacijaId, currentOrganizacija, dogadjajId]);
 
-    const addDogadjaj = async (addDog) => {
-        const response = await axios.post("http://localhost:8080/api/dogadjaji", addDog)
-        // console.log("Dpgadjaj id je: " + JSON.stringify(response.data.id))
-        setDogadjajId(response.data.id)
-        getDogadjaji();
-        // setDogadjajId(null)
+  const sortedDogadjaji = dogadjaji.sort((a, b) => a.id - b.id);
+
+  const getDogadjaji = async () => {
+    try {
+      const { data } = await httpCommon.get("/dogadjaji");
+      setDogadjaji(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching događaja: ", error);
+      }
     }
+  };
 
-    const deleteDogadjaj = async (id) => {
-        const response = await axios.delete(`http://localhost:8080/api/dogadjaj/delete/${id}`)
-        getDogadjaji();
+  const addOrganizacija = async (addOrg) => {
+    try {
+      const response = await httpCommon.post("/organizacije", addOrg);
+      setOrganizacijaId(response.data.id);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom dodavanja organizacije: ", error);
+      }
     }
+  };
 
-    const editOrganizacija = async(id, editOrg) => {
-        await axios.put(`http://localhost:8080/api/organizacije/${id}`, editOrg)
+  const addDogadjaj = async (addDog) => {
+    try {
+      const response = await httpCommon.post("/dogadjaji", addDog);
+      setDogadjajId(response.data.id);
+      getDogadjaji();
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom dodavanja događaja: ", error);
+      }
     }
+  };
 
-    const getOrganizacijaById = async(id) => {
-        const response = await axios.get(`http://localhost:8080/api/organizacije/${id}`)
-        setCurrentOrganizacija(response.data)
+  const deleteDogadjaj = async (id) => {
+    try {
+      const response = await httpCommon.delete(`/dogadjaj/delete/${id}`);
+      getDogadjaji();
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom brisanja događaja: ", error);
+      }
     }
+  };
 
-    // const deleteDogadjaj = async(id) => {
-    //     await axios.put(`http://localhost:8080/api/dogadjaji/${id}`)
-    // }
-
-    const getMesta = async () => {
-        const { data } = await axios.get("http://localhost:8080/api/mestaDogadjaja");
-        setMestaDogadjaja(data)
+  const editOrganizacija = async (id, editOrg) => {
+    try {
+      await httpCommon.put(`/organizacije/${id}`, editOrg);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom izmene organizacije: ", error);
+      }
     }
+  };
 
-    const getTipovi = async() => {
-        const {data} = await axios.get("http://localhost:8080/api/tipoviDogadjaja")
-        setTipoviDogadjaja(data)
+  const getOrganizacijaById = async (id) => {
+    try {
+      const response = await httpCommon.get(`/organizacije/${id}`);
+      setCurrentOrganizacija(response.data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching organizacije po id: ", error);
+      }
     }
+  };
 
-    const dodajUcesnika = async(ucesnik, id) => {
-        await axios.post(`http://localhost:8080/api/ucesniciDogadjaja/${id}`, ucesnik)
+  const getMesta = async () => {
+    try {
+      const { data } = await httpCommon.get("/mestaDogadjaja");
+      setMestaDogadjaja(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching mesta događaja: ", error);
+      }
     }
+  };
 
-    const kreirajPDF = async(mesec, godina, id, ime, prezime) => {
-        try {
-
-        const response = await axios.get(`http://localhost:8080/api/dogadjajiView/${mesec}/${godina}/${id}`, {
-            params: {
-                ime: ime,
-                prezime: prezime
-            },
-            responseType: "blob"
-        })
-
-        // console.log(response.data)
-        // Create a blob object from the response data
-    const blob = new Blob([response.data], { type: 'application/pdf' });
-
-    // Create a URL for the blob
-    const url = window.URL.createObjectURL(blob);
-
-    // Create an anchor element
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'dogadjajireport.pdf');
-
-    // Append the link to the body
-    document.body.appendChild(link);
-
-    // Trigger the download
-    link.click();
-
-    // // Clean up
-    // document.body.removeChild(link);
-
-    link.parentNode.removeChild(link);
-        window.URL.revokeObjectURL(url);
-
-  } catch (error) {
-    console.error('Error downloading PDF:', error);
-  }
+  const getTipovi = async () => {
+    try {
+      const { data } = await httpCommon.get("/tipoviDogadjaja");
+      setTipoviDogadjaja(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching tipova događaja: ", error);
+      }
     }
+  };
 
-    return (
-        <DogadjajContext.Provider value={{sortedDogadjaji, addDogadjaj, addOrganizacija, editOrganizacija, organizacijaId, getOrganizacijaById, currentOrganizacija, mestaDogadjaja, tipoviDogadjaja, dogadjajId, dodajUcesnika, kreirajPDF, deleteDogadjaj}}>
-            {props.children}
-        </DogadjajContext.Provider>
-    )
-}
+  const dodajUcesnika = async (ucesnik, id) => {
+    try {
+      await httpCommon.post(`/ucesniciDogadjaja/${id}`, ucesnik);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom dodavanja ucesnika na događaj: ", error);
+      }
+    }
+  };
+
+  const kreirajPDF = async (mesec, godina, id, ime, prezime) => {
+    try {
+      const response = await httpCommon.get(
+        `/dogadjajiView/${mesec}/${godina}/${id}`,
+        {
+          params: {
+            ime: ime,
+            prezime: prezime,
+          },
+          responseType: "blob",
+        }
+      );
+      const blob = new Blob([response.data], { type: "application/pdf" });
+
+      const url = window.URL.createObjectURL(blob);
+
+      // Create an anchor element
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "dogadjajireport.pdf");
+
+      // Append the link to the body
+      document.body.appendChild(link);
+
+      // Trigger the download
+      link.click();
+
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Error downloading PDF:", error);
+      }
+    }
+  };
+
+  return (
+    <DogadjajContext.Provider
+      value={{
+        sortedDogadjaji,
+        addDogadjaj,
+        addOrganizacija,
+        editOrganizacija,
+        organizacijaId,
+        getOrganizacijaById,
+        currentOrganizacija,
+        mestaDogadjaja,
+        tipoviDogadjaja,
+        dogadjajId,
+        dodajUcesnika,
+        kreirajPDF,
+        deleteDogadjaj,
+      }}
+    >
+      {props.children}
+    </DogadjajContext.Provider>
+  );
+};
 
 export default DogadjajContextProvider;

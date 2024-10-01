@@ -14,6 +14,7 @@ import { FaRegFilePdf } from "react-icons/fa";
 import { RiFileExcel2Fill } from "react-icons/ri";
 
 import httpCommon from "../../http-common";
+import eventBus from "../../utils/eventBus";
 import Pagination from "../Pagination";
 import OmladinskiCentarTabelaItem from "./OmladinskiCentarTabelaItem";
 
@@ -58,13 +59,41 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
   };
 
   const fetchPosete = async () => {
-    const { data } = await httpCommon.get(`/posete/${mestoPoseteId}`);
-    setPosete(data);
+    try {
+      const { data } = await httpCommon.get(`/posete/${mestoPoseteId}`);
+      setPosete(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error(
+          "Greška prilikom fetching poseta po mestu posete: ",
+          error
+        );
+      }
+    }
   };
 
   const fetchLogo = async () => {
-    const { data } = await httpCommon.get("/logoi");
-    setLogos(data);
+    try {
+      const { data } = await httpCommon.get("/logoi");
+      setLogos(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error(
+          "An error occurred while fetching tipove opreme: ",
+          error
+        );
+      }
+    }
   };
 
   useEffect(() => {
@@ -262,8 +291,15 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
 
       setDownloading(false);
     } catch (error) {
-      console.error("Error downloading PDF:", error);
-      setDownloading(false);
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Error downloading PDF:", error);
+        setDownloading(false);
+      }
     }
   };
 
@@ -305,7 +341,14 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
         link.parentNode.removeChild(link);
         window.URL.revokeObjectURL(url);
       } catch (error) {
-        console.error("Error downloading PDF:", error);
+        if (
+          error.response &&
+          (error.response.status === 401 || error.response.status === 400)
+        ) {
+          eventBus.dispatch("logout");
+        } else {
+          console.error("Error downloading PDF:", error);
+        }
       }
     }, 2000);
   };

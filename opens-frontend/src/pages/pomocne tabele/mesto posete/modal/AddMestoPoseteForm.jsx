@@ -53,7 +53,7 @@ const AddMestoPoseteForm = () => {
             min={1}
             step={1}
             required
-            isInvalid={validated && (!ukupanBrojMesta || ukupanBrojMesta <=0)}
+            isInvalid={validated && (!ukupanBrojMesta || ukupanBrojMesta <= 0)}
           />
           <Form.Control.Feedback type="invalid">
             Unesite ukupan broj mesta.

@@ -1,18 +1,29 @@
 import React, { useContext, useEffect, useState } from "react";
-import { OpremaContext } from "../OpremaContext";
-import httpCommon from "../../../../http-common";
 import { Button, Form, Toast } from "react-bootstrap";
+import httpCommon from "../../../../http-common";
+import eventBus from "../../../../utils/eventBus";
+import { OpremaContext } from "../OpremaContext";
 
 export const AddOpremaForm = () => {
   const { addOpremu } = useContext(OpremaContext);
 
   const [validated, setValidated] = useState(false);
-
   const [tipoviOpreme, setTipoveOpreme] = useState([]);
 
   const fetchTipoveOpreme = async () => {
-    const { data } = await httpCommon.get("/tipoviOpreme");
-    setTipoveOpreme(data);
+    try {
+      const { data } = await httpCommon.get("/tipoviOpreme");
+      setTipoveOpreme(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching tipove opreme: ", error);
+      }
+    }
   };
 
   useEffect(() => {

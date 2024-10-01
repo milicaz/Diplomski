@@ -44,7 +44,9 @@ export const Obavestenja = ({ obavestenje }) => {
             {new Date(obavestenje.krajPrikazivanja).toLocaleDateString("sr-SR")}
           </Card.Subtitle>
           {isTruncated ? (
-            <ReactMarkdown>{obavestenje.tekst.slice(0,200)+'...'}</ReactMarkdown>
+            <ReactMarkdown>
+              {obavestenje.tekst.slice(0, 200) + "..."}
+            </ReactMarkdown>
           ) : (
             <ReactMarkdown>{obavestenje.tekst}</ReactMarkdown>
           )}

@@ -2,13 +2,28 @@ import "chart.js/auto";
 import React, { useCallback, useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import httpCommon from "../../http-common";
+import eventBus from "../../utils/eventBus";
 
 export const AdminMesecnePoseteCoworking = ({ mestoPoseteId }) => {
   const [mesecnePosete, setMesecnePosete] = useState([]);
 
   const fetchMesecnePosete = useCallback(async () => {
-    const { data } = await httpCommon.get(`/admin/${mestoPoseteId}`);
-    setMesecnePosete(data);
+    try {
+      const { data } = await httpCommon.get(`/admin/${mestoPoseteId}`);
+      setMesecnePosete(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error(
+          "An error occurred while fetching mesecne posete: ",
+          error
+        );
+      }
+    }
   }, [mestoPoseteId, setMesecnePosete]);
 
   useEffect(() => {

@@ -21,7 +21,9 @@ export const ObavestenjaList = () => {
     handleClose();
   }, [sortedObavestenja]);
 
-  const sortPoPrioritetu = [...sortedObavestenja].sort((a,b) => b.prioritet - a.prioritet);
+  const sortPoPrioritetu = [...sortedObavestenja].sort(
+    (a, b) => b.prioritet - a.prioritet
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(6);
@@ -45,27 +47,27 @@ export const ObavestenjaList = () => {
         <div className="row">
           <div className="col-sm-6">
             {/* {sortPoPrioritetu && shouldShowPagination && ( */}
-              <div className="row align-items-center mb-3">
-                <div className="col-auto pe-0">
-                  <span>Prikaži</span>
-                </div>
-                <div className="col-auto">
-                  <Form.Select
-                    name="limit"
-                    value={limit}
-                    onChange={(e) => onInputChange(e)}
-                    style={{ width: "100%" }}
-                  >
-                    <option value="6">6</option>
-                    <option value="9">9</option>
-                    <option value="12">12</option>
-                    <option value="15">15</option>
-                  </Form.Select>
-                </div>
-                <div className="col-auto ps-0">
-                  <span>unosa</span>
-                </div>
+            <div className="row align-items-center mb-3">
+              <div className="col-auto pe-0">
+                <span>Prikaži</span>
               </div>
+              <div className="col-auto">
+                <Form.Select
+                  name="limit"
+                  value={limit}
+                  onChange={(e) => onInputChange(e)}
+                  style={{ width: "100%" }}
+                >
+                  <option value="6">6</option>
+                  <option value="9">9</option>
+                  <option value="12">12</option>
+                  <option value="15">15</option>
+                </Form.Select>
+              </div>
+              <div className="col-auto ps-0">
+                <span>unosa</span>
+              </div>
+            </div>
             {/* )} */}
           </div>
           <div className="col-sm-6">
@@ -99,13 +101,13 @@ export const ObavestenjaList = () => {
       )}
 
       {/* {sortPoPrioritetu && shouldShowPagination && ( */}
-        <Pagination
-          pages={totalPagesNumber}
-          setCurrentPage={setCurrentPage}
-          array={sortedObavestenja}
-          limit={limit}
-          maxVisibleButtons={3}
-        />
+      <Pagination
+        pages={totalPagesNumber}
+        setCurrentPage={setCurrentPage}
+        array={sortedObavestenja}
+        limit={limit}
+        maxVisibleButtons={3}
+      />
       {/* )} */}
 
       <Modal show={show} onHide={handleClose} centered>

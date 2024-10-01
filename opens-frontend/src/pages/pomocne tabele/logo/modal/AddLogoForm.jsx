@@ -16,7 +16,7 @@ const AddLogoForm = () => {
       const uploadedLogo = await addLogo(file);
       console.log("Logo je uspešno sačuvan:", uploadedLogo);
     } catch (error) {
-        console.log("Logo nije sačuvan!");
+      console.log("Logo nije sačuvan!");
     }
   };
 

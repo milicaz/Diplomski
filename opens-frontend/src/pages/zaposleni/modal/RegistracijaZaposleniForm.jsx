@@ -1,14 +1,11 @@
 import { useContext, useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
-import { ZaposleniContext } from "../ZaposleniContext";
-import axios from "axios";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { ZaposleniContext } from "../ZaposleniContext";
 
-const RegistracijaZaposleniForm = ({handleClose}) => {
-
-    const {uloga} = useContext(ZaposleniContext)
-    const {registracija} = useContext(ZaposleniContext)
-
+const RegistracijaZaposleniForm = ({ handleClose }) => {
+  const { uloga } = useContext(ZaposleniContext);
+  const { registracija } = useContext(ZaposleniContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,24 +19,6 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [emailValid, setEmailValid] = useState(true); // State variable to track email validity
-
-  // const r = [
-  //   {id: 1, naziv: 'ZENSKO'},
-  //   {id: 2, naziv: "MUSKO"},
-  //   {id: 3, naziv: "DRUGO"},
-  // ];
-
-  // const u = [
-  //   {id: 1, naziv: 'admin'},
-  //   {id: 2, naziv: "dogadjaj_admin"},
-  //   {id: 3, naziv: "super_admin"},
-  // ]
-
-  // const handleUlogeChange = (e) => {
-  //   const selectedOptions = e.target.selectedOptions;
-  //   const selectedValues = Array.from(selectedOptions, option => option.value);
-  //   setUloge(new Set(selectedValues)); // Update uloge with a Set of selected values
-  // };
 
   const r = [
     { id: 1, naziv: "ZENSKO" },
@@ -92,7 +71,6 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
   };
 
   const handleRegistracija = async (event) => {
-    
     event.preventDefault();
 
     if (!emailValid) {
@@ -100,15 +78,18 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
       return;
     }
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     // Check if password matches complexity criteria
     if (!passwordRegex.test(password)) {
-        // Password does not meet complexity criteria
-        alert("Lozinka mora sadržati najmanje 8 karaktera, barem jedno veliko slovo, jedan broj i jedan poseban znak(@$!%*?&).");
-        return;
+      // Password does not meet complexity criteria
+      alert(
+        "Lozinka mora sadržati najmanje 8 karaktera, barem jedno veliko slovo, jedan broj i jedan poseban znak(@$!%*?&)."
+      );
+      return;
     }
-    
+
     const zaposleniDTO = {
       email,
       password,
@@ -127,7 +108,7 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
       //   zaposleniDTO
       // );
 
-      registracija(zaposleniDTO)
+      registracija(zaposleniDTO);
       // console.log(response.data); // Log success message or handle accordingly
       handleClose();
       // Optionally, redirect to another page or show success message
@@ -165,16 +146,19 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
       </Form.Group>
       <br />
       <Form.Group>
-      <InputGroup>
-        <Form.Control
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type={showPassword ? "text" : "password"} // Toggle password visibility
-          aria-describedby="passwordHelpBlock"
-          placeholder="Lozinka"
-          required
-        />
-        <InputGroup.Text onClick={handleTogglePasswordVisibility} style={{ cursor: "pointer" }}>
+        <InputGroup>
+          <Form.Control
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type={showPassword ? "text" : "password"} // Toggle password visibility
+            aria-describedby="passwordHelpBlock"
+            placeholder="Lozinka"
+            required
+          />
+          <InputGroup.Text
+            onClick={handleTogglePasswordVisibility}
+            style={{ cursor: "pointer" }}
+          >
             {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
           </InputGroup.Text>
         </InputGroup>
@@ -247,11 +231,17 @@ const RegistracijaZaposleniForm = ({handleClose}) => {
         </Form.Control>
       </Form.Group> */}
       <Form.Group>
-        
-        <Form.Control as="select" value={rod} onChange={(e) => setRod(e.target.value)} required>
+        <Form.Control
+          as="select"
+          value={rod}
+          onChange={(e) => setRod(e.target.value)}
+          required
+        >
           <option value="">Izaberite rod</option>
           {Object.entries(rodMapping).map(([key, value]) => (
-            <option key={key} value={key}>{value}</option> // Send server value, display friendly name
+            <option key={key} value={key}>
+              {value}
+            </option> // Send server value, display friendly name
           ))}
         </Form.Control>
       </Form.Group>

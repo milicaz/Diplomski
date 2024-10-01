@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { MdDelete, MdEdit } from "react-icons/md";
-import { TipOprContext } from "./TipOprContext";
 import { Button, Modal } from "react-bootstrap";
+import { MdDelete, MdEdit } from "react-icons/md";
 import DeleteTipOpremeForm from "./modal/DeleteTipOpremeForm";
 import EditTipOpremeForm from "./modal/EditTipOpremeForm";
+import { TipOprContext } from "./TipOprContext";
 
 const TipOpr = ({ tipOpreme }) => {
   const { deleteTipOpreme } = useContext(TipOprContext);
@@ -51,7 +51,10 @@ const TipOpr = ({ tipOpreme }) => {
           <DeleteTipOpremeForm tipOpreme={tipOpreme} />
         </Modal.Body>
         <Modal.Footer>
-          <Button className="btn btn-danger" onClick={() => deleteTipOpreme(tipOpreme.id)}>
+          <Button
+            className="btn btn-danger"
+            onClick={() => deleteTipOpreme(tipOpreme.id)}
+          >
             Obriši
           </Button>
           <Button variant="secondary" onClick={handleCloseDelete}>

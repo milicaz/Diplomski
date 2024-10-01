@@ -2,10 +2,8 @@ package com.opens.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Set;
 
-import com.opens.model.Organizacija;
 import com.opens.model.Ucesnik;
 
 public class DogadjajDTO {

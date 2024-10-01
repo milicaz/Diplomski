@@ -2,6 +2,7 @@ import "chart.js/auto";
 import React, { useCallback, useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import httpCommon from "../http-common";
+import eventBus from "../utils/eventBus";
 import { AdminGodisnjeAktivnosti, AdminMesecnePosete } from "./admin dashboard";
 
 export const Home = () => {
@@ -11,24 +12,71 @@ export const Home = () => {
   const [mestaPosete, setMestaPosete] = useState([]);
 
   const fetchPoseteCount = async () => {
-    const { data } = await httpCommon.get("/admin/posete");
-    setPosete(data);
+    try {
+      const { data } = await httpCommon.get("/admin/posete");
+      setPosete(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching broja poseta: ", error);
+      }
+    }
   };
 
   const fetchUcesniciCount = async () => {
-    const { data } = await httpCommon.get("/admin/ucesnici");
-    setUcesnici(data);
+    try {
+      const { data } = await httpCommon.get("/admin/ucesnici");
+      setUcesnici(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching broja ucesnika: ", error);
+      }
+    }
   };
 
   const currentYear = new Date().getFullYear();
   const fetchDogadjaji = useCallback(async () => {
-    const { data } = await httpCommon.get(`/admin/dogadjaji/${currentYear}`);
-    setDogadjaji(data);
+    try {
+      const { data } = await httpCommon.get(`/admin/dogadjaji/${currentYear}`);
+      setDogadjaji(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error(
+          "Greška prilikom fetching broja događaja za tekucu godinu: ",
+          error
+        );
+      }
+    }
   }, [currentYear, setDogadjaji]);
 
   const fetchMestaPosete = async () => {
-    const { data } = await httpCommon.get("/mestaPosete");
-    setMestaPosete(data);
+    try {
+      const { data } = await httpCommon.get("/mestaPosete");
+      setMestaPosete(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching mesta posete: ", error);
+      }
+    }
   };
 
   useEffect(() => {

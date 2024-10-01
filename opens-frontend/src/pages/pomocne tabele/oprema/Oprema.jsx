@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { OpremaContext } from "./OpremaContext";
-import { MdDelete, MdEdit } from "react-icons/md";
 import { Button, Modal } from "react-bootstrap";
-import EditOpremaForm from "./modal/EditOpremaForm";
+import { MdDelete, MdEdit } from "react-icons/md";
 import DeleteOpremaForm from "./modal/DeleteOpremaForm";
+import EditOpremaForm from "./modal/EditOpremaForm";
+import { OpremaContext } from "./OpremaContext";
 
 export const Oprema = ({ oprema }) => {
   const { deleteOpremu } = useContext(OpremaContext);

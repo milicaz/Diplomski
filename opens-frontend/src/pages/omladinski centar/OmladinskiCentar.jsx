@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import httpCommon from "../../http-common";
 import { Tab, Tabs } from "react-bootstrap";
+import httpCommon from "../../http-common";
+import eventBus from "../../utils/eventBus";
 import OmladinskiCentarTabela from "./OmladinskiCentarTabela";
 import OmladinskiCentarTrenutno from "./OmladinskiCentarTrenutno";
 
@@ -12,8 +13,16 @@ export const OmladinskiCentar = () => {
   }, []);
 
   const fetchMestaPosete = async () => {
-    const { data } = await httpCommon.get("/mestaPosete");
-    setMestaPosete(data);
+    try {
+      const { data } = await httpCommon.get("/mestaPosete");
+      setMestaPosete(data);
+    } catch (error) {
+      if (error.response && (error.response.status === 401 || error.response.status === 400)) {
+        eventBus.dispatch("logout");
+    } else {
+        console.error("Greška prilikom fetching mesta posete: ", error);
+    }
+    }
   };
 
   const getTabColorClass = (index) => {

@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import httpCommon from "../../../http-common";
+import eventBus from "../../../utils/eventBus";
 
 export const OpremaContext = createContext();
 
@@ -10,30 +11,71 @@ const OpremaContextProvider = (props) => {
     fetchOpremu();
   }, []);
 
-  const sortedOprema = oprema.length > 0 ? oprema.sort((a, b) => (a.id < b.id ? -1 : 1)) : [];
+  const sortedOprema =
+    oprema.length > 0 ? oprema.sort((a, b) => (a.id < b.id ? -1 : 1)) : [];
 
-  //react axios get method
   const fetchOpremu = async () => {
-    const { data } = await httpCommon.get("/oprema");
-    setOprema(data);
+    try {
+      const { data } = await httpCommon.get("/oprema");
+      setOprema(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching opreme: ", error);
+      }
+    }
   };
 
-  //react axios post method
   const addOpremu = async (newOprema) => {
-    await httpCommon.post("/oprema", newOprema);
-    fetchOpremu();
+    try {
+      await httpCommon.post("/oprema", newOprema);
+      fetchOpremu();
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom dodavanja opreme: ", error);
+      }
+    }
   };
 
-  //react axios put method
   const editOpremu = async (id, updatedOprema) => {
-    await httpCommon.put(`/oprema/${id}`, updatedOprema);
-    fetchOpremu();
+    try {
+      await httpCommon.put(`/oprema/${id}`, updatedOprema);
+      fetchOpremu();
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom izmene opreme: ", error);
+      }
+    }
   };
 
-  // react axios delete method
   const deleteOpremu = async (id) => {
-    await httpCommon.delete(`/oprema/${id}`);
-    fetchOpremu();
+    try {
+      await httpCommon.delete(`/oprema/${id}`);
+      fetchOpremu();
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom brisanja opreme: ", error);
+      }
+    }
   };
 
   return (

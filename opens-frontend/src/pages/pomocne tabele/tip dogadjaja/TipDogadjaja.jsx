@@ -1,27 +1,25 @@
 import { useContext, useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { MdDelete, MdEdit } from "react-icons/md";
-import EditTipDogadjajaForm from "./modal/EditTipDogadjajaForm";
-import DeleteMestoDogadjajaForm from "../mesto dogadjaja/modal/DeleteMestoDogadjajaForm";
 import { TipDogadjajaContext } from "./TipDogadjajaContext";
 import DeleteTipDogadjajaForm from "./modal/DeleteTipDogadjajaForm";
+import EditTipDogadjajaForm from "./modal/EditTipDogadjajaForm";
 
 const TipDogadjaja = ({ tipDogadjaja }) => {
+  const { deleteTip } = useContext(TipDogadjajaContext);
 
-  const {deleteTip} = useContext(TipDogadjajaContext)
+  const [showEdit, setShowEdit] = useState(false);
+  const handleShowEdit = () => setShowEdit(true);
+  const handleCloseEdit = () => setShowEdit(false);
 
-  const [showEdit, setShowEdit] = useState(false)
-  const handleShowEdit = () => setShowEdit(true)
-  const handleCloseEdit = () => setShowEdit(false)
-
-  const [showDelete, setShowDelete] = useState(false)
-  const handleShowDelete = () => setShowDelete(true)
-  const handleCloseDelete = () => setShowDelete(false)
+  const [showDelete, setShowDelete] = useState(false);
+  const handleShowDelete = () => setShowDelete(true);
+  const handleCloseDelete = () => setShowDelete(false);
 
   useEffect(() => {
     handleCloseDelete();
     handleCloseEdit();
-  }, [tipDogadjaja])
+  }, [tipDogadjaja]);
 
   return (
     <>
@@ -40,19 +38,22 @@ const TipDogadjaja = ({ tipDogadjaja }) => {
           <Modal.Title>Izmeni tip događaja</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <EditTipDogadjajaForm currentTip = {tipDogadjaja}/>
+          <EditTipDogadjajaForm currentTip={tipDogadjaja} />
         </Modal.Body>
       </Modal>
 
-      <Modal show = {showDelete} onHide={handleCloseDelete} centered>
+      <Modal show={showDelete} onHide={handleCloseDelete} centered>
         <Modal.Header closeButton>
           <Modal.Title>Obriši tip događaja</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <DeleteTipDogadjajaForm deleteTipDogadjaja = {tipDogadjaja}/>
+          <DeleteTipDogadjajaForm deleteTipDogadjaja={tipDogadjaja} />
         </Modal.Body>
         <Modal.Footer>
-          <Button className="btn btn-danger" onClick={() => deleteTip(tipDogadjaja.id)}>
+          <Button
+            className="btn btn-danger"
+            onClick={() => deleteTip(tipDogadjaja.id)}
+          >
             Obriši
           </Button>
           <Button variant="secondary" onClick={handleCloseDelete}>

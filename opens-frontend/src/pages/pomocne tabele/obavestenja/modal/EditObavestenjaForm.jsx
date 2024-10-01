@@ -94,19 +94,6 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="tekst">
-          {/* <Form.Control
-            as="textarea"
-            placeholder="Tekst obaveštenja *"
-            name="tekst"
-            value={tekst}
-            rows={10}
-            onChange={(e) => setTekst(e.target.value)}
-            required
-            isInvalid={validated && !tekst}
-          />
-          <Form.Control.Feedback type="invalid">
-            Unesite tekst obaveštenja.
-          </Form.Control.Feedback> */}
           <ReactQuill
             value={tekst}
             onChange={(value) => setTekst(value)}

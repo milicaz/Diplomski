@@ -1,18 +1,18 @@
 import { useContext, useState } from "react";
-import { MestoDogadjajaContext } from "../MestoDogadjajaContext";
 import { Button, Form } from "react-bootstrap";
+import { MestoDogadjajaContext } from "../MestoDogadjajaContext";
 
 const EditMestoDogadjajaForm = ({ currentMesto }) => {
   const { editMestoDogadjaja } = useContext(MestoDogadjajaContext);
 
-  const [mesto, setMesto] = useState({nazivSale: currentMesto.nazivSale})
+  const [mesto, setMesto] = useState({ nazivSale: currentMesto.nazivSale });
 
   const id = currentMesto.id;
 
   const handleChange = (event) => {
-    const {name, value} = event.target
-    setMesto({...mesto, [name]: value})
-  }
+    const { name, value } = event.target;
+    setMesto({ ...mesto, [name]: value });
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();

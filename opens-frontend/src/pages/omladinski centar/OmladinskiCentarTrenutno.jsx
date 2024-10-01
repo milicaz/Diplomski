@@ -14,6 +14,7 @@ import { BiGame, BiSolidJoystick } from "react-icons/bi";
 import { FaHeadphones, FaLaptop } from "react-icons/fa";
 import { FaComputerMouse } from "react-icons/fa6";
 import httpCommon from "../../http-common";
+import eventBus from "../../utils/eventBus";
 import Pagination from "../Pagination";
 
 export const OmladinskiCentarTrenutno = ({
@@ -33,15 +34,40 @@ export const OmladinskiCentarTrenutno = ({
   const [limit, setLimit] = useState(15);
 
   const fetchTrenutno = useCallback(async () => {
-    const { data } = await httpCommon.get(
-      `/posete/${mestoPoseteId}/datumPosete`
-    );
-    setTrenutno(data);
+    try {
+      const { data } = await httpCommon.get(
+        `/posete/${mestoPoseteId}/datumPosete`
+      );
+      setTrenutno(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error(
+          "Greška prilikom fetching trenutnih poseta za mesta posete: ",
+          error
+        );
+      }
+    }
   }, [setTrenutno, mestoPoseteId]);
 
   const fetchTipoviOpreme = useCallback(async () => {
-    const { data } = await httpCommon.get("/tipoviOpreme");
-    setTipoviOpreme(data);
+    try {
+      const { data } = await httpCommon.get("/tipoviOpreme");
+      setTipoviOpreme(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching tipova opreme: ", error);
+      }
+    }
   }, [setTipoviOpreme]);
 
   useEffect(() => {
@@ -55,7 +81,14 @@ export const OmladinskiCentarTrenutno = ({
       fetchTrenutno();
       fetchTipoviOpreme();
     } catch (error) {
-      console.error("Error:", error);
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Error:", error);
+      }
     }
   };
 
@@ -65,7 +98,14 @@ export const OmladinskiCentarTrenutno = ({
       fetchTrenutno();
       fetchTipoviOpreme();
     } catch (error) {
-      console.error("Error:", error);
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Error:", error);
+      }
     }
   };
 

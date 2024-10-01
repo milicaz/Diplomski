@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { ZaposleniContext } from "../ZaposleniContext";
 import { Button, Form } from "react-bootstrap";
-import axios from "axios";
+import httpCommon from "../../../http-common";
+import eventBus from "../../../utils/eventBus";
+import { ZaposleniContext } from "../ZaposleniContext";
 
 const EditZaposleniForm = ({ currentZaposleni }) => {
   const { editZaposleni } = useContext(ZaposleniContext);
@@ -38,13 +39,19 @@ const EditZaposleniForm = ({ currentZaposleni }) => {
   };
 
   useEffect(() => {
-    // Fetch available roles when the component mounts
-    axios
-      .get("http://localhost:8080/api/uloge") // Replace with your actual endpoint for roles
-      .then((response) => {
-        setAvailableRoles(response.data); // Assuming the response data is an array of roles
-      })
-      .catch((error) => console.error("Error fetching roles:", error));
+    httpCommon.get("/uloge").then(
+      (response) => {
+        setAvailableRoles(response.data);
+      },
+      (error) => {
+        if (
+          error.response &&
+          (error.response.status === 401 || error.response.status === 400)
+        ) {
+          eventBus.dispatch("logout");
+        }
+      }
+    );
   }, []);
 
   const id = currentZaposleni.id;

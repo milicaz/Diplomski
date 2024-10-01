@@ -10,6 +10,7 @@ import {
   Row,
 } from "react-bootstrap";
 import httpCommon from "../../http-common";
+import eventBus from "../../utils/eventBus";
 
 export const NeodjavljenePoseteTabela = () => {
   const [neodjavljene, setNeodjavljene] = useState([]);
@@ -18,14 +19,20 @@ export const NeodjavljenePoseteTabela = () => {
     const fetchNeodjavljenePosete = async () => {
       try {
         const response = await httpCommon.get("/posete/neodjavljene");
-        if (response.status === 200) {
-          setNeodjavljene(response.data);
-        } else {
-          throw new Error("Greška tokom fetch-ovanja neodjavljenih posete");
-        }
+        setNeodjavljene(response.data);
       } catch (error) {
-        console.error(error);
-        setNeodjavljene([]);
+        // Handle errors, checking for logout conditions
+        if (
+          error.response &&
+          (error.response.status === 401 || error.response.status === 400)
+        ) {
+          eventBus.dispatch("logout");
+        } else {
+          console.error(
+            "Greška prilikom fetching neodjavljane posete: ",
+            error
+          );
+        }
       }
     };
     fetchNeodjavljenePosete();
@@ -38,7 +45,14 @@ export const NeodjavljenePoseteTabela = () => {
         prevNeodjavljene.filter((poseta) => poseta.id !== id)
       );
     } catch (error) {
-      console.error("Error:", error);
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Error:", error);
+      }
     }
   };
 

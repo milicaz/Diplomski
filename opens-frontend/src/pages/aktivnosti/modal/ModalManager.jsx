@@ -2,7 +2,6 @@ import { useState } from "react";
 import DogadjajList from "../DogadjajList";
 import AddOrganizacijaForm from "./AddOrganizacijaForm";
 
-
 const ModalManager = () => {
   const [showOrg, setShowOrg] = useState(false);
 
@@ -11,7 +10,11 @@ const ModalManager = () => {
 
   return (
     <>
-      <DogadjajList handleShowOrg={handleShowOrg} showOrg={showOrg} handleCloseOrg={handleCloseOrg} />
+      <DogadjajList
+        handleShowOrg={handleShowOrg}
+        showOrg={showOrg}
+        handleCloseOrg={handleCloseOrg}
+      />
       <AddOrganizacijaForm handleCloseOrg={handleCloseOrg} showOrg={showOrg} />
     </>
   );

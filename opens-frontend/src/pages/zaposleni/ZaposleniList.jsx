@@ -1,45 +1,41 @@
-import { useContext, useEffect, useState } from "react"
-import { ZaposleniContext } from "./ZaposleniContext"
-import Zaposleni from "./Zaposleni";
-import Pagination from "../Pagination";
+import { useContext, useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
+import Pagination from "../Pagination";
 import RegistracijaZaposleniForm from "./modal/RegistracijaZaposleniForm";
+import Zaposleni from "./Zaposleni";
+import { ZaposleniContext } from "./ZaposleniContext";
 
 const ZaposleniList = () => {
+  const { sortedZaposleni } = useContext(ZaposleniContext);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [zaposleniPerPage, setZaposleniPerPage] = useState(10);
 
-    const {sortedZaposleni} = useContext(ZaposleniContext);
+  const [show, setShow] = useState(false);
+  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [zaposleniPerPage, setZaposleniPerPage] = useState(10);
+  useEffect(() => {
+    handleClose();
+  }, [sortedZaposleni]);
 
-    const [show, setShow] = useState(false)
-    const handleShow = () => setShow(true)
-    const handleClose = () => setShow(false)
+  const indexOfLastZaposleni = currentPage * zaposleniPerPage;
+  const indexOfFirstZaposleni = indexOfLastZaposleni - zaposleniPerPage;
+  // console.log("Sorted zaposleni: " + sortedZaposleni)
+  const currentZaposleni = sortedZaposleni.slice(
+    indexOfFirstZaposleni,
+    indexOfLastZaposleni
+  );
 
-    useEffect(() => {
-      handleClose();
-    }, [sortedZaposleni]);
+  const totalPagesNumber = Math.ceil(sortedZaposleni.length / zaposleniPerPage);
 
-    const indexOfLastZaposleni = currentPage * zaposleniPerPage;
-    const indexOfFirstZaposleni = indexOfLastZaposleni - zaposleniPerPage;
-    // console.log("Sorted zaposleni: " + sortedZaposleni)
-    const currentZaposleni = sortedZaposleni.slice(
-        indexOfFirstZaposleni,
-        indexOfLastZaposleni
-    );
+  const onInputChange = (e) => {
+    setZaposleniPerPage(e.target.value);
+  };
 
-    const totalPagesNumber = Math.ceil(
-        sortedZaposleni.length / zaposleniPerPage
-    );
-
-    const onInputChange = (e) => {
-        setZaposleniPerPage(e.target.value);
-      };
-
-    return (
-        <>
-        <div className="table-title">
+  return (
+    <>
+      <div className="table-title">
         <div className="row">
           <div className="col-sm-6">
             <div className="row align-items-center mb-3">
@@ -75,7 +71,7 @@ const ZaposleniList = () => {
           </div>
         </div>
       </div>
-        <div>
+      <div>
         <table className="image-table">
           <thead>
             <tr>
@@ -91,31 +87,33 @@ const ZaposleniList = () => {
             </tr>
           </thead>
           <tbody>
-          {currentZaposleni.map((zaposleni) => (
-            <tr key={zaposleni.id}>
-              <Zaposleni zaposleni={zaposleni} />
-            </tr>
-          ))}
+            {currentZaposleni.map((zaposleni) => (
+              <tr key={zaposleni.id}>
+                <Zaposleni zaposleni={zaposleni} />
+              </tr>
+            ))}
           </tbody>
         </table>
 
-        <Pagination pages={totalPagesNumber}
+        <Pagination
+          pages={totalPagesNumber}
           setCurrentPage={setCurrentPage}
           array={sortedZaposleni}
           limit={zaposleniPerPage}
-          maxVisibleButtons={3} />
+          maxVisibleButtons={3}
+        />
 
         <Modal show={show} onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Registracija zaposlenog</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <RegistracijaZaposleniForm handleClose = {handleClose}/>
-        </Modal.Body>
-      </Modal>
+          <Modal.Header closeButton>
+            <Modal.Title>Registracija zaposlenog</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <RegistracijaZaposleniForm handleClose={handleClose} />
+          </Modal.Body>
+        </Modal>
       </div>
-      </>
-    )
-}
+    </>
+  );
+};
 
 export default ZaposleniList;

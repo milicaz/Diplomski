@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import httpCommon from "../../../http-common";
+import eventBus from "../../../utils/eventBus";
 
 export const TipOprContext = createContext();
 
@@ -15,28 +16,68 @@ const TipOprContextProvider = (props) => {
       ? tipoviOpreme.sort((a, b) => (a.id < b.id ? -1 : 1))
       : [];
 
-  //react axios get method
   const fetchTipoveOpreme = async () => {
-    const { data } = await httpCommon.get("/tipoviOpreme");
-    setTipoviOpreme(data);
+    try {
+      const { data } = await httpCommon.get("/tipoviOpreme");
+      setTipoviOpreme(data);
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom fetching tipova opreme: ", error);
+      }
+    }
   };
 
-  //react axios post method
   const addTipOpreme = async (newTipOpreme) => {
-    await httpCommon.post("/tipoviOpreme", newTipOpreme);
-    fetchTipoveOpreme();
+    try {
+      await httpCommon.post("/tipoviOpreme", newTipOpreme);
+      fetchTipoveOpreme();
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom dodavanja tipa opreme: ", error);
+      }
+    }
   };
 
-  //react axios put method
   const editTipOpreme = async (id, updatedTipOpreme) => {
-    await httpCommon.put(`/tipoviOpreme/${id}`, updatedTipOpreme);
-    fetchTipoveOpreme();
+    try {
+      await httpCommon.put(`/tipoviOpreme/${id}`, updatedTipOpreme);
+      fetchTipoveOpreme();
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom izmene tipa opreme: ", error);
+      }
+    }
   };
 
-  // react axios delete method
   const deleteTipOpreme = async (id) => {
-    await httpCommon.delete(`/tipoviOpreme/${id}`);
-    fetchTipoveOpreme();
+    try {
+      await httpCommon.delete(`/tipoviOpreme/${id}`);
+      fetchTipoveOpreme();
+    } catch (error) {
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 400)
+      ) {
+        eventBus.dispatch("logout");
+      } else {
+        console.error("Greška prilikom brisanja tipa opreme: ", error);
+      }
+    }
   };
 
   return (

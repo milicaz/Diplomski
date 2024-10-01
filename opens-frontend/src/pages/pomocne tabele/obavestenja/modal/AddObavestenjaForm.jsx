@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { ObavestenjeContext } from "../ObavestenjaContext";
-import TurndownService from "turndown";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import React Quill's CSS
+import TurndownService from "turndown";
+import { ObavestenjeContext } from "../ObavestenjaContext";
 
 export const AddObavestenjaForm = () => {
   const { addObavestenje } = useContext(ObavestenjeContext);
@@ -90,19 +90,6 @@ export const AddObavestenjaForm = () => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-3" controlId="tekst">
-          {/* <Form.Control
-            as="textarea"
-            placeholder="Tekst obaveštenja *"
-            name="tekst"
-            value={tekst}
-            rows={10}
-            onChange={(e) => onInputChange(e)}
-            required
-            isInvalid={validated && !tekst}
-          />
-          <Form.Control.Feedback type="invalid">
-            Unesite tekst obaveštenja.
-          </Form.Control.Feedback> */}
           <ReactQuill
             value={tekst}
             onChange={handleQuillChange}
