@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import httpCommon from "../../http-common";
 import eventBus from "../../utils/eventBus";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const Registracija = () => {
   const [email, setEmail] = useState("");
@@ -12,6 +13,10 @@ const Registracija = () => {
   const [godine, setGodine] = useState("");
   const [mestoBoravista, setMestoBoravista] = useState("");
   const [brojTelefona, setBrojTelefona] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailValid, setEmailValid] = useState(true); // State variable to track email validity
+  const [passwordValid, setPasswordValid] = useState(true);
 
   const r = [
     { id: 1, naziv: "ZENSKO" },
@@ -25,8 +30,41 @@ const Registracija = () => {
     DRUGO: "drugo",
   };
 
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword); // Toggle showPassword state
+  };
+
+  const handleEmailChange = (e) => {
+    const { value } = e.target;
+    setEmail(value);
+
+    // Validate email format using regex
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    setEmailValid(isValid);
+  };
+
+  const handlePasswordChange = (e) => {
+    const { value } = e.target;
+    setPassword(value);
+
+    const isValid = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value)
+    setPasswordValid(isValid);
+  }
+
+
+
   const handleRegistracija = async (e) => {
     e.preventDefault();
+
+    if (!emailValid) {
+      // Display error message or handle invalid email format
+      return;
+    }
+
+    if(!passwordValid) {
+      return;
+    }
+
 
     const posetilacDTO = {
       email,
@@ -82,24 +120,46 @@ const Registracija = () => {
               <Form.Label>Email adresa</Form.Label>
               <Form.Control
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                // onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
                 style={{ width: "90%" }}
                 type="email"
                 placeholder="Unesite e-mail adresu"
                 required
+                isInvalid={!emailValid}
               />
+              {!emailValid && (
+                <Form.Control.Feedback type="invalid">
+                  Morate uneti ispravnu e-mail adresu!
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Lozinka</Form.Label>
+              <InputGroup>
               <Form.Control
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                // onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
                 style={{ width: "90%" }}
-                type="password"
+                type={showPassword ? "text" : "password"} // Toggle password visibility
                 aria-describedby="passwordHelpBlock"
                 required
                 placeholder="Unesite lozinku"
+                isInvalid={!passwordValid}
               />
+              <InputGroup.Text
+            onClick={handleTogglePasswordVisibility}
+            style={{ cursor: "pointer" }}
+          >
+            {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+          </InputGroup.Text>
+          {!passwordValid && (
+          <Form.Control.Feedback type="invalid">
+            Lozinka mora imati najmanje 8 karaktera, jedno veliko slovo, jedan broj i jedan specijalni karakter!
+          </Form.Control.Feedback>
+        )}
+              </InputGroup>
             </Form.Group>
             <Form.Group>
               <Form.Label>Rod</Form.Label>

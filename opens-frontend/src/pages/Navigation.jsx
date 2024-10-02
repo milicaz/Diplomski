@@ -33,6 +33,9 @@ import {
 import LogoHome from "./pomocne tabele/logo/LogoHome";
 import Ucesnici from "./Ucesnici";
 import ZaposleniHome from "./zaposleni/ZaposleniHome";
+import PasswordResetRequest from "./reset password/PasswordResetRequest";
+import PasswordReset from "./reset password/PasswordReset";
+import TextPage from "./reset password/TextPage";
 
 export const Navigation = () => {
   const aktivnostiPaths = ["/dogadjaj", "/dogadjajiTrenutno"];
@@ -317,6 +320,18 @@ export const Navigation = () => {
             path="/logovanje"
             element={<PublicRoute element={<Logovanje />} restricted={true} />}
           />
+          <Route path="/forgot-password"
+            element={<PublicRoute element={<PasswordResetRequest />} restricted={true} />}
+          >
+          </Route>
+          <Route path="/ResetPassword"
+            element={<PublicRoute element={<PasswordReset />} restricted={true} />}
+          >
+          </Route>
+          <Route path="/TextPage"
+            element={<PublicRoute element={<TextPage />} restricted={true} />}
+          >
+          </Route>
           <Route path="/" element={<ProtectedRoute element={<Home />} />} />
           <Route
             path="/omladinski"

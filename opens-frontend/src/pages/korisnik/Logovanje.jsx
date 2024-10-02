@@ -1,8 +1,9 @@
 import { useContext, useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { opensBojaImage } from "../../assets";
 import { AuthContext } from "../../contexts/AuthContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Logovanje = () => {
   const { login } = useContext(AuthContext);
@@ -12,6 +13,7 @@ const Logovanje = () => {
   const [password, setPassword] = useState("");
   const [emailValid, setEmailValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
 
   let navigate = useNavigate();
 
@@ -37,6 +39,10 @@ const Logovanje = () => {
     return valid;
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleLogin = async (e) => {
     const form = e.currentTarget;
     e.preventDefault();
@@ -50,6 +56,7 @@ const Logovanje = () => {
 
     setValidated(true);
   };
+
 
   return (
     <div className="d-flex align-items-center justify-content-center logovanje">
@@ -78,17 +85,41 @@ const Logovanje = () => {
               </Form.Group>
               <Form.Group className="my-3">
                 <Form.Label>Lozinka: </Form.Label>
-                <Form.Control
+                {/* <Form.Control
                   type="password"
                   placeholder="Unesite Vašu lozinku"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   isInvalid={validated && !passwordValid}
-                />
+                /> */}
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Form.Control
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Unesite Vašu lozinku"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    isInvalid={validated && !passwordValid}
+                    style={{ marginRight: "10px" }} // Space between input and icon
+                  />
+                  <span
+                    onClick={toggleShowPassword}
+                    style={{
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
                 <Form.Control.Feedback type="invalid">
                   Lozinka je obavezna.
                 </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="my-3">
+                <Link to="/forgot-password">Zaboravili ste lozinku?</Link>
               </Form.Group>
               <div className="d-grid gap-2 my-4">
                 <Button variant="success" type="submit" size="lg">

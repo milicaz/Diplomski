@@ -40,10 +40,13 @@ public class PasswordResetService {
 		// Find Zaposleni by email
 	    Optional<Zaposleni> optionalZaposleni = zaposleniRepo.findByEmail(email);
 	    Zaposleni zaposleni = optionalZaposleni.orElse(null);
+	    System.out.println("Zaposleni email je: " + zaposleni);
 	    
 	    // Find Posetilac by email
 	    Optional<Posetilac> optionalPosetilac = posetilacRepo.findByEmail(email);
 	    Posetilac posetilac = optionalPosetilac.orElse(null);
+	    
+	    System.out.println("Posetilac email je: " + posetilac);
 		
 		if(zaposleni != null || posetilac != null) {
 			String token = UUID.randomUUID().toString();
@@ -51,14 +54,18 @@ public class PasswordResetService {
 			resetToken.setToken(token);
 			if(zaposleni != null) {
 				resetToken.setZaposleni(zaposleni);
-			} else {
+				sendResetTokenEmailZaposleni(email, token);
+				System.err.println("Usao je u zaposleni nije null");
+			} else if(posetilac != null) {
 				resetToken.setPosetilac(posetilac);
+				sendResetTokenEmail(email, token);
+				System.out.println("Usao je u posetilac nije null");
 			}
 			
 			resetToken.setExpirationDate(LocalDateTime.now().plusHours(1)); // Token valid for 1 hour
 
             tokenRepo.save(resetToken);
-            sendResetTokenEmail(email, token);
+//            sendResetTokenEmail(email, token);
 		}
 	}
 	
@@ -70,6 +77,18 @@ public class PasswordResetService {
 //                        "http://localhost:3000/ResetPassword?token=" + token);
         message.setText("Token:\n" +
                   token);
+        
+        mailSender.send(message);
+	}
+	
+	private void sendResetTokenEmailZaposleni(String email, String token) {
+		SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Password Reset Request");
+        message.setText("To reset your password, please click the link below:\n" +
+                        "http://localhost:3000/ResetPassword?token=" + token);
+//        message.setText("Token:\n" +
+//                  token);
         
         mailSender.send(message);
 	}

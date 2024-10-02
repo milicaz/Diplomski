@@ -16,9 +16,12 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
   const [mestoBoravista, setMestoBoravista] = useState("");
   const [brojTelefon, setBrojTelefon] = useState("");
   const [uloge, setUloge] = useState(new Set()); // Assuming this is managed as a Set
+  const [passwordError, setPasswordError] = useState('');
+
 
   const [showPassword, setShowPassword] = useState(false);
   const [emailValid, setEmailValid] = useState(true); // State variable to track email validity
+  const [passwordValid, setPasswordValid] = useState(true);
 
   const r = [
     { id: 1, naziv: "ZENSKO" },
@@ -70,6 +73,25 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
     setEmailValid(isValid);
   };
 
+  // const validatePassword = (password) => {
+  //   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  //   if (!passwordRegex.test(password)) {
+  //     setPasswordError("Lozinka mora imati najmanje 8 karaktera, jedno veliko slovo, jedan broj i jedan specijalni karakter.");
+  //     return false; // Password is invalid
+  //   } else {
+  //     setPasswordError("");
+  //     return true; // Password is valid
+  //   }
+  // };
+
+  const handlePasswordChange = (e) => {
+    const { value } = e.target;
+    setPassword(value);
+
+    const isValid = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value)
+    setPasswordValid(isValid);
+  }
+
   const handleRegistracija = async (event) => {
     event.preventDefault();
 
@@ -78,17 +100,21 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
       return;
     }
 
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-    // Check if password matches complexity criteria
-    if (!passwordRegex.test(password)) {
-      // Password does not meet complexity criteria
-      alert(
-        "Lozinka mora sadržati najmanje 8 karaktera, barem jedno veliko slovo, jedan broj i jedan poseban znak(@$!%*?&)."
-      );
+    if(!passwordValid) {
       return;
     }
+
+    // const passwordRegex =
+    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    // // Check if password matches complexity criteria
+    // if (!passwordRegex.test(password)) {
+    //   // Password does not meet complexity criteria
+    //   alert(
+    //     "Lozinka mora sadržati najmanje 8 karaktera, barem jedno veliko slovo, jedan broj i jedan poseban znak(@$!%*?&)."
+    //   );
+    //   return;
+    // }
 
     const zaposleniDTO = {
       email,
@@ -149,11 +175,12 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
         <InputGroup>
           <Form.Control
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handlePasswordChange}
             type={showPassword ? "text" : "password"} // Toggle password visibility
             aria-describedby="passwordHelpBlock"
             placeholder="Lozinka"
             required
+            isInvalid={!passwordValid}
           />
           <InputGroup.Text
             onClick={handleTogglePasswordVisibility}
@@ -161,6 +188,11 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
           >
             {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
           </InputGroup.Text>
+          {!passwordValid && (
+          <Form.Control.Feedback type="invalid">
+            Lozinka mora imati najmanje 8 karaktera, jedno veliko slovo, jedan broj i jedan specijalni karakter!
+          </Form.Control.Feedback>
+        )}
         </InputGroup>
       </Form.Group>
       <br />
