@@ -196,22 +196,6 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
         </InputGroup>
       </Form.Group>
       <br />
-      {/* <Form.Group>
-        <Form.Control
-            as="select"
-          value={Array.from(uloge)}
-          onChange={handleUlogeChange}
-          type="text"
-          placeholder="Uloga"
-          required multiple>
-            <option value="">Izaberite ulogu:</option>
-                  {u.map((item, index) => (
-                <option key={item.id} value={item.naziv}>
-                  {item.naziv}
-                </option>
-                  ))}
-        </Form.Control>
-      </Form.Group> */}
       <Form.Group>
         <Form.Label>Uloge</Form.Label>
         {u.map((item) => (
@@ -246,22 +230,6 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
         />
       </Form.Group>
       <br />
-      {/* <Form.Group>
-        <Form.Control
-            as="select"
-          value={rod}
-          onChange={(e) => setRod(e.target.value)}
-          type="text"
-          placeholder="Rod"
-          required>
-            <option value="">Izaberite rod</option>
-                  {r.map((item, index) => (
-                <option key={item.id} value={item.naziv}>
-                  {item.naziv}
-                </option>
-                  ))}
-        </Form.Control>
-      </Form.Group> */}
       <Form.Group>
         <Form.Control
           as="select"

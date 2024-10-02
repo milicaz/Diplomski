@@ -136,7 +136,7 @@ const Registracija = () => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Lozinka</Form.Label>
-              <InputGroup>
+              <InputGroup style={{ width: "90%" }}>
               <Form.Control
                 value={password}
                 // onChange={(e) => setPassword(e.target.value)}
