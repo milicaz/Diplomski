@@ -23,37 +23,37 @@ const LogoutPage = () => {
     fetchToken();
   }, []);
 
-  const handleLogout = async () => {
-    if (!refreshToken) {
-      Alert.alert('Error', 'No refresh token found.');
-      return;
-    }
+  // const handleLogout = async () => {
+  //   if (!refreshToken) {
+  //     Alert.alert('Error', 'No refresh token found.');
+  //     return;
+  //   }
 
-    try {
-      const response = await fetch('http://10.0.2.2:8080/api/auth/logout', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refreshToken }),
-      });
+  //   try {
+  //     const response = await fetch('http://10.0.2.2:8080/api/auth/logout', { 
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ refreshToken }),
+  //     });
 
-      const result = await response.json();
+  //     const result = await response.json();
 
-      if (response.ok) {
-        // Clear tokens from storage
-        await AsyncStorage.removeItem('accessToken');
-        await AsyncStorage.removeItem('refreshToken');
+  //     if (response.ok) {
+  //       // Clear tokens from storage
+  //       await AsyncStorage.removeItem('accessToken');
+  //       await AsyncStorage.removeItem('refreshToken');
 
-        Alert.alert('Success', 'Successfully logged out.');
-        navigation.navigate('Welcome')
-      } else {
-        Alert.alert('Error', result.message || 'Logout failed.');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'An error occurred while logging out.');
-    }
-  };
+  //       Alert.alert('Success', 'Successfully logged out.');
+  //       navigation.navigate('Welcome')
+  //     } else {
+  //       Alert.alert('Error', result.message || 'Logout failed.');
+  //     }
+  //   } catch (error) {
+  //     Alert.alert('Error', 'An error occurred while logging out.');
+  //   }
+  // };
 
   return (
     <View>

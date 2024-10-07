@@ -181,7 +181,7 @@ public class AuthController {
 			jwtCookie.setMaxAge(3600);
 
 			Cookie refreshCookie = new Cookie("refreshToken", refreshToken.getToken());
-			refreshCookie.setHttpOnly(true);
+//			refreshCookie.setHttpOnly(true);
 //	        refreshCookie.setSecure(true);
 			refreshCookie.setPath("/");
 			refreshCookie.setMaxAge(86400);

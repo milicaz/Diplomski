@@ -48,7 +48,8 @@ const AuthContextProvider = ({ children }) => {
         // Get cookies
         const accessToken = Cookies.get("accessToken");
         const refreshToken = Cookies.get("refreshToken");
-
+        console.log("AccessToken u Auth context: " + accessToken)
+        console.log("RefreshToken u Auth context: " + refreshToken)
         if (accessToken && refreshToken) {
           const response = await httpCommon.get("/auth/zaposleni");
           console.log("--- AuthContext.js --- Check auth success:", response.data);

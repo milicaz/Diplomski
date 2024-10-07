@@ -1,7 +1,7 @@
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState } from 'react';
-import { Modal, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Button, Modal, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import COLORS from '../constants/colors';
 import httpCommon from "../http-common";
 import { useTranslation } from "react-i18next";
@@ -15,6 +15,7 @@ export default function Home() {
 
   const [selectedObavestenje, setSelectedObavestenje] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [refreshToken, setRefreshToken] = useState('');
 
   const { t } = useTranslation();
 
@@ -30,11 +31,24 @@ export default function Home() {
     }
     prepare();
     fetchObavestenja();
+    // const fetchToken = async () => {
+    //   try {
+    //     const token = await AsyncStorage.getItem('refreshToken');
+    //     if (token) {
+    //       setRefreshToken(token);
+    //     }
+    //   } catch (error) {
+    //     console.error('Error fetching refresh token:', error);
+    //   }
+    // };
+
+    // fetchToken();
   }, []);
 
   useEffect(() => {
     const sortirana = [...obavestenja].sort((a, b) => b.prioritet - a.prioritet); //sortira po prioritetu gde se veci prioritet pokazuje prvi
     setPinovanaObavestenja(sortirana)
+    
   }, [obavestenja])
 
   const fetchObavestenja = async () => {
@@ -54,6 +68,38 @@ export default function Home() {
   } else {
     SplashScreen.hideAsync();
   }
+
+  const handleLogout = async () => {
+    if (!refreshToken) {
+      Alert.alert('Error', 'No refresh token found.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://10.0.2.2:8080/api/auth/logout', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Clear tokens from storage
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.removeItem('refreshToken');
+
+        Alert.alert('Success', 'Successfully logged out.');
+        navigation.navigate('Welcome')
+      } else {
+        Alert.alert('Error', result.message || 'Logout failed.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'An error occurred while logging out.');
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -77,6 +123,7 @@ export default function Home() {
             ))}
           </View>
         </ScrollView>
+        {/* <Button onPress={handleLogout} title="Logout"></Button> */}
       </View>
       {/* Popup Modal */}
       <Modal visible={showModal} animationType="slide" transparent>

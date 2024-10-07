@@ -22,7 +22,7 @@ export default function App() {
         <Stack.Navigator initialRouteName='Welcome'>
           <Stack.Screen name="Welcome" component={WelcomePage} options={{ headerShown: false }}/>
           <Stack.Screen name="Registracija" component={Registracija} options={{ headerShown: false }}/>
-          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
+          {/* <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/> */}
           <Stack.Screen name="ForgotPassword" component={RequestPasswordResetPage} options={{ headerShown: false }}/>
           <Stack.Screen name="ResetPassword" component={ResetPasswordPage} options={{ headerShown: false }}/>
           <Stack.Screen name="Main" component={BottomTabNavigation} options={{ headerShown: false }} />
