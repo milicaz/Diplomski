@@ -3,6 +3,7 @@ import { Buffer } from 'buffer';
 import * as FileSystem from 'expo-file-system';
 import { useFonts } from "expo-font";
 import * as ImagePicker from "expo-image-picker";
+import * as SecureStore from 'expo-secure-store';
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,12 +11,14 @@ import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'reac
 import { SafeAreaView } from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import httpCommon from '../http-common';
+import eventEmitter from '../utils/EventEmitter';
+
+const USER_KEY = 'user';
 
 export default function ProfileEdit({ navigation }) {
   const { t } = useTranslation();
 
   const [user, setUser] = useState(null);
-
   const [ime, setIme] = useState("");
   const [prezime, setPrezime] = useState("");
   const [email, setEmail] = useState("");
@@ -34,26 +37,36 @@ export default function ProfileEdit({ navigation }) {
       await SplashScreen.preventAutoHideAsync();
     }
     prepare();
-    fetchUser(1);
+    const loggedIn = JSON.parse(SecureStore.getItem(USER_KEY));
+    fetchUser(loggedIn.id);
   }, []);
 
   const fetchUser = async (id) => {
-    const { data } = await httpCommon.get(`posetioci/${id}`);
-    setUser(data);
-    setIme(data.ime);
-    setPrezime(data.prezime);
-    setEmail(data.email);
-    setGodine(data.godine);
-    setMestoBoravista(data.mestoBoravista);
-    setBrojTelefona(data.brojTelefona);
-    const response = await httpCommon.get(`posetioci/${id}/profilna`, {
-      responseType: 'arraybuffer'
+    await httpCommon.get(`posetioci/${id}`).then((response) => {
+      setUser(response.data);
+      setIme(response.data.ime);
+      setPrezime(response.data.prezime);
+      setEmail(response.data.email);
+      setGodine(response.data.godine);
+      setMestoBoravista(response.data.mestoBoravista);
+      setBrojTelefona(response.data.brojTelefona);
+    }, (error) => {
+      if (error.response && (error.response.status === 401 || error.response.status === 400)) {
+        eventEmitter.emit('LOGOUT');
+      }
     });
 
-    const contentType = response.headers['content-type'] || 'image/jpeg';
-
-    const base64Image = Buffer.from(response.data, 'binary').toString('base64');
-    setProfileImage(`data:${contentType};base64, ${base64Image}`);
+    await httpCommon.get(`posetioci/${id}/profilna`, {
+      responseType: 'arraybuffer'
+    }).then((response) => {
+      const contentType = response.headers['content-type'] || 'image/jpeg';
+      const base64Image = Buffer.from(response.data, 'binary').toString('base64');
+      setProfileImage(`data:${contentType};base64, ${base64Image}`);
+    }, (error) => {
+      if (error.response && (error.response.status === 401 || error.response.status === 400)) {
+        eventEmitter.emit('LOGOUT');
+      }
+    });
   }
 
   if (!fontsLoaded) {
@@ -83,7 +96,13 @@ export default function ProfileEdit({ navigation }) {
     try {
       const profileImageData = profileImage.substring("data:image/png;base64, ".length);
       const updatedProfile = { ime, prezime, email, godine: parseInt(godine), mestoBoravista, brojTelefona, profileImage: profileImageData };
-      const response = await httpCommon.put(`posetioci/${user.id}`, updatedProfile);
+      await httpCommon.put(`posetioci/${user.id}`, updatedProfile).then((response) => {
+        console.log("Uspesno editovano");
+      }, (error) => {
+        if (error.response && (error.response.status === 401 || error.response.status === 400)) {
+          eventEmitter.emit('LOGOUT');
+        }
+      });
       navigation.navigate("Profile");
     } catch (error) {
       console.error("Error updating profile: ", error);
@@ -93,20 +112,6 @@ export default function ProfileEdit({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white, paddingHorizontal: 22 }}>
       <View style={{ flexDirection: "row", marginHorizontal: 12, justifyContent: 'center', top: 15 }}>
-        {/* <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={{
-            position: "absolute",
-            left: 0,
-          }}
-        >
-          <MaterialIcons
-            name="keyboard-arrow-left"
-            size={24}
-            color={COLORS.black}
-          />
-        </TouchableOpacity> */}
-
         <Text style={{ fontSize: 18, fontFamily: 'Montserrat-Medium', color: COLORS.yellow }}>{t('profile-edit-page.text.edit-profile')}</Text>
       </View>
       <ScrollView>
@@ -318,7 +323,7 @@ export default function ProfileEdit({ navigation }) {
           <Text
             style={{
               fontSize: 18,
-              fontFamily: 'Montserrat-Regular',
+              fontFamily: 'Montserrat-Bold',
               color: COLORS.white,
             }}
           >

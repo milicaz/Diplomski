@@ -1,15 +1,18 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import COLORS from '../constants/colors';
 import { useFonts } from 'expo-font';
+import * as SplashScreen from "expo-splash-screen";
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import COLORS from '../constants/colors';
+import httpCommon from '../http-common';
+import Toast from 'react-native-toast-message';
 
 const RequestPasswordResetPage = () => {
+  const { t } = useTranslation();
+  const { height: windowHeight } = useWindowDimensions();
+  const navigation = useNavigation();
 
-    const { t } = useTranslation();
-
-    const navigation = useNavigation();
   const [email, setEmail] = useState('');
 
   const [fontsLoaded] = useFonts({
@@ -17,48 +20,78 @@ const RequestPasswordResetPage = () => {
     'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf')
   });
 
+  useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prepare();
+  }, []);
+
+  if (!fontsLoaded) {
+    return undefined;
+  } else {
+    SplashScreen.hideAsync();
+  }
+
   const requestPasswordReset = async () => {
     try {
-      const response = await fetch('http://10.0.2.2:8080/api/auth/password-reset/request?email=' + encodeURIComponent(email), {
-        method: 'POST',
+      const response = await httpCommon.post(`/auth/password-reset/request?email=` + encodeURIComponent(email), {});
+      // const result = response.data;
+      // Alert.alert(t("alertResetPasswordSuccess"), result);
+      // navigation.navigate('ResetPassword')
+      Toast.show({
+        type: 'success',
+        text1: t("alertRequestResetPasswordSuccessHeader"),
+        text2: t("alertRequestPasswordSuccess"),
+        duration: 7000,
+        onPress: () => Toast.hide(),
       });
-      const result = await response.text();
-      Alert.alert(t("alertResetPasswordSuccess"), result);
-      navigation.navigate('ResetPassword')
+      if (response) {
+        navigation.navigate('ResetPassword');
+      }
     } catch (error) {
-      Alert.alert(t("alertRequestResetPasswordError"));
+      //Alert.alert(t("alertRequestResetPasswordError"));
+      Toast.show({
+        type: 'error',
+        text1: t("alertRequestResetPasswordErrorHeader"),
+        text2: t("alertRequestPasswordError"),
+        duration: 7000,
+        onPress: () => Toast.hide(),
+      });
     }
   };
 
   return (
     <ScrollView style={{ backgroundColor: COLORS.white }}>
-    <View style={{ flex: 1, backgroundColor: COLORS.white }}>
-    <View>
-        <Image
-          source={require("../assets/opens2.png")}
-          style={{
-            height: 300,
-            width: "100%",
-            position: "absolute",
-          }}
-        />
-      </View>
-      <View style={{ justifyContent: "center", alignItems: "center", height: 950 }}>
-      <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-      <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }}
-        placeholder={t('forgot-password-page.input.emailField')}
-        value={email}
-        onChangeText={setEmail}
-      />
-      </View>
-      {/* <Button title="Request Password Reset" onPress={requestPasswordReset} /> */}
-      <View style={{ width: "50%", margin: 10 }}>
-          <TouchableOpacity onPress={requestPasswordReset} style={{ alignItems: 'center', backgroundColor: '#61CDCD', padding: 13 }}>
-            <Text style={{ fontFamily: "Montserrat-Bold" }}>{t('forgot-password-page.button.request')}</Text>
-          </TouchableOpacity>
+      <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+        <View>
+          <Image
+            source={require("../assets/opens2.png")}
+            style={{
+              height: windowHeight * 0.47,
+              width: "100%",
+              position: "absolute",
+            }}
+          />
+        </View>
+        <View style={{ justifyContent: "center", alignItems: "center", top: windowHeight * 0.20, width: "100%", height: windowHeight }}>
+          <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+            <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }}
+              placeholder={t('forgot-password-page.input.emailField')}
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
+          <View style={{ width: "80%", margin: 10 }}>
+            <TouchableOpacity onPress={requestPasswordReset} style={{
+              alignItems: 'center', borderColor: COLORS.blue, borderWidth: 2, alignItems: 'center',
+              justifyContent: 'center', backgroundColor: COLORS.blue, padding: 13
+            }}>
+              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold", color: COLORS.white }}>{t('forgot-password-page.button.request')}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
     </ScrollView>
   );
 };

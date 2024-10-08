@@ -74,91 +74,67 @@
         }
     },
     "forgot-password-page": {
-        "input" : {
-            "emailField" : "Unesite svoju email adresu"
+        "input": {
+            "emailField": "Unesite svoju email adresu"
         },
-        "button" : {
-            "request" : "Zahtev za promenu lozinke"
+        "button": {
+            "request": "Zahtev za promenu lozinke"
         }
     },
-
     "reset-password-page": {
-        "input" : {
-            "token" : "Token",
+        "input": {
+            "token": "Token",
             "newPassword": "Nova lozinka",
             "confirmPassword": "Potvrdi novu lozinku"
         },
-        "button" : {
-            "reset" : "Promeni lozinku"
+        "button": {
+            "reset": "Promeni lozinku"
         }
     },
-
-    "gender-label" : {
-        "male" : "muško",
-        "female" : "žensko",
-        "other" : "drugo"
+    "gender-label": {
+        "male": "muško",
+        "female": "žensko",
+        "other": "drugo"
     },
-    "consent" : {
+    "consent": {
         "title": "INFORMACIJE ZA PRIHVATANJE USLOVA \n",
-        "firstParagraph" : 
-        "Shodno članu 23. Zakona o zaštiti podataka o ličnosti („Službeni glasnik RS”, br. 87/2018), a u vezi sa prikupljanjem podataka o ličnosti prilikom popunjavanja zahteva, žalbe ili prigovora, Omladinski savez udruženja „OPENS“, mat. br. 28202717, kao rukovalac podacima, daje sledeće obaveštenje o obradi podataka o ličnosti:\n\n ",
-        "secondParagraph" : 
-        "1) Podaci o rukovodiocu\nPravno lice: Omladinski savez udruženja „OPENS“. \nAdresa: Bulevar Despota Stefana br. 5,  Novi Sad\nMatični broj:28202717\nZakonski zastupnik: izvršni director Vukašin Grozdanović.\n\n",
-        "thirdParagraph" : 
-        "2) Svrha prikupljanja i obrade podataka\nSvrha prikupljanja podataka za praćenje, evidenciju i izveštavanje broja aktivnosti, časova zauzeća prostora i broj poseta članova/ca prostora Omladinskog centra OPENS.\n\n",
-        "fourthParagraph":
-        "3) Način korišćenja podataka\nOmladinski savez udruženja „OPENS“ podatke o ličnosti prikuplja prilikom učešća na aktivnostima, korišćenjem prostora i posete prostora Omladinskog centra OPENS. Podaci se priku\nPrikupljeni podaci o ličnosti se koriste isključivo u svrhe praćenje projektnih mesečnih i godišnjih izveštaja Omladinskog saveza udruženja „OPENS“\n\n",
-        "fifthParagraph" :
-        "4) Lica koja koriste podatke\nPodatke o ličnosti obrađuju lica zaposlena u Omladinski savez udruženja „OPENS“, u skladu sa internim pravnim aktima.\n\n",
-        "sixthParagraph" :
-        "5) Pravni osnov za prikupljanje i obradu podataka\nPravni osnov za prikupljanje i obradu podataka o ličnosti su interni akti Omladinskog saveza udruženja “OPENS”. \n\n",
-        "seventhParagraph" :
-        "6) Opoziv pristanka za obradu podataka i pravne posledice opoziva\nSvako lice čije podatke o ličnosti Omladinski savez udruženja „OPENS“ obrađuje, uz pristanak ima pravo da opozove prethodno dati pristanak za obradu.\n\n",
-        "eighthParagraph" :
-        "7) Pravo da se zahteva pristup, ispravka ili brisanje podataka o ličnosti\nKorisnik ima prava da od rukavaoca zahteva pristup, ispravku ili brisanje njegovih podataka o ličnosti, ograničenje obrade istih, pravo na prenosivost podataka, kao i pravo na Prigovor, ukoliko je to u skladu sa zakonima koji se odnose na rešavanje po Zahtevu korisnika.\n\n",
-        "ninethParagraph" :
-        "8) Automatizovane odluke i profilisanje i iznošenje podataka o ličnosti u drugu državu ili međunarodnu organizaciju Omladinski savez udruženja „OPENS“ ne donosi automatizovane odluke, ne vrši profilisanje, niti iznosi podatke o ličnosti prikupljene na internet stranici, putem popunjavanja Zahteva, Žalbi i Prigovora i dr.\n\n",
-        "tenthParagraph" : "9) Prava koja pripadaju licu u slučaju nedozvoljene obrade\nU slučaju nedozvoljene obrade podataka, licu pripadaju sva prava iz Zakona o zaštiti podataka o ličnosti, čiju primenu nadzire Poverenik za pristup informacijama od javnog značaja i zaštitu podataka o ličnosti, uključujući i pravo na pritužbu Povereniku.\n\n"
+        "firstParagraph": "Shodno članu 23. Zakona o zaštiti podataka o ličnosti („Službeni glasnik RS”, br. 87/2018), a u vezi sa prikupljanjem podataka o ličnosti prilikom popunjavanja zahteva, žalbe ili prigovora, Omladinski savez udruženja „OPENS“, mat. br. 28202717, kao rukovalac podacima, daje sledeće obaveštenje o obradi podataka o ličnosti:\n\n ",
+        "secondParagraph": "1) Podaci o rukovodiocu\nPravno lice: Omladinski savez udruženja „OPENS“. \nAdresa: Bulevar Despota Stefana br. 5,  Novi Sad\nMatični broj:28202717\nZakonski zastupnik: izvršni director Vukašin Grozdanović.\n\n",
+        "thirdParagraph": "2) Svrha prikupljanja i obrade podataka\nSvrha prikupljanja podataka za praćenje, evidenciju i izveštavanje broja aktivnosti, časova zauzeća prostora i broj poseta članova/ca prostora Omladinskog centra OPENS.\n\n",
+        "fourthParagraph": "3) Način korišćenja podataka\nOmladinski savez udruženja „OPENS“ podatke o ličnosti prikuplja prilikom učešća na aktivnostima, korišćenjem prostora i posete prostora Omladinskog centra OPENS. Podaci se priku\nPrikupljeni podaci o ličnosti se koriste isključivo u svrhe praćenje projektnih mesečnih i godišnjih izveštaja Omladinskog saveza udruženja „OPENS“\n\n",
+        "fifthParagraph": "4) Lica koja koriste podatke\nPodatke o ličnosti obrađuju lica zaposlena u Omladinski savez udruženja „OPENS“, u skladu sa internim pravnim aktima.\n\n",
+        "sixthParagraph": "5) Pravni osnov za prikupljanje i obradu podataka\nPravni osnov za prikupljanje i obradu podataka o ličnosti su interni akti Omladinskog saveza udruženja “OPENS”. \n\n",
+        "seventhParagraph": "6) Opoziv pristanka za obradu podataka i pravne posledice opoziva\nSvako lice čije podatke o ličnosti Omladinski savez udruženja „OPENS“ obrađuje, uz pristanak ima pravo da opozove prethodno dati pristanak za obradu.\n\n",
+        "eighthParagraph": "7) Pravo da se zahteva pristup, ispravka ili brisanje podataka o ličnosti\nKorisnik ima prava da od rukavaoca zahteva pristup, ispravku ili brisanje njegovih podataka o ličnosti, ograničenje obrade istih, pravo na prenosivost podataka, kao i pravo na Prigovor, ukoliko je to u skladu sa zakonima koji se odnose na rešavanje po Zahtevu korisnika.\n\n",
+        "ninethParagraph": "8) Automatizovane odluke i profilisanje i iznošenje podataka o ličnosti u drugu državu ili međunarodnu organizaciju Omladinski savez udruženja „OPENS“ ne donosi automatizovane odluke, ne vrši profilisanje, niti iznosi podatke o ličnosti prikupljene na internet stranici, putem popunjavanja Zahteva, Žalbi i Prigovora i dr.\n\n",
+        "tenthParagraph": "9) Prava koja pripadaju licu u slučaju nedozvoljene obrade\nU slučaju nedozvoljene obrade podataka, licu pripadaju sva prava iz Zakona o zaštiti podataka o ličnosti, čiju primenu nadzire Poverenik za pristup informacijama od javnog značaja i zaštitu podataka o ličnosti, uključujući i pravo na pritužbu Povereniku.\n\n"
     },
-    "statementOfConsent" : {
-        "title" : "IZJAVA O SAGLASNOSTI \n",
-        "firstParagraph" : 
-        "- Izjavljujem da sam saglasan/na da moje lične podatke Omladinski savez udruženja „OPENS“,  obrađuje u skladu sa Zakonom zaštiti podataka o  ličnosti(„Sl. glasnik RS“, br. 87/2018).\n\n",
-        "secondParagraph" : 
-        "- Izjavljujem da sam svoje podatke dao/dala dobrovoljno.\n\n",
-        "thirdParagraph" : 
-        "- Izjavljujem da sam obavešten/a i saglasna da će mojim podacima rukovoditi zaposleni u Omladinskom savezu udruženja „OPENS“, kao i da će se podaci čuvati u Omladinskom savezu udruženja „OPENS“, u periodu predviđenom posebnim zakonima RS i opštim aktima Omladinskog saveza udruženja „OPENS“koji se odnose na moj zahtev.\n\n",
-        "fourthParagraph" : 
-        "- Saglasan/a sam da Omladinski savez udruženja „OPENS“ gore navedene podatke prikuplja, skladišti u svojoj bazi i da ih koristi isključivo u cilju ostvarivanja svrhe za koje su podaci prikupljeni.\n\n",
-        "fifthParagraph" : 
-        "- Izjavljujem da sam saglasan/a da se moji podaci čuvaju, obrađuju i koriste za sledeće svrhe: komunikacija sa mnom, obrada mog zahteva, vođenje evidencija, čuvanje podataka i korišćenje podataka za projektno izveštavanje Omladinskog saveza udruženja „OPENS“.\n\n",
-        "sixthParagraph" :
-        "- Omladinski savez udruženja „OPENS“garantuje fizičkim licima, čije podatke obrađuje, sva prava predviđena Zakonom o zaštiti podataka o ličnosti.\n\n"
+    "statementOfConsent": {
+        "title": "IZJAVA O SAGLASNOSTI \n",
+        "firstParagraph": "- Izjavljujem da sam saglasan/na da moje lične podatke Omladinski savez udruženja „OPENS“,  obrađuje u skladu sa Zakonom zaštiti podataka o  ličnosti(„Sl. glasnik RS“, br. 87/2018).\n\n",
+        "secondParagraph": "- Izjavljujem da sam svoje podatke dao/dala dobrovoljno.\n\n",
+        "thirdParagraph": "- Izjavljujem da sam obavešten/a i saglasna da će mojim podacima rukovoditi zaposleni u Omladinskom savezu udruženja „OPENS“, kao i da će se podaci čuvati u Omladinskom savezu udruženja „OPENS“, u periodu predviđenom posebnim zakonima RS i opštim aktima Omladinskog saveza udruženja „OPENS“koji se odnose na moj zahtev.\n\n",
+        "fourthParagraph": "- Saglasan/a sam da Omladinski savez udruženja „OPENS“ gore navedene podatke prikuplja, skladišti u svojoj bazi i da ih koristi isključivo u cilju ostvarivanja svrhe za koje su podaci prikupljeni.\n\n",
+        "fifthParagraph": "- Izjavljujem da sam saglasan/a da se moji podaci čuvaju, obrađuju i koriste za sledeće svrhe: komunikacija sa mnom, obrada mog zahteva, vođenje evidencija, čuvanje podataka i korišćenje podataka za projektno izveštavanje Omladinskog saveza udruženja „OPENS“.\n\n",
+        "sixthParagraph": "- Omladinski savez udruženja „OPENS“garantuje fizičkim licima, čije podatke obrađuje, sva prava predviđena Zakonom o zaštiti podataka o ličnosti.\n\n"
     },
-    "consentButton" : {
-        "button" : "Upoznat sam i prihvatam Uslove korišćenja. Upoznat sam sa Pravilima privatnosti i pristajem na obradu ličnih podataka."
+    "consentButton": {
+        "button": "Upoznat sam i prihvatam Uslove korišćenja. Upoznat sam sa Pravilima privatnosti i pristajem na obradu ličnih podataka."
     },
-
-
-    "setEmailError" : "Neispravan format e-maila!",
-
-    "setPasswordError" : "Lozinka mora sadržati najmanje osam karaktera, od toga 1 veliko slovo, 1 broj i 1 specijalni karakter(@$!%*?&)",
-
-    "alertEmailPasswordError" : "Morate uneti validnu e-mail adresu i validnu lozinku!",
-
-    "alertCheckbox" : "Morate se složiti sa uslovima korišćenja pre nego što nastavite!",
-
-    "alertRegistrationSuccess" : "Uspešno ste se registrovali!",
-
-    "alertRegistrationFailed" : "Registracija nije uspela. Pokušajte ponovo!",
-
-    "consoleRegistrationError" : "Greška prilikom registracije: ",
-
-    "alertResetPassword" : "Lozinke se ne poklapaju.",
-
-    "alertResetPasswordSuccess" : "Uspešno!",
-
-    "alertResetPasswrodError" : "Došlo je do greške pri resetovanju lozinke.",
-
-     "alertRequestResetPasswordError" : "Došlo je do greške prilikom zahteva za resetovanje lozinke."
+    "setEmailError": "Neispravan format e-maila!",
+    "setPasswordError": "Lozinka mora sadržati najmanje osam karaktera, od toga 1 veliko slovo, 1 broj i 1 specijalni karakter(@$!%*?&)",
+    "alertEmailPasswordError": "Morate uneti validnu e-mail adresu i validnu lozinku!",
+    "alertCheckbox": "Morate se složiti sa uslovima korišćenja pre nego što nastavite!",
+    "alertRegistrationSuccessHeader": "Uspešna registracija",
+    "alertRegistrationSuccess": "Uspešno ste se registrovali!",
+    "alertRegistrationFailedHeader": "Neuspešna registracija",
+    "alertRegistrationFailed": "Registracija nije uspela. Pokušajte ponovo!",
+    "consoleRegistrationError": "Greška prilikom registracije: ",
+    "alertRequestResetPasswordSuccessHeader": "Uspešno!",
+    "alertRequestPasswordSuccess": "Token za resetovanje lozinke je poslat na Vašu email adresu. Molimo vas da proverite svoj inbox kako biste resetovali lozinku.",
+    "alertRequestResetPasswordErrorHeader": "Greška!",
+    "alertRequestPasswordError": "Slanje tokena za resetovanje lozinke nije uspelo. Molimo pokušajte ponovo.",
+    "alertResetPassword": "Lozinke se ne poklapaju.",
+    "alertResetPasswordSuccess": "Resetovanje lozinke je uspešno! Sada se možete prijaviti sa svojom novom lozinkom.",
+    "alertResetPasswordError": "Došlo je do greške pri resetovanju lozinke."
 }

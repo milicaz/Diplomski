@@ -1,33 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, Image, Text, TouchableOpacity, View } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useTranslation } from 'react-i18next';
-import COLORS from "../constants/colors";
 import i18next from 'i18next';
-import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Alert, Image, Text, View } from 'react-native';
+import COLORS from "../constants/colors";
+import httpCommon from '../http-common';
 
 export default function Dostupnost() {
-
-    const navigation = useNavigation();
-
     const { t } = useTranslation();
 
     const [fontsLoaded] = useFonts({
         'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
         'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf'),
-        'Montserrat-BoldItalic': require('../assets/fonts/Montserrat-BoldItalic.ttf') 
+        'Montserrat-BoldItalic': require('../assets/fonts/Montserrat-BoldItalic.ttf')
     });
-
-    // const [data, setData] = useState({
-    //     spaceCount: 0,
-    //     laptopCount: 0,
-    //     mouseCount: 0,
-    //     headphoneCount: 0,
-    //     sonyOccupied: false,
-    // });
-
+    
     const [spaceCount, setSpaceCount] = useState("")
     const [laptopCount, setLaptopCount] = useState("")
     const [mouseCount, setMouseCount] = useState("")
@@ -39,29 +27,9 @@ export default function Dostupnost() {
             await SplashScreen.preventAutoHideAsync();
         }
         prepare();
-        //Define the fetch function
-        // const fetchMesto = async () => {
-        //     try {
-        //         const response = await axios.get('http://10.0.2.2:8080/api/dostupnostMestoView');
-        //         console.log("Mesto " + response.data[0].slobodna_mesta)
-        //         setSpaceCount(response.data[0].slobodna_mesta)
-        //     } catch (error) {
-        //         console.error('Error fetching mesto:', error);
-        //         Alert.alert('Error', 'Failed to fetch mesto');
-        //     }
-        // }
-
-        // fetchMesto();
-
-        // //Set up interval to fetch data every 10 seconds
-        // const intervalMesto = setInterval(fetchMesto, 10000); // 10000 milliseconds = 10 seconds
-
-        // // Cleanup on component unmount
-        // return () => clearInterval(intervalMesto);
-
-         const fetchData = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get('http://10.0.2.2:8080/api/dostupnostView');
+                const response = await httpCommon.get('/dostupnostView');
                 const responseData = response.data; // Assuming response.data is an array
 
                 // Process the array
@@ -84,30 +52,24 @@ export default function Dostupnost() {
                             break;
                     }
                 });
-
             } catch (error) {
                 console.error('Error fetching data:', error);
                 Alert.alert('Error', 'Failed to fetch data');
             }
             try {
-                const response = await axios.get('http://10.0.2.2:8080/api/dostupnostMestoView');
-                console.log("Mesto " + response.data[0].slobodna_mesta)
+                const response = await httpCommon.get('/dostupnostMestoView');
                 setSpaceCount(response.data[0].slobodna_mesta)
             } catch (error) {
                 console.error('Error fetching mesto:', error);
                 Alert.alert('Error', 'Failed to fetch mesto');
             }
-            
         };
 
         fetchData(); // Fetch data initially
-
         // Set up interval to fetch data every 10 seconds
         const intervalId = setInterval(fetchData, 10000); // 10000 milliseconds = 10 seconds
-
         // Cleanup on component unmount
         return () => clearInterval(intervalId);
-
     }, []); // Empty dependency array ensures this runs once on mount
 
 
@@ -117,23 +79,9 @@ export default function Dostupnost() {
         SplashScreen.hideAsync();
     }
 
-    // const spaceCount = 0;
-    // const laptopCount = 0;
-    // const mouseCount = 0;
-    // const headphoneCount = 0;
-    // const sonyOccupied = false;
-
-    // const getDostupnost = async () => {
-    //     const response = await axios.get('http://localhost:8080/api/dostupnostView')
-    //     console.log("Response je: " + JSON.stringify(response))
-    // }
-
-    
     const getSpaceTranslationKey = (count) => {
-
         const language = i18next.language;
-
-        if(language === 'sr') {
+        if (language === 'sr') {
             if (count % 10 === 1 && count % 100 !== 11) {
                 return 'dostupnost-page.text.space_one';
             } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
@@ -141,8 +89,8 @@ export default function Dostupnost() {
             } else {
                 return 'dostupnost-page.text.space_other';
             }
-        } else if(language === 'en') {
-            if(count === 1) {
+        } else if (language === 'en') {
+            if (count === 1) {
                 return 'dostupnost-page.text.space_one';
             } else {
                 return 'dostupnost-page.text.space_other';
@@ -151,42 +99,36 @@ export default function Dostupnost() {
     };
 
     const getLaptopTranslationKey = (count) => {
-
         const language = i18next.language;
-
-        if(language === 'sr') {
-
-        if (count % 10 === 1 && count % 100 !== 11) {
-            return 'dostupnost-page.text.laptop_one';
-        } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
-            return 'dostupnost-page.text.laptop_few';
-        } else {
-            return 'dostupnost-page.text.laptop_other';
-        }
-        } else if(language === 'en') {
-            if(count === 1) {
+        if (language === 'sr') {
+            if (count % 10 === 1 && count % 100 !== 11) {
+                return 'dostupnost-page.text.laptop_one';
+            } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
+                return 'dostupnost-page.text.laptop_few';
+            } else {
+                return 'dostupnost-page.text.laptop_other';
+            }
+        } else if (language === 'en') {
+            if (count === 1) {
                 return 'dostupnost-page.text.laptop_one';
             } else {
-                return 'dostupnost-page.text.laptop_other'; 
+                return 'dostupnost-page.text.laptop_other';
             }
         }
     };
 
     const getMouseTranslationKey = (count) => {
-
         const language = i18next.language;
-
-        if(language === 'sr') {
-
-        if (count % 10 === 1 && count % 100 !== 11) {
-            return 'dostupnost-page.text.mouse_one';
-        } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
-            return 'dostupnost-page.text.mouse_few';
-        } else {
-            return 'dostupnost-page.text.mouse_other';
-        }
-        } else if(language === 'en') {
-            if(count === 1) {
+        if (language === 'sr') {
+            if (count % 10 === 1 && count % 100 !== 11) {
+                return 'dostupnost-page.text.mouse_one';
+            } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
+                return 'dostupnost-page.text.mouse_few';
+            } else {
+                return 'dostupnost-page.text.mouse_other';
+            }
+        } else if (language === 'en') {
+            if (count === 1) {
                 return 'dostupnost-page.text.mouse_one';
             } else {
                 return 'dostupnost-page.text.mouse_other';
@@ -195,22 +137,19 @@ export default function Dostupnost() {
     };
 
     const getHeadphoneTranslationKey = (count) => {
-
         const language = i18next.language
-
-        if(language === 'sr') {
-
-        if (count % 10 === 1 && count % 100 !== 11) {
-            return 'dostupnost-page.text.headphone_one';
-        } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
-            return 'dostupnost-page.text.headphone_few';
-        } else {
-            return 'dostupnost-page.text.headphone_other';
-        }
-        } else if(language === 'en'){
-            if(count === 1) {
+        if (language === 'sr') {
+            if (count % 10 === 1 && count % 100 !== 11) {
                 return 'dostupnost-page.text.headphone_one';
-            }else {
+            } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
+                return 'dostupnost-page.text.headphone_few';
+            } else {
+                return 'dostupnost-page.text.headphone_other';
+            }
+        } else if (language === 'en') {
+            if (count === 1) {
+                return 'dostupnost-page.text.headphone_one';
+            } else {
                 return 'dostupnost-page.text.headphone_other';
             }
         }
@@ -221,8 +160,6 @@ export default function Dostupnost() {
     const laptopTranslation = t(getLaptopTranslationKey(laptopCount), { count: laptopCount });
     const mouseTranslation = t(getMouseTranslationKey(mouseCount), { count: mouseCount });
     const headphoneTranslation = t(getHeadphoneTranslationKey(headphoneCount), { count: headphoneCount });
-
-
 
     return (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.white }}>
@@ -279,11 +216,6 @@ export default function Dostupnost() {
                     </Text>
                 </View>
             </View>
-            <View style={{ flex: 1, marginLeft: 30 }}>
-            <TouchableOpacity>
-              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold" }} onPress={() => navigation.navigate("Logout")}>Logout</Text>
-            </TouchableOpacity>
-          </View>
         </View>
     );
 }

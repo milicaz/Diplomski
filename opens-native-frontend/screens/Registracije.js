@@ -1,29 +1,27 @@
+import { useNavigation } from "@react-navigation/native";
+import Checkbox from "expo-checkbox";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
-  Alert,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import COLORS from "../constants/colors";
-import httpCommon from "../http-common";
-import axios from "axios";
+import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { useNavigation } from "@react-navigation/native";
-import { useTranslation } from "react-i18next";
-import Checkbox from "expo-checkbox";
+import COLORS from "../constants/colors";
+import { AuthContext } from "../contexts/AuthContext";
 
 
 export default function Registracija() {
   const { t } = useTranslation();
-
+  const { register } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
@@ -34,15 +32,12 @@ export default function Registracija() {
   const [godine, setGodine] = useState("");
   const [mestoBoravista, setMestoBoravista] = useState("");
   const [brojTelefona, setBrojTelefona] = useState("");
-
   const [phoneCode, setPhoneCode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-
-  const [isChecked, setIsChecked] = useState(false)
-
 
   const [fontsLoaded] = useFonts({
     "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
@@ -72,65 +67,10 @@ export default function Registracija() {
     { label: t("gender-label.other"), value: "DRUGO" },
   ];
 
-  // State variable to hold the password
-  // const [password, setPassword] = useState('');
-
-  // State variable to track password visibility
   const [showPassword, setShowPassword] = useState(false);
 
-  // Function to toggle the password visibility state
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
-  };
-
-  const [date, setDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
-
-  const getDate = () => {
-    let tempDate = date.toString().split(" ");
-    let mesec = `${tempDate[1]}`;
-    if (mesec === "Jan") {
-      mesec = "01";
-    }
-    return date !== "" ? `${mesec}.${tempDate[2]}.${tempDate[3]}.` : "";
-  };
-
-  const toogleDatepicker = () => {
-    setShowPicker(!showPicker);
-  };
-
-  const onChange = ({ type }, selectedDate) => {
-    if (type == "set") {
-      const currentDate = selectedDate;
-      setDate(currentDate);
-
-      if (Platform.OS === "android") {
-        toogleDatepicker();
-        setDate(currentDate);
-      }
-    } else {
-      toogleDatepicker();
-    }
-
-    const confirmIOSDate = () => {
-      setDate(date);
-      toogleDatepicker();
-    };
-
-    const renderLabel = () => {
-      if (value || isFocus) {
-        return (
-          <Text
-            style={[
-              styles.label,
-              isFocus && { color: "blue", fontFamily: "Montserrat-Regular" },
-            ]}
-          >
-            Dropdown label
-          </Text>
-        );
-      }
-    };
   };
 
   const onChangeEmail = (email) => {
@@ -191,14 +131,23 @@ export default function Registracija() {
   };
 
   const registracija = async () => {
-      if (emailError || passwordError) {
-        // alert("Morate uneti validnu e-mail adresu i validnu lozinku!");
-        Alert.alert(t("alertEmailPasswordError"))
-        return;
-      } else if(!isChecked){
-        Alert.alert(t("alertCheckbox"));
-        return;
-      }
+    if (emailError || passwordError) {
+      Toast.show({
+        type: 'error',
+        text1: t("alertRegistrationFailedHeader"),
+        text2: t("alertEmailPasswordError"),
+        duration: 7000, // Display for 7 seconds
+      });
+      return;
+    } else if (!isChecked) {
+      Toast.show({
+        type: 'error',
+        text1: t("alertRegistrationFailedHeader"),
+        text2: t("alertCheckbox"),
+        duration: 7000, // Display for 7 seconds
+      });
+      return;
+    }
 
     try {
       const posetilac = {
@@ -212,47 +161,26 @@ export default function Registracija() {
         brojTelefona,
       };
 
-      const response = await axios.post(
-        "http://10.0.2.2:8080/api/auth/signupPosetilac",
-        posetilac,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      Alert.alert(t("alertRegistrationSuccess"));
-      navigation.navigate("Welcome");
+      const response = await register(posetilac);
+
+      if (response) {
+        navigation.navigate("Welcome");
+      }
     } catch (error) {
       console.error(t("consoleRegistrationError"), error);
-      Alert.alert(t("alertRegistrationFailed"));
     }
   };
 
   return (
     <ScrollView style={{ backgroundColor: COLORS.white }}>
-      <View style={{ flex: 1 }}>
-        {/* <View>
-        <Image
-          source={require("../assets/opens2.png")}
-          style={{
-            height: 100,
-            margin: "5%",
-            width: "90%",
-            position: "absolute",
-
-          }}
-        />
-      </View> */}
-
+      <View style={{ flex: 1, backgroundColor: COLORS.white }}>
         <View
           style={{
             alignItems: "center",
             justifyContent: "center",
-            marginTop: "10%",
+            marginTop: "15%",
           }}
         >
-          {/* <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 50, marginBottom: 40 }}>Registracija</Text> */}
           <View
             style={{
               width: "80%",
@@ -424,26 +352,6 @@ export default function Registracija() {
               keyboardType="numeric"
               placeholder={t("register-page.input.yearOfBirth")}
             />
-            {/* {showPicker && (
-          <RNDateTimePicker mode = "date" display = "default" value={date} onChange={onChange} />
-        )}
-
-        {showPicker && Platform.OS === "ios" && (
-          <View style = {{ flexDirection: "row", justifyContent: "space-around" }}>
-            <TouchableOpacity style = {{backgroundColor: "#11182711", paddingHorizontal:20}} onPress={toogleDatepicker}>
-              <Text style = {{fontSize: 14, fontWeight: "500", color: "#fff", fontFamily: "Montserrat-Regular"}}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style = {{backgroundColor: "#11182711", paddingHorizontal:20}} onPress={confirmIOSDate}>
-              <Text style = {{fontSize: 14, fontWeight: "500", color: "#fff", fontFamily: "Montserrat-Regular"}}>Confirm</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {!showPicker && (
-          <Pressable onPress={toogleDatepicker}>
-          <TextInput style = {{height: 50, color: "black", fontFamily: "Montserrat-Regular"}} placeholder="Datum rodjenja" editable = {false} value={getDate()} onChangeText={setDate} onPressIn={toogleDatepicker} />
-        </Pressable>
-        )} */}
           </View>
           <View
             style={{
@@ -473,7 +381,7 @@ export default function Registracija() {
                 borderWidth: 1,
                 height: 50,
                 justifyContent: "center",
-                marginBottom: 20,
+                //marginBottom: 20,
                 padding: 20,
                 marginRight: 5,
               }}
@@ -496,7 +404,7 @@ export default function Registracija() {
                 borderWidth: 1,
                 height: 50,
                 justifyContent: "center",
-                marginBottom: 20,
+                //marginBottom: 20,
                 padding: 20,
               }}
             >
@@ -513,9 +421,9 @@ export default function Registracija() {
               />
             </View>
           </View>
-          <View style = {styles.container}>
+          <View style={styles.container}>
             <View style={styles.checkboxContainer}>
-              <Checkbox 
+              <Checkbox
                 value={isChecked}
                 onValueChange={setIsChecked}
                 tintColors={{ true: COLORS.blue, false: undefined }}
@@ -525,17 +433,17 @@ export default function Registracija() {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{ width: "50%", margin: 10 }}>
-            {/* <Button title="Registracija"></Button> */}
+          <View style={{ width: "80%", margin: 10 }}>
             <TouchableOpacity
               onPress={registracija}
               style={{
                 alignItems: "center",
-                backgroundColor: "#61CDCD",
+                borderColor: COLORS.blue, borderWidth: 2, alignItems: 'center',
+                justifyContent: 'center', backgroundColor: COLORS.blue,
                 padding: 13,
               }}
             >
-              <Text style={{ fontFamily: "Montserrat-Regular" }}>
+              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold", color: COLORS.white }}>
                 {t("register-page.button.register")}
               </Text>
             </TouchableOpacity>
@@ -548,8 +456,8 @@ export default function Registracija() {
 
 const styles = StyleSheet.create({
   container: {
-    width: "90%",
-    marginBottom: 20,
+    width: "85%",
+    //marginBottom: 20,
     justifyContent: "center",
     padding: 20
   },
@@ -558,10 +466,10 @@ const styles = StyleSheet.create({
     alignItems: 'center' // Aligns children vertically centered
   },
   text: {
-    fontFamily: "Montserrat-Regular",
+    fontFamily: "Montserrat-Bold",
     marginLeft: 8, // Adjust spacing between checkbox and text
     color: '#0000FF',
-    fontWeight: 'bold',
+    textAlign: 'justify',
     textDecorationLine: 'underline',
   }
 });
