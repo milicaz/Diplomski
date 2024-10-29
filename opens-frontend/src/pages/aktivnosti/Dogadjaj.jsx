@@ -138,6 +138,7 @@ const Dogadjaj = ({ dogadjaj }) => {
                   name="rod"
                   value={ucesnik.rod}
                   onChange={handleChangeUcesnik}
+                  style={{ width: "80%", maxWidth: "90%" }}
                   required
                 >
                   <option value="">Izaberite rod</option>

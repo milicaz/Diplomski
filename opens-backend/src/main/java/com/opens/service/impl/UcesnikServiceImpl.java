@@ -32,8 +32,8 @@ public class UcesnikServiceImpl implements UcesnikService {
 	public String addUcesnik(Ucesnik ucesnik, Long id) {
 		// TODO Auto-generated method stub
 		Ucesnik uc = new Ucesnik(ucesnik.getIme(), ucesnik.getPrezime(),
-				ucesnik.getRod(), ucesnik.getGodine(), ucesnik.getBrojTelefona(),
-				ucesnik.getEmail(), ucesnik.getMestoBoravista(), ucesnik.getOrganizacija(),
+				ucesnik.getRod(), ucesnik.getGodine(), ucesnik.getMestoBoravista(), ucesnik.getBrojTelefona(),
+				ucesnik.getEmail(), ucesnik.getOrganizacija(),
 				ucesnik.isPrigradskoNaselje());
 		
 		
