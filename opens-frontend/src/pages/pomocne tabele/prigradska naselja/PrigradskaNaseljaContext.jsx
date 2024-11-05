@@ -1,79 +1,91 @@
 import { createContext, useEffect, useState } from "react";
-import httpCommon from "../../../http-common";
-import eventBus from "../../../utils/eventBus";
+import useHttpProtected from "../../../hooks/useHttpProtected";
 
 export const PrigradskaNaseljaContext = createContext();
 
-const PrigradskaNaseljaContextProvider = (props) => {
+const PrigradskaNaseljaContextProvider = ({ children, navigate, location }) => {
   const [prigradskaNaselja, setPrigradskaNaselja] = useState([]);
 
+  const httpProtected = useHttpProtected();
+
   useEffect(() => {
-    getNaselje();
+    let isMounted = true;
+    const controller = new AbortController();
+
+    getNaselje(isMounted, controller);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   const sortedPrigradskaNaselja = prigradskaNaselja.sort((a, b) => a.id - b.id);
 
-  const getNaselje = async () => {
+  const getNaselje = async (isMounted, controller) => {
     try {
-      const { data } = await httpCommon.get("/prigradskaNaselja");
-      setPrigradskaNaselja(data);
+      const { data } = await httpProtected.get("/prigradskaNaselja", {
+        signal: controller.signal,
+      });
+      if (isMounted) {
+        setPrigradskaNaselja(data);
+      }
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom fetching prigradska naselja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
   };
 
   const addNaselje = async (addNaselje) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.post("/prigradskaNaselja", addNaselje);
-      getNaselje();
+      await httpProtected.post("/prigradskaNaselja", addNaselje, {
+        signal: controller.signal,
+      });
+      getNaselje(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom dodavanja prigradskog naselja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
   const editNaselje = async (id, editNaselje) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.put(`/prigradskaNaselja/${id}`, editNaselje);
-      getNaselje();
+      await httpProtected.put(`/prigradskaNaselja/${id}`, editNaselje, {
+        signal: controller.signal,
+      });
+      getNaselje(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom fetching prigradska naselja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
   const deleteNaselje = async (id) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.delete(`/prigradskaNaselja/${id}`);
-      getNaselje();
+      await httpProtected.delete(`/prigradskaNaselja/${id}`, {
+        signal: controller.signal,
+      });
+      getNaselje(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom fetching prigradska naselja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
@@ -81,12 +93,13 @@ const PrigradskaNaseljaContextProvider = (props) => {
     <PrigradskaNaseljaContext.Provider
       value={{
         sortedPrigradskaNaselja,
+        getNaselje,
         addNaselje,
         editNaselje,
         deleteNaselje,
       }}
     >
-      {props.children}
+      {children}
     </PrigradskaNaseljaContext.Provider>
   );
 };

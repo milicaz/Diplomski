@@ -2,9 +2,10 @@ import { useContext, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { PrigradskaNaseljaContext } from "../PrigradskaNaseljaContext";
 
-const AddNaseljaForm = () => {
+const AddNaseljaForm = ({ onNaseljeAdded }) => {
   const { addNaselje } = useContext(PrigradskaNaseljaContext);
 
+  const [validated, setValidated] = useState(false);
   const [prigradskoNaselje, setPrigradskoNaselje] = useState({ naziv: "" });
 
   const handleChange = (event) => {
@@ -12,22 +13,31 @@ const AddNaseljaForm = () => {
     setPrigradskoNaselje((prevNaselje) => ({ ...prevNaselje, [name]: value }));
   };
 
-  const handleDodaj = (event) => {
+  const handleDodaj = async (event) => {
     event.preventDefault();
-    addNaselje(prigradskoNaselje);
+    const form = event.currentTarget;
+    if (form.checkValidity()) {
+      await addNaselje(prigradskoNaselje);
+      onNaseljeAdded();
+    }
+    setValidated(true);
   };
 
   return (
-    <Form onSubmit={handleDodaj}>
+    <Form noValidate validated={validated} onSubmit={handleDodaj}>
       <Form.Group className="mb-3">
         <Form.Control
           name="naziv"
           value={prigradskoNaselje.naziv}
           onChange={handleChange}
           type="text"
-          placeholder="Naziv "
+          placeholder="Naziv prigradskog naselja *"
           required
+          isInvalid={validated && !prigradskoNaselje.naziv}
         />
+        <Form.Control.Feedback type="invalid">
+          Unesite naziv prigradskog naselja.
+        </Form.Control.Feedback>
       </Form.Group>
       <Form.Group>
         <div className="d-grid gap-2">

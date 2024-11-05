@@ -14,11 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,6 @@ import com.opens.dto.LoginDTO;
 import com.opens.dto.PosetilacDTO;
 import com.opens.dto.ZaposleniDTO;
 import com.opens.model.RefreshToken;
-import com.opens.model.Zaposleni;
 import com.opens.repository.PosetilacRepository;
 import com.opens.repository.UlogaRepository;
 import com.opens.repository.ZaposleniRepository;
@@ -86,122 +86,54 @@ public class AuthController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
+	/*
+	 * ZAPOSLENI
+	 */
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerZaposleni(@Validated @RequestBody ZaposleniDTO zaposleniDTO) {
-//		if(zaposleniRepo.existsByEmail(zaposleniDTO.getEmail()) || posetilacRepo.existsByEmail(zaposleniDTO.getEmail())) {
-//			logger.warn("USER_REGISTRATION_FAIL - Email " + zaposleniDTO.getEmail() + " is already in use");
-//			return ResponseEntity.badRequest().body("Error: Email is already in use!");
-//		}
 		if (zaposleniService.existsByEmail(zaposleniDTO.getEmail())
 				|| posetilacService.existsByEmail(zaposleniDTO.getEmail())) {
 			logger.warn("USER_REGISTRATION_FAIL - Email " + zaposleniDTO.getEmail() + " is already in use");
 			return ResponseEntity.badRequest().body("Error: Email is already in use!");
 		}
-
-//		Zaposleni zaposleni = new Zaposleni();
-//		zaposleni.setEmail(zaposleniDTO.getEmail());
-//		zaposleni.setPassword(encoder.encode(zaposleniDTO.getPassword()));
-//		zaposleni.setIme(zaposleniDTO.getIme());
-//		zaposleni.setPrezime(zaposleniDTO.getPrezime());
-//		zaposleni.setRod(zaposleniDTO.getRod());
-//		zaposleni.setGodine(zaposleniDTO.getGodine());
-//		zaposleni.setMestoBoravista(zaposleniDTO.getMestoBoravista());
-//		zaposleni.setBrojTelefona(zaposleniDTO.getBrojTelefon());
-//		
-//		Set<String> strUloge = zaposleniDTO.getUloge();
-//		Set<Uloga> uloge = new HashSet<>();
-//		
-//		if(strUloge == null) {
-//			Uloga zaposleniUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN)
-//					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-//			uloge.add(zaposleniUloga);
-//		} else {
-//			strUloge.forEach(uloga -> {
-//				switch (uloga) {
-//				case "admin":
-//					Uloga adminUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN)
-//					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-//					uloge.add(adminUloga);
-//				
-//					break;
-//				case "dogadjaj_admin":
-//					Uloga dogadjajUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN_DOGADJAJ)
-//						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-//					uloge.add(dogadjajUloga);
-//					
-//					break;
-//					
-//				case "super_admin":
-//					Uloga superUloga = ulogaRepo.findByNaziv(EUloge.ROLE_SUPER_ADMIN)
-//						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-//					uloge.add(superUloga);
-//					
-//					break;
-//					
-//				default:
-//					Uloga zaposleniUloga = ulogaRepo.findByNaziv(EUloge.ROLE_ADMIN)
-//						.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-//					uloge.add(zaposleniUloga);
-//				}
-//			});
-//		}
-//		
-//		zaposleni.setUloge(uloge);
-//		zaposleniRepo.save(zaposleni);
 		authService.registerZaposleni(zaposleniDTO);
-//		logger.info("USER_REGISTRATION_SUCCESS - User registered successfully");
-//		return ResponseEntity.ok("User registered successfully!");
-
 		return ResponseEntity.ok(new MessageResponse("Zaposleni je uspešno registrovan!"));
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@Validated @RequestBody LoginDTO loginDTO, HttpServletResponse response) {
+	public ResponseEntity<?> loginZaposleni(@Validated @RequestBody LoginDTO loginDTO, HttpServletResponse response) {
 		try {
 			Authentication authentication = authenticationManager
 					.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
-
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-
-			System.out.println("Authentication u login je: " + authentication);
-
 			ZaposleniDetailsImpl zaposleniDetails = (ZaposleniDetailsImpl) authentication.getPrincipal();
-
-			System.out.println("Authenticated user: " + zaposleniDetails.getEmail());
-			System.out.println("Auth principal login: " + authentication.getPrincipal());
 
 			String jwt = jwtUtils.generateJwtToken(zaposleniDetails);
 			RefreshToken refreshToken = refreshTokenService.createRefreshToken(zaposleniDetails.getEmail());
 
-			// Create cookies for the tokens
-			Cookie jwtCookie = new Cookie("accessToken", jwt);
-//			jwtCookie.setHttpOnly(true);
-//			jwtCookie.setSecure(true);
-			jwtCookie.setPath("/");
-			jwtCookie.setMaxAge(3600);
-
 			Cookie refreshCookie = new Cookie("refreshToken", refreshToken.getToken());
-//			refreshCookie.setHttpOnly(true);
-//	        refreshCookie.setSecure(true);
+			refreshCookie.setHttpOnly(true);
+			// refreshCookie.setSecure(true);
 			refreshCookie.setPath("/");
-			refreshCookie.setMaxAge(86400);
+			refreshCookie.setMaxAge(604800);
 
 			// Add cookies to the response
-			response.addCookie(jwtCookie);
 			response.addCookie(refreshCookie);
 
 			List<String> uloge = zaposleniDetails.getAuthorities().stream().map(item -> item.getAuthority())
 					.collect(Collectors.toList());
 
 			return ResponseEntity
-					.ok(new JwtResponse(null, null, zaposleniDetails.getId(), zaposleniDetails.getEmail(), uloge));
+					.ok(new JwtResponse(jwt, null, zaposleniDetails.getId(), zaposleniDetails.getEmail(), uloge));
 		} catch (Exception e) {
-			System.out.println("Login failed: " + e.getMessage());
+			logger.error("LOGIN FAILED: {}", e.getMessage());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
 		}
 	}
+	
+	
 
-	@PostMapping("/logoutZaposleniNovi")
+	@PostMapping("/logoutZaposleni")
 	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 		// Read the refresh token from the HttpOnly cookie
 
@@ -232,19 +164,12 @@ public class AuthController {
 				// Optionally, clear the security context if needed
 				// SecurityContextHolder.clearContext(); // Uncomment if needed
 
-				Cookie jwtCookie = new Cookie("accessToken", null);
-				jwtCookie.setHttpOnly(true);
-				jwtCookie.setSecure(true);
-				jwtCookie.setPath("/");
-				jwtCookie.setMaxAge(0); // This will delete the cookie
-
 				Cookie refreshCookie = new Cookie("refreshToken", null);
 				refreshCookie.setHttpOnly(true);
 				refreshCookie.setSecure(true);
 				refreshCookie.setPath("/");
 				refreshCookie.setMaxAge(0); // This will delete the cookie
 
-				response.addCookie(jwtCookie);
 				response.addCookie(refreshCookie);
 
 				return ResponseEntity.ok(new MessageResponse("Logout successful."));
@@ -255,54 +180,89 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No refresh token found.");
 		}
 	}
+	
+	@PostMapping("/refreshtokenZaposleni")
+	public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+		String requestRefreshToken = extractCookie(request, "refreshToken");
+		System.out.println("Refresh token u requestu: " + requestRefreshToken);
 
+		if (requestRefreshToken == null) {
+			logger.error("REFRESH TOKEN ZAPOSLENI - Refresh token not found in cookies");
+			deleteCookies(response);
+			return ResponseEntity.badRequest().body("Refresh token not found in cookies!");
+		}
+
+		Optional<RefreshToken> optionalRefreshToken = refreshTokenService.findByToken(requestRefreshToken);
+		if (optionalRefreshToken.isPresent()) {
+			try {
+				RefreshToken refreshToken = optionalRefreshToken.get();
+				RefreshToken verifiedToken = refreshTokenService.verifyExpiration(refreshToken);
+
+				if (verifiedToken != null && verifiedToken.getZaposleni() != null) {
+					String email = verifiedToken.getZaposleni().getEmail();
+					List<GrantedAuthority> authorities = verifiedToken.getZaposleni().getUloge().stream()
+							.map(uloga -> new SimpleGrantedAuthority(uloga.getNaziv().name())).collect(Collectors.toList());
+					ZaposleniDetailsImpl zaposleniDetails = new ZaposleniDetailsImpl(
+							verifiedToken.getZaposleni().getId(), email, verifiedToken.getZaposleni().getPassword(),
+							authorities // Set appropriate authorities if needed
+					);
+
+					String token = jwtUtils.generateJwtToken(zaposleniDetails);
+					return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+				} else {
+					logger.warn("REFRESH TOKEN ZAPOSLENI - Refresh token has expired");
+					deleteCookies(response);
+					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token has expired!");
+				}
+			} catch (TokenRefreshException e) {
+				logger.warn("REFRESH TOKEN ZAPOSLENI - {}", e.getMessage());
+				deleteCookies(response);
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+			}
+		} else {
+			logger.warn("REFRESH TOKEN ZAPOSLENI - Refresh token is not in database");
+			deleteCookies(response);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token is not in database!");
+		}
+	}
+
+	private String extractCookie(HttpServletRequest request, String name) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (name.equals(cookie.getName())) {
+					return cookie.getValue();
+				}
+			}
+		}
+		return null;
+	}
+
+	private void deleteCookies(HttpServletResponse response) {
+		deleteCookie(response, "refreshToken");
+	}
+
+	private void deleteCookie(HttpServletResponse response, String cookieName) {
+		Cookie cookie = new Cookie(cookieName, null);
+		cookie.setHttpOnly(true);
+		cookie.setSecure(true);
+		cookie.setPath("/");
+		cookie.setMaxAge(0); // This will delete the cookie
+		response.addCookie(cookie);
+	}
+
+	/*
+	 * POSETILAC
+	 */
 	@PostMapping("/signupPosetilac")
 	public ResponseEntity<?> registerPosetilac(@Validated @RequestBody PosetilacDTO posetilacDTO) {
-//		if(posetilacRepo.existsByEmail(posetilacDTO.getEmail()) || zaposleniRepo.existsByEmail(posetilacDTO.getEmail())) {
-//			logger.warn("USER_REGISTRATION_FAIL - Email " + posetilacDTO.getEmail() + " is already in use");
-//			return ResponseEntity.badRequest().body("Error: Email is already in use!");
-//		}
 		if (posetilacService.existsByEmail(posetilacDTO.getEmail())
 				|| zaposleniService.existsByEmail(posetilacDTO.getEmail())) {
 			logger.warn("USER_REGISTRATION_FAIL - Email " + posetilacDTO.getEmail() + " is already in use");
-			return ResponseEntity.badRequest().body("Error: Email is already in use!");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Email is already in use!");
 		}
-
-//		Uloga uloga = ulogaRepo.findOneByNaziv(EUloge.ROLE_POSETILAC);
-//		
-//		Posetilac posetilac = new Posetilac();
-//		posetilac.setEmail(posetilacDTO.getEmail());
-//		posetilac.setPassword(encoder.encode(posetilacDTO.getPassword()));
-//		posetilac.setIme(posetilacDTO.getIme());
-//		posetilac.setPrezime(posetilacDTO.getPrezime());
-//		posetilac.setRod(posetilacDTO.getRod());
-//		posetilac.setGodine(posetilacDTO.getGodine());
-//		posetilac.setMestoBoravista(posetilacDTO.getMestoBoravista());
-//		posetilac.setBrojTelefona(posetilacDTO.getBrojTelefona());
-//		posetilac.setUloga(uloga);
-//		
-//		posetilacRepo.save(posetilac);
-
-//		try {
-//			ProfilnaSlika profilnaSlika = new ProfilnaSlika();
-//			
-//			Path imagePath = Paths.get(ResourceUtils.getURL("classpath:images/profile.png").toURI());
-//			String imageName = imagePath.getFileName().toString();
-//			profilnaSlika.setTipSlike(getFileExtension(imageName));
-//			profilnaSlika.setProfilnaSlika(Files.readAllBytes(imagePath));
-//			
-//			profilnaSlika.setPosetilac(posetilac);
-//			
-//			profilnaSlikaRepository.save(profilnaSlika);
-//		}catch(Exception e) {}
-
-//		logger.info("USER_REGISTRATION_SUCCESS - User registered successfully");
-//		return ResponseEntity.ok("User registered successfully!");
-
 		authService.registerPosetilac(posetilacDTO);
-
 		return ResponseEntity.ok(new MessageResponse("Posetilac je uspešno registrovan!"));
-
 	}
 
 	@PostMapping("/loginPosetilac")
@@ -431,139 +391,6 @@ public class AuthController {
 			System.out.println("Usao je u else kad refresh token ne postoji u bazi ");
 			throw new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!");
 		}
-	}
-
-	@PostMapping("/refreshtokenZaposleni")
-	public ResponseEntity<?> refreshtokenZaposleni(HttpServletRequest request, HttpServletResponse response) {
-		// Extract the refresh token from the cookies
-		String requestRefreshToken = null;
-		Cookie[] cookies = request.getCookies();
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if ("refreshToken".equals(cookie.getName())) {
-					requestRefreshToken = cookie.getValue();
-					break;
-				}
-			}
-		}
-
-		if (requestRefreshToken == null) {
-			return ResponseEntity.badRequest().body("Refresh token not found in cookies!");
-		}
-
-		// Find the refresh token in the database
-		Optional<RefreshToken> optionalRefreshToken = refreshTokenService.findByToken(requestRefreshToken);
-
-		if (optionalRefreshToken.isPresent()) {
-			RefreshToken refreshToken = optionalRefreshToken.get();
-			System.out.println("Usao je u prvi if " + optionalRefreshToken.get().getExpiryDate());
-
-			// Verify the token's expiration
-			RefreshToken verifiedToken = refreshTokenService.verifyExpiration(refreshToken);
-			if (verifiedToken != null) {
-				String email;
-				String userType;
-
-				// Determine the type of user and get the email
-				if (verifiedToken.getZaposleni() != null) {
-					email = verifiedToken.getZaposleni().getEmail();
-					userType = "Zaposleni";
-				} else if (verifiedToken.getPosetilac() != null) {
-					email = verifiedToken.getPosetilac().getEmail();
-					userType = "Posetilac";
-				} else {
-					return ResponseEntity.badRequest().body("No associated user found!");
-				}
-
-				// Generate a new JWT token using the user's email
-				String token;
-				if ("Zaposleni".equals(userType)) {
-					ZaposleniDetailsImpl zaposleniDetails = new ZaposleniDetailsImpl(
-							verifiedToken.getZaposleni().getId(), email, verifiedToken.getZaposleni().getPassword(),
-							null // Set appropriate authorities if needed
-					);
-					token = jwtUtils.generateJwtToken(zaposleniDetails);
-				} else {
-					if (Instant.now()
-							.compareTo(optionalRefreshToken.get().getExpiryDate().minus(1, ChronoUnit.DAYS)) >= 0
-							&& Instant.now().compareTo(optionalRefreshToken.get().getExpiryDate()) < 0) {
-						System.out.println("Usao je u dobar if");
-						RefreshToken refToken = optionalRefreshToken.get();
-						String newAccessToken;
-						RefreshToken newRefreshToken;
-
-						if (refToken.getPosetilac() != null) {
-							email = refToken.getPosetilac().getEmail();
-							userType = "Posetilac";
-							PosetilacDetailsImpl posetilacDetails = new PosetilacDetailsImpl(
-									refToken.getPosetilac().getId(), email, refToken.getPosetilac().getPassword(),
-									null);
-							refreshTokenService.delete(refToken);
-							newRefreshToken = refreshTokenService.createRefreshToken(email);
-							newAccessToken = jwtUtils.generateJwtToken(posetilacDetails);
-						} else {
-							return ResponseEntity.badRequest().body("No associated user found!");
-						}
-						return ResponseEntity.ok(new TokenRefreshResponse(newAccessToken, newRefreshToken.getToken()));
-					}
-
-					System.out.println("Usao je u else");
-					PosetilacDetailsImpl posetilacDetails = new PosetilacDetailsImpl(
-							verifiedToken.getPosetilac().getId(), email, verifiedToken.getPosetilac().getPassword(),
-							null // Set appropriate authorities if needed
-					);
-					token = jwtUtils.generateJwtToken(posetilacDetails);
-				}
-
-				// Return a response with the new JWT token and the old refresh token
-				return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
-			} else {
-				System.out.println("Usao je u else kad refresh token ne postoji");
-				Cookie jwtCookie = new Cookie("accessToken", null);
-				jwtCookie.setHttpOnly(true);
-				jwtCookie.setSecure(true);
-				jwtCookie.setPath("/");
-				jwtCookie.setMaxAge(0); // This will delete the cookie
-
-				Cookie refreshCookie = new Cookie("refreshToken", null);
-				refreshCookie.setHttpOnly(true);
-				refreshCookie.setSecure(true);
-				refreshCookie.setPath("/");
-				refreshCookie.setMaxAge(0); // This will delete the cookie
-
-				response.addCookie(jwtCookie);
-				response.addCookie(refreshCookie);
-
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token has expired!");
-			}
-		} else {
-			System.out.println("Usao je u else kad refresh token ne postoji u bazi ");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token is not in database!");
-		}
-	}
-
-	@GetMapping("/zaposleni")
-	public ResponseEntity<?> getZaposleniData(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		System.out.println("Cookies: " + cookies);
-		String accessToken = null;
-
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if ("accessToken".equals(cookie.getName())) {
-					accessToken = cookie.getValue();
-					break;
-				}
-			}
-		}
-
-		if (accessToken != null) {
-			String zaposleniEmail = jwtUtils.getEmailFromJwtToken(accessToken);
-			Zaposleni zaposleni = zaposleniService.findByEmail(zaposleniEmail).get();
-			return ResponseEntity.ok(zaposleni);
-		}
-
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No accessToken");
 	}
 
 }

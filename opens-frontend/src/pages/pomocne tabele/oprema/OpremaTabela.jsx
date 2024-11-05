@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Form, Modal, Table } from "react-bootstrap";
 import { FaSquarePlus } from "react-icons/fa6";
 import Pagination from "../../Pagination";
@@ -7,19 +7,11 @@ import { OpremaContext } from "./OpremaContext";
 import AddOpremaForm from "./modal/AddOpremaForm";
 
 export const OpremaTabela = () => {
-  const { sortedOprema } = useContext(OpremaContext);
+  const { sortedOprema, fetchOpremu } = useContext(OpremaContext);
 
-  //za prikazivanje modalnog dijaloga
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
-
-  /* Za zatvaranje modalnog dijaloga
-     Zatvara se kada se izmeni nesto u opremi tj kada se doda nova oprema
-   */
-  useEffect(() => {
-    handleClose();
-  }, [sortedOprema]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -33,6 +25,12 @@ export const OpremaTabela = () => {
 
   const onInputChange = (e) => {
     setLimit(e.target.value);
+  };
+
+  const handleOpremaAdded = async () => {
+    const controller = new AbortController();
+    fetchOpremu(true, controller);
+    handleClose();
   };
 
   return (
@@ -112,7 +110,7 @@ export const OpremaTabela = () => {
           <Modal.Title>Dodaj opremu</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AddOpremaForm />
+          <AddOpremaForm onOpremaAdded={handleOpremaAdded} />
         </Modal.Body>
       </Modal>
     </>

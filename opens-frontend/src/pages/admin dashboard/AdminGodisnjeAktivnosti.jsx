@@ -1,6 +1,6 @@
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import React from "react";
 import { Pie } from "react-chartjs-2";
-import ChartDataLabels from "chartjs-plugin-datalabels";
 
 export const AdminGodisnjeAktivnosti = ({ aktivnosti }) => {
   const currentYear = new Date().getFullYear();

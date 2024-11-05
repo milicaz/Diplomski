@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -13,8 +13,8 @@ import {
 import { BiGame, BiSolidJoystick } from "react-icons/bi";
 import { FaHeadphones, FaLaptop } from "react-icons/fa";
 import { FaComputerMouse } from "react-icons/fa6";
-import httpCommon from "../../http-common";
-import eventBus from "../../utils/eventBus";
+import { useLocation, useNavigate } from "react-router-dom";
+import useHttpProtected from "../../hooks/useHttpProtected";
 import Pagination from "../Pagination";
 
 export const OmladinskiCentarTrenutno = ({
@@ -26,6 +26,10 @@ export const OmladinskiCentarTrenutno = ({
   const [selectedTipOpreme, setSelectedTipOpreme] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastVariant, setToastVariant] = useState("");
@@ -33,79 +37,71 @@ export const OmladinskiCentarTrenutno = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(15);
 
-  const fetchTrenutno = useCallback(async () => {
+  const fetchData = async (isMounted, controller) => {
     try {
-      const { data } = await httpCommon.get(
-        `/posete/${mestoPoseteId}/datumPosete`
-      );
-      setTrenutno(data);
-    } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error(
-          "Greška prilikom fetching trenutnih poseta za mesta posete: ",
-          error
-        );
+      const requests = [
+        httpProtected.get(`/posete/${mestoPoseteId}/datumPosete`, {
+          signal: controller.signal,
+        }),
+        httpProtected.get("/tipoviOpreme", { signal: controller.signal }),
+      ];
+      const [poseteData, tipoviOpremeData] = await Promise.all(requests);
+
+      if (isMounted) {
+        setTrenutno(poseteData.data);
+        setTipoviOpreme(tipoviOpremeData.data);
       }
-    }
-  }, [setTrenutno, mestoPoseteId]);
-
-  const fetchTipoviOpreme = useCallback(async () => {
-    try {
-      const { data } = await httpCommon.get("/tipoviOpreme");
-      setTipoviOpreme(data);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error("Greška prilikom fetching tipova opreme: ", error);
-      }
-    }
-  }, [setTipoviOpreme]);
-
-  useEffect(() => {
-    fetchTrenutno();
-    fetchTipoviOpreme();
-  }, []);
-
-  const handleCheckOut = async (id) => {
-    try {
-      await httpCommon.put(`/posete/${id}/odjava`);
-      fetchTrenutno();
-      fetchTipoviOpreme();
-    } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error("Error:", error);
+      if (error.name !== "CanceledError") {
+        console.error("Greška prilikom fetching podataka: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
   };
 
-  const handleCheckOutOpremu = async (id) => {
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    fetchData(isMounted, controller);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, []);
+
+  const handleCheckOut = async (id) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.put(`/posete/${id}/oprema`);
-      fetchTrenutno();
-      fetchTipoviOpreme();
+      await httpProtected.put(`/posete/${id}/odjava`, {
+        signal: controller.signal,
+      });
+      fetchData(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error("Error:", error);
+      if (error.name !== "CanceledError") {
+        console.error("Greška prilikom check out-a:", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
+    }
+  };
+
+  const handleCheckOutOpremu = async (id) => {
+    const controller = new AbortController();
+    try {
+      await httpProtected.put(`/posete/${id}/oprema`, {
+        signal: controller.signal,
+      });
+      fetchData(true, controller);
+    } catch (error) {
+      if (error.name !== "CanceledError") {
+        console.error("Greška prilikom check out-a opreme:", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    } finally {
+      controller.abort();
     }
   };
 

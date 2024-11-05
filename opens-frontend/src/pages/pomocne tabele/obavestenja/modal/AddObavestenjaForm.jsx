@@ -5,7 +5,7 @@ import "react-quill/dist/quill.snow.css"; // Import React Quill's CSS
 import TurndownService from "turndown";
 import { ObavestenjeContext } from "../ObavestenjaContext";
 
-export const AddObavestenjaForm = () => {
+export const AddObavestenjaForm = ({ onObavestenjeAdded }) => {
   const { addObavestenje } = useContext(ObavestenjeContext);
 
   const [validated, setValidated] = useState(false);
@@ -28,24 +28,25 @@ export const AddObavestenjaForm = () => {
   const { naziv, tekst, pocetakPrikazivanja, krajPrikazivanja, prioritet } =
     newObavestenje;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    if (tekst.trim() === "") {
+    const handleSubmit = async(e) => {
+      e.preventDefault();
+      const form = e.currentTarget;
+      if (tekst.trim() === "") {
+        setValidated(true);
+        return;
+      }
+      if (form.checkValidity()) {
+        const turndownService = new TurndownService();
+        const markdownText = turndownService.turndown(tekst);
+        const updatedObavestenje = {
+          ...newObavestenje,
+          tekst: markdownText,
+        };
+        await addObavestenje(updatedObavestenje);
+        onObavestenjeAdded();
+      }
       setValidated(true);
-      return;
-    }
-    if (form.checkValidity()) {
-      const turndownService = new TurndownService();
-      const markdownText = turndownService.turndown(tekst);
-      const updatedObavestenje = {
-        ...newObavestenje,
-        tekst: markdownText,
-      };
-      addObavestenje(updatedObavestenje);
-    }
-    setValidated(true);
-  };
+    };
 
   const modules = {
     toolbar: [

@@ -1,12 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
+import { FaSquarePlus } from "react-icons/fa6";
 import Pagination from "../Pagination";
 import RegistracijaZaposleniForm from "./modal/RegistracijaZaposleniForm";
 import Zaposleni from "./Zaposleni";
 import { ZaposleniContext } from "./ZaposleniContext";
 
 const ZaposleniList = () => {
-  const { sortedZaposleni } = useContext(ZaposleniContext);
+  const { sortedZaposleni, getZaposleni } = useContext(ZaposleniContext);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [zaposleniPerPage, setZaposleniPerPage] = useState(10);
@@ -15,13 +16,8 @@ const ZaposleniList = () => {
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
 
-  useEffect(() => {
-    handleClose();
-  }, [sortedZaposleni]);
-
   const indexOfLastZaposleni = currentPage * zaposleniPerPage;
   const indexOfFirstZaposleni = indexOfLastZaposleni - zaposleniPerPage;
-  // console.log("Sorted zaposleni: " + sortedZaposleni)
   const currentZaposleni = sortedZaposleni.slice(
     indexOfFirstZaposleni,
     indexOfLastZaposleni
@@ -31,6 +27,12 @@ const ZaposleniList = () => {
 
   const onInputChange = (e) => {
     setZaposleniPerPage(e.target.value);
+  };
+
+  const handleZaposleniAdded = async () => {
+    const controller = new AbortController();
+    await getZaposleni(true, controller);
+    handleClose();
   };
 
   return (
@@ -65,21 +67,20 @@ const ZaposleniList = () => {
               className="btn btn-success"
               data-toggle="modal"
             >
-              <i className="material-icons">&#xE147;</i>
-              <span>Registruj novog zaposlenog</span>
+              <FaSquarePlus size={20} className="mx-1" /> Registruj novog
+              zaposlenog
             </Button>
           </div>
         </div>
       </div>
       <div>
-        <table className="image-table">
+        <table className="table table-striped table-hover table-bordered zaposleni-table">
           <thead>
             <tr>
               <th>Email</th>
-              <th>Ime</th>
-              <th>Prezime</th>
+              <th>Ime i prezime</th>
               <th>Rod</th>
-              <th>Godine</th>
+              <th>Godina rođenja</th>
               <th>Mesto boravišta</th>
               <th>Broj telefona</th>
               <th>Uloge</th>
@@ -108,7 +109,7 @@ const ZaposleniList = () => {
             <Modal.Title>Registracija zaposlenog</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <RegistracijaZaposleniForm handleClose={handleClose} />
+            <RegistracijaZaposleniForm handleClose={handleZaposleniAdded} />
           </Modal.Body>
         </Modal>
       </div>

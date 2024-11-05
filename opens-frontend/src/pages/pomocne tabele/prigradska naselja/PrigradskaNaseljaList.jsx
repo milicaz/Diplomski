@@ -1,12 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
+import { FaSquarePlus } from "react-icons/fa6";
 import Pagination from "../../Pagination";
 import PrigradskaNaselja from "./PrigradskaNaselja";
 import { PrigradskaNaseljaContext } from "./PrigradskaNaseljaContext";
 import AddNaseljaForm from "./modal/AddNaseljaForm";
 
 const PrigradskaNaseljaList = () => {
-  const { sortedPrigradskaNaselja } = useContext(PrigradskaNaseljaContext);
+  const { sortedPrigradskaNaselja, getNaselje } = useContext(
+    PrigradskaNaseljaContext
+  );
 
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
@@ -25,12 +28,14 @@ const PrigradskaNaseljaList = () => {
     sortedPrigradskaNaselja.length / naseljaPerPage
   );
 
-  useEffect(() => {
-    handleClose();
-  }, [sortedPrigradskaNaselja]);
-
   const onInputChange = (e) => {
     setNaseljaPerPage(e.target.value);
+  };
+
+  const handleNaseljeAdded = async () => {
+    const controller = new AbortController();
+    await getNaselje(true, controller);
+    handleClose();
   };
 
   return (
@@ -65,8 +70,8 @@ const PrigradskaNaseljaList = () => {
               className="btn btn-success"
               data-toggle="modal"
             >
-              <i className="material-icons">&#xE147;</i>
-              <span>Dodaj novo prigradsko naselje</span>
+              <FaSquarePlus size={20} className="mx-1" /> Dodaj novo prigradsko
+              naselje
             </Button>
           </div>
         </div>
@@ -100,7 +105,7 @@ const PrigradskaNaseljaList = () => {
           <Modal.Title>Dodaj prigradsko naselje</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AddNaseljaForm />
+          <AddNaseljaForm onNaseljeAdded={handleNaseljeAdded} />
         </Modal.Body>
       </Modal>
     </>

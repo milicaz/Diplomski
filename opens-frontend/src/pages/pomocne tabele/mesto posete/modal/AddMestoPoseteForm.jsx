@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { MestoPoseteContext } from "../MestoPoseteContext";
 
-const AddMestoPoseteForm = () => {
+const AddMestoPoseteForm = ({onMestoPoseteAdded}) => {
   const { addMestoPosete } = useContext(MestoPoseteContext);
 
   const [validated, setValidated] = useState(false);
@@ -17,11 +17,12 @@ const AddMestoPoseteForm = () => {
 
   const { nazivMesta, ukupanBrojMesta } = newMestoPosete;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
     if (form.checkValidity()) {
-      addMestoPosete(newMestoPosete);
+      await addMestoPosete(newMestoPosete);
+      onMestoPoseteAdded();
     }
     setValidated(true);
   };

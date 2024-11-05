@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { FaSquarePlus } from "react-icons/fa6";
 import Pagination from "../../Pagination";
@@ -7,19 +7,11 @@ import { TipOprContext } from "./TipOprContext";
 import AddTipOpremeForm from "./modal/AddTipOpremeForm";
 
 const TipOprList = () => {
-  const { sortedTipoviOpreme } = useContext(TipOprContext);
+  const { sortedTipoviOpreme, fetchTipoveOpreme } = useContext(TipOprContext);
 
-  //za prikazivanje modalnog dijaloga
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
-
-  /* Za zatvaranje modalnog dijaloga
-    Zatvara se kada se izmeni nesto u tipovima opreme tj kada se doda novi tip opreme
-  */
-  useEffect(() => {
-    handleClose();
-  }, [sortedTipoviOpreme]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [tipPerPage, setTipPerPage] = useState(10);
@@ -36,6 +28,12 @@ const TipOprList = () => {
 
   const onInputChange = (e) => {
     setTipPerPage(e.target.value);
+  };
+
+  const handleTipOpremeAdded = async () => {
+    const controller = new AbortController();
+    await fetchTipoveOpreme(true, controller);
+    handleClose();
   };
 
   return (
@@ -115,7 +113,7 @@ const TipOprList = () => {
           <Modal.Title>Dodaj tip opreme</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AddTipOpremeForm />
+          <AddTipOpremeForm onTipOpremeAdded={handleTipOpremeAdded} />
         </Modal.Body>
       </Modal>
     </>

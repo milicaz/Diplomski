@@ -1,14 +1,23 @@
 import { createContext, useEffect, useState } from "react";
-import httpCommon from "../../../http-common";
-import eventBus from "../../../utils/eventBus";
+import useHttpProtected from "../../../hooks/useHttpProtected";
 
 export const MestoPoseteContext = createContext();
 
-const MestoPoseteContextProvider = (props) => {
+const MestoPoseteContextProvider = ({ children, navigate, location }) => {
   const [mestaPosete, setMestaPosete] = useState([]);
 
+  const httpProtected = useHttpProtected();
+
   useEffect(() => {
-    fetchMestaPosete();
+    let isMounted = true;
+    const controller = new AbortController();
+
+    fetchMestaPosete(isMounted, controller);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   const sortedMestaPosete =
@@ -16,68 +25,70 @@ const MestoPoseteContextProvider = (props) => {
       ? mestaPosete.sort((a, b) => (a.id < b.id ? -1 : 1))
       : [];
 
-  //react axios get method
-  const fetchMestaPosete = async () => {
+  const fetchMestaPosete = async (isMounted, controller) => {
     try {
-      const { data } = await httpCommon.get("/mestaPosete");
-      setMestaPosete(data);
+      const { data } = await httpProtected.get("/mestaPosete", {
+        signal: controller.signal,
+      });
+      if (isMounted) {
+        setMestaPosete(data);
+      }
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom fetching mesta posete: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
   };
 
   const addMestoPosete = async (newMestoPosete) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.post("/mestaPosete", newMestoPosete);
-      fetchMestaPosete();
+      await httpProtected.post("/mestaPosete", newMestoPosete, {
+        signal: controller.signal,
+      });
+      fetchMestaPosete(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom dodavanja mesta posete: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
   const editMestoPosete = async (id, updatedMestoPosete) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.put(`/mestaPosete/${id}`, updatedMestoPosete);
-      fetchMestaPosete();
+      await httpProtected.put(`/mestaPosete/${id}`, updatedMestoPosete, {
+        signal: controller.signal,
+      });
+      fetchMestaPosete(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom izmene mesta posete: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
   const deleteMestoPosete = async (id) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.delete(`/mestaPosete/${id}`);
-      fetchMestaPosete();
+      await httpProtected.delete(`/mestaPosete/${id}`, {
+        signal: controller.signal,
+      });
+      fetchMestaPosete(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom brisanja mesta posete: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
@@ -85,12 +96,13 @@ const MestoPoseteContextProvider = (props) => {
     <MestoPoseteContext.Provider
       value={{
         sortedMestaPosete,
+        fetchMestaPosete,
         addMestoPosete,
         editMestoPosete,
         deleteMestoPosete,
       }}
     >
-      {props.children}
+      {children}
     </MestoPoseteContext.Provider>
   );
 };

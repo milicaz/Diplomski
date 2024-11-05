@@ -1,10 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Form, Toast } from "react-bootstrap";
-import httpCommon from "../../../../http-common";
+import { useLocation, useNavigate } from "react-router-dom";
+import useHttpProtected from "../../../../hooks/useHttpProtected";
 import { OpremaContext } from "../OpremaContext";
 
-export const EditOpremaForm = ({ updatedOprema }) => {
+export const EditOpremaForm = ({ updatedOprema, onOpremaEdited }) => {
   const { editOpremu } = useContext(OpremaContext);
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [validated, setValidated] = useState(false);
 
@@ -12,15 +16,30 @@ export const EditOpremaForm = ({ updatedOprema }) => {
   const id = updatedOprema.id;
   const [tipOpremeID, setTipOpremeID] = useState(updatedOprema.tipOpreme.id);
   const [serijskiBroj, setSerijskiBroj] = useState(updatedOprema.serijskiBroj);
+  const [isFetched, setIsFetched] = useState(false); // Track if data has been fetched
 
   const fetchTipoveOpreme = async () => {
-    const { data } = await httpCommon.get("/tipoviOpreme");
-    setTipoveOpreme(data);
+    if (!isFetched) {
+      const controller = new AbortController();
+      try {
+        const { data } = await httpProtected.get("/tipoviOpreme", {
+          signal: controller.signal,
+        });
+        setTipoveOpreme(data);
+        setIsFetched(true);
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Greška prilikom fetching tipove opreme: ", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      } finally {
+        controller.abort();
+      }
+    }
   };
-
   useEffect(() => {
     fetchTipoveOpreme();
-  });
+  }, []);
 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -40,8 +59,8 @@ export const EditOpremaForm = ({ updatedOprema }) => {
 
     if (form.checkValidity() && tipOpremeID !== "") {
       handleShowToast("Uspešno ste dodali novu opremu", "success");
-      console.log("Saljem: " + JSON.stringify(editedOprema));
-      editOpremu(id, editedOprema);
+      await editOpremu(id, editedOprema);
+      onOpremaEdited();
     } else {
       handleShowToast("Popunite sve obavezne podatke.", "danger");
     }
@@ -109,4 +128,5 @@ export const EditOpremaForm = ({ updatedOprema }) => {
     </>
   );
 };
+
 export default EditOpremaForm;

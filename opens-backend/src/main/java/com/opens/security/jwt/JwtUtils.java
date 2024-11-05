@@ -2,10 +2,13 @@ package com.opens.security.jwt;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.opens.security.service.PosetilacDetailsImpl;
@@ -33,7 +36,9 @@ public class JwtUtils {
 	   
 	
 	public String generateJwtToken(ZaposleniDetailsImpl zaposleniPrincipal) {
-		return Jwts.builder().setSubject(zaposleniPrincipal.getEmail()).claim("userType", "Zaposleni").setIssuedAt(new Date())
+		List<String> authorities = zaposleniPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+				.collect(Collectors.toList());
+		return Jwts.builder().setSubject(zaposleniPrincipal.getEmail()).claim("userType", "Zaposleni").claim("roles", authorities).setIssuedAt(new Date())
 				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
 				.signWith(key(), SignatureAlgorithm.HS512).compact();
 

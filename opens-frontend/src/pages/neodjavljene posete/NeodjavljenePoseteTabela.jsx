@@ -9,50 +9,63 @@ import {
   Container,
   Row,
 } from "react-bootstrap";
-import httpCommon from "../../http-common";
-import eventBus from "../../utils/eventBus";
+import { useLocation, useNavigate } from "react-router-dom";
+import useHttpProtected from "../../hooks/useHttpProtected";
 
 export const NeodjavljenePoseteTabela = () => {
   const [neodjavljene, setNeodjavljene] = useState([]);
 
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
     const fetchNeodjavljenePosete = async () => {
       try {
-        const response = await httpCommon.get("/posete/neodjavljene");
-        setNeodjavljene(response.data);
+        const { data } = await httpProtected.get("/posete/neodjavljene", {
+          signal: controller.signal,
+        });
+        if (isMounted) {
+          setNeodjavljene(data);
+        }
       } catch (error) {
-        // Handle errors, checking for logout conditions
-        if (
-          error.response &&
-          (error.response.status === 401 || error.response.status === 400)
-        ) {
-          eventBus.dispatch("logout");
-        } else {
+        if (error.name !== "CanceledError") {
           console.error(
             "Greška prilikom fetching neodjavljane posete: ",
             error
           );
+          navigate("/logovanje", { state: { from: location }, replace: true });
         }
       }
     };
+
     fetchNeodjavljenePosete();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   const handleVracenaOprema = async (id) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.put(`/posete/${id}/nevracene`);
+      await httpProtected.put(`/posete/${id}/nevracene`, {
+        signal: controller.signal,
+      });
       setNeodjavljene((prevNeodjavljene) =>
         prevNeodjavljene.filter((poseta) => poseta.id !== id)
       );
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Error:", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 

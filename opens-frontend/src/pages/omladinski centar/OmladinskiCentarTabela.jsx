@@ -12,9 +12,8 @@ import {
 } from "react-bootstrap";
 import { FaRegFilePdf } from "react-icons/fa";
 import { RiFileExcel2Fill } from "react-icons/ri";
-
-import httpCommon from "../../http-common";
-import eventBus from "../../utils/eventBus";
+import { useLocation, useNavigate } from "react-router-dom";
+import useHttpProtected from "../../hooks/useHttpProtected";
 import Pagination from "../Pagination";
 import OmladinskiCentarTabelaItem from "./OmladinskiCentarTabelaItem";
 
@@ -23,6 +22,10 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
   const [searchInput, setSearchInput] = useState("");
   const [dateInput, setDateInput] = useState(null);
   const [sortOrder, setSortOrder] = useState("ascending");
+
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -58,47 +61,38 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
     setFooterImageId(logoId);
   };
 
-  const fetchPosete = async () => {
-    try {
-      const { data } = await httpCommon.get(`/posete/${mestoPoseteId}`);
-      setPosete(data);
-    } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error(
-          "Greška prilikom fetching poseta po mestu posete: ",
-          error
-        );
-      }
-    }
-  };
-
-  const fetchLogo = async () => {
-    try {
-      const { data } = await httpCommon.get("/logoi");
-      setLogos(data);
-    } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error(
-          "An error occurred while fetching tipove opreme: ",
-          error
-        );
-      }
-    }
-  };
-
   useEffect(() => {
-    fetchPosete();
-    fetchLogo();
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchData = async () => {
+      try {
+        const requests = [
+          httpProtected.get(`/posete/${mestoPoseteId}`, {
+            signal: controller.signal,
+          }),
+          httpProtected.get("/logoi", { signal: controller.signal }),
+        ];
+        const [poseteData, logoiData] = await Promise.all(requests);
+
+        if (isMounted) {
+          setPosete(poseteData.data);
+          setLogos(logoiData.data);
+        }
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Greška prilikom fetching podataka: ", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, [mestoPoseteId]);
 
   if (posete.length === 0) {
@@ -263,13 +257,15 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
 
     const mesec = new Date(dateInput).getMonth() + 1;
     const godina = new Date(dateInput).getFullYear();
+    const controller = new AbortController();
 
     try {
-      const response = await httpCommon.get(
+      const response = await httpProtected.get(
         `/${mestoPoseteId}/pdf/${mesec}/godina/${godina}`,
         {
           params: { headerImageId, footerImageId },
           responseType: "blob",
+          signal: controller.signal,
         }
       );
 
@@ -291,15 +287,13 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
 
       setDownloading(false);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Error downloading PDF:", error);
         setDownloading(false);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
@@ -316,12 +310,13 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
 
     setTimeout(async () => {
       setDownloadingXlsx(false);
-
+      const controller = new AbortController();
       try {
-        const response = await httpCommon.get(
+        const response = await httpProtected.get(
           `/${mestoPoseteId}/xlsx/${mesec}/godina/${godina}`,
           {
             responseType: "blob",
+            signal: controller.signal,
           }
         );
 
@@ -341,14 +336,12 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
         link.parentNode.removeChild(link);
         window.URL.revokeObjectURL(url);
       } catch (error) {
-        if (
-          error.response &&
-          (error.response.status === 401 || error.response.status === 400)
-        ) {
-          eventBus.dispatch("logout");
-        } else {
+        if (error.name !== "CanceledError") {
           console.error("Error downloading PDF:", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
         }
+      } finally {
+        controller.abort();
       }
     }, 2000);
   };

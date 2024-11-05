@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { MestoDogadjajaContext } from "./MestoDogadjajaContext";
@@ -6,7 +6,7 @@ import DeleteMestoDogadjajaForm from "./modal/DeleteMestoDogadjajaForm";
 import EditMestoDogadjajaForm from "./modal/EditMestoDogadjajaForm";
 
 const MestoDogadjaja = ({ mestoDogadjaja }) => {
-  const { deleteMestoDogadjaja } = useContext(MestoDogadjajaContext);
+  const { getMesta, deleteMestoDogadjaja } = useContext(MestoDogadjajaContext);
 
   const [showEdit, setShowEdit] = useState(false);
   const handleShowEdit = () => setShowEdit(true);
@@ -16,10 +16,17 @@ const MestoDogadjaja = ({ mestoDogadjaja }) => {
   const handleShowDelete = () => setShowDelete(true);
   const handleCloseDelete = () => setShowDelete(false);
 
-  useEffect(() => {
+  const handleDogadjajEdit = async () => {
+    const controller = new AbortController();
+    await getMesta(true, controller);
     handleCloseEdit();
+  };
+
+  const handleDogadjajDelete = async () => {
+    const controller = new AbortController();
+    await getMesta(true, controller);
     handleCloseDelete();
-  }, [mestoDogadjaja]);
+  };
 
   return (
     <>
@@ -38,7 +45,10 @@ const MestoDogadjaja = ({ mestoDogadjaja }) => {
           <Modal.Title>Izmeni mesto događaja</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <EditMestoDogadjajaForm currentMesto={mestoDogadjaja} />
+          <EditMestoDogadjajaForm
+            currentMesto={mestoDogadjaja}
+            onDogadjajEdited={handleDogadjajEdit}
+          />
         </Modal.Body>
       </Modal>
 
@@ -52,7 +62,10 @@ const MestoDogadjaja = ({ mestoDogadjaja }) => {
         <Modal.Footer>
           <Button
             className="btn btn-danger"
-            onClick={() => deleteMestoDogadjaja(mestoDogadjaja.id)}
+            onClick={async () => {
+              await deleteMestoDogadjaja(mestoDogadjaja.id);
+              handleDogadjajDelete();
+            }}
           >
             Obriši
           </Button>

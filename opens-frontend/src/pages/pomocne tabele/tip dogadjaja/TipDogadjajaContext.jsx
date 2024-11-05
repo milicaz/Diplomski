@@ -1,87 +1,99 @@
 import { createContext, useEffect, useState } from "react";
-import httpCommon from "../../../http-common";
-import eventBus from "../../../utils/eventBus";
+import useHttpProtected from "../../../hooks/useHttpProtected";
 
 export const TipDogadjajaContext = createContext();
 
-const TipDogadjajaContextProvider = (props) => {
+const TipDogadjajaContextProvider = ({ children, navigate, location }) => {
   const [tipoviDogadjaja, setTipoviDogadjaja] = useState([]);
 
+  const httpProtected = useHttpProtected();
+
   useEffect(() => {
-    getTipovi();
+    let isMounted = true;
+    const controller = new AbortController();
+
+    getTipovi(isMounted, controller);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   const sortedTipoviDogadjaja = tipoviDogadjaja.sort((a, b) => a.id - b.id);
 
-  const getTipovi = async () => {
+  const getTipovi = async (isMounted, controller) => {
     try {
-      const { data } = await httpCommon.get("/tipoviDogadjaja");
-      setTipoviDogadjaja(data);
+      const { data } = await httpProtected.get("/tipoviDogadjaja", {
+        signal: controller.signal,
+      });
+      if (isMounted) {
+        setTipoviDogadjaja(data);
+      }
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom fetching tipova događaja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
   };
 
   const addTip = async (addTip) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.post("/tipoviDogadjaja", addTip);
-      getTipovi();
+      await httpProtected.post("/tipoviDogadjaja", addTip, {
+        signal: controller.signal,
+      });
+      getTipovi(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom dodavanja tipa događaja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
   const editTip = async (id, editTip) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.put(`/tipoviDogadjaja/${id}`, editTip);
-      getTipovi();
+      await httpProtected.put(`/tipoviDogadjaja/${id}`, editTip, {
+        signal: controller.signal,
+      });
+      getTipovi(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom izmene tipa događaja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
   const deleteTip = async (id) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.delete(`/tipoviDogadjaja/${id}`);
-      getTipovi();
+      await httpProtected.delete(`/tipoviDogadjaja/${id}`, {
+        signal: controller.signal,
+      });
+      getTipovi(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom brisanja tipova događaja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
   return (
     <TipDogadjajaContext.Provider
-      value={{ sortedTipoviDogadjaja, addTip, editTip, deleteTip }}
+      value={{ sortedTipoviDogadjaja, getTipovi, addTip, editTip, deleteTip }}
     >
-      {props.children}
+      {children}
     </TipDogadjajaContext.Provider>
   );
 };

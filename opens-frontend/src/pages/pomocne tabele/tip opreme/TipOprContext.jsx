@@ -1,14 +1,23 @@
 import { createContext, useEffect, useState } from "react";
-import httpCommon from "../../../http-common";
-import eventBus from "../../../utils/eventBus";
+import useHttpProtected from "../../../hooks/useHttpProtected";
 
 export const TipOprContext = createContext();
 
-const TipOprContextProvider = (props) => {
+const TipOprContextProvider = ({ children, navigate, location }) => {
   const [tipoviOpreme, setTipoviOpreme] = useState([]);
 
+  const httpProtected = useHttpProtected();
+
   useEffect(() => {
-    fetchTipoveOpreme();
+    let isMounted = true;
+    const controller = new AbortController();
+
+    fetchTipoveOpreme(isMounted, controller);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   const sortedTipoviOpreme =
@@ -16,67 +25,70 @@ const TipOprContextProvider = (props) => {
       ? tipoviOpreme.sort((a, b) => (a.id < b.id ? -1 : 1))
       : [];
 
-  const fetchTipoveOpreme = async () => {
+  const fetchTipoveOpreme = async (isMounted, controller) => {
     try {
-      const { data } = await httpCommon.get("/tipoviOpreme");
-      setTipoviOpreme(data);
+      const { data } = await httpProtected.get("/tipoviOpreme", {
+        signal: controller.signal,
+      });
+      if (isMounted) {
+        setTipoviOpreme(data);
+      }
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom fetching tipova opreme: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
   };
 
   const addTipOpreme = async (newTipOpreme) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.post("/tipoviOpreme", newTipOpreme);
-      fetchTipoveOpreme();
+      await httpProtected.post("/tipoviOpreme", newTipOpreme, {
+        signal: controller.signal,
+      });
+      fetchTipoveOpreme(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom dodavanja tipa opreme: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
   const editTipOpreme = async (id, updatedTipOpreme) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.put(`/tipoviOpreme/${id}`, updatedTipOpreme);
-      fetchTipoveOpreme();
+      await httpProtected.put(`/tipoviOpreme/${id}`, updatedTipOpreme, {
+        signal: controller.signal,
+      });
+      fetchTipoveOpreme(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom izmene tipa opreme: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
   const deleteTipOpreme = async (id) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.delete(`/tipoviOpreme/${id}`);
-      fetchTipoveOpreme();
+      await httpProtected.delete(`/tipoviOpreme/${id}`, {
+        signal: controller.signal,
+      });
+      fetchTipoveOpreme(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom brisanja tipa opreme: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
@@ -84,12 +96,13 @@ const TipOprContextProvider = (props) => {
     <TipOprContext.Provider
       value={{
         sortedTipoviOpreme,
+        fetchTipoveOpreme,
         addTipOpreme,
         editTipOpreme,
         deleteTipOpreme,
       }}
     >
-      {props.children}
+      {children}
     </TipOprContext.Provider>
   );
 };

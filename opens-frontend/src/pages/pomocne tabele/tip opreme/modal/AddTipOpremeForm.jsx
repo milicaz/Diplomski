@@ -1,10 +1,14 @@
 import { useContext, useState } from "react";
 import { Button, Form, Toast } from "react-bootstrap";
-import httpCommon from "../../../../http-common";
+import { useLocation, useNavigate } from "react-router-dom";
+import useHttpProtected from "../../../../hooks/useHttpProtected";
 import { TipOprContext } from "../TipOprContext";
 
-const AddTipOpremeForm = () => {
+const AddTipOpremeForm = ({ onTipOpremeAdded }) => {
   const { addTipOpreme } = useContext(TipOprContext);
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [validated, setValidated] = useState(false);
 
@@ -31,19 +35,31 @@ const AddTipOpremeForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
+    const controller = new AbortController();
     if (form.checkValidity()) {
-      const response = await httpCommon.get(
-        `/tipoviOpreme/${newTipOpreme.naziv}`
-      );
-      const status = response.data;
-      if (status === "exists") {
-        handleShowToast(
-          "Tip opreme sa unetim nazivom već postoji.Unesite novi naziv tipa opreme.",
-          "danger"
+      try {
+        const response = await httpProtected.get(
+          `/tipoviOpreme/${newTipOpreme.naziv}`,
+          { signal: controller.signal }
         );
-      } else if (status === "do-not-exist") {
-        handleShowToast("Uspešno ste dodali novi tip opreme", "success");
-        addTipOpreme(newTipOpreme);
+        const status = response.data;
+        if (status === "exists") {
+          handleShowToast(
+            "Tip opreme sa unetim nazivom već postoji. Unesite novi naziv tipa opreme.",
+            "danger"
+          );
+        } else if (status === "do-not-exist") {
+          handleShowToast("Uspešno ste dodali novi tip opreme", "success");
+          await addTipOpreme(newTipOpreme);
+          onTipOpremeAdded();
+        }
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Error dodavanje tipa opreme:", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      } finally {
+        controller.abort();
       }
     }
     setValidated(true);

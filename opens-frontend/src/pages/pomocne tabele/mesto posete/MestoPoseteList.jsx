@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { FaSquarePlus } from "react-icons/fa6";
 import Pagination from "../../Pagination";
@@ -7,19 +7,12 @@ import { MestoPoseteContext } from "./MestoPoseteContext";
 import AddMestoPoseteForm from "./modal/AddMestoPoseteForm";
 
 const MestoPoseteList = () => {
-  const { sortedMestaPosete } = useContext(MestoPoseteContext);
+  const { sortedMestaPosete, fetchMestaPosete } =
+    useContext(MestoPoseteContext);
 
-  //za prikazivanje modalnog dijaloga
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
-
-  /* Za zatvaranje modalnog dijaloga
-    Zatvara se kada se izmeni nesto u posetiocima tj kada se doda novi posetilac 
-  */
-  useEffect(() => {
-    handleClose();
-  }, [sortedMestaPosete]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [mestaPosetePerPage, setMestaPosetePerPage] = useState(10);
@@ -38,6 +31,12 @@ const MestoPoseteList = () => {
 
   const onInputChange = (e) => {
     setMestaPosetePerPage(e.target.value);
+  };
+
+  const handleMestoPoseteAdded = async () => {
+    const controller = new AbortController();
+    await fetchMestaPosete(true, controller);
+    handleClose();
   };
 
   return (
@@ -117,7 +116,7 @@ const MestoPoseteList = () => {
           <Modal.Title>Dodaj mesto posete</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AddMestoPoseteForm />
+          <AddMestoPoseteForm onMestoPoseteAdded={handleMestoPoseteAdded} />
         </Modal.Body>
       </Modal>
     </>

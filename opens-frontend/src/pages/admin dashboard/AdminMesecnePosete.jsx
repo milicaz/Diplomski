@@ -1,34 +1,46 @@
 import "chart.js/auto";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import httpCommon from "../../http-common";
-import eventBus from "../../utils/eventBus";
+import { useLocation, useNavigate } from "react-router-dom";
+import useHttpProtected from "../../hooks/useHttpProtected";
 
 export const AdminMesecnePoseteCoworking = ({ mestoPoseteId }) => {
   const [mesecnePosete, setMesecnePosete] = useState([]);
 
-  const fetchMesecnePosete = useCallback(async () => {
-    try {
-      const { data } = await httpCommon.get(`/admin/${mestoPoseteId}`);
-      setMesecnePosete(data);
-    } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error(
-          "An error occurred while fetching mesecne posete: ",
-          error
-        );
-      }
-    }
-  }, [mestoPoseteId, setMesecnePosete]);
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchMesecnePosete = async () => {
+      try {
+        const { data } = await httpProtected.get(`/admin/${mestoPoseteId}`, {
+          signal: controller.signal,
+        });
+        if (isMounted) {
+          setMesecnePosete(data);
+        }
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error(
+            "An error occurred while fetching mesecne posete: ",
+            error
+          );
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      }
+    };
+
     fetchMesecnePosete();
-  }, [fetchMesecnePosete]);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [mestoPoseteId]);
 
   const monthNames = [
     "Januar",

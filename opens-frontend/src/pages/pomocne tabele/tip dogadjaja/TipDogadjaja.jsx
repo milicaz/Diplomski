@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { TipDogadjajaContext } from "./TipDogadjajaContext";
@@ -6,7 +6,7 @@ import DeleteTipDogadjajaForm from "./modal/DeleteTipDogadjajaForm";
 import EditTipDogadjajaForm from "./modal/EditTipDogadjajaForm";
 
 const TipDogadjaja = ({ tipDogadjaja }) => {
-  const { deleteTip } = useContext(TipDogadjajaContext);
+  const { getTipovi, deleteTip } = useContext(TipDogadjajaContext);
 
   const [showEdit, setShowEdit] = useState(false);
   const handleShowEdit = () => setShowEdit(true);
@@ -16,10 +16,17 @@ const TipDogadjaja = ({ tipDogadjaja }) => {
   const handleShowDelete = () => setShowDelete(true);
   const handleCloseDelete = () => setShowDelete(false);
 
-  useEffect(() => {
-    handleCloseDelete();
+  const handleTipDogadjajaEdit = async () => {
+    const controller = new AbortController();
+    await getTipovi(true, controller);
     handleCloseEdit();
-  }, [tipDogadjaja]);
+  };
+
+  const handleTipDogadjajaDelete = async () => {
+    const controller = new AbortController();
+    await getTipovi(true, controller);
+    handleCloseDelete();
+  };
 
   return (
     <>
@@ -38,7 +45,10 @@ const TipDogadjaja = ({ tipDogadjaja }) => {
           <Modal.Title>Izmeni tip događaja</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <EditTipDogadjajaForm currentTip={tipDogadjaja} />
+          <EditTipDogadjajaForm
+            currentTip={tipDogadjaja}
+            onTipDogadjajaEdited={handleTipDogadjajaEdit}
+          />
         </Modal.Body>
       </Modal>
 
@@ -52,7 +62,10 @@ const TipDogadjaja = ({ tipDogadjaja }) => {
         <Modal.Footer>
           <Button
             className="btn btn-danger"
-            onClick={() => deleteTip(tipDogadjaja.id)}
+            onClick={async () => {
+              await deleteTip(tipDogadjaja.id);
+              handleTipDogadjajaDelete();
+            }}
           >
             Obriši
           </Button>

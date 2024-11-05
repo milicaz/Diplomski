@@ -1,12 +1,13 @@
 import { useContext, useState } from "react";
-import { LogoContext } from "./LogoContext";
 import { Button, Form, Modal } from "react-bootstrap";
-import Logo from "./Logo";
-import AddLogoForm from "./modal/AddLogoForm";
+import { FaSquarePlus } from "react-icons/fa6";
 import Pagination from "../../Pagination";
+import Logo from "./Logo";
+import { LogoContext } from "./LogoContext";
+import AddLogoForm from "./modal/AddLogoForm";
 
 const LogoList = () => {
-  const { base64 } = useContext(LogoContext);
+  const { base64, getImage } = useContext(LogoContext);
 
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
@@ -22,6 +23,12 @@ const LogoList = () => {
 
   const onInputChange = (event) => {
     setLimit(event.target.value);
+  };
+
+  const handleLogoAdded = async () => {
+    const controller = new AbortController();
+    await getImage(true, controller);
+    handleClose();
   };
 
   return (
@@ -51,13 +58,9 @@ const LogoList = () => {
             </div>
           </div>
           <div className="col-sm-6">
-            <Button
-              onClick={handleShow}
-              className="btn btn-success"
-              data-toggle="modal"
-            >
-              <i className="material-icons">&#xE147;</i>
-              <span>Dodaj novi logo</span>
+            <Button onClick={handleShow} className="btn btn-success">
+              <FaSquarePlus size={20} className="mx-1" />
+              Dodaj novi logo
             </Button>
           </div>
         </div>
@@ -73,7 +76,7 @@ const LogoList = () => {
             </tr>
           </thead>
           <tbody>
-            {base64.map((image, index) => (
+            {currentLogo.map((image, index) => (
               <tr key={image.id}>
                 <td>{index + 1}</td>
                 <Logo logo={image} />
@@ -95,7 +98,7 @@ const LogoList = () => {
             <Modal.Title>Dodaj logo</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <AddLogoForm />
+            <AddLogoForm onLogoAdded={handleLogoAdded} />
           </Modal.Body>
         </Modal>
       </div>

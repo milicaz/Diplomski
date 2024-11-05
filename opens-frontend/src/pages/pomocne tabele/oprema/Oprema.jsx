@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { MdDelete, MdEdit } from "react-icons/md";
 import DeleteOpremaForm from "./modal/DeleteOpremaForm";
@@ -6,7 +6,7 @@ import EditOpremaForm from "./modal/EditOpremaForm";
 import { OpremaContext } from "./OpremaContext";
 
 export const Oprema = ({ oprema }) => {
-  const { deleteOpremu } = useContext(OpremaContext);
+  const { fetchOpremu, deleteOpremu } = useContext(OpremaContext);
 
   //za prikazivanje modalnog dijaloga
   const [showEdit, setShowEdit] = useState(false);
@@ -17,10 +17,17 @@ export const Oprema = ({ oprema }) => {
   const handleShowDelete = () => setShowDelete(true);
   const handleCloseDelete = () => setShowDelete(false);
 
-  useEffect(() => {
+  const handleOpremaEdit = async () => {
+    const controller = new AbortController();
+    await fetchOpremu(true, controller);
     handleCloseEdit();
+  };
+
+  const handleOpremaDelete = async () => {
+    const controller = new AbortController();
+    await fetchOpremu(true, controller);
     handleCloseDelete();
-  }, [oprema]);
+  };
 
   return (
     <>
@@ -40,7 +47,10 @@ export const Oprema = ({ oprema }) => {
           <Modal.Title>Izmena opreme</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <EditOpremaForm updatedOprema={oprema} />
+          <EditOpremaForm
+            updatedOprema={oprema}
+            onOpremaEdited={handleOpremaEdit}
+          />
         </Modal.Body>
       </Modal>
 
@@ -54,7 +64,10 @@ export const Oprema = ({ oprema }) => {
         <Modal.Footer>
           <Button
             className="btn btn-danger"
-            onClick={() => deleteOpremu(oprema.id)}
+            onClick={async () => {
+              await deleteOpremu(oprema.id);
+              handleOpremaDelete();
+            }}
           >
             Obriši
           </Button>

@@ -1,34 +1,42 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Form, Toast } from "react-bootstrap";
-import httpCommon from "../../../../http-common";
-import eventBus from "../../../../utils/eventBus";
+import { useLocation, useNavigate } from "react-router-dom";
+import useHttpProtected from "../../../../hooks/useHttpProtected";
 import { OpremaContext } from "../OpremaContext";
 
-export const AddOpremaForm = () => {
+export const AddOpremaForm = ({ onOpremaAdded }) => {
   const { addOpremu } = useContext(OpremaContext);
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [validated, setValidated] = useState(false);
   const [tipoviOpreme, setTipoveOpreme] = useState([]);
+  const [isFetched, setIsFetched] = useState(false);
 
   const fetchTipoveOpreme = async () => {
-    try {
-      const { data } = await httpCommon.get("/tipoviOpreme");
-      setTipoveOpreme(data);
-    } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error("Greška prilikom fetching tipove opreme: ", error);
+    if (!isFetched) {
+      const controller = new AbortController();
+      try {
+        const { data } = await httpProtected.get("/tipoviOpreme", {
+          signal: controller.signal,
+        });
+        setTipoveOpreme(data);
+        setIsFetched(true);
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Greška prilikom fetching tipove opreme: ", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      } finally {
+        controller.abort();
       }
     }
   };
 
   useEffect(() => {
     fetchTipoveOpreme();
-  });
+  }, []);
 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -54,21 +62,33 @@ export const AddOpremaForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
-
+    const controller = new AbortController();
     if (form.checkValidity() && tipOpremeID !== "") {
-      const response = await httpCommon.get(
-        `/oprema/${newOprema.serijskiBroj}/check`
-      );
-      const status = response.data;
-
-      if (status === "exists") {
-        handleShowToast(
-          "Oprema sa unetim serijskim brojem već postoji. Unesite novi serijski broj opreme.",
-          "danger"
+      try {
+        const response = await httpProtected.get(
+          `/oprema/${newOprema.serijskiBroj}/check`,
+          {
+            signal: controller.signal,
+          }
         );
-      } else if (status === "do-not-exist") {
-        handleShowToast("Uspešno ste dodali novu opremu", "success");
-        addOpremu(newOprema);
+        const status = response.data;
+        if (status === "exists") {
+          handleShowToast(
+            "Oprema sa unetim serijskim brojem već postoji. Unesite novi serijski broj opreme.",
+            "danger"
+          );
+        } else if (status === "do-not-exist") {
+          handleShowToast("Uspešno ste dodali novu opremu", "success");
+          await addOpremu(newOprema);
+          onOpremaAdded();
+        }
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Error dodavanje opreme:", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      } finally {
+        controller.abort();
       }
     } else {
       handleShowToast("Popunite sve obavezne podatke.", "danger");

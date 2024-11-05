@@ -6,7 +6,7 @@ import "react-quill/dist/quill.snow.css"; // Import Quill styles
 import TurndownService from "turndown";
 import { ObavestenjeContext } from "../ObavestenjaContext";
 
-export const EditObavestenjaForm = ({ updatedObavestenje }) => {
+export const EditObavestenjaForm = ({ updatedObavestenje, onObavestenjeEdited }) => {
   const { editObavestenje } = useContext(ObavestenjeContext);
 
   const [validated, setValidated] = useState(false);
@@ -31,7 +31,7 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
     prioritet: parseInt(prioritet),
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
     if (tekst.trim() === "") {
@@ -45,7 +45,8 @@ export const EditObavestenjaForm = ({ updatedObavestenje }) => {
         ...editedObavestenje,
         tekst: markdownText,
       };
-      editObavestenje(id, updatedObavestenje);
+      await editObavestenje(id, updatedObavestenje);
+      onObavestenjeEdited();
     }
     setValidated(true);
   };

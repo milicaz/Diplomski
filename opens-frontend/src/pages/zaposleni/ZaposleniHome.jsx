@@ -1,9 +1,13 @@
+import { useLocation, useNavigate } from "react-router-dom";
 import ZaposleniContextProvider from "./ZaposleniContext";
 import ZaposleniList from "./ZaposleniList";
 
 const ZaposleniHome = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
-    <ZaposleniContextProvider>
+    <ZaposleniContextProvider navigate={navigate} location={location}>
       <>
         <ZaposleniList />
       </>

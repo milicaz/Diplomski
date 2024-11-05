@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { MdDelete, MdEdit } from "react-icons/md";
 import DeleteTipOpremeForm from "./modal/DeleteTipOpremeForm";
@@ -6,9 +6,8 @@ import EditTipOpremeForm from "./modal/EditTipOpremeForm";
 import { TipOprContext } from "./TipOprContext";
 
 const TipOpr = ({ tipOpreme }) => {
-  const { deleteTipOpreme } = useContext(TipOprContext);
+  const { fetchTipoveOpreme, deleteTipOpreme } = useContext(TipOprContext);
 
-  //za prikazivanje modalnog dijaloga
   const [showEdit, setShowEdit] = useState(false);
   const handleShowEdit = () => setShowEdit(true);
   const handleCloseEdit = () => setShowEdit(false);
@@ -17,10 +16,17 @@ const TipOpr = ({ tipOpreme }) => {
   const handleShowDelete = () => setShowDelete(true);
   const handleCloseDelete = () => setShowDelete(false);
 
-  useEffect(() => {
+  const handleTipOpremeEdit = async () => {
+    const controller = new AbortController();
+    await fetchTipoveOpreme(true, controller);
     handleCloseEdit();
+  };
+
+  const handleTipOpremeDelete = async () => {
+    const controller = new AbortController();
+    await fetchTipoveOpreme(true, controller);
     handleCloseDelete();
-  }, [tipOpreme]);
+  };
 
   return (
     <>
@@ -39,7 +45,10 @@ const TipOpr = ({ tipOpreme }) => {
           <Modal.Title>Izmena tipa opreme</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <EditTipOpremeForm updatedTipOpreme={tipOpreme} />
+          <EditTipOpremeForm
+            updatedTipOpreme={tipOpreme}
+            onTipOpremeEdited={handleTipOpremeEdit}
+          />
         </Modal.Body>
       </Modal>
 
@@ -53,7 +62,10 @@ const TipOpr = ({ tipOpreme }) => {
         <Modal.Footer>
           <Button
             className="btn btn-danger"
-            onClick={() => deleteTipOpreme(tipOpreme.id)}
+            onClick={async () => {
+              await deleteTipOpreme(tipOpreme.id);
+              handleTipOpremeDelete();
+            }}
           >
             Obriši
           </Button>

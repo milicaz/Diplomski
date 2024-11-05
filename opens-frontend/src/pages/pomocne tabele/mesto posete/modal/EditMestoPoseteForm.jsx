@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { MestoPoseteContext } from "../MestoPoseteContext";
 
-export const EditMestoPoseteForm = ({ updatedMestoPosete }) => {
+export const EditMestoPoseteForm = ({ updatedMestoPosete, onMestoPoseteEdited  }) => {
   const { editMestoPosete } = useContext(MestoPoseteContext);
 
   const [validated, setValidated] = useState(false);
@@ -14,14 +14,16 @@ export const EditMestoPoseteForm = ({ updatedMestoPosete }) => {
 
   const editedMestoPosete = { nazivMesta, ukupanBrojMesta };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
     if (form.checkValidity() && ukupanBrojMesta > 0) {
-      editMestoPosete(id, editedMestoPosete);
+      await editMestoPosete(id, editedMestoPosete);
+      onMestoPoseteEdited();
     }
     setValidated(true);
   };
+  
   return (
     <>
       <Form noValidate validated={validated} onSubmit={handleSubmit}>

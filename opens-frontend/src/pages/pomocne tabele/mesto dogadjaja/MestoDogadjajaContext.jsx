@@ -1,79 +1,91 @@
 import { createContext, useEffect, useState } from "react";
-import httpCommon from "../../../http-common";
-import eventBus from "../../../utils/eventBus";
+import useHttpProtected from "../../../hooks/useHttpProtected";
 
 export const MestoDogadjajaContext = createContext();
 
-const MestoDogadjajaContextProvider = (props) => {
+const MestoDogadjajaContextProvider = ({ children, navigate, location }) => {
   const [mestaDogadjaja, setMestaDogadjaja] = useState([]);
 
+  const httpProtected = useHttpProtected();
+
   useEffect(() => {
-    getMesta();
+    let isMounted = true;
+    const controller = new AbortController();
+
+    getMesta(isMounted, controller);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   const sortedMestaDogadjaja = mestaDogadjaja.sort((a, b) => a.id - b.id);
 
-  const getMesta = async () => {
+  const getMesta = async (isMounted, controller) => {
     try {
-      const { data } = await httpCommon.get("/mestaDogadjaja");
-      setMestaDogadjaja(data);
+      const { data } = await httpProtected.get("/mestaDogadjaja", {
+        signal: controller.signal,
+      });
+      if (isMounted) {
+        setMestaDogadjaja(data);
+      }
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom fetching mesta događaja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
   };
 
   const addMestoDogadjaja = async (addMesto) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.post("/mestaDogadjaja", addMesto);
-      getMesta();
+      await httpProtected.post("/mestaDogadjaja", addMesto, {
+        signal: controller.signal,
+      });
+      getMesta(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom dodavanja mesta događaja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
   const editMestoDogadjaja = async (id, editMesto) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.put(`/mestaDogadjaja/${id}`, editMesto);
-      getMesta();
+      await httpProtected.put(`/mestaDogadjaja/${id}`, editMesto, {
+        signal: controller.signal,
+      });
+      getMesta(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom izmene mesta događaja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
   const deleteMestoDogadjaja = async (id) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.delete(`/mestaDogadjaja/${id}`);
-      getMesta();
+      await httpProtected.delete(`/mestaDogadjaja/${id}`, {
+        signal: controller.signal,
+      });
+      getMesta(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom brisanja mesta događaja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
@@ -81,12 +93,13 @@ const MestoDogadjajaContextProvider = (props) => {
     <MestoDogadjajaContext.Provider
       value={{
         sortedMestaDogadjaja,
+        getMesta,
         addMestoDogadjaja,
         editMestoDogadjaja,
         deleteMestoDogadjaja,
       }}
     >
-      {props.children}
+      {children}
     </MestoDogadjajaContext.Provider>
   );
 };

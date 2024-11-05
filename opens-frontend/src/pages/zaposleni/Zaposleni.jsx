@@ -6,7 +6,7 @@ import EditZaposleniForm from "./modal/EditZaposleniForm";
 import { ZaposleniContext } from "./ZaposleniContext";
 
 const Zaposleni = ({ zaposleni }) => {
-  const { deleteZaposleni } = useContext(ZaposleniContext);
+  const { getZaposleni, deleteZaposleni } = useContext(ZaposleniContext);
 
   const [showDelete, setShowDelete] = useState(false);
   const handleShowDelete = () => setShowDelete(true);
@@ -17,10 +17,9 @@ const Zaposleni = ({ zaposleni }) => {
   const handleCloseEdit = () => setShowEdit(false);
 
   const roleMapping = {
-    ROLE_ADMIN_DOGADJAJ: "Admin Događaj",
-    ROLE_ADMIN: "Admin",
-    ROLE_SUPER_ADMIN: "Super Admin",
-    // Add other role mappings as needed
+    ROLE_ADMIN_DOGADJAJ: "admin događaj",
+    ROLE_ADMIN: "admin",
+    ROLE_SUPER_ADMIN: "super admin",
   };
 
   const rodMapping = {
@@ -29,22 +28,28 @@ const Zaposleni = ({ zaposleni }) => {
     DRUGO: "drugo",
   };
 
-  useEffect(() => {
-    handleCloseDelete();
+  const handleZaposleniEdit = async () => {
+    const controller = new AbortController();
+    await getZaposleni(true, controller);
     handleCloseEdit();
-  }, [zaposleni]);
+  };
+
+  const handleZaposleniDelete = async () => {
+    const controller = new AbortController();
+    await getZaposleni(true, controller);
+    handleCloseDelete();
+  };
 
   return (
     <>
       <td>{zaposleni.email}</td>
-      <td>{zaposleni.ime}</td>
-      <td>{zaposleni.prezime}</td>
-      {/* <td>{zaposleni.rod}</td> */}
+      <td>
+        {zaposleni.ime} {zaposleni.prezime}
+      </td>
       <td>{rodMapping[zaposleni.rod] || zaposleni.rod}</td>
       <td>{zaposleni.godine}</td>
       <td>{zaposleni.mestoBoravista}</td>
       <td>{zaposleni.brojTelefona}</td>
-      {/* <td>{zaposleni.uloge.naziv}</td> */}
       <td>
         {/* Map through the uloge array and use the role mapping */}
         {zaposleni.uloge.map((uloga, index) => (
@@ -63,6 +68,15 @@ const Zaposleni = ({ zaposleni }) => {
         </button>
       </td>
 
+      <Modal show={showEdit} onHide={handleCloseEdit} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Izmeni zaposlenog</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <EditZaposleniForm currentZaposleni={zaposleni} onZaposleniEdit={handleZaposleniEdit}/>
+        </Modal.Body>
+      </Modal>
+
       <Modal show={showDelete} onHide={handleCloseDelete} centered>
         <Modal.Header closeButton>
           <Modal.Title>Obriši zaposlenog</Modal.Title>
@@ -73,7 +87,10 @@ const Zaposleni = ({ zaposleni }) => {
         <Modal.Footer>
           <Button
             className="btn btn-danger"
-            onClick={() => deleteZaposleni(zaposleni.id)}
+            onClick={async () => {
+              await deleteZaposleni(zaposleni.id);
+              handleZaposleniDelete();
+            }}
           >
             Obriši
           </Button>
@@ -81,15 +98,6 @@ const Zaposleni = ({ zaposleni }) => {
             Zatvori
           </Button>
         </Modal.Footer>
-      </Modal>
-
-      <Modal show={showEdit} onHide={handleCloseEdit} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Izmeni zaposlenog</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <EditZaposleniForm currentZaposleni={zaposleni} />
-        </Modal.Body>
       </Modal>
     </>
   );

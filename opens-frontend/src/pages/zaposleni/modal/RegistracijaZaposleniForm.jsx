@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
-import { Button, Form, InputGroup } from "react-bootstrap";
+import { Button, Form, InputGroup, Toast } from "react-bootstrap";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { ZaposleniContext } from "../ZaposleniContext";
 
 const RegistracijaZaposleniForm = ({ handleClose }) => {
-  const { uloga } = useContext(ZaposleniContext);
   const { registracija } = useContext(ZaposleniContext);
 
+  const [validated, setValidated] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [ime, setIme] = useState("");
@@ -16,29 +16,22 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
   const [mestoBoravista, setMestoBoravista] = useState("");
   const [brojTelefon, setBrojTelefon] = useState("");
   const [uloge, setUloge] = useState(new Set()); // Assuming this is managed as a Set
-  const [passwordError, setPasswordError] = useState('');
-
-
   const [showPassword, setShowPassword] = useState(false);
-  const [emailValid, setEmailValid] = useState(true); // State variable to track email validity
-  const [passwordValid, setPasswordValid] = useState(true);
 
-  const r = [
-    { id: 1, naziv: "ZENSKO" },
-    { id: 2, naziv: "MUSKO" },
-    { id: 3, naziv: "DRUGO" },
-  ];
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastVariant, setToastVariant] = useState("");
 
   const rodMapping = {
-    ZENSKO: "žensko",
     MUSKO: "muško",
+    ZENSKO: "žensko",
     DRUGO: "drugo",
   };
 
   const roleMapping = {
-    admin: "Admin",
-    dogadjaj_admin: "Admin događaj",
-    super_admin: "Super admin",
+    admin: "admin",
+    dogadjaj_admin: "admin događaj",
+    super_admin: "super admin",
   };
 
   const u = Object.keys(roleMapping).map((key, index) => ({
@@ -60,230 +53,238 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
     setUloge(newUloge); // Update state
   };
 
-  const handleTogglePasswordVisibility = () => {
-    setShowPassword(!showPassword); // Toggle showPassword state
+  const isValidEmail = (email) => {
+    // Simple email validation regex
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
   };
 
-  const handleEmailChange = (e) => {
-    const { value } = e.target;
-    setEmail(value);
-
-    // Validate email format using regex
-    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    setEmailValid(isValid);
+  const isValidPassword = (password) => {
+    const passwordPattern =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordPattern.test(password);
   };
 
-  // const validatePassword = (password) => {
-  //   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  //   if (!passwordRegex.test(password)) {
-  //     setPasswordError("Lozinka mora imati najmanje 8 karaktera, jedno veliko slovo, jedan broj i jedan specijalni karakter.");
-  //     return false; // Password is invalid
-  //   } else {
-  //     setPasswordError("");
-  //     return true; // Password is valid
-  //   }
-  // };
-
-  const handlePasswordChange = (e) => {
-    const { value } = e.target;
-    setPassword(value);
-
-    const isValid = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value)
-    setPasswordValid(isValid);
-  }
+  const handleShowToast = (message, variant) => {
+    setToastMessage(message);
+    setToastVariant(variant);
+    setShowToast(true);
+  };
 
   const handleRegistracija = async (event) => {
     event.preventDefault();
 
-    if (!emailValid) {
-      // Display error message or handle invalid email format
-      return;
-    }
+    const form = event.currentTarget;
 
-    if(!passwordValid) {
-      return;
-    }
-
-    // const passwordRegex =
-    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-    // // Check if password matches complexity criteria
-    // if (!passwordRegex.test(password)) {
-    //   // Password does not meet complexity criteria
-    //   alert(
-    //     "Lozinka mora sadržati najmanje 8 karaktera, barem jedno veliko slovo, jedan broj i jedan poseban znak(@$!%*?&)."
-    //   );
-    //   return;
-    // }
-
-    const zaposleniDTO = {
-      email,
-      password,
-      ime,
-      prezime,
-      rod,
-      godine,
-      mestoBoravista,
-      brojTelefon,
-      uloge: Array.from(uloge), // Convert Set to Array assuming DTO structure
-    };
-
-    try {
-      // const response = await axios.post(
-      //   "http://localhost:8080/api/auth/signup",
-      //   zaposleniDTO
-      // );
-
-      registracija(zaposleniDTO);
-      // console.log(response.data); // Log success message or handle accordingly
-      handleClose();
-      // Optionally, redirect to another page or show success message
-      setEmail("");
-      setPassword("");
-      setIme("");
-      setPrezime("");
-      setRod("");
-      setGodine("");
-      setMestoBoravista("");
-      setBrojTelefon("");
-      setUloge(new Set());
-    } catch (error) {
-      console.error("Error registering user:", error);
-      // Handle error, show error message, etc.
+    if (
+      form.checkValidity() === false ||
+      !isValidEmail(email) ||
+      !isValidPassword(password)
+    ) {
+      setValidated(true);
+    } else {
+      try {
+        const zaposleniDTO = {
+          email,
+          password,
+          ime,
+          prezime,
+          rod,
+          godine,
+          mestoBoravista,
+          brojTelefon,
+          uloge: Array.from(uloge), // Convert Set to Array assuming DTO structure
+        };
+        console.log(zaposleniDTO);
+        await registracija(zaposleniDTO);
+        handleShowToast("Uspešno ste se registrovali zaposlenog!", "success");
+        setEmail("");
+        setPassword("");
+        setIme("");
+        setPrezime("");
+        setRod("");
+        setGodine("");
+        setMestoBoravista("");
+        setBrojTelefon("");
+        setUloge(new Set());
+        handleClose();
+      } catch (error) {
+        if (!error.response) {
+          handleShowToast("Nema odgovora sa servera", "danger");
+        } else if (error.response?.status === 409) {
+          handleShowToast("E-mail je već u upotrebi", "danger");
+        } else {
+          handleShowToast("Registracija zaposlenog nije uspela!", "danger");
+        }
+      }
     }
   };
 
   return (
-    <Form onSubmit={handleRegistracija}>
-      <Form.Group>
-        <Form.Control
-          value={email}
-          onChange={handleEmailChange}
-          type="text"
-          placeholder="Email"
-          required
-          isInvalid={!emailValid}
-        />
-        {!emailValid && (
-          <Form.Control.Feedback type="invalid">
-            Morate uneti ispravnu e-mail adresu!
-          </Form.Control.Feedback>
-        )}
-      </Form.Group>
-      <br />
-      <Form.Group>
-        <InputGroup>
+    <>
+      <Form noValidate validated={validated} onSubmit={handleRegistracija}>
+        <Form.Group className="mb-3">
           <Form.Control
-            value={password}
-            onChange={handlePasswordChange}
-            type={showPassword ? "text" : "password"} // Toggle password visibility
-            aria-describedby="passwordHelpBlock"
-            placeholder="Lozinka"
+            type="text"
+            placeholder="Email *"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
-            isInvalid={!passwordValid}
+            isInvalid={
+              validated && (!isValidEmail(email) || email.length === 0)
+            }
           />
-          <InputGroup.Text
-            onClick={handleTogglePasswordVisibility}
-            style={{ cursor: "pointer" }}
-          >
-            {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
-          </InputGroup.Text>
-          {!passwordValid && (
           <Form.Control.Feedback type="invalid">
-            Lozinka mora imati najmanje 8 karaktera, jedno veliko slovo, jedan broj i jedan specijalni karakter!
+            Unesite ispravnu e-mail adresu.
           </Form.Control.Feedback>
-        )}
-        </InputGroup>
-      </Form.Group>
-      <br />
-      <Form.Group>
-        <Form.Label>Uloge</Form.Label>
-        {u.map((item) => (
-          <Form.Check
-            key={item.id}
-            type="checkbox"
-            label={item.displayName} // Display user-friendly name
-            value={item.naziv} // Use server value for submission
-            checked={uloge.has(item.naziv)}
-            onChange={handleUlogeChange}
-          />
-        ))}
-      </Form.Group>
-      <br />
-      <Form.Group>
-        <Form.Control
-          value={ime}
-          onChange={(e) => setIme(e.target.value)}
-          type="text"
-          placeholder="Ime"
-          required
-        />
-      </Form.Group>
-      <br />
-      <Form.Group>
-        <Form.Control
-          value={prezime}
-          onChange={(e) => setPrezime(e.target.value)}
-          type="text"
-          placeholder="Prezime"
-          required
-        />
-      </Form.Group>
-      <br />
-      <Form.Group>
-        <Form.Control
-          as="select"
-          value={rod}
-          onChange={(e) => setRod(e.target.value)}
-          required
-        >
-          <option value="">Izaberite rod</option>
-          {Object.entries(rodMapping).map(([key, value]) => (
-            <option key={key} value={key}>
-              {value}
-            </option> // Send server value, display friendly name
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <InputGroup>
+            <Form.Control
+              type={showPassword ? "text" : "password"}
+              placeholder="Lozinka *"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              isInvalid={
+                validated &&
+                (!isValidPassword(password) || password.length === 0)
+              }
+            />
+            <InputGroup.Text
+              style={{ cursor: "pointer" }}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+            </InputGroup.Text>
+            <Form.Control.Feedback type="invalid">
+              Lozinka mora imati najmanje 8 karaktera, jedno veliko slovo, jedan
+              broj i jedan specijalni karakter!
+            </Form.Control.Feedback>
+          </InputGroup>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Uloge *</Form.Label>
+          {u.map((item) => (
+            <Form.Check
+              key={item.id}
+              type="checkbox"
+              label={item.displayName} // Display user-friendly name
+              value={item.naziv} // Use server value for submission
+              checked={uloge.has(item.naziv)}
+              onChange={handleUlogeChange}
+            />
           ))}
-        </Form.Control>
-      </Form.Group>
-      <br />
-      <Form.Group>
-        <Form.Control
-          value={godine}
-          onChange={(e) => setGodine(e.target.value)}
-          type="text"
-          placeholder="Godina rođenja"
-          required
-        />
-      </Form.Group>
-      <br />
-      <Form.Group>
-        <Form.Control
-          value={mestoBoravista}
-          onChange={(e) => setMestoBoravista(e.target.value)}
-          type="text"
-          placeholder="Mesto boravišta"
-          required
-        />
-      </Form.Group>
-      <br />
-      <Form.Group>
-        <Form.Control
-          value={brojTelefon}
-          onChange={(e) => setBrojTelefon(e.target.value)}
-          type="text"
-          placeholder="Broj telefona"
-          required
-        />
-      </Form.Group>
-      <br />
-      <Form.Group>
+          <Form.Control.Feedback type="invalid">
+            Uloge su obavezne.
+          </Form.Control.Feedback>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Control
+            type="text"
+            placeholder="Ime *"
+            value={ime}
+            onChange={(e) => setIme(e.target.value)}
+            required
+          />
+          <Form.Control.Feedback type="invalid">
+            Ime je obavezno.
+          </Form.Control.Feedback>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Control
+            type="text"
+            placeholder="Prezime *"
+            value={prezime}
+            onChange={(e) => setPrezime(e.target.value)}
+            required
+          />
+          <Form.Control.Feedback type="invalid">
+            Prezime je obavezno.
+          </Form.Control.Feedback>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Control
+            as="select"
+            value={rod}
+            onChange={(e) => setRod(e.target.value)}
+            required
+          >
+            <option value="">Izaberite rod *</option>
+            {Object.entries(rodMapping).map(([key, value]) => (
+              <option key={key} value={key}>
+                {value}
+              </option> // Send server value, display friendly name
+            ))}
+          </Form.Control>
+          <Form.Control.Feedback type="invalid">
+            Rod je obavezan.
+          </Form.Control.Feedback>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Control
+            value={godine}
+            onChange={(e) => setGodine(e.target.value)}
+            type="text"
+            placeholder="Godina rođenja *"
+            required
+          />
+          <Form.Control.Feedback type="invalid">
+            Godina rođenja je obavezna.
+          </Form.Control.Feedback>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Control
+            value={mestoBoravista}
+            onChange={(e) => setMestoBoravista(e.target.value)}
+            type="text"
+            placeholder="Mesto boravišta *"
+            required
+          />
+          <Form.Control.Feedback type="invalid">
+            Mesto boravišta je obavezno.
+          </Form.Control.Feedback>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Control
+            value={brojTelefon}
+            onChange={(e) => setBrojTelefon(e.target.value)}
+            type="text"
+            placeholder="Broj telefona *"
+            required
+          />
+          <Form.Control.Feedback type="invalid">
+            Broj telefona je obavezan.
+          </Form.Control.Feedback>
+        </Form.Group>
         <div className="d-grid gap-2">
           <Button variant="success" type="submit">
             Registracija
           </Button>
         </div>
-      </Form.Group>
-    </Form>
+      </Form>
+      <Toast
+        show={showToast}
+        onClose={() => setShowToast(false)}
+        style={{
+          position: "fixed",
+          bottom: 20,
+          left: 20,
+          minWidth: 300,
+          backgroundColor: toastVariant === "success" ? "#a3c57b" : "#f56f66",
+          color: "white",
+        }}
+        delay={3000}
+        autohide
+      >
+        <Toast.Header>
+          <strong className="me-auto">
+            {toastVariant === "success" ? "" : "Greška"}
+          </strong>
+        </Toast.Header>
+        <Toast.Body>{toastMessage}</Toast.Body>
+      </Toast>
+    </>
   );
 };
 

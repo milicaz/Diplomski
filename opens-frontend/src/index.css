@@ -34,7 +34,6 @@ td {
 
 .table-title {
   padding-bottom: 15px;
-  /* background: #eee; */
   padding: 16px 30px;
   min-width: 100%;
   margin: -20px -25px 10px;
@@ -420,36 +419,51 @@ td {
 }
 
 .logovanje .card {
-  border: 0.5px solid #e8e8eb; /* Change border color and width */
+  border: 0.5px solid #e8e8eb;
+  /* Change border color and width */
   /* border-radius: 10px; Adjust border radius for rounded corners */
-  width: 600px; /* Adjust width as needed */
-  height: auto; /* Auto height to fit content */
-  min-height: 600px; /* Set a minimum height */
+  width: 600px;
+  /* Adjust width as needed */
+  height: auto;
+  /* Auto height to fit content */
+  min-height: 600px;
+  /* Set a minimum height */
 }
 
 .logovanje .card-header {
   border: none;
-  background-color: #fdfeff !important; /* Use !important if needed to override Bootstrap */
+  background-color: #fdfeff !important;
+  /* Use !important if needed to override Bootstrap */
   color: #fff;
-  display: flex; /* Use flexbox for centering */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  height: 100px; /* Adjust height as needed */
+  display: flex;
+  /* Use flexbox for centering */
+  justify-content: center;
+  /* Center horizontally */
+  align-items: center;
+  /* Center vertically */
+  height: 100px;
+  /* Adjust height as needed */
 }
 
 .logovanje .card-header img {
-  max-width: 100%; /* Ensure the image fits within the header */
-  height: auto; /* Maintain aspect ratio */
+  max-width: 100%;
+  /* Ensure the image fits within the header */
+  height: auto;
+  /* Maintain aspect ratio */
 }
 
 .logovanje .card-body {
-  margin-top: 20px; /* Push the form down */
+  margin-top: 20px;
+  /* Push the form down */
 }
 
 .dropdown-custom .dropdown-menu {
-  left: auto; /* Removes the default left alignment */
-  right: 0; /* Aligns the dropdown to the right */
-  margin-left: 10px; /* Adds space to the left of the dropdown */
+  left: auto;
+  /* Removes the default left alignment */
+  right: 0;
+  /* Aligns the dropdown to the right */
+  margin-left: 10px;
+  /* Adds space to the left of the dropdown */
 }
 
 .resetPassword {
@@ -458,28 +472,127 @@ td {
 }
 
 .resetPassword .card {
-  border: 0.5px solid #e8e8eb; /* Change border color and width */
+  border: 0.5px solid #e8e8eb;
+  /* Change border color and width */
   /* border-radius: 10px; Adjust border radius for rounded corners */
-  width: 600px; /* Adjust width as needed */
-  height: auto; /* Auto height to fit content */
-  min-height: 400px; /* Set a minimum height */
+  width: 600px;
+  /* Adjust width as needed */
+  height: auto;
+  /* Auto height to fit content */
+  min-height: 400px;
+  /* Set a minimum height */
 }
 
 .resetPassword .card-header {
   border: none;
-  background-color: #fdfeff !important; /* Use !important if needed to override Bootstrap */
+  background-color: #fdfeff !important;
+  /* Use !important if needed to override Bootstrap */
   color: #fff;
-  display: flex; /* Use flexbox for centering */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  height: 100px; /* Adjust height as needed */
+  display: flex;
+  /* Use flexbox for centering */
+  justify-content: center;
+  /* Center horizontally */
+  align-items: center;
+  /* Center vertically */
+  height: 100px;
+  /* Adjust height as needed */
 }
 
 .resetPassword .card-header img {
-  max-width: 100%; /* Ensure the image fits within the header */
-  height: auto; /* Maintain aspect ratio */
+  max-width: 100%;
+  /* Ensure the image fits within the header */
+  height: auto;
+  /* Maintain aspect ratio */
 }
 
 .resetPassword .card-body {
-  margin-top: 20px; /* Push the form down */
+  margin-top: 20px;
+  /* Push the form down */
+}
+
+/* TextPage.css */
+
+.mail-success {
+  text-align: center;
+  background: #fff;
+  margin-top: 20px;
+  /* Add some space above the section */
+}
+
+.mail-success .success-inner {
+  display: inline-block;
+}
+
+.mail-success .success-inner h1 {
+  font-size: 100px;
+  text-shadow: 3px 5px 2px #3333;
+  color: #61cddc;
+  font-weight: 700;
+  padding-bottom: 50px;
+}
+
+.mail-success .success-inner h1 span {
+  display: block;
+  font-size: 25px;
+  color: #333;
+  font-weight: 600;
+  text-shadow: none;
+  margin-top: 20px;
+}
+
+.mail-success .success-inner a {
+  color: #61cddc;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.mail-success .success-inner a:hover {
+  text-decoration: underline;
+}
+
+.registracija-card {
+  width: 100%;
+  padding: 20px;
+  /* border: 1px solid #ccc; */
+  border: none;
+}
+
+.registracija-card .card-header {
+  border: none;
+  background-color: #fdfeff !important;
+  color: #fff;
+  display: flex;
+  /* Use flexbox for centering */
+  justify-content: center;
+  /* Center horizontally */
+  align-items: center;
+  /* Center vertically */
+  height: 100px;
+  /* Adjust height as needed */
+}
+
+.registracija-card .card-header img {
+  max-width: 100%;
+  /* Ensure the image fits within the header */
+  margin-bottom: 20px;
+  height: auto;
+  /* Maintain aspect ratio */
+}
+
+.table {
+  --bs-table-hover-bg: rgba(97, 205, 220, 0.5) !important;
+}
+
+.zaposleni-table th,
+.zaposleni-table td {
+  border: 1px solid #dddddd;
+  text-align: center;
+  vertical-align: middle;
+  padding: 8px;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

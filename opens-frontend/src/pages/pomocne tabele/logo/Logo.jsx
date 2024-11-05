@@ -1,22 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { LogoContext } from "./LogoContext";
 import DeleteLogoForm from "./modal/DeleteLogoForm";
 
 const Logo = ({ logo }) => {
   const { deleteLogo } = useContext(LogoContext);
 
-  const [showEdit, setShowEdit] = useState(false);
-  const handleShowEdit = () => setShowEdit(true);
-  const handleCloseEdit = () => setShowEdit(false);
-
   const [showDelete, setShowDelete] = useState(false);
   const handleShowDelete = () => setShowDelete(true);
   const handleCloseDelete = () => setShowDelete(false);
 
   useEffect(() => {
-    handleCloseEdit();
     handleCloseDelete();
   }, [logo]);
 
@@ -27,9 +22,6 @@ const Logo = ({ logo }) => {
       </td>
       <td>{logo.name}</td>
       <td>
-        <button className="btn text-warning btn-act">
-          <MdEdit />
-        </button>
         <button className="btn text-danger btn-act" onClick={handleShowDelete}>
           <MdDelete />
         </button>

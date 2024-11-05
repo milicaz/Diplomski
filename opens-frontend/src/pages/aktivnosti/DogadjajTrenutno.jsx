@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import httpCommon from "../../http-common";
+import { useLocation, useNavigate } from "react-router-dom";
+import useHttpProtected from "../../hooks/useHttpProtected";
 import Pagination from "../Pagination";
-import eventBus from "../../utils/eventBus";
 
 const DogadjajiTrenutno = () => {
   const [dogadjaji, setDogadjaji] = useState([]);
+
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -19,25 +23,34 @@ const DogadjajiTrenutno = () => {
   const totalPagesNumber = Math.ceil(dogadjaji.length / limit);
 
   useEffect(() => {
-    // Fetch data from the API when the component mounts
-    httpCommon.get("/dogadjajiTrenutno").then(
-      (response) => {
-        setDogadjaji(response.data);
-      },
-      (error) => {
-        if (
-          error.response &&
-          (error.response.status === 401 || error.response.status === 400)
-        ) {
-          eventBus.dispatch("logout");
-        } else {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchDogadjajiTrenutno = async () => {
+      try {
+        const { data } = await httpProtected.get("/dogadjajiTrenutno", {
+          signal: controller.signal,
+        });
+        if (isMounted) {
+          setDogadjaji(data);
+        }
+      } catch (error) {
+        if (error.name !== "CanceledError") {
           console.error(
             "Greška prilikom fetching trenutnih dogadjaja: ",
             error
           );
+          navigate("/logovanje", { state: { from: location }, replace: true });
         }
       }
-    );
+    };
+
+    fetchDogadjajiTrenutno();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   const onInputChange = (event) => {
@@ -98,7 +111,7 @@ const DogadjajiTrenutno = () => {
         <table className="table table-striped table-hover image-table">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Red. broj</th>
               <th>Naziv aktivnosti</th>
               <th>Datum</th>
               <th>Vreme događaja</th>

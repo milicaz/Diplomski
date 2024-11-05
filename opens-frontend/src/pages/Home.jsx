@@ -1,8 +1,8 @@
 import "chart.js/auto";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
-import httpCommon from "../http-common";
-import eventBus from "../utils/eventBus";
+import { useLocation, useNavigate } from "react-router-dom";
+import useHttpProtected from "../hooks/useHttpProtected";
 import { AdminGodisnjeAktivnosti, AdminMesecnePosete } from "./admin dashboard";
 
 export const Home = () => {
@@ -11,80 +11,49 @@ export const Home = () => {
   const [dogadjaji, setDogadjaji] = useState([]);
   const [mestaPosete, setMestaPosete] = useState([]);
 
-  const fetchPoseteCount = async () => {
-    try {
-      const { data } = await httpCommon.get("/admin/posete");
-      setPosete(data);
-    } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error("Greška prilikom fetching broja poseta: ", error);
-      }
-    }
-  };
-
-  const fetchUcesniciCount = async () => {
-    try {
-      const { data } = await httpCommon.get("/admin/ucesnici");
-      setUcesnici(data);
-    } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error("Greška prilikom fetching broja ucesnika: ", error);
-      }
-    }
-  };
-
-  const currentYear = new Date().getFullYear();
-  const fetchDogadjaji = useCallback(async () => {
-    try {
-      const { data } = await httpCommon.get(`/admin/dogadjaji/${currentYear}`);
-      setDogadjaji(data);
-    } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error(
-          "Greška prilikom fetching broja događaja za tekucu godinu: ",
-          error
-        );
-      }
-    }
-  }, [currentYear, setDogadjaji]);
-
-  const fetchMestaPosete = async () => {
-    try {
-      const { data } = await httpCommon.get("/mestaPosete");
-      setMestaPosete(data);
-    } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error("Greška prilikom fetching mesta posete: ", error);
-      }
-    }
-  };
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    fetchPoseteCount();
-    fetchUcesniciCount();
-    fetchDogadjaji();
-    fetchMestaPosete();
-  }, [fetchDogadjaji]);
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchData = async () => {
+      try {
+        const currentYear = new Date().getFullYear();
+        const requests = [
+          httpProtected.get("/admin/posete", { signal: controller.signal }),
+          httpProtected.get("/admin/ucesnici", { signal: controller.signal }),
+          httpProtected.get(`/admin/dogadjaji/${currentYear}`, {
+            signal: controller.signal,
+          }),
+          httpProtected.get("/mestaPosete", { signal: controller.signal }),
+        ];
+        const [poseteData, ucesniciData, dogadjajiData, mestaPoseteData] =
+          await Promise.all(requests);
+
+        if (isMounted) {
+          setPosete(poseteData.data);
+          setUcesnici(ucesniciData.data);
+          setDogadjaji(dogadjajiData.data);
+          setMestaPosete(mestaPoseteData.data);
+        }
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Greška prilikom fetching podataka: ", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, []);
 
   const sortedMestaPosete =
     mestaPosete.length > 0

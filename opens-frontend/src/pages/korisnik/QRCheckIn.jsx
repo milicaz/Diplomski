@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Image, Modal, Row } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { equipmentImage } from "../../assets";
-import httpCommon from "../../http-common";
+import useHttpProtected from "../../hooks/useHttpProtected";
 
 export const QRCheckIn = () => {
   const [posetilac, setPosetilac] = useState("");
@@ -16,18 +17,44 @@ export const QRCheckIn = () => {
   const [status, setStatus] = useState("");
   const [poseta, setPoseta] = useState([]);
 
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   //za prikazivanje modalnog dijaloga
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
 
   useEffect(() => {
-    fetchMestaPosete();
-    fetchOprema();
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchData = async () => {
+      try {
+        const requests = [
+          httpProtected.get("/mestaPosete", { signal: controller.signal }),
+          httpProtected.get("/oprema/slobodna", { signal: controller.signal }),
+        ];
+        const [mestaPoseteData, opremaData] = await Promise.all(requests);
+        if (isMounted) {
+          setMestaPosete(mestaPoseteData.data);
+          setOprema(opremaData.data);
+        }
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Greška prilikom fetching podataka: ", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      }
+    };
+    fetchData();
     handleClose();
 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
+      isMounted = false;
+      controller.abort();
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
@@ -39,38 +66,45 @@ export const QRCheckIn = () => {
   //   }
   // }, [posetilac]);
 
-  const fetchMestaPosete = async () => {
-    const { data } = await httpCommon.get("/mestaPosete");
-    setMestaPosete(data);
-  };
-
-  const fetchOprema = async () => {
-    try {
-      const { data } = await httpCommon.get("/oprema/slobodna");
-      setOprema(data);
-    } catch (error) {
-      console.error("Greška prilikom fetching opreme:", error);
-    }
-  };
-
   const fetchPosetu = async (email) => {
+    const controller = new AbortController();
     try {
-      const { data } = await httpCommon.get(`/posete/${email}/oprema`);
+      const { data } = await httpProtected.get(`/posete/${email}/oprema`, {
+        signal: controller.signal,
+      });
       return data;
     } catch (error) {
-      console.error("Error fetching oprema:", error);
-      return [];
+      if (error.name !== "CanceledError") {
+        console.error("Error fetching oprema:", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+        return [];
+      }
+    } finally {
+      controller.abort();
     }
   };
 
   const handleKeyDown = async (e) => {
     if (e.key === "Tab") {
       setPosetilac(inputRef.current.value);
+      const controller = new AbortController();
       try {
         const scannedEmail = inputRef.current.value;
-        const response = await httpCommon.get(`/posete/${scannedEmail}/status`);
+        const response = await httpProtected.get(
+          `/posete/${scannedEmail}/status`,
+          {
+            signal: controller.signal,
+          }
+        );
         setStatus(response.data);
-      } catch (error) {}
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Error fetching status:", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      } finally {
+        controller.abort();
+      }
       inputRef.current.value = "";
     }
   };
@@ -81,20 +115,52 @@ export const QRCheckIn = () => {
 
   //CHECK IN
   const addPosetu = async (newPoseta) => {
-    httpCommon.post("/posete", newPoseta);
-    console.log(newPoseta);
+    const controller = new AbortController();
+    try {
+      await httpProtected.post("/posete", newPoseta, {
+        signal: controller.signal,
+      });
+      console.log(newPoseta);
+    } catch (error) {
+      if (error.name !== "CanceledError") {
+        console.error("Error adding poseta:", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    } finally {
+      controller.abort();
+    }
   };
 
   //CHECK OUT
   const checkOut = async (email) => {
-    httpCommon.put(`/posete/${email}`);
+    const controller = new AbortController();
+    try {
+      await httpProtected.put(`/posete/${email}`, {
+        signal: controller.signal,
+      });
+    } catch (error) {
+      if (error.name !== "CanceledError") {
+        console.error("Error checking out poseta:", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    } finally {
+      controller.abort();
+    }
   };
 
   const checkOutWithOprema = async (email) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.put(`/posete/${email}/checkOprema`);
+      await httpProtected.put(`/posete/${email}/checkOprema`, {
+        signal: controller.signal,
+      });
     } catch (error) {
-      console.error("Error checking out opremu:", error);
+      if (error.name !== "CanceledError") {
+        console.error("Error checking out opremu:", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    } finally {
+      controller.abort();
     }
   };
 

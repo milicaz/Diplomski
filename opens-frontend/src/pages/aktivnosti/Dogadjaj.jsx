@@ -6,7 +6,6 @@ import DeleteDogadjajForm from "./modal/DeleteDogadjajForm";
 
 const Dogadjaj = ({ dogadjaj }) => {
   const { dodajUcesnika } = useContext(DogadjajContext);
-
   const { deleteDogadjaj } = useContext(DogadjajContext);
 
   const [ucesnik, setUcesnik] = useState({
@@ -27,8 +26,8 @@ const Dogadjaj = ({ dogadjaj }) => {
   ];
 
   const rodMapping = {
-    ZENSKO: "žensko",
     MUSKO: "muško",
+    ZENSKO: "žensko",
     DRUGO: "drugo",
   };
 

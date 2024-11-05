@@ -2,34 +2,43 @@ import { useContext, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { TipDogadjajaContext } from "../TipDogadjajaContext";
 
-const EditTipDogadjajaForm = ({ currentTip }) => {
+const EditTipDogadjajaForm = ({ currentTip, onTipDogadjajaEdited }) => {
   const { editTip } = useContext(TipDogadjajaContext);
 
-  const [tipDogadjaja, setTipDogadjaja] = useState({ naziv: currentTip.naziv });
-
+  const [validated, setValidated] = useState(false);
   const id = currentTip.id;
+  const [tipDogadjaja, setTipDogadjaja] = useState({ naziv: currentTip.naziv });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setTipDogadjaja({ ...tipDogadjaja, [name]: value });
   };
 
-  const handleEdit = (event) => {
+  const handleEdit = async (event) => {
     event.preventDefault();
-    editTip(id, tipDogadjaja);
+    const form = event.currentTarget;
+    if (form.checkValidity()) {
+      await editTip(id, tipDogadjaja);
+      onTipDogadjajaEdited();
+    }
+    setValidated(true);
   };
 
   return (
-    <Form onSubmit={handleEdit}>
+    <Form noValidate validated={validated} onSubmit={handleEdit}>
       <Form.Group className="mb-3">
         <Form.Control
           name="naziv"
           value={tipDogadjaja.naziv}
           onChange={handleChange}
           type="text"
-          placeholder="Naziv "
+          placeholder="Naziv tipa događaja *"
           required
+          isInvalid={validated && !tipDogadjaja.naziv}
         />
+        <Form.Control.Feedback type="invalid">
+          Unesite naziv tipa događaja.
+        </Form.Control.Feedback>
       </Form.Group>
       <Form.Group>
         <div className="d-grid gap-2">

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Card, Modal } from "react-bootstrap";
 import { MdDelete, MdEdit } from "react-icons/md";
 import ReactMarkdown from "react-markdown";
@@ -7,11 +7,11 @@ import DeleteObavestenjaForm from "./modal/DeleteObavestenjaForm";
 import EditObavestenjaForm from "./modal/EditObavestenjaForm";
 
 export const Obavestenja = ({ obavestenje }) => {
-  const { deleteObavestenje } = useContext(ObavestenjeContext);
+  const { fetchObavestenja, deleteObavestenje } =
+    useContext(ObavestenjeContext);
 
   const [isTruncated, setIsTruncated] = useState(true);
 
-  //za prikazivanje modalnog dijaloga
   const [showEdit, setShowEdit] = useState(false);
   const handleShowEdit = () => setShowEdit(true);
   const handleCloseEdit = () => setShowEdit(false);
@@ -24,10 +24,17 @@ export const Obavestenja = ({ obavestenje }) => {
     setIsTruncated(!isTruncated);
   };
 
-  useEffect(() => {
+  const handleObavestenjeEdit = async () => {
+    const controller = new AbortController();
+    await fetchObavestenja(true, controller);
     handleCloseEdit();
+  };
+
+  const handleObavestenjeDelete = async () => {
+    const controller = new AbortController();
+    await fetchObavestenja(true, controller);
     handleCloseDelete();
-  }, [obavestenje]);
+  };
 
   return (
     <>
@@ -80,7 +87,7 @@ export const Obavestenja = ({ obavestenje }) => {
           <Modal.Title>Izmena obaveštenja</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <EditObavestenjaForm updatedObavestenje={obavestenje} />
+          <EditObavestenjaForm updatedObavestenje={obavestenje} onObavestenjeEdited={handleObavestenjeEdit}/>
         </Modal.Body>
       </Modal>
 
@@ -94,7 +101,10 @@ export const Obavestenja = ({ obavestenje }) => {
         <Modal.Footer>
           <Button
             className="btn btn-danger"
-            onClick={() => deleteObavestenje(obavestenje.id)}
+            onClick={async () => {
+              await deleteObavestenje(obavestenje.id);
+              handleObavestenjeDelete();
+            }}
           >
             Obriši
           </Button>

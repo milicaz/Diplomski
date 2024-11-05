@@ -1,10 +1,14 @@
 import React, { useContext, useState } from "react";
 import { Button, Form, Toast } from "react-bootstrap";
-import httpCommon from "../../../../http-common";
+import { useLocation, useNavigate } from "react-router-dom";
+import useHttpProtected from "../../../../hooks/useHttpProtected";
 import { TipOprContext } from "../TipOprContext";
 
-export const EditTipOpremeForm = ({ updatedTipOpreme }) => {
+export const EditTipOpremeForm = ({ updatedTipOpreme, onTipOpremeEdited }) => {
   const { editTipOpreme } = useContext(TipOprContext);
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [validated, setValidated] = useState(false);
 
@@ -26,19 +30,31 @@ export const EditTipOpremeForm = ({ updatedTipOpreme }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
+    const controller = new AbortController();
     if (form.checkValidity()) {
-      const response = await httpCommon.get(
-        `/tipoviOpreme/${editedTipOpreme.naziv}`
-      );
-      const status = response.data;
-      if (status === "exists") {
-        handleShowToast(
-          "Tip opreme sa unetim nazivom već postoji.Unesite novi naziv tipa opreme.",
-          "danger"
+      try {
+        const response = await httpProtected.get(
+          `/tipoviOpreme/${editedTipOpreme.naziv}`,
+          { signal: controller.signal }
         );
-      } else if (status === "do-not-exist") {
-        handleShowToast("Uspešno ste izmenili tip opreme", "success");
-        editTipOpreme(id, editedTipOpreme);
+        const status = response.data;
+        if (status === "exists") {
+          handleShowToast(
+            "Tip opreme sa unetim nazivom već postoji. Unesite novi naziv tipa opreme.",
+            "danger"
+          );
+        } else if (status === "do-not-exist") {
+          handleShowToast("Uspešno ste izmenili tip opreme", "success");
+          await editTipOpreme(id, editedTipOpreme);
+          onTipOpremeEdited();
+        }
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Error izmene tipa opreme:", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      } finally {
+        controller.abort();
       }
     }
     setValidated(true);
@@ -91,4 +107,5 @@ export const EditTipOpremeForm = ({ updatedTipOpreme }) => {
     </>
   );
 };
+
 export default EditTipOpremeForm;

@@ -1,76 +1,90 @@
 import { createContext, useEffect, useState } from "react";
-import httpCommon from "../../../http-common";
-import eventBus from "../../../utils/eventBus";
+import useHttpProtected from "../../../hooks/useHttpProtected";
 
 export const LogoContext = createContext();
 
-const LogoContextProvider = (props) => {
+const LogoContextProvider = ({ children, navigate, location }) => {
   const [base64, setBase64] = useState([]);
 
+  const httpProtected = useHttpProtected();
+
   useEffect(() => {
-    getImage();
+    let isMounted = true;
+    const controller = new AbortController();
+
+    getImage(isMounted, controller);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
-  const getImage = async () => {
+  const getImage = async (isMounted, controller) => {
     try {
-      const result = await httpCommon.get("/logoi");
-      setBase64(result.data);
+      const result = await httpProtected.get("/logoi", {
+        signal: controller.signal,
+      });
+      if (isMounted) {
+        setBase64(result.data);
+      }
     } catch (error) {
       if (
         error.response &&
-        (error.response.status === 401 || error.response.status === 400)
+        error.response.status === 400 &&
+        error.response.data === "File size exceeds limit!"
       ) {
-        eventBus.dispatch("logout");
-      } else {
+        throw new Error("File size exceeds limit!");
+      }
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom fetching logoa: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
   };
 
   const addLogo = async (file) => {
+    const controller = new AbortController();
     try {
       const formData = new FormData();
       formData.append("imageFile", file);
 
-      const response = await httpCommon.post("/logoi", formData, {
+      await httpProtected.post("/logoi", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        signal: controller.signal,
       });
-      return response.data;
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error("Greška:", error);
-        throw error;
+      if (error.name !== "CanceledError") {
+        console.error("An error occurred while fetching logos: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
-    getImage();
   };
 
   const deleteLogo = async (id) => {
+    const controller = new AbortController();
     try {
-      await httpCommon.delete(`/logoi/${id}`);
-      getImage();
+      await httpProtected.delete(`/logoi/${id}`, {
+        signal: controller.signal,
+      });
+      getImage(true, controller);
     } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
+      if (error.name !== "CanceledError") {
         console.error("Greška prilikom brisanja logoa: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
       }
+    } finally {
+      controller.abort();
     }
   };
 
   return (
-    <LogoContext.Provider value={{ base64, addLogo, deleteLogo }}>
-      {props.children}
+    <LogoContext.Provider value={{ base64, getImage, addLogo, deleteLogo }}>
+      {children}
     </LogoContext.Provider>
   );
 };

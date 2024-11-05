@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { MdDelete, MdEdit } from "react-icons/md";
 import DeleteNaseljaForm from "./modal/DeleteNaseljaForm";
@@ -6,7 +6,7 @@ import EditNaseljaForm from "./modal/EditNaseljaForm";
 import { PrigradskaNaseljaContext } from "./PrigradskaNaseljaContext";
 
 const PrigradskaNaselja = ({ prigradskoNaselje }) => {
-  const { deleteNaselje } = useContext(PrigradskaNaseljaContext);
+  const { getNaselje, deleteNaselje } = useContext(PrigradskaNaseljaContext);
 
   const [showEdit, setShowEdit] = useState(false);
   const handleShowEdit = () => setShowEdit(true);
@@ -16,10 +16,17 @@ const PrigradskaNaselja = ({ prigradskoNaselje }) => {
   const handleShowDelete = () => setShowDelete(true);
   const handleCloseDelete = () => setShowDelete(false);
 
-  useEffect(() => {
+  const handleNaseljeEdit = async () => {
+    const controller = new AbortController();
+    await getNaselje(true, controller);
     handleCloseEdit();
+  };
+
+  const handleNaseljeDelete = async () => {
+    const controller = new AbortController();
+    await getNaselje(true, controller);
     handleCloseDelete();
-  }, [prigradskoNaselje]);
+  };
 
   return (
     <>
@@ -38,7 +45,10 @@ const PrigradskaNaselja = ({ prigradskoNaselje }) => {
           <Modal.Title>Izmeni prigradsko naselje</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <EditNaseljaForm currentNaselje={prigradskoNaselje} />
+          <EditNaseljaForm
+            currentNaselje={prigradskoNaselje}
+            onNaseljeEdited={handleNaseljeEdit}
+          />
         </Modal.Body>
       </Modal>
 
@@ -52,7 +62,10 @@ const PrigradskaNaselja = ({ prigradskoNaselje }) => {
         <Modal.Footer>
           <Button
             className="btn btn-danger"
-            onClick={() => deleteNaselje(prigradskoNaselje.id)}
+            onClick={async () => {
+              await deleteNaselje(prigradskoNaselje.id);
+              handleNaseljeDelete();
+            }}
           >
             Obriši
           </Button>

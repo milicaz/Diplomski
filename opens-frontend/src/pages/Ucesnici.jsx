@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
-import httpCommon from "../http-common";
-import eventBus from "../utils/eventBus";
+import { Button, Card, Form } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
+import { opensBojaImage } from "../assets";
+import useHttpProtected from "../hooks/useHttpProtected";
 
 const Ucesnici = () => {
+  const [validated, setValidated] = useState(false);
   const [ucesnik, setUcesnik] = useState({
     ime: "",
     prezime: "",
@@ -14,67 +16,54 @@ const Ucesnici = () => {
     email: "",
     organizacija: "",
   });
+  const [dogadjaji, setDogadjaji] = useState([]);
+  const [selectedDogadjaj, setSelectedDogadjaj] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
 
-  const [dogadjaji, setDogadjaji] = useState([]); // Initialize as an array
-  const [selectedDogadjaj, setSelectedDogadjaj] = useState(null); // To hold the selected event
-  const [selectedId, setSelectedId] = useState(null); // New state for selected ID
-
-  const r = [
-    { id: 1, naziv: "ZENSKO" },
-    { id: 2, naziv: "MUSKO" },
-    { id: 3, naziv: "DRUGO" },
-  ];
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const rodMapping = {
-    ZENSKO: "žensko",
     MUSKO: "muško",
+    ZENSKO: "žensko",
     DRUGO: "drugo",
   };
 
   useEffect(() => {
-    // const fetchDogadjaji = async () => {
-    //   const response = await fetch("http://localhost:8080/api/dogadjaji");
-    //   const data = await response.json();
-    //   const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+    let isMounted = true;
+    const controller = new AbortController();
 
-    //   // Filter events to only include those with today's date
-    //   const filteredDogadjaji = data.filter((dogadjaj) => {
-    //     const eventDate = new Date(dogadjaj.datum).toISOString().split("T")[0]; // Format the event date
-    //     return eventDate === today; // Compare dates
-    //   });
-
-    //   setDogadjaji(filteredDogadjaji);
-    //   console.log("Danasnji dogadjaji su: ", filteredDogadjaji);
-    // };
     const fetchDogadjaji = async () => {
       try {
-        const response = await httpCommon.get("/dogadjaji");
-        const data = response.data;
-
-        const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-
-        // Filter events to only include those with today's date
-        const filteredDogadjaji = data.filter((dogadjaj) => {
-          const eventDate = new Date(dogadjaj.datum)
-            .toISOString()
-            .split("T")[0]; // Format the event date
-          return eventDate === today; // Compare dates
+        const { data } = await httpProtected.get("/dogadjaji", {
+          signal: controller.signal,
         });
 
-        setDogadjaji(filteredDogadjaji);
-        console.log("Danasnji dogadjaji su: ", filteredDogadjaji);
+        if (isMounted) {
+          const today = new Date().toISOString().split("T")[0];
+          const filteredDogadjaji = data.filter((dogadjaj) => {
+            const eventDate = new Date(dogadjaj.datum)
+              .toISOString()
+              .split("T")[0]; // Format the event date
+            return eventDate === today; // Compare dates
+          });
+          setDogadjaji(filteredDogadjaji);
+        }
       } catch (error) {
-        if (
-          error.response &&
-          (error.response.status === 401 || error.response.status === 400)
-        ) {
-          eventBus.dispatch("logout");
-        } else {
+        if (error.name !== "CanceledError") {
           console.error("An error occurred while fetching dogadjaji: ", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
         }
       }
     };
+
     fetchDogadjaji();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   const handleDogadjajChange = (event) => {
@@ -93,165 +82,192 @@ const Ucesnici = () => {
 
   const handleDodajUcesnik = async (event) => {
     event.preventDefault();
-    try {
-      await httpCommon.post(`/ucesniciDogadjaja/${selectedId}`, ucesnik);
-      setUcesnik({
-        ime: "",
-        prezime: "",
-        rod: "",
-        godine: "",
-        mestoBoravista: "",
-        brojTelefona: "",
-        email: "",
-        organizacija: "",
-      });
-    } catch (error) {
-      if (
-        error.response &&
-        (error.response.status === 401 || error.response.status === 400)
-      ) {
-        eventBus.dispatch("logout");
-      } else {
-        console.error("Greška prilikom dodavanja učesnika u događaj: ", error);
+
+    const form = event.currentTarget;
+
+    if (form.checkValidity() === false) {
+      setValidated(true);
+    } else {
+      const controller = new AbortController();
+
+      try {
+        await httpProtected.post(`/ucesniciDogadjaja/${selectedId}`, ucesnik, {
+          signal: controller.signal,
+        });
+        setValidated(false);
+        setUcesnik({
+          ime: "",
+          prezime: "",
+          rod: "",
+          godine: "",
+          mestoBoravista: "",
+          brojTelefona: "",
+          email: "",
+          organizacija: "",
+        });
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error(
+            "Greška prilikom dodavanja učesnika u događaj: ",
+            error
+          );
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      } finally {
+        controller.abort();
       }
     }
   };
 
   return (
-    <Form>
-      <Form.Group>
-        {/* <Form.Label>Izaberite događaj:</Form.Label> */}
-        <Form.Control
-          as="select"
-          onChange={handleDogadjajChange}
-          style={{ width: "100%" }}
-          required
-          disabled={!!selectedDogadjaj} // Disable if a dogadjaj is selected
-        >
-          <option value="">Izaberite događaj</option>
-          {dogadjaji.map((dogadjaj) => (
-            <option key={dogadjaj.id} value={dogadjaj.id}>
-              {dogadjaj.naziv}
-            </option>
-          ))}
-        </Form.Control>
-      </Form.Group>
-      <br />
-
-      {selectedDogadjaj && (
-        <>
-          <Form.Group>
-            <Form.Control
-              name="ime"
-              value={ucesnik.ime}
-              onChange={handleChangeUcesnik}
-              style={{ width: "100%" }}
-              type="text"
-              placeholder="Ime"
-              required
-            />
-          </Form.Group>
-          <br />
-          <Form.Group>
-            <Form.Control
-              name="prezime"
-              value={ucesnik.prezime}
-              onChange={handleChangeUcesnik}
-              style={{ width: "100%" }}
-              type="text"
-              placeholder="Prezime"
-              required
-            />
-          </Form.Group>
-          <br />
-          <Form.Group>
-            <Form.Control
-              as="select"
-              name="rod"
-              value={ucesnik.rod}
-              onChange={handleChangeUcesnik}
-              required
-            >
-              <option value="">Izaberite rod</option>
-              {Object.entries(rodMapping).map(([key, value]) => (
-                <option key={key} value={key}>
-                  {value}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
-          <br />
-          <Form.Group>
-            <Form.Control
-              name="godine"
-              value={ucesnik.godine}
-              onChange={handleChangeUcesnik}
-              style={{ width: "100%" }}
-              type="number"
-              placeholder="Godina rođenja"
-              required
-            />
-          </Form.Group>
-          <br />
-          <Form.Group>
-            <Form.Control
-              name="mestoBoravista"
-              value={ucesnik.mestoBoravista}
-              onChange={handleChangeUcesnik}
-              style={{ width: "100%" }}
-              type="text"
-              placeholder="Mesto boravišta"
-              required
-            />
-          </Form.Group>
-          <br />
-          <Form.Group>
-            <Form.Control
-              name="brojTelefona"
-              value={ucesnik.brojTelefona}
-              onChange={handleChangeUcesnik}
-              style={{ width: "100%" }}
-              type="text"
-              placeholder="Broj telefona"
-              required
-            />
-          </Form.Group>
-          <br />
-          <Form.Group>
-            <Form.Control
-              name="email"
-              value={ucesnik.email}
-              onChange={handleChangeUcesnik}
-              style={{ width: "100%" }}
-              type="text"
-              placeholder="E-mail"
-              required
-            />
-          </Form.Group>
-          <br />
-          <Form.Group>
-            <Form.Control
-              name="organizacija"
-              value={ucesnik.organizacija}
-              onChange={handleChangeUcesnik}
-              style={{ width: "100%" }}
-              type="text"
-              placeholder="Organizacija"
-              required
-            />
-          </Form.Group>
-          <br />
-          <Form.Group style={{ width: "100%" }}>
-            <div className="d-flex justify-content-center">
-              <Button onClick={handleDodajUcesnik} variant="success">
-                Prijavi se
-              </Button>
-              &nbsp;
+    <>
+      <div className="d-flex align-items-center justify-content-center">
+        <Card className="registracija-card">
+          <Card.Header>
+            <div style={{ marginTop: "100px" }}>
+              <img src={opensBojaImage} alt="OPENS" />
             </div>
-          </Form.Group>
-        </>
-      )}
-    </Form>
+          </Card.Header>
+          <Card.Body className="mt-5 mb-3">
+            <Form
+              noValidate
+              validated={validated}
+              onSubmit={handleDodajUcesnik}
+            >
+              <Form.Group className="mb-4">
+                <Form.Control
+                  as="select"
+                  onChange={handleDogadjajChange}
+                  style={{ width: "100%" }}
+                  required
+                  disabled={!!selectedDogadjaj} // Disable if a dogadjaj is selected
+                >
+                  <option value="">Izaberite događaj</option>
+                  {dogadjaji.map((dogadjaj) => (
+                    <option key={dogadjaj.id} value={dogadjaj.id}>
+                      {dogadjaj.naziv}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+
+              {selectedDogadjaj && (
+                <>
+                  <Form.Group className="mb-4">
+                    <Form.Control
+                      name="ime"
+                      type="text"
+                      placeholder="Ime *"
+                      value={ucesnik.ime}
+                      onChange={handleChangeUcesnik}
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Ime je obavezno.
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group className="mb-4">
+                    <Form.Control
+                      name="prezime"
+                      type="text"
+                      placeholder="Prezime *"
+                      value={ucesnik.prezime}
+                      onChange={handleChangeUcesnik}
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Prezime je obavezno.
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group className="mb-4">
+                    <Form.Control
+                      as="select"
+                      name="rod"
+                      value={ucesnik.rod}
+                      onChange={handleChangeUcesnik}
+                      required
+                    >
+                      <option value="">Izaberite rod *</option>
+                      {Object.entries(rodMapping).map(([key, value]) => (
+                        <option key={key} value={key}>
+                          {value}
+                        </option>
+                      ))}
+                    </Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                      Rod je obavezan.
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group className="mb-4">
+                    <Form.Control
+                      name="godine"
+                      type="number"
+                      placeholder="Godina rođenja *"
+                      value={ucesnik.godine}
+                      onChange={handleChangeUcesnik}
+                      required
+                      min={1930}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Godina rođenja je obavezna.
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group className="mb-4">
+                    <Form.Control
+                      name="mestoBoravista"
+                      type="text"
+                      placeholder="Mesto boravišta *"
+                      value={ucesnik.mestoBoravista}
+                      onChange={handleChangeUcesnik}
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Mesto boravišta je obavezno.
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group className="mb-4">
+                    <Form.Control
+                      name="brojTelefona"
+                      type="text"
+                      placeholder="Broj telefona"
+                      value={ucesnik.brojTelefona}
+                      onChange={handleChangeUcesnik}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-4">
+                    <Form.Control
+                      name="email"
+                      type="text"
+                      placeholder="E-mail"
+                      value={ucesnik.email}
+                      onChange={handleChangeUcesnik}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-4">
+                    <Form.Control
+                      name="organizacija"
+                      type="text"
+                      placeholder="Organizacija *"
+                      value={ucesnik.organizacija}
+                      onChange={handleChangeUcesnik}
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Organizacija je obavezna.
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <div className="d-grid gap-2 my-4">
+                    <Button variant="success" type="submit" size="lg">
+                      Prijavite se na događaj
+                    </Button>
+                  </div>
+                </>
+              )}
+            </Form>
+          </Card.Body>
+        </Card>
+      </div>
+    </>
   );
 };
 

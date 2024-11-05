@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { FaSquarePlus } from "react-icons/fa6";
 import Pagination from "../../Pagination";
@@ -7,19 +7,12 @@ import { ObavestenjeContext } from "./ObavestenjaContext";
 import AddObavestenjaForm from "./modal/AddObavestenjaForm";
 
 export const ObavestenjaList = () => {
-  const { sortedObavestenja } = useContext(ObavestenjeContext);
+  const { sortedObavestenja, fetchObavestenja } =
+    useContext(ObavestenjeContext);
 
-  //za prikazivanje modalnog dijaloga
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
-
-  /* Za zatvaranje modalnog dijaloga
-   Zatvara se kada se izmeni nesto u opremi tj kada se doda nova oprema
- */
-  useEffect(() => {
-    handleClose();
-  }, [sortedObavestenja]);
 
   const sortPoPrioritetu = [...sortedObavestenja].sort(
     (a, b) => b.prioritet - a.prioritet
@@ -39,6 +32,12 @@ export const ObavestenjaList = () => {
 
   const onInputChange = (e) => {
     setLimit(e.target.value);
+  };
+
+  const handleObavestenjeAdded = async () => {
+    const controller = new AbortController();
+    await fetchObavestenja(true, controller);
+    handleClose();
   };
 
   return (
@@ -115,7 +114,7 @@ export const ObavestenjaList = () => {
           <Modal.Title>Dodaj obaveštenje</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AddObavestenjaForm />
+          <AddObavestenjaForm onObavestenjeAdded={handleObavestenjeAdded} />
         </Modal.Body>
       </Modal>
     </>

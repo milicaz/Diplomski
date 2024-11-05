@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { MestoPoseteContext } from "./MestoPoseteContext";
@@ -6,9 +6,9 @@ import DeleteMestoPoseteForm from "./modal/DeleteMestoPoseteForm";
 import EditMestoPoseteForm from "./modal/EditMestoPoseteForm";
 
 const MestoPosete = ({ mestoPosete }) => {
-  const { deleteMestoPosete } = useContext(MestoPoseteContext);
+  const { fetchMestaPosete, deleteMestoPosete } =
+    useContext(MestoPoseteContext);
 
-  //za prikazivanje modalnog dijaloga
   const [showEdit, setShowEdit] = useState(false);
   const handleShowEdit = () => setShowEdit(true);
   const handleCloseEdit = () => setShowEdit(false);
@@ -17,10 +17,17 @@ const MestoPosete = ({ mestoPosete }) => {
   const handleShowDelete = () => setShowDelete(true);
   const handleCloseDelete = () => setShowDelete(false);
 
-  useEffect(() => {
+  const handleMestoPoseteEdit = async () => {
+    const controller = new AbortController();
+    await fetchMestaPosete(true, controller);
     handleCloseEdit();
+  };
+
+  const handleMestoPoseteDelete = async () => {
+    const controller = new AbortController();
+    await fetchMestaPosete(true, controller);
     handleCloseDelete();
-  }, [mestoPosete]);
+  };
 
   return (
     <>
@@ -40,7 +47,10 @@ const MestoPosete = ({ mestoPosete }) => {
           <Modal.Title>Izmena mesta posete</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <EditMestoPoseteForm updatedMestoPosete={mestoPosete} />
+          <EditMestoPoseteForm
+            updatedMestoPosete={mestoPosete}
+            onMestoPoseteEdited={handleMestoPoseteEdit}
+          />
         </Modal.Body>
       </Modal>
 
@@ -54,7 +64,10 @@ const MestoPosete = ({ mestoPosete }) => {
         <Modal.Footer>
           <Button
             className="btn btn-danger"
-            onClick={() => deleteMestoPosete(mestoPosete.id)}
+            onClick={async () => {
+              await deleteMestoPosete(mestoPosete.id);
+              handleMestoPoseteDelete();
+            }}
           >
             Obriši
           </Button>

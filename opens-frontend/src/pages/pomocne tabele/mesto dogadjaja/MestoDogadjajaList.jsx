@@ -1,12 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
+import { FaSquarePlus } from "react-icons/fa6";
 import Pagination from "../../Pagination";
 import MestoDogadjaja from "./MestoDogadjaja";
 import { MestoDogadjajaContext } from "./MestoDogadjajaContext";
 import AddDogadjajForm from "./modal/AddDogadjajForm";
 
 const MestoDogadjajaList = () => {
-  const { sortedMestaDogadjaja } = useContext(MestoDogadjajaContext);
+  const { sortedMestaDogadjaja, getMesta } = useContext(MestoDogadjajaContext);
 
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
@@ -14,10 +15,6 @@ const MestoDogadjajaList = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [mestaDogadjajaPerPage, setMestaPosetePerPage] = useState(10);
-
-  useEffect(() => {
-    handleClose();
-  }, [sortedMestaDogadjaja]);
 
   const indexOfLastMestoDogadjaja = currentPage * mestaDogadjajaPerPage;
   const indexOfFirstMestoDogadjaja =
@@ -32,6 +29,12 @@ const MestoDogadjajaList = () => {
 
   const onInputChange = (e) => {
     setMestaPosetePerPage(e.target.value);
+  };
+
+  const handleDogadjajAdded = async () => {
+    const controller = new AbortController();
+    await getMesta(true, controller);
+    handleClose();
   };
 
   return (
@@ -61,13 +64,9 @@ const MestoDogadjajaList = () => {
             </div>
           </div>
           <div className="col-sm-6">
-            <Button
-              onClick={handleShow}
-              className="btn btn-success"
-              data-toggle="modal"
-            >
-              <i className="material-icons">&#xE147;</i>
-              <span>Dodaj novo mesto događaja</span>
+            <Button onClick={handleShow} className="btn btn-success">
+              <FaSquarePlus size={20} className="mx-1" />
+              Dodaj novo mesto događaja
             </Button>
           </div>
         </div>
@@ -101,14 +100,8 @@ const MestoDogadjajaList = () => {
           <Modal.Title>Dodaj mesto događaja</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AddDogadjajForm />
+          <AddDogadjajForm onDogadjajAdded={handleDogadjajAdded} />
         </Modal.Body>
-        {/* <Modal.Footer>
-          <Button variant="success" onClick={handleDodaj}>Dodaj</Button>
-          <Button variant="danger" onClick={handleClose}>
-            Zatvori
-          </Button>
-        </Modal.Footer> */}
       </Modal>
     </>
   );

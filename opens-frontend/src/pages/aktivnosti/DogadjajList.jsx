@@ -2,10 +2,10 @@ import { LocalDate, LocalTime } from "@js-joda/core";
 import { useContext, useEffect, useState } from "react";
 import { Button, Col, Form, Image, Modal, Row } from "react-bootstrap";
 import { FaRegFilePdf } from "react-icons/fa";
+import { FaSquarePlus } from "react-icons/fa6";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { ucesniciImage } from "../../assets";
-import httpCommon from "../../http-common";
-import eventBus from "../../utils/eventBus";
+import useHttpProtected from "../../hooks/useHttpProtected";
 import Pagination from "../Pagination";
 import Dogadjaj from "./Dogadjaj";
 import { DogadjajContext } from "./DogadjajContext";
@@ -23,6 +23,8 @@ const DogadjajList = () => {
   const { dogadjajId } = useContext(DogadjajContext);
   const { dodajUcesnika } = useContext(DogadjajContext);
   const { kreirajPDF } = useContext(DogadjajContext);
+
+  const httpProtected = useHttpProtected();
 
   const [organizacija, setOrganizacija] = useState({
     naziv: "",
@@ -86,8 +88,8 @@ const DogadjajList = () => {
   ];
 
   const rodMapping = {
-    ZENSKO: "žensko",
     MUSKO: "muško",
+    ZENSKO: "žensko",
     DRUGO: "drugo",
   };
 
@@ -98,7 +100,7 @@ const DogadjajList = () => {
 
     if (organizacija.naziv) {
       setLoading(true);
-      httpCommon
+      httpProtected
         .get(`/organizacija/search/${organizacija.naziv}`)
         .then((response) => {
           if (response.status === 200) {
@@ -112,11 +114,6 @@ const DogadjajList = () => {
               ...prevState,
               naziv: organizacija.naziv,
             }));
-          } else if (
-            error.response &&
-            (error.response.status === 401 || error.response.status === 400)
-          ) {
-            eventBus.dispatch("logout");
           } else {
             setError("An error occurred");
           }
@@ -138,7 +135,6 @@ const DogadjajList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const [dogadjajiPerPage] = useState(5);
   const indexOfLastDogadjaj = currentPage * limit;
   const indexOfFirstDogadjaj = indexOfLastDogadjaj - limit;
   const currentDogadjaji = sortedDogadjaji.slice(
@@ -360,20 +356,14 @@ const DogadjajList = () => {
 
   return (
     <>
-      <div className="row align-items-center mb-4">
-        <div className="col">
+      <Row className="mb-4 align-items-end">
+        <Col md={3}>
           <Form.Label>Period za koji se generiše izveštaj:</Form.Label>
           <Form.Control type="month" onChange={handleChangeDatum} />
-        </div>
-        <div className="col">
+        </Col>
+        <Col md={3}>
           <Form.Label>Tip događaja za koji se generiše izveštaj:</Form.Label>
-          <Form.Control
-            as="select"
-            name="vrsta"
-            value={vrsta}
-            onChange={handleChangeVrsta}
-            style={{ width: "80%", maxWidth: "90%" }}
-          >
+          <Form.Control as="select" name="vrsta" onChange={handleChangeVrsta}>
             <option value="">Izaberite vrstu događaja</option>
             {tipoviDogadjaja.map((item, index) => (
               <option key={item.id} value={item.id}>
@@ -381,41 +371,37 @@ const DogadjajList = () => {
               </option>
             ))}
           </Form.Control>
-        </div>
-        <div className="col">
-          <div className="row">
-            <div className="col">
-              <Form.Label>Osoba koja generiše izveštaj:</Form.Label>
-              <div className="d-flex">
-                <Form.Control
-                  name="ime"
-                  value={ime}
-                  type="text"
-                  onChange={handleChangeOsoba}
-                  style={{ width: "45%", marginRight: "5px" }}
-                  placeholder="Ime"
-                />
-                <Form.Control
-                  name="prezime"
-                  value={prezime}
-                  type="text"
-                  onChange={handleChangeOsoba}
-                  style={{ width: "45%" }}
-                  placeholder="Prezime"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-auto ps-0">
-          <Button className="mx-1" variant="danger" onClick={handlePDF}>
-            <FaRegFilePdf size={20} /> PDF
-          </Button>
-          <Button className="mx-1" variant="success">
-            <RiFileExcel2Fill size={20} /> EXCEL
-          </Button>
-        </div>
-      </div>
+        </Col>
+        <Col md={6}>
+          <Form.Label>Osoba koja generiše izveštaj:</Form.Label>
+          <Row>
+            <Col>
+              <Form.Control
+                name="ime"
+                type="text"
+                placeholder="Ime"
+                onChange={handleChangeOsoba}
+              />
+            </Col>
+            <Col>
+              <Form.Control
+                name="prezime"
+                type="text"
+                placeholder="Prezime"
+                onChange={handleChangeOsoba}
+              />
+            </Col>
+            <Col className="d-flex align-items-center">
+              <Button className="mx-1" variant="danger" onClick={handlePDF}>
+                <FaRegFilePdf size={20} /> PDF
+              </Button>
+              <Button className="mx-1" variant="success">
+                <RiFileExcel2Fill size={20} /> EXCEL
+              </Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
       <div className="table-title">
         <div className="row">
           <div className="col-sm-6">
@@ -444,10 +430,9 @@ const DogadjajList = () => {
             <Button
               onClick={handleShowOrganizacija}
               className="btn btn-success"
-              data-toggle="modal"
             >
-              <i className="material-icons">&#xE147;</i>
-              <span>Dodaj novi događaj</span>
+              <FaSquarePlus size={20} className="mx-1" />
+              Dodaj novi događaj
             </Button>
           </div>
         </div>
@@ -478,7 +463,7 @@ const DogadjajList = () => {
         pages={totalPagesNumber}
         setCurrentPage={setCurrentPage}
         array={sortedDogadjaji}
-        limit={dogadjajiPerPage}
+        limit={limit}
         maxVisibleButtons={3}
       />
 

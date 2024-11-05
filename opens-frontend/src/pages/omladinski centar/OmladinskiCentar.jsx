@@ -1,29 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { Tab, Tabs } from "react-bootstrap";
-import httpCommon from "../../http-common";
-import eventBus from "../../utils/eventBus";
+import { useLocation, useNavigate } from "react-router-dom";
+import useHttpProtected from "../../hooks/useHttpProtected";
 import OmladinskiCentarTabela from "./OmladinskiCentarTabela";
 import OmladinskiCentarTrenutno from "./OmladinskiCentarTrenutno";
 
 export const OmladinskiCentar = () => {
   const [mestaPosete, setMestaPosete] = useState([]);
 
-  useEffect(() => {
-    fetchMestaPosete();
-  }, []);
+  const httpProtected = useHttpProtected();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const fetchMestaPosete = async () => {
-    try {
-      const { data } = await httpCommon.get("/mestaPosete");
-      setMestaPosete(data);
-    } catch (error) {
-      if (error.response && (error.response.status === 401 || error.response.status === 400)) {
-        eventBus.dispatch("logout");
-    } else {
-        console.error("Greška prilikom fetching mesta posete: ", error);
-    }
-    }
-  };
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchMestaPosete = async () => {
+      try {
+        const { data } = await httpProtected.get("/mestaPosete", {
+          signal: controller.signal,
+        });
+        if (isMounted) {
+          setMestaPosete(data);
+        }
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Greška prilikom fetching mesta posete: ", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      }
+    };
+
+    fetchMestaPosete();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, []);
 
   const getTabColorClass = (index) => {
     const colorClasses = [

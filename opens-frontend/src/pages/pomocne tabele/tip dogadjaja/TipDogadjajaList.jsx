@@ -1,12 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
+import { FaSquarePlus } from "react-icons/fa6";
 import Pagination from "../../Pagination";
 import TipDogadjaja from "./TipDogadjaja";
 import { TipDogadjajaContext } from "./TipDogadjajaContext";
 import AddTipDogadjajaForm from "./modal/AddTipDogadjajaForm";
 
 const TipDogadjajaList = () => {
-  const { sortedTipoviDogadjaja } = useContext(TipDogadjajaContext);
+  const { sortedTipoviDogadjaja, getTipovi } = useContext(TipDogadjajaContext);
 
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
@@ -15,26 +16,25 @@ const TipDogadjajaList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [tipDogadjajaPerPage, setTipDogadjajaPerPage] = useState(10);
 
-  useEffect(() => {
-    handleClose();
-  }, [sortedTipoviDogadjaja]);
-
   const indexOfLastTipDogadjaja = currentPage * tipDogadjajaPerPage;
-
   const indexOfFirstTipDogadjaja =
     indexOfLastTipDogadjaja - tipDogadjajaPerPage;
-
   const currentTipoviDogadjaja = sortedTipoviDogadjaja.slice(
     indexOfFirstTipDogadjaja,
     indexOfLastTipDogadjaja
   );
-
   const totalPagesNumber = Math.ceil(
     sortedTipoviDogadjaja.length / tipDogadjajaPerPage
   );
 
   const onInputChange = (e) => {
     setTipDogadjajaPerPage(e.target.value);
+  };
+
+  const handleTipDogadjajaAdded = async () => {
+    const controller = new AbortController();
+    await getTipovi(true, controller);
+    handleClose();
   };
 
   return (
@@ -69,8 +69,8 @@ const TipDogadjajaList = () => {
               className="btn btn-success"
               data-toggle="modal"
             >
-              <i className="material-icons">&#xE147;</i>
-              <span>Dodaj novi tip događaja</span>
+              <FaSquarePlus size={20} className="mx-1" />
+              Dodaj novi tip događaja
             </Button>
           </div>
         </div>
@@ -104,7 +104,7 @@ const TipDogadjajaList = () => {
           <Modal.Title>Dodaj tip događaja</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AddTipDogadjajaForm />
+          <AddTipDogadjajaForm onTipDogadjajaAdded={handleTipDogadjajaAdded} />
         </Modal.Body>
       </Modal>
     </>
