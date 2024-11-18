@@ -51,20 +51,18 @@ export const QRCheckIn = () => {
     fetchData();
     handleClose();
 
-    document.addEventListener("keydown", handleKeyDown);
+    // document.addEventListener("keydown", handleKeyDown);
     return () => {
       isMounted = false;
       controller.abort();
-      document.removeEventListener("keydown", handleKeyDown);
+      // document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
-  //ZA RESET TJ. ZA AUTO FOCUS
+ // ZA RESET TJ. ZA AUTO FOCUS
   // useEffect(() => {
-  //   if (posetilac === "") {
   //     inputRef.current.focus(); // Focus the input field when the form is reset
-  //   }
-  // }, [posetilac]);
+  // }, []);
 
   const fetchPosetu = async (email) => {
     const controller = new AbortController();
@@ -86,15 +84,24 @@ export const QRCheckIn = () => {
 
   const handleKeyDown = async (e) => {
     if (e.key === "Tab") {
-      setPosetilac(inputRef.current.value);
+    //   const scannedEmail = inputRef.current.value.trim();
+    // if (!scannedEmail) {
+    //   console.log("Scanned email is empty");
+    //   return;
+    // }
+    const scannedEmail = posetilac.trim();  // Use the state value, not the ref
+    if (!scannedEmail) {
+      console.log("Scanned email is empty");
+      return;
+    }
+      // setPosetilac(inputRef.current.value);
+      setPosetilac(scannedEmail)
+      console.log("Mail: " + scannedEmail)
       const controller = new AbortController();
       try {
-        const scannedEmail = inputRef.current.value;
-        const response = await httpProtected.get(
-          `/posete/${scannedEmail}/status`,
-          {
-            signal: controller.signal,
-          }
+        // const scannedEmail = inputRef.current.value;
+        // console.log("Mail: " + scannedEmail)
+        const response = await httpProtected.get(`/posete/${scannedEmail}/status`, {signal: controller.signal}
         );
         setStatus(response.data);
       } catch (error) {
@@ -105,9 +112,17 @@ export const QRCheckIn = () => {
       } finally {
         controller.abort();
       }
-      inputRef.current.value = "";
+      // inputRef.current.value = "";
     }
   };
+
+  // Set up keydown listener
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [posetilac]);
 
   const handleOpremaChange = (selectedOptions) => {
     setSelectedOprema(selectedOptions);
