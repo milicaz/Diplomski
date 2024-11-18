@@ -18,6 +18,9 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
   const [mestaDogadjaja, setMestaDogadjaja] = useState([]);
   const [tipoviDogadjaja, setTipoviDogadjaja] = useState([]);
   const [dogadjajId, setDogadjajId] = useState(null);
+  const [organizacije, setOrganizacije] = useState([]);
+  const [dogadjaj, setDogadjaj] = useState([]);
+
 
   const httpProtected = useHttpProtected();
 
@@ -29,6 +32,7 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       await getDogadjaji(isMounted, controller);
       await getMesta(isMounted, controller);
       await getTipovi(isMounted, controller);
+      await getOrganizacije(isMounted, controller);
     };
 
     fetchData();
@@ -59,6 +63,21 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       }
     }
   };
+
+  const getDogadjaj = async (id) => {
+    const controller = new AbortController();
+    try {
+      const { data } = await httpProtected.get(`/dogadjaji/${id}`, {signal: controller.signal});
+      setDogadjaj(data);
+    } catch (error) {
+      if (error.name !== "CanceledError") {
+        console.error("Greška prilikom fetching događaja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    } finally {
+      controller.abort();
+    }
+  }
 
   const addDogadjaj = async (addDog) => {
     const controller = new AbortController();
@@ -98,6 +117,20 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
   /*
    * METODE ZA ORGANIZACIJU
    */
+
+  const getOrganizacije = async (isMounted, controller) => {
+    try {
+      const { data } = await httpProtected.get("/organizacije", {signal: controller.signal});
+      if(isMounted) {
+        setOrganizacije(data);
+      }
+    } catch (error) {
+      if (error.name !== "CanceledError") {
+        console.error("Greška prilikom fetching organizacije: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    }
+  }
 
   const getOrganizacijaById = async (id) => {
     const controller = new AbortController();
@@ -182,6 +215,22 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     }
   };
 
+  const getUcesnici = async (id) => {
+    const controller = new AbortController();
+    try {
+      const { data } = await httpProtected.get(`/sviUcesniciDogadjaja/${id}`, {signal: controller.signal});
+      return data; // Return the data directly
+    } catch (error) {
+      if (error.name !== "CanceledError") {
+        console.error("Greška prilikom fetching učesnici događaja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+      return []; // Return an empty array if there was an error
+    } finally {
+      controller.abort();
+    }
+}
+
   const dodajUcesnika = async (ucesnik, id) => {
     const controller = new AbortController();
     try {
@@ -199,7 +248,50 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     }
   };
 
-  const kreirajPDF = async (mesec, godina, id, ime, prezime) => {
+  // const kreirajPDF = async (mesec, godina, id, ime, prezime, headerImageId, footerImageId) => {
+  //   const controller = new AbortController();
+  //   try {
+  //     const response = await httpProtected.get(
+  //       `/dogadjajiView/${mesec}/${godina}/${id}`,
+  //       {
+  //         params: {
+  //           ime: ime,
+  //           prezime: prezime,
+  //           headerImageId: headerImageId,
+  //           footerImageId: footerImageId 
+  //         },
+  //         responseType: "blob",
+  //         signal: controller.signal,
+  //       }
+  //     );
+  //     const blob = new Blob([response.data], { type: "application/pdf" });
+
+  //     const url = window.URL.createObjectURL(blob);
+
+  //     // Create an anchor element
+  //     const link = document.createElement("a");
+  //     link.href = url;
+  //     link.setAttribute("download", "dogadjajireport.pdf");
+
+  //     // Append the link to the body
+  //     document.body.appendChild(link);
+
+  //     // Trigger the download
+  //     link.click();
+
+  //     link.parentNode.removeChild(link);
+  //     window.URL.revokeObjectURL(url);
+  //   } catch (error) {
+  //     if (error.name !== "CanceledError") {
+  //       console.error("Error downloading PDF:", error);
+  //       navigate("/logovanje", { state: { from: location }, replace: true });
+  //     }
+  //   } finally {
+  //     controller.abort();
+  //   }
+  // };
+
+  const kreirajPDF = async (mesec, godina, id, ime, prezime, headerImageId, footerImageId) => {
     const controller = new AbortController();
     try {
       const response = await httpProtected.get(
@@ -208,26 +300,27 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
           params: {
             ime: ime,
             prezime: prezime,
+            headerImageId: headerImageId, // Can be null or undefined
+            footerImageId: footerImageId   // Can be null or undefined
           },
-          responseType: "blob",
+          responseType: "blob", // Expecting PDF in the response
           signal: controller.signal,
         }
       );
+  
       const blob = new Blob([response.data], { type: "application/pdf" });
-
       const url = window.URL.createObjectURL(blob);
-
-      // Create an anchor element
+  
+      // Create an anchor element and download the PDF
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", "dogadjajireport.pdf");
-
-      // Append the link to the body
+  
+      // Append the link to the document and trigger the click
       document.body.appendChild(link);
-
-      // Trigger the download
       link.click();
-
+  
+      // Clean up
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
@@ -240,11 +333,15 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     }
   };
 
+
+
   return (
     <DogadjajContext.Provider
       value={{
         sortedDogadjaji,
         organizacijaId,
+        organizacije,
+        setOrganizacijaId,
         currentOrganizacija,
         mestaDogadjaja,
         tipoviDogadjaja,
@@ -256,6 +353,8 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         editOrganizacija,
         dodajUcesnika,
         kreirajPDF,
+        getDogadjaj,
+        getUcesnici
       }}
     >
       {children}

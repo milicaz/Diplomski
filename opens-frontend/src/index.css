@@ -116,7 +116,7 @@ td {
 
 /* Modal styles */
 .modal .modal-dialog {
-  max-width: 500px;
+  /* max-width: 500px; */
 }
 
 /* .modal .modal-header,
@@ -595,4 +595,15 @@ td {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* ZA IKONICE U TABELI DOGADJAJ */
+.button-row {
+  display: flex;
+  gap: 8px; /* Adjust this to control the space between buttons */
+  margin-bottom: 8px; /* Space between the rows */
+}
+
+.button-row button {
+  /* Optional: control button size, padding, etc. */
 }

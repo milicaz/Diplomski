@@ -1,11 +1,17 @@
 package com.opens.controller;
 
+import java.awt.Image;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +26,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.opens.model.Logo;
 import com.opens.model.TipDogadjaja;
+import com.opens.repository.LogoRepository;
 import com.opens.repository.TipDogadjajaRepository;
 import com.opens.view.DogadjajiView;
 import com.opens.view.repository.DogadjajiViewRepository;
@@ -45,6 +53,9 @@ public class DogadjajViewController {
 	@Autowired
 	private TipDogadjajaRepository tipRepo;
 	
+	@Autowired
+	private LogoRepository logoRepository;
+	
 	@GetMapping("/dogadjajiView")
 	public ResponseEntity<List<DogadjajiView>> getAll() {
 		List<DogadjajiView> dogadjaji = new ArrayList<>();
@@ -55,7 +66,8 @@ public class DogadjajViewController {
 	}
 	
 	@GetMapping(path = "/dogadjajiView/{mesec}/{godina}/{id}")
-	public ResponseEntity<byte[]> getAllByMesecVrsta(@PathVariable Long mesec, @PathVariable Long godina, @PathVariable Long id, @RequestParam String ime, @RequestParam String prezime) throws JRException, FileNotFoundException {
+	public ResponseEntity<byte[]> getAllByMesecVrsta(@PathVariable Long mesec, @PathVariable Long godina, @PathVariable Long id, @RequestParam String ime, @RequestParam String prezime,
+			@RequestParam(required = false) Long headerImageId, @RequestParam(required = false) Long footerImageId) throws JRException, FileNotFoundException {
 		//, @RequestParam String ime, @RequestParam String prezime
 		
 		TipDogadjaja tip = tipRepo.findOneById(id);
@@ -74,6 +86,22 @@ public class DogadjajViewController {
 		
 		JRBeanCollectionDataSource dogadjajiDataSourceDva = new JRBeanCollectionDataSource(dogadjajiMesecVrsta);
 		
+		byte[] headerImageByte = null;
+		if (headerImageId != null) {
+			Optional<Logo> header = logoRepository.findById(headerImageId);
+			if (header.isPresent()) {
+				headerImageByte = header.get().getPicByte();
+			}
+		}
+
+		byte[] footerImageByte = null;
+		if (footerImageId != null) {
+			Optional<Logo> footer = logoRepository.findById(footerImageId);
+			if (footer.isPresent()) {
+				footerImageByte = footer.get().getPicByte();
+			}
+		}
+		
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("ime_zaposlenog", ime);
 		parameters.put("prezime_zaposlenog", prezime);
@@ -82,6 +110,20 @@ public class DogadjajViewController {
 		parameters.put("vrsta", vrsta);
 		parameters.put("dogadjajiDataSet", dogadjajiDataSource);
 		parameters.put("dogadjajiDataSetDva", dogadjajiDataSourceDva);
+		
+		try {
+	        if (headerImageByte != null) {
+	            Image headerImage = ImageIO.read(new ByteArrayInputStream(headerImageByte));
+	            parameters.put("headerImage", headerImage);
+	        }
+	        if (footerImageByte != null) {
+	            Image footerImage = ImageIO.read(new ByteArrayInputStream(footerImageByte));
+	            parameters.put("footerImage", footerImage);
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace(); // Log the error
+	    }
+
 		
 		JasperReport report = JasperCompileManager.compileReport(file.getAbsolutePath());
 		JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());

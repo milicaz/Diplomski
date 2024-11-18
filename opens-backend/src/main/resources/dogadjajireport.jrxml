@@ -170,6 +170,8 @@
 	<parameter name="vrsta" class="java.lang.String"/>
 	<parameter name="dogadjajiDataSet" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<parameter name="dogadjajiDataSetDva" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="headerImage" class="java.awt.Image"/>
+	<parameter name="footerImage" class="java.awt.Image"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -208,12 +210,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA["Ime i prezime odgovorne osobe: "+$P{ime_zaposlenog}+" "+$P{prezime_zaposlenog}]]></textFieldExpression>
 				</textField>
+				<image hAlign="Center" vAlign="Middle">
+					<reportElement x="450" y="60" width="1189" height="60" uuid="2426b9d6-2df6-4ec6-be72-23e86e981b6a"/>
+					<imageExpression><![CDATA[$P{headerImage}]]></imageExpression>
+				</image>
 			</frame>
 		</band>
 	</title>
-	<pageHeader>
-		<band height="16" splitType="Stretch"/>
-	</pageHeader>
 	<columnHeader>
 		<band height="16" splitType="Stretch"/>
 	</columnHeader>
@@ -1475,7 +1478,14 @@
 		<band height="17" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="18" splitType="Stretch"/>
+		<band height="50" splitType="Stretch">
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle">
+				<reportElement x="-22" y="0" width="1302" height="50" uuid="18ac5ca3-4028-43e9-a633-1005df015a73">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{footerImage}]]></imageExpression>
+			</image>
+		</band>
 	</pageFooter>
 	<summary>
 		<band height="24" splitType="Stretch"/>

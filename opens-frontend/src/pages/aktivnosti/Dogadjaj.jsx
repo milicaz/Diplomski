@@ -1,8 +1,12 @@
 import { useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
-import { MdDelete, MdPeople } from "react-icons/md";
+import { MdDelete, MdEdit, MdPeople } from "react-icons/md";
 import { DogadjajContext } from "./DogadjajContext";
 import DeleteDogadjajForm from "./modal/DeleteDogadjajForm";
+import { FaUsers } from "react-icons/fa";
+import { FcViewDetails } from "react-icons/fc";
+import DetailDogadjajForm from "./modal/DetailDogadjajForm";
+import DogadjajUcesniciForm from "./modal/DogadjajUcesniciForm";
 
 const Dogadjaj = ({ dogadjaj }) => {
   const { dodajUcesnika } = useContext(DogadjajContext);
@@ -44,6 +48,27 @@ const Dogadjaj = ({ dogadjaj }) => {
   const [showDelete, setShowDelete] = useState(false);
   const handleShowDelete = () => setShowDelete(true);
   const handleCloseDelete = () => setShowDelete(false);
+
+  const [showUcesnici, setShowUcesnici] = useState(false);
+
+  const handleShowUcesnici = () => {
+    // navigate(`/ucesniciDogadjaja/${dogadjaj.id}`)
+    setShowUcesnici(!showUcesnici);
+  };
+
+  const handleCloseUcesnici = () => {
+    setShowUcesnici(false)
+  }
+
+  const [showDetails, setShowDetails] = useState(false);
+
+  const handleShowDetails = () => {
+    setShowDetails(true)
+  }
+
+  const handleCloseDetails = () => {
+    setShowDetails(false)
+  }
 
   const handleChangeUcesnik = (event) => {
     const { name, value } = event.target;
@@ -88,7 +113,9 @@ const Dogadjaj = ({ dogadjaj }) => {
       <td>{dogadjaj.mesto.nazivSale}</td>
       <td>{dogadjaj.vrsta.naziv}</td>
       <td>{dogadjaj.organizacija.naziv}</td>
-      <td>
+      {/* DODATO NOVO POLJE U TABELI */}
+      <td>{dogadjaj.organizacija.odgovornaOsoba}</td>
+      {/* <td>
         <button
           className="btn text-warning btn-act"
           onClick={handleShowUcesnik}
@@ -98,6 +125,31 @@ const Dogadjaj = ({ dogadjaj }) => {
         <button className="btn text-danger btn-act" onClick={handleShowDelete}>
           <MdDelete />
         </button>
+      </td> */}
+      <td>
+        <div className="button-row">
+          <button className="btn text-warning btn-act" title="Detalji" onClick={handleShowDetails}>
+            <FcViewDetails />
+          </button>
+          <button className="btn text-success btn-act" title="Učesnici događaja" onClick={handleShowUcesnici}> 
+            <FaUsers />
+          </button>
+          {/* <button
+            className="btn text-warning btn-act"
+            onClick={handleShowUcesnik}
+            title="Dodavanje učesnika"
+          >
+            <MdPeople />
+          </button> */}
+        </div>
+        <div className="button-row" title="Izmena">
+          <button className="btn text-warning btn-act">
+            <MdEdit />
+          </button>
+          <button className="btn text-danger btn-act" title="Brisanje" onClick={handleShowDelete}>
+            <MdDelete />
+          </button>
+        </div>
       </td>
 
       <Modal show={showUcesnik} onHide={handleCloseUcesnik}>
@@ -241,6 +293,36 @@ const Dogadjaj = ({ dogadjaj }) => {
           <Button variant="secondary" onClick={handleCloseDelete}>
             Zatvori
           </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* DogadjajDetails Modal */}
+      <Modal show={showDetails} onHide={handleCloseDetails} size="lg" centered>
+        <Modal.Header closeButton>
+        {/* <Modal.Title>
+      {dogadjaj ? `Učesnici događaja: ${dogadjaj.naziv}` : 'Učesnici događaja'}
+    </Modal.Title> */}
+        </Modal.Header>
+        <Modal.Body>
+          <DetailDogadjajForm currentDogadjaj={dogadjaj} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDetails}>Zatvori</Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* DogadjajUcesnici Modal */}
+      <Modal show={showUcesnici} onHide={handleCloseUcesnici} size="lg" centered>
+        <Modal.Header closeButton>
+        <Modal.Title>
+          {dogadjaj ? `Učesnici događaja: ${dogadjaj.naziv}` : 'Učesnici događaja'}
+        </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <DogadjajUcesniciForm currentDogadjaj={dogadjaj} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseUcesnici}>Zatvori</Button>
         </Modal.Footer>
       </Modal>
     </>

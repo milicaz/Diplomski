@@ -9,11 +9,12 @@ import useHttpProtected from "../../hooks/useHttpProtected";
 import Pagination from "../Pagination";
 import Dogadjaj from "./Dogadjaj";
 import { DogadjajContext } from "./DogadjajContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const DogadjajList = () => {
   const { sortedDogadjaji } = useContext(DogadjajContext);
   const { addOrganizacija } = useContext(DogadjajContext);
-  const { organizacijaId } = useContext(DogadjajContext);
+  const { organizacijaId, setOrganizacijaId } = useContext(DogadjajContext);
   const { addDogadjaj } = useContext(DogadjajContext);
   const { getOrganizacijaById } = useContext(DogadjajContext);
   const { currentOrganizacija } = useContext(DogadjajContext);
@@ -23,8 +24,12 @@ const DogadjajList = () => {
   const { dogadjajId } = useContext(DogadjajContext);
   const { dodajUcesnika } = useContext(DogadjajContext);
   const { kreirajPDF } = useContext(DogadjajContext);
+  const {organizacije} = useContext(DogadjajContext);
 
   const httpProtected = useHttpProtected();
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [organizacija, setOrganizacija] = useState({
     naziv: "",
@@ -35,6 +40,11 @@ const DogadjajList = () => {
     opis: "",
     link: "",
   });
+
+  // //DODATO ZA DROPDOWN ORGANIZACIJA
+  const [existingOrganizacije, setExistingOrganizacije] = useState([]);
+  const [isExisting, setIsExisting] = useState(false); // New state to track if the organization is existing
+  // //
 
   const [dogadjaj, setDogadjaj] = useState({
     naziv: "",
@@ -93,44 +103,83 @@ const DogadjajList = () => {
     DRUGO: "drugo",
   };
 
+  const [logos, setLogos] = useState([]);
+
+  const [showHeader, setShowHeader] = useState(false);
+  const [showFooter, setShowFooter] = useState(false);
+
+  const handleShowHeader = () => setShowHeader(true);
+  const handleCloseHeader = () => setShowHeader(false);
+
+  const handleShowFooter = () => setShowFooter(true);
+  const handleCloseFooter = () => setShowFooter(false);
+
+  const [headerImageId, setHeaderImageId] = useState(null);
+  const [footerImageId, setFooterImageId] = useState(null);
+
+  const handleSelectHeader = (logoId) => {
+    setHeaderImageId(logoId);
+  };
+
+  const handleSelectFooter = (logoId) => {
+    setFooterImageId(logoId);
+  };
+
   useEffect(() => {
     setOrganizacijaEdit(currentOrganizacija);
     setId(organizacijaId);
     setIdDogadjaja(dogadjajId);
+    setAllDogadjaji(sortedDogadjaji);
+    setExistingOrganizacije(organizacije)
 
-    if (organizacija.naziv) {
-      setLoading(true);
-      httpProtected
-        .get(`/organizacija/search/${organizacija.naziv}`)
-        .then((response) => {
-          if (response.status === 200) {
-            setOrganizacija(response.data);
-          }
-        })
-        .catch((error) => {
-          if (error.response && error.response.status === 404) {
-            // Organization not found, handle as needed
-            setOrganizacija((prevState) => ({
-              ...prevState,
-              naziv: organizacija.naziv,
-            }));
-          } else {
-            setError("An error occurred");
-          }
-        })
-        .finally(() => setLoading(false));
-    } else if (organizacija.naziv === "") {
-      setOrganizacija({
-        naziv: "",
-        odgovornaOsoba: "",
-        brojTelefona: "",
-        email: "",
-        delatnost: "",
-        opis: "",
-        link: "",
-      });
-    }
-  }, [organizacijaId, currentOrganizacija, dogadjajId, organizacija.naziv]);
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchData = async () => {
+      try {
+        const requests = [
+          httpProtected.get("/logoi", { signal: controller.signal }),
+        ];
+        const [ logoiData] = await Promise.all(requests);
+
+        if (isMounted) {
+          setLogos(logoiData.data);
+        }
+      } catch (error) {
+        if (error.name !== "CanceledError") {
+          console.error("Greška prilikom fetching podataka: ", error);
+          navigate("/logovanje", { state: { from: location }, replace: true });
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [organizacijaId, currentOrganizacija, dogadjajId, organizacija.naziv, sortedDogadjaji, organizacije]);
+
+  //DODATU ZA PRETRAGU
+  const [allDogadjaji, setAllDogadjaji] = useState([]); // Store all events
+  const [searchQuery, setSearchQuery] = useState('');
+  //
+
+  // DODATO ZA SEARCH BAR
+  const filteredDogadjaji = allDogadjaji.filter(dogadjaj => {
+    const { naziv, organizacija } = dogadjaj;
+    const organizacijaNaziv = organizacija.naziv.toLowerCase();
+    const odgovornaOsoba = organizacija.odgovornaOsoba.toLowerCase();
+    const dogadjajNaziv = naziv.toLowerCase();
+  
+    return (
+      dogadjajNaziv.includes(searchQuery.toLowerCase()) ||
+      organizacijaNaziv.includes(searchQuery.toLowerCase()) ||
+      odgovornaOsoba.includes(searchQuery.toLowerCase())
+    );
+  });
+  //
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -141,7 +190,18 @@ const DogadjajList = () => {
     indexOfFirstDogadjaj,
     indexOfLastDogadjaj
   );
-  const totalPagesNumber = Math.ceil(sortedDogadjaji.length / limit);
+  // const totalPagesNumber = Math.ceil(sortedDogadjaji.length / limit);
+
+  //IZMENJONO ZBOG SEARCH BAR-A
+  // Use filtered results for pagination when searchQuery is not empty
+  const resultsToPaginate = searchQuery ? filteredDogadjaji : allDogadjaji;
+
+  // Calculate pagination based on results to paginate
+  const totalPagesNumber = Math.ceil(resultsToPaginate.length / limit);
+  // const indexOfLastDogadjaj = currentPage * dogadjajiPerPage;
+  // const indexOfFirstDogadjaj = indexOfLastDogadjaj - dogadjajiPerPage;
+  const currentPageDogadjaji = resultsToPaginate.slice(indexOfFirstDogadjaj, indexOfLastDogadjaj);
+  //
 
   const onInputChange = (e) => {
     setLimit(e.target.value);
@@ -198,6 +258,8 @@ const DogadjajList = () => {
       mestoDogadjajaId: "",
       vrstaDogadjajaId: "",
     });
+
+    setIsExisting(false); // Reset the flag when closing the modal
   };
 
   const [showEditOrganizacija, setShowEditOrganizacija] = useState(false);
@@ -233,11 +295,81 @@ const DogadjajList = () => {
     setOrganizacija({ ...organizacija, [name]: value });
   };
 
+  const handleSelectChange = (selectedOption) => {
+    if (selectedOption) {
+      const selectedNaziv = selectedOption.value;
+      
+      // Check if it's a pre-existing organization
+      const selectedOrg = existingOrganizacije.find((org) => org.naziv === selectedNaziv);
+  
+      if (selectedOrg) {
+        // If it's an existing organization, update the form fields with its details
+        setOrganizacija({
+          naziv: selectedOrg.naziv,
+          odgovornaOsoba: selectedOrg.odgovornaOsoba,
+          brojTelefona: selectedOrg.brojTelefona,
+          email: selectedOrg.email,
+          delatnost: selectedOrg.delatnost,
+          opis: selectedOrg.opis,
+          link: selectedOrg.link,
+        });
+  
+        // Set the organizacijaId from the context
+        setOrganizacijaId(selectedOrg.id);
+        setIsExisting(true);
+      } else {
+        // If it's a new organization, update only the naziv field
+        setOrganizacija({
+          ...organizacija,
+          naziv: selectedNaziv,  // Set the new naziv
+        });
+        setOrganizacijaId(null); // Reset organizacijaId because it's a new one
+        setIsExisting(false);
+      }
+    } else {
+      // If no option is selected, reset the form fields
+      setOrganizacija({
+        naziv: '',
+        odgovornaOsoba: '',
+        brojTelefona: '',
+        email: '',
+        delatnost: '',
+        opis: '',
+        link: '',
+      });
+      setOrganizacijaId(null);
+      setIsExisting(false);
+    }
+  };
+
+   // Create options for the Creatable dropdown
+   const options = existingOrganizacije.map((org) => ({
+    value: org.naziv,
+    label: org.naziv
+  }));
+  //
+
+  // const handleDalje = (event) => {
+  //   event.preventDefault();
+  //   addOrganizacija(organizacija);
+  //   handleCloseOrganizacija();
+  //   handleShowDogadjaj();
+  // };
+
   const handleDalje = (event) => {
     event.preventDefault();
-    addOrganizacija(organizacija);
-    handleCloseOrganizacija();
-    handleShowDogadjaj();
+  
+    if (isExisting) {
+      // If the organization is already existing, just proceed with the existing organization
+      console.log('Using existing organization:', organizacija);
+      handleCloseOrganizacija();  // Close modal
+      handleShowDogadjaj();       // Proceed to the next modal/step
+    } else {
+      // If it's a new organization, add it to the database
+      addOrganizacija(organizacija); // Replace with your actual add organization function
+      handleCloseOrganizacija();     // Close modal
+      handleShowDogadjaj();          // Proceed to the next modal/step
+    }
   };
 
   const handleChangeDogadjaj = (event) => {
@@ -247,9 +379,50 @@ const DogadjajList = () => {
 
   const handleDodaj = (event) => {
     event.preventDefault();
-    dogadjaj.organizacijaId = organizacijaId;
-    addDogadjaj(dogadjaj);
-    handleCloseDogadjaj();
+    // dogadjaj.organizacijaId = organizacijaId;
+    // addDogadjaj(dogadjaj);
+    // handleCloseDogadjaj();
+    // setOrganizacija({
+    //   naziv: "",
+    //   odgovornaOsoba: "",
+    //   brojTelefona: "",
+    //   email: "",
+    //   delatnost: "",
+    //   opis: "",
+    //   link: "",
+    // });
+    // setDogadjaj({
+    //   naziv: "",
+    //   datum: LocalDate.now(),
+    //   pocetakDogadjaja: LocalTime.MIDNIGHT,
+    //   krajDogadjaja: LocalTime.MIDNIGHT,
+    //   organizacijaId: organizacijaId,
+    //   mestoDogadjajaId: "",
+    //   vrstaDogadjajaId: "",
+    // });
+    // handleShowDialogUcesnik();
+    // Use organizacijaId from existing or newly created organization
+    const currentOrganizacijaId = organizacijaId;
+
+    if (!currentOrganizacijaId) {
+      // If there's no organizacijaId, we need to create a new organizacija first
+      addOrganizacija(organizacija).then(() => {
+        // After adding the organization, create the dogadjaj
+        dogadjaj.organizacijaId = organizacijaId; // Use the organizacijaId from the response
+        addDogadjaj(dogadjaj);
+        handleCloseDogadjaj();
+        resetForms();
+      });
+    } else {
+      // If there's an organizacijaId already (existing organization), use it directly
+      dogadjaj.organizacijaId = currentOrganizacijaId;
+      addDogadjaj(dogadjaj);
+      handleCloseDogadjaj();
+      resetForms();
+    }
+  };
+
+  const resetForms = () => {
     setOrganizacija({
       naziv: "",
       odgovornaOsoba: "",
@@ -268,7 +441,7 @@ const DogadjajList = () => {
       mestoDogadjajaId: "",
       vrstaDogadjajaId: "",
     });
-    handleShowDialogUcesnik();
+    handleShowDialogUcesnik(); // Show the next dialog (if necessary)
   };
 
   const handleChangeEditOrganziacija = (event) => {
@@ -337,9 +510,59 @@ const DogadjajList = () => {
     }
   };
 
+  const halfLength = Math.ceil(logos.length / 2);
+  const firstHalf = logos.slice(0, halfLength);
+  const secondHalf = logos.slice(halfLength);
+
+  const handleNext = (e) => {
+    e.preventDefault();
+    handleCloseHeader();
+    handleShowFooter();
+  };
+
+  // const handleChoose = (event) => {
+  //   event.preventDefault();
+  //   handleCloseFooter();
+  //     handlePDF();
+  // };
+
+  // const handlePDF = (event) => {
+  //   event.preventDefault();
+  //   const response = kreirajPDF(mesec, godina, vrsta, ime, prezime, headerImageId, footerImageId);
+  // };
+
+  // const handlePDF = (event) => {
+  //   event.preventDefault();
+  //   // Ensure valid inputs
+  //   if (!mesec || !godina || !vrsta || !ime || !prezime) {
+  //     console.error("Please fill all required fields.");
+  //     return;
+  //   }
+  
+  //   // Call kreirajPDF with validated parameters
+  //   kreirajPDF(mesec, godina, vrsta, ime, prezime, headerImageId, footerImageId);
+  // };
+
+  const handleChoose = (event) => {
+    event.preventDefault(); // Call preventDefault on the current event
+    
+    handleCloseFooter();
+    
+    // Pass the event object to handlePDF
+    handlePDF(event);
+  };
+  
   const handlePDF = (event) => {
-    event.preventDefault();
-    const response = kreirajPDF(mesec, godina, vrsta, ime, prezime);
+    event.preventDefault(); // Call preventDefault on the event
+    
+    // Ensure valid inputs
+    if (!mesec || !godina || !vrsta || !ime || !prezime) {
+      console.error("Please fill all required fields.");
+      return;
+    }
+    
+    // Call kreirajPDF with validated parameters
+    kreirajPDF(mesec, godina, vrsta, ime, prezime, headerImageId, footerImageId);
   };
 
   const formatTimeRange = (start, end) => {
@@ -353,6 +576,8 @@ const DogadjajList = () => {
     });
     return `${startTime} - ${endTime}`;
   };
+
+
 
   return (
     <>
@@ -392,7 +617,7 @@ const DogadjajList = () => {
               />
             </Col>
             <Col className="d-flex align-items-center">
-              <Button className="mx-1" variant="danger" onClick={handlePDF}>
+              <Button className="mx-1" variant="danger" onClick={handleShowHeader}>
                 <FaRegFilePdf size={20} /> PDF
               </Button>
               <Button className="mx-1" variant="success">
@@ -403,9 +628,9 @@ const DogadjajList = () => {
         </Col>
       </Row>
       <div className="table-title">
-        <div className="row">
-          <div className="col-sm-6">
-            <div className="row align-items-center mb-3">
+        <div className="row align-items-center mb-3">
+          <div className="col-sm-4">
+            <div className="row align-items-center">
               <div className="col-auto pe-0">
                 <span>Prikaži</span>
               </div>
@@ -426,7 +651,37 @@ const DogadjajList = () => {
               </div>
             </div>
           </div>
-          <div className="col-sm-6">
+          {/* SEARCH BAR */}
+          <div className="col-sm-4">
+            {/* <Form.Control
+              type="text"
+              placeholder="Pretraži događaje..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            /> */}
+            <Form.Control
+              type="text"
+              placeholder="Pretraži događaje..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1); // Reset to first page on search
+              }}
+            />
+          </div>
+          
+          {/* BUTTON FOR ADDING NEW EVENT */}
+          <div className="col-sm-4 text-end">
+            <Button
+              onClick={handleShowOrganizacija}
+              className="btn btn-success"
+              data-toggle="modal"
+            >
+              <i className="material-icons">&#xE147;</i>
+              <span>Dodaj novi događaj</span>
+            </Button>
+          </div>
+          {/* <div className="col-sm-6">
             <Button
               onClick={handleShowOrganizacija}
               className="btn btn-success"
@@ -434,7 +689,7 @@ const DogadjajList = () => {
               <FaSquarePlus size={20} className="mx-1" />
               Dodaj novi događaj
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
       <table className="table table-striped table-hover image-table">
@@ -447,22 +702,32 @@ const DogadjajList = () => {
             <th>Mesto</th>
             <th>Vrsta</th>
             <th>Organizacija</th>
+            {/* DODATO NOVO POLJE */}
+            <th>Odgovorna osoba</th>
+            {/*  */}
             <th>Akcije</th>
           </tr>
         </thead>
         <tbody>
-          {currentDogadjaji.map((dogadjaj) => (
+          {/* {currentDogadjaji.map((dogadjaj) => (
+            <tr key={dogadjaj.id}>
+              <Dogadjaj dogadjaj={dogadjaj} />
+            </tr>
+          ))} */}
+          {/* IZMENJENO ZBOG SEARCHBAR */}
+          {currentPageDogadjaji.map((dogadjaj) => (
             <tr key={dogadjaj.id}>
               <Dogadjaj dogadjaj={dogadjaj} />
             </tr>
           ))}
+          {/*  */}
         </tbody>
       </table>
 
       <Pagination
         pages={totalPagesNumber}
         setCurrentPage={setCurrentPage}
-        array={sortedDogadjaji}
+        array={resultsToPaginate}
         limit={limit}
         maxVisibleButtons={3}
       />
@@ -926,6 +1191,130 @@ const DogadjajList = () => {
             Dodaj učesnike
           </Button>
           <Button variant="danger" onClick={handleCloseDialogUcesnik}>
+            Zatvori
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showHeader} onHide={handleCloseHeader} centered size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Izaberite header logo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <>
+            <Form>
+              <Row>
+                <Col>
+                  {firstHalf.map((logo) => (
+                    <Row key={logo.id} className="mb-2">
+                      <Col className="mb-4">
+                        <Form.Check
+                          type="radio"
+                          id={`logo-${logo.id}`}
+                          label={`${logo.name}`}
+                          value={logo.id}
+                          onChange={() => handleSelectHeader(logo.id)}
+                        />
+                        <Image
+                          src={`data:image/${logo.type};base64,${logo.picByte}`}
+                          alt={`Logo ${logo.id}`}
+                          thumbnail
+                        />
+                      </Col>
+                    </Row>
+                  ))}
+                </Col>
+                <Col>
+                  {secondHalf.map((logo) => (
+                    <Row key={logo.id} className="mb-2">
+                      <Col className="mb-4">
+                        <Form.Check
+                          type="radio"
+                          id={`logo-${logo.id}`}
+                          label={`${logo.name}`}
+                          value={logo.id}
+                          onChange={() => handleSelectHeader(logo.id)}
+                        />
+                        <Image
+                          src={`data:image/${logo.type};base64,${logo.picByte}`}
+                          alt={`Logo ${logo.id}`}
+                          thumbnail
+                        />
+                      </Col>
+                    </Row>
+                  ))}
+                </Col>
+              </Row>
+            </Form>
+          </>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleNext} variant="success">
+            Dalje
+          </Button>
+          <Button onClick={handleCloseHeader} variant="danger">
+            Zatvori
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showFooter} onHide={handleCloseFooter} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Izaberite footer logo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <>
+            <Form>
+              <Row>
+                <Col>
+                  {firstHalf.map((logo) => (
+                    <Row key={logo.id} className="mb-2">
+                      <Col className="mb-4">
+                        <Form.Check
+                          type="radio"
+                          id={`logo-${logo.id}`}
+                          label={`${logo.name}`}
+                          value={logo.id}
+                          onChange={() => handleSelectFooter(logo.id)}
+                        />
+                        <Image
+                          src={`data:image/${logo.type};base64,${logo.picByte}`}
+                          alt={`Logo ${logo.id}`}
+                          thumbnail
+                        />
+                      </Col>
+                    </Row>
+                  ))}
+                </Col>
+                <Col>
+                  {secondHalf.map((logo) => (
+                    <Row key={logo.id} className="mb-2">
+                      <Col className="mb-4">
+                        <Form.Check
+                          type="radio"
+                          id={`logo-${logo.id}`}
+                          label={`${logo.name}`}
+                          value={logo.id}
+                          onChange={() => handleSelectFooter(logo.id)}
+                        />
+                        <Image
+                          src={`data:image/${logo.type};base64,${logo.picByte}`}
+                          alt={`Logo ${logo.id}`}
+                          thumbnail
+                        />
+                      </Col>
+                    </Row>
+                  ))}
+                </Col>
+              </Row>
+            </Form>
+          </>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleChoose} variant="success">
+            Izaberi
+          </Button>
+          <Button onClick={handleCloseFooter} variant="danger">
             Zatvori
           </Button>
         </Modal.Footer>
