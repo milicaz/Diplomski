@@ -2,6 +2,7 @@ package com.opens.controller;
 
 import java.awt.Image;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,6 +42,9 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 
 @RestController
 @RequestMapping("/api")
@@ -137,5 +141,87 @@ public class DogadjajViewController {
 		return new ResponseEntity<byte[]>(JasperExportManager.exportReportToPdf(print), headers, HttpStatus.OK);
 		
 	}
+	
+	@GetMapping(path = "/dogadjajiView/{mesec}/{godina}/{id}/excel")
+    public ResponseEntity<byte[]> getAllByMesecVrstaForExcel(
+            @PathVariable Long mesec,
+            @PathVariable Long godina,
+            @PathVariable Long id,
+            @RequestParam String ime,
+            @RequestParam String prezime,
+            @RequestParam(required = false) Long headerImageId,
+            @RequestParam(required = false) Long footerImageId) throws JRException, FileNotFoundException {
+
+        TipDogadjaja tip = tipRepo.findOneById(id);
+        String vrsta = tip.getNaziv();
+
+        List<DogadjajiView> dogadjajiMesecVrsta = dogRepo.findByMesecAndGodinaAndVrsta(mesec, godina, vrsta);
+
+        // Load the JRXML template for JasperReports
+        File file = ResourceUtils.getFile("classpath:dogadjajireport.jrxml");
+
+        JRBeanCollectionDataSource dogadjajiDataSource = new JRBeanCollectionDataSource(dogadjajiMesecVrsta);
+        JRBeanCollectionDataSource dogadjajiDataSourceDva = new JRBeanCollectionDataSource(dogadjajiMesecVrsta);
+
+        byte[] headerImageByte = null;
+        if (headerImageId != null) {
+            Optional<Logo> header = logoRepository.findById(headerImageId);
+            if (header.isPresent()) {
+                headerImageByte = header.get().getPicByte();
+            }
+        }
+
+        byte[] footerImageByte = null;
+        if (footerImageId != null) {
+            Optional<Logo> footer = logoRepository.findById(footerImageId);
+            if (footer.isPresent()) {
+                footerImageByte = footer.get().getPicByte();
+            }
+        }
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("ime_zaposlenog", ime);
+        parameters.put("prezime_zaposlenog", prezime);
+        parameters.put("mesec", mesec);
+        parameters.put("godina", godina);
+        parameters.put("vrsta", vrsta);
+        parameters.put("dogadjajiDataSet", dogadjajiDataSource);
+        parameters.put("dogadjajiDataSetDva", dogadjajiDataSourceDva);
+
+        // Handling images for header and footer
+        try {
+            if (headerImageByte != null) {
+                Image headerImage = ImageIO.read(new ByteArrayInputStream(headerImageByte));
+                parameters.put("headerImage", headerImage);
+            }
+            if (footerImageByte != null) {
+                Image footerImage = ImageIO.read(new ByteArrayInputStream(footerImageByte));
+                parameters.put("footerImage", footerImage);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Compile the Jasper report from JRXML template
+        JasperReport report = JasperCompileManager.compileReport(file.getAbsolutePath());
+        JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
+
+        // Create the Excel exporter
+        JRXlsxExporter exporter = new JRXlsxExporter();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        
+        exporter.setExporterInput(new SimpleExporterInput(print));
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+
+        // Export the report to Excel
+        exporter.exportReport();
+
+        // Set response headers for Excel file
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "dogadjajireport.xlsx");
+
+        return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
+    }
 
 }

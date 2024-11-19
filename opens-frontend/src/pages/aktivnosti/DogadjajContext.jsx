@@ -333,6 +333,49 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     }
   };
 
+  const kreirajExcel = async (mesec, godina, id, ime, prezime, headerImageId, footerImageId) => {
+    const controller = new AbortController();
+    try {
+      // Call the API to fetch the Excel file
+      const response = await httpProtected.get(
+        `/dogadjajiView/${mesec}/${godina}/${id}/excel`, // Endpoint for Excel export
+        {
+          params: {
+            ime: ime,
+            prezime: prezime,
+            headerImageId: headerImageId, // Optional: can be null/undefined
+            footerImageId: footerImageId   // Optional: can be null/undefined
+          },
+          responseType: "blob", // Expecting the response as a Blob (Excel file)
+          signal: controller.signal,
+        }
+      );
+      
+      const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const url = window.URL.createObjectURL(blob);
+  
+      // Create an anchor element to trigger the download
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "dogadjajireport.xlsx");
+  
+      // Append the link to the document and trigger the download
+      document.body.appendChild(link);
+      link.click();
+  
+      // Clean up
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      if (error.name !== "CanceledError") {
+        console.error("Error downloading Excel:", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    } finally {
+      controller.abort();
+    }
+  };
+
 
 
   return (
@@ -354,7 +397,8 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         dodajUcesnika,
         kreirajPDF,
         getDogadjaj,
-        getUcesnici
+        getUcesnici,
+        kreirajExcel
       }}
     >
       {children}

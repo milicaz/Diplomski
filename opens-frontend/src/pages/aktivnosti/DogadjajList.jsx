@@ -25,6 +25,7 @@ const DogadjajList = () => {
   const { dodajUcesnika } = useContext(DogadjajContext);
   const { kreirajPDF } = useContext(DogadjajContext);
   const {organizacije} = useContext(DogadjajContext);
+  const {kreirajExcel} = useContext(DogadjajContext);
 
   const httpProtected = useHttpProtected();
 
@@ -565,6 +566,11 @@ const DogadjajList = () => {
     kreirajPDF(mesec, godina, vrsta, ime, prezime, headerImageId, footerImageId);
   };
 
+  const handleExcel = (event) => {
+    event.preventDefault();
+    const response = kreirajExcel(mesec, godina, vrsta, ime, prezime, headerImageId, footerImageId);
+  }
+
   const formatTimeRange = (start, end) => {
     const startTime = new Date(`1970-01-01T${start}`).toLocaleTimeString(
       "en-GB",
@@ -620,7 +626,7 @@ const DogadjajList = () => {
               <Button className="mx-1" variant="danger" onClick={handleShowHeader}>
                 <FaRegFilePdf size={20} /> PDF
               </Button>
-              <Button className="mx-1" variant="success">
+              <Button className="mx-1" variant="success" onClick={handleExcel}>
                 <RiFileExcel2Fill size={20} /> EXCEL
               </Button>
             </Col>
