@@ -136,7 +136,7 @@ public class DogadjajViewController {
 		HttpHeaders headers = new HttpHeaders();
 		// set the PDF format
 		headers.setContentType(MediaType.APPLICATION_PDF);
-		headers.setContentDispositionFormData("attachment", "direktni.pdf");
+		headers.setContentDispositionFormData("attachment", "dogadjajireport.pdf");
 
 		return new ResponseEntity<byte[]>(JasperExportManager.exportReportToPdf(print), headers, HttpStatus.OK);
 		

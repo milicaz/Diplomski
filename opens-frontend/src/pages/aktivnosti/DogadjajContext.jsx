@@ -376,6 +376,88 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     }
   };
 
+  const kreirajPdfUcesnici = async (doznaka, headerImageId, footerImageId) => {
+    const controller = new AbortController();
+    try {
+      const response = await httpProtected.get(
+        `/ucesniciView/${doznaka}`,
+        {
+          params: {
+            headerImageId: headerImageId, // Can be null or undefined
+            footerImageId: footerImageId   // Can be null or undefined
+          },
+          responseType: "blob", // Expecting PDF in the response
+          signal: controller.signal,
+        }
+      );
+  
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+  
+      // Create an anchor element and download the PDF
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "ucesnici.pdf");
+  
+      // Append the link to the document and trigger the click
+      document.body.appendChild(link);
+      link.click();
+  
+      // Clean up
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      if (error.name !== "CanceledError") {
+        console.error("Error downloading PDF:", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    } finally {
+      controller.abort();
+    }
+  }
+
+  const kreirajExcelUcesnici = async (doznaka, headerImageId, footerImageId) => {
+    const controller = new AbortController();
+
+    try {
+      // Call the API to fetch the Excel file
+      const response = await httpProtected.get(
+        `/ucesniciView/${doznaka}/excel`, // Endpoint for Excel export
+        {
+          params: {
+            headerImageId: headerImageId, // Optional: can be null/undefined
+            footerImageId: footerImageId   // Optional: can be null/undefined
+          },
+          responseType: "blob", // Expecting the response as a Blob (Excel file)
+          signal: controller.signal,
+        }
+      );
+      
+      const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const url = window.URL.createObjectURL(blob);
+  
+      // Create an anchor element to trigger the download
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "ucesnici.xlsx");
+  
+      // Append the link to the document and trigger the download
+      document.body.appendChild(link);
+      link.click();
+  
+      // Clean up
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      if (error.name !== "CanceledError") {
+        console.error("Error downloading Excel:", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    } finally {
+      controller.abort();
+    }
+  }
+
 
 
   return (
@@ -398,7 +480,9 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         kreirajPDF,
         getDogadjaj,
         getUcesnici,
-        kreirajExcel
+        kreirajExcel,
+        kreirajExcelUcesnici,
+        kreirajPdfUcesnici
       }}
     >
       {children}
