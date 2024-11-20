@@ -547,6 +547,7 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
                       <Col className="mb-4">
                         <Form.Check
                           type="radio"
+                          name="logoGroup"
                           id={`logo-${logo.id}`}
                           label={`${logo.name}`}
                           value={logo.id}
@@ -567,6 +568,7 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
                       <Col className="mb-4">
                         <Form.Check
                           type="radio"
+                          name="logoGroup"
                           id={`logo-${logo.id}`}
                           label={`${logo.name}`}
                           value={logo.id}
@@ -609,6 +611,7 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
                       <Col className="mb-4">
                         <Form.Check
                           type="radio"
+                          name="logoGroup"
                           id={`logo-${logo.id}`}
                           label={`${logo.name}`}
                           value={logo.id}
@@ -629,6 +632,7 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
                       <Col className="mb-4">
                         <Form.Check
                           type="radio"
+                          name="logoGroup"
                           id={`logo-${logo.id}`}
                           label={`${logo.name}`}
                           value={logo.id}
