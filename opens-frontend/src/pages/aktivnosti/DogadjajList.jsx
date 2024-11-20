@@ -1216,6 +1216,7 @@ const DogadjajList = () => {
                       <Col className="mb-4">
                         <Form.Check
                           type="radio"
+                          name="logoGroup"
                           id={`logo-${logo.id}`}
                           label={`${logo.name}`}
                           value={logo.id}
@@ -1236,6 +1237,7 @@ const DogadjajList = () => {
                       <Col className="mb-4">
                         <Form.Check
                           type="radio"
+                          name="logoGroup"
                           id={`logo-${logo.id}`}
                           label={`${logo.name}`}
                           value={logo.id}
@@ -1278,6 +1280,7 @@ const DogadjajList = () => {
                       <Col className="mb-4">
                         <Form.Check
                           type="radio"
+                          name="logoGroup"
                           id={`logo-${logo.id}`}
                           label={`${logo.name}`}
                           value={logo.id}
@@ -1298,6 +1301,7 @@ const DogadjajList = () => {
                       <Col className="mb-4">
                         <Form.Check
                           type="radio"
+                          name="logoGroup"
                           id={`logo-${logo.id}`}
                           label={`${logo.name}`}
                           value={logo.id}
