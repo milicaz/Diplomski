@@ -193,7 +193,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Calibri" size="20" isBold="true" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 					</textElement>
-					<text><![CDATA[IZVEŠTAJ O RADU ZAPOSLENIH]]></text>
+					<text><![CDATA[IZVEŠTAJ O ZAUZEĆU PROSTORA OC OPENS]]></text>
 				</staticText>
 				<staticText>
 					<reportElement mode="Opaque" x="0" y="30" width="570" height="30" backcolor="#D9E2F3" uuid="e608a67f-9211-4cdb-8230-f38fa572d40d"/>
