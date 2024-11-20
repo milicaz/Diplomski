@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { equipmentImage } from "../../assets";
 import useHttpProtected from "../../hooks/useHttpProtected";
+import useToast from "../../hooks/useToast";
 
 export const QRCheckIn = () => {
   const [posetilac, setPosetilac] = useState("");
@@ -20,6 +21,7 @@ export const QRCheckIn = () => {
   const httpProtected = useHttpProtected();
   const navigate = useNavigate();
   const location = useLocation();
+  const { handleShowToast } = useToast();
 
   //za prikazivanje modalnog dijaloga
   const [show, setShow] = useState(false);
@@ -42,8 +44,13 @@ export const QRCheckIn = () => {
           setOprema(opremaData.data);
         }
       } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error("Greška prilikom fetching podataka: ", error);
+        if (error.response?.status >= 500) {
+          handleShowToast(
+            "Greška",
+            "Greška prilikom pribavljanja podataka",
+            "error"
+          );
+        } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       }
@@ -59,7 +66,7 @@ export const QRCheckIn = () => {
     };
   }, []);
 
- // ZA RESET TJ. ZA AUTO FOCUS
+  // ZA RESET TJ. ZA AUTO FOCUS
   // useEffect(() => {
   //     inputRef.current.focus(); // Focus the input field when the form is reset
   // }, []);
@@ -84,24 +91,26 @@ export const QRCheckIn = () => {
 
   const handleKeyDown = async (e) => {
     if (e.key === "Tab") {
-    //   const scannedEmail = inputRef.current.value.trim();
-    // if (!scannedEmail) {
-    //   console.log("Scanned email is empty");
-    //   return;
-    // }
-    const scannedEmail = posetilac.trim();  // Use the state value, not the ref
-    if (!scannedEmail) {
-      console.log("Scanned email is empty");
-      return;
-    }
+      //   const scannedEmail = inputRef.current.value.trim();
+      // if (!scannedEmail) {
+      //   console.log("Scanned email is empty");
+      //   return;
+      // }
+      const scannedEmail = posetilac.trim(); // Use the state value, not the ref
+      if (!scannedEmail) {
+        console.log("Scanned email is empty");
+        return;
+      }
       // setPosetilac(inputRef.current.value);
-      setPosetilac(scannedEmail)
-      console.log("Mail: " + scannedEmail)
+      setPosetilac(scannedEmail);
+      console.log("Mail: " + scannedEmail);
       const controller = new AbortController();
       try {
         // const scannedEmail = inputRef.current.value;
         // console.log("Mail: " + scannedEmail)
-        const response = await httpProtected.get(`/posete/${scannedEmail}/status`, {signal: controller.signal}
+        const response = await httpProtected.get(
+          `/posete/${scannedEmail}/status`,
+          { signal: controller.signal }
         );
         setStatus(response.data);
       } catch (error) {
