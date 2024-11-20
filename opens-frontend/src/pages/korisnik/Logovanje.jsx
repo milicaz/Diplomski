@@ -45,7 +45,8 @@ const Logovanje = () => {
         const loginData = { email, password };
         const { data } = await httpProtected.post("/auth/login", loginData);
         const accessToken = data?.accessToken;
-        setAuth({ email, accessToken });
+        const roles = data?.roles;
+        setAuth({ email, roles, accessToken });
         handleShowToast("Uspešno ste se prijavili!", "success");
         // Reset the form
         setValidated(false);

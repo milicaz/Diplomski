@@ -600,10 +600,21 @@ td {
 /* ZA IKONICE U TABELI DOGADJAJ */
 .button-row {
   display: flex;
-  gap: 8px; /* Adjust this to control the space between buttons */
-  margin-bottom: 8px; /* Space between the rows */
+  gap: 8px;
+  /* Adjust this to control the space between buttons */
+  margin-bottom: 8px;
+  /* Space between the rows */
 }
 
 .button-row button {
   /* Optional: control button size, padding, etc. */
+}
+
+/* OBAVESTENJA CARD*/
+.obavestenje {
+  height: 320px;
+  /* Fixed minimum height */
+  display: flex;
+  flex-direction: column;
+  /* Ensures content is stacked vertically */
 }

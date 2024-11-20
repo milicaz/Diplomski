@@ -74,9 +74,9 @@ export const Navigation = () => {
 
   const isLoggedIn = auth && auth?.accessToken;
   const user = auth?.email;
-  const isAdmin = auth?.roles.includes("ROLE_ADMIN");
-  const isSuperAdmin = auth?.roles.includes("ROLE_SUPER_ADMIN");
-  const isAdminDogadjaj = auth?.roles.includes("ROLE_ADMIN_DOGADJAJ");
+  const isAdmin = auth?.roles?.includes("ROLE_ADMIN");
+  const isSuperAdmin = auth?.roles?.includes("ROLE_SUPER_ADMIN");
+  const isAdminDogadjaj = auth?.roles?.includes("ROLE_ADMIN_DOGADJAJ");
 
   return (
     <>
