@@ -7,12 +7,14 @@ import { FaRegFilePdf } from "react-icons/fa";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { httpProtected } from "../../../apis/http";
 import { useLocation, useNavigate } from "react-router-dom";
+import DeleteUcesnikForm from "./DeleteUcesnikForm";
 
 const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   const { getUcesnici } = useContext(DogadjajContext);
   const { kreirajExcelUcesnici } = useContext(DogadjajContext);
   const { kreirajPdfUcesnici } = useContext(DogadjajContext)
   const { dodajUcesnika } = useContext(DogadjajContext);
+  const { deleteUcesnik } = useContext(DogadjajContext);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,6 +71,13 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
 
   const handleShowUcesnik = () => setShowUcesnik(true);
   const handleCloseUcesnik = () => setShowUcesnik(false);
+
+  const [showDelete, setShowDelete] = useState(false);
+  const handleShowDelete = (ucesnikToDelete) => {
+    setUcesnik(ucesnikToDelete); // Set the participant to be deleted
+    setShowDelete(true); // Show the delete modal
+  };
+  const handleCloseDelete = () => setShowDelete(false);
 
   const [headerImageId, setHeaderImageId] = useState(null);
   const [footerImageId, setFooterImageId] = useState(null);
@@ -189,6 +198,23 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     kreirajPdfUcesnici(id, headerImageId, footerImageId);
   };
 
+  const handleUcesnikDelete = async () => {
+    try {
+      // First, delete the participant using the provided API method.
+      await deleteUcesnik(ucesnik.id);
+      
+      // Now, remove the deleted participant from the local state
+      setUcesnici((prevUcesnici) =>
+        prevUcesnici.filter((participant) => participant.id !== ucesnik.id)
+      );
+  
+      // Close the delete modal
+      handleCloseDelete();
+    } catch (error) {
+      console.error("Error deleting participant: ", error);
+    }
+  };
+
   return (
     <div>
       <Row className="mb-4 align-items-end">
@@ -277,6 +303,7 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                       <button
                         className="btn text-danger btn-act"
                         title="Brisanje"
+                        onClick={() => handleShowDelete(ucesnik)} // Pass the selected ucesnik to delete
                       >
                         <MdDelete />
                       </button>
@@ -545,6 +572,30 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
             Završi
           </Button>
           &nbsp;
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showDelete} onHide={handleCloseDelete} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Obriši učesnika događaja</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <DeleteUcesnikForm deleteUcesnik={ucesnik} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="btn btn-danger"
+            // onClick={async () => {
+            //   await deleteUcesnik(ucesnik.id);
+            //   handleUcesnikDelete();
+            // }}
+            onClick={handleUcesnikDelete}
+          >
+            Obriši
+          </Button>
+          <Button variant="secondary" onClick={handleCloseDelete}>
+            Zatvori
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>

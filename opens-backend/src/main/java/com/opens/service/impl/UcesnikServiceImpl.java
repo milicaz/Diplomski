@@ -3,6 +3,7 @@ package com.opens.service.impl;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,9 +85,27 @@ public class UcesnikServiceImpl implements UcesnikService {
 		Dogadjaj dogadjaj = dogadjajRepo.findOneById(id);
 		List<Ucesnik> ucesnici = new ArrayList<>();
 		for(Ucesnik u : dogadjaj.getUcesnici()) {
-			ucesnici.add(u);
+			if(!u.isDeleted()) {
+				ucesnici.add(u);
+			}
 		}
 		return ucesnici;
+	}
+	
+	@Override
+	public String deleteUcesnik(Long id) {
+		Optional<Ucesnik> optionalUcesnik = ucesnikRepo.findById(id);
+		if (!optionalUcesnik.isPresent()) {
+			return "Učesnik nije pronađen!";
+		}
+		Ucesnik ucesnik = optionalUcesnik.get();
+//		List<Ucesnik> ucesnici = ucesnikService.sviUcesniciDogadjaja(id);
+//		for (Ucesnik u : ucesnici) {
+//			u.setDeleted(true);
+//		}
+		ucesnik.setDeleted(true);
+		ucesnikRepo.save(ucesnik);
+		return "Učesnik je obrisan!";
 	}
 
 }

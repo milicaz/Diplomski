@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,11 @@ public class UcesnikController {
 	@PostMapping("/ucesniciDogadjaja/{id}")
 	public String createUcesnikForDogadjaj(@RequestBody Ucesnik ucesnik, @PathVariable(name = "id") Long id) {
 		return ucesnikService.addUcesnik(ucesnik, id);
+	}
+	
+	@DeleteMapping("/ucesnik/delete/{id}")
+	public String deleteUcesnik(@PathVariable Long id) {
+		return ucesnikService.deleteUcesnik(id);
 	}
 
 }

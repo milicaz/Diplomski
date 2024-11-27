@@ -8,5 +8,6 @@ public interface UcesnikService {
 	
 	public String addUcesnik(Ucesnik ucesnik, Long id);
 	public List<Ucesnik> sviUcesniciDogadjaja(Long id);
+	public String deleteUcesnik(Long id);
 
 }
