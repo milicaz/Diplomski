@@ -248,6 +248,41 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     }
   };
 
+  const editUcesnik = async (id, editUcesnik) => {
+    const controller = new AbortController();
+    try {
+      await httpProtected.put(`/ucesnik/update/${id}`, editUcesnik, {
+        signal: controller.signal,
+      });
+      // getUcesnici(true, controller);
+    } catch (error) {
+      if (error.name !== "CanceledError") {
+        console.error("Greška prilikom izmene učesnika: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    } finally {
+      controller.abort();
+    }
+  };
+
+  const deleteUcesnik = async (id) => {
+    const controller = new AbortController();
+    try {
+      await httpProtected.delete(`/ucesnik/delete/${id}`, {
+        signal: controller.signal,
+      });
+      // getDogadjaji(true, controller);
+      // getUcesnici(true, controller);
+    } catch (error) {
+      if (error.name !== "CanceledError") {
+        console.error("Greška prilikom brisanja učesnika: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    } finally {
+      controller.abort();
+    }
+  };
+
   // const kreirajPDF = async (mesec, godina, id, ime, prezime, headerImageId, footerImageId) => {
   //   const controller = new AbortController();
   //   try {
@@ -482,7 +517,9 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         getUcesnici,
         kreirajExcel,
         kreirajExcelUcesnici,
-        kreirajPdfUcesnici
+        kreirajPdfUcesnici,
+        deleteUcesnik,
+        editUcesnik
       }}
     >
       {children}

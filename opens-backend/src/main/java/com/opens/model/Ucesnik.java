@@ -67,7 +67,10 @@ public class Ucesnik extends Korisnik {
 	@Override
 	public String toString() {
 		return "Ucesnik [organizacija=" + organizacija + ", isPrigradskoNaselje=" + isPrigradskoNaselje + ", dogadjaji="
-				+ dogadjaji + "]";
+				+ dogadjaji + ", deleted=" + deleted + ", getId()=" + getId() + ", getIme()=" + getIme()
+				+ ", getPrezime()=" + getPrezime() + ", getRod()=" + getRod() + ", getGodine()=" + getGodine()
+				+ ", getMestoBoravista()=" + getMestoBoravista() + ", getBrojTelefona()=" + getBrojTelefona()
+				+ ", getEmail()=" + getEmail() + "]";
 	}
 
 	public boolean isDeleted() {
@@ -77,5 +80,7 @@ public class Ucesnik extends Korisnik {
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
+	
+	
 
 }
