@@ -1,14 +1,14 @@
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import englishFlag from '../assets/flags/english.png';
 import serbianFlag from '../assets/flags/serbian.png';
 import COLORS from "../constants/colors";
 import { AuthContext } from "../contexts/AuthContext";
 import i18next from '../services/i18next';
+import { globalStyles } from "../utils/styles";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function WelcomePage({ navigation }) {
   const { t } = useTranslation();
@@ -22,105 +22,107 @@ export default function WelcomePage({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState({ email: '', password: '' });
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   }
 
-  const [fontsLoaded] = useFonts({
-    'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf')
-  });
-
-  useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
-    }
-    prepare();
-
-  }, [])
-
-  if (!fontsLoaded) {
-    return undefined;
-  } else {
-    SplashScreen.hideAsync();
-  }
-
   const onChangeEmail = (email) => {
-    setEmail(email)
+    setEmail(email);
+    if (error.email) {
+      setError({ ...error, email: '' });
+    }
   }
 
   const onChangePassword = (password) => {
-    setPassword(password)
+    setPassword(password);
+    if (error.password) {
+      setError({ ...error, password: '' });
+    }
   }
 
-  const handleLogin = async () => {
-    const loginDTO = { email, password };
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
-    try {
+  useFocusEffect(
+    useCallback(() => {
+      setError({ email: '', password: '' });  // Clear errors when the screen is focused
+    }, [])
+  );
+
+  const handleLogin = async () => {
+    let valid = true;
+    const newError = { email: '', password: '' };
+
+    if (!email) {
+      newError.email = t('welcome-page.error.emailRequired');
+      valid = false;
+    } else if (!validateEmail(email)) {
+      newError.email = t('welcome-page.error.invalidEmail');
+      valid = false;
+    }
+
+    if (!password) {
+      newError.password = t('welcome-page.error.passwordRequired');
+      valid = false;
+    }
+
+    setError(newError);
+
+    if (valid) {
+      const loginDTO = { email, password };
       login(loginDTO);
-    } catch (error) {
-      if (error.response) {
-        Alert.alert('Error', error.response.data.message || 'Login failed.');
-      } else if (error.request) {
-        Alert.alert('Error', 'No response from the server.');
-      } else {
-        Alert.alert('Error', 'An error occurred during login.');
-      }
     }
   };
 
   return (
-    <ScrollView style={{ backgroundColor: COLORS.white }}>
-      <View style={{ flex: 1, backgroundColor: COLORS.white }}>
-
+    <ScrollView style={globalStyles.scrollView}>
+      <View style={globalStyles.container}>
         <View>
           <Image
-            source={require("../assets/opens2.png")}
-            style={{
-              height: windowHeight * 0.47,
-              width: "100%",
-              position: "absolute",
-            }}
+            source={require("../assets/images/opens2.png")}
+            style={globalStyles.image(windowHeight)}
           />
         </View>
 
-        <View style={{ flexDirection: "row", marginHorizontal: 12, top: windowHeight * 0.49, justifyContent: 'flex-end' }}>
+        <View style={styles.languageSwitcher(windowHeight)}>
           <TouchableOpacity onPress={() => changeLng('sr')}>
-            <Image source={serbianFlag} style={{ width: 30, height: 20, marginRight: 5 }} />
+            <Image source={serbianFlag} style={styles.flag} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => changeLng('en')}>
-            <Image source={englishFlag} style={{ width: 30, height: 20, marginRight: 5 }} />
+            <Image source={englishFlag} style={styles.flag} />
           </TouchableOpacity>
         </View>
 
-        <View style={{ justifyContent: "center", alignItems: "center", top: windowHeight * 0.20, width: "100%", height: windowHeight }}>
-          <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput value={email} onChangeText={onChangeEmail} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder={t('welcome-page.input.email')} />
+        <View style={globalStyles.form(windowHeight)}>
+          <View style={[globalStyles.inputContainer, { borderColor: error.email ? COLORS.red : COLORS.black, marginBottom: error.email ? 10 : 20 }]}>
+            <TextInput value={email} onChangeText={onChangeEmail} style={globalStyles.input} placeholder={t('welcome-page.input.email')} />
           </View>
-          <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput value={password} onChangeText={onChangePassword} secureTextEntry={!showPassword} style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }} placeholder={t('welcome-page.input.password')} />
-            <TouchableOpacity onPress={toggleShowPassword} style={{ position: 'absolute', right: 10 }}>
-              <Icon name={showPassword ? 'visibility-off' : 'visibility'} size={24} color="gray" />
+          {error.email ? <Text style={globalStyles.errorText}>{error.email}</Text> : null}
+          <View style={[globalStyles.inputContainer, { borderColor: error.password ? COLORS.red : COLORS.black, marginBottom: error.password ? 10 : 20 }]}>
+            <TextInput value={password} onChangeText={onChangePassword} secureTextEntry={!showPassword} style={globalStyles.input} placeholder={t('welcome-page.input.password')} />
+            <TouchableOpacity onPress={toggleShowPassword} style={globalStyles.visibilityToggle}>
+              <Icon name={showPassword ? 'visibility-off' : 'visibility'} size={24} color={COLORS.grey} />
             </TouchableOpacity>
           </View>
-          <View style={{ width: "80%", margin: 10 }}>
-            <TouchableOpacity onPress={handleLogin} style={{
-              alignItems: 'center', borderColor: COLORS.blue, borderWidth: 2, alignItems: 'center',
-              justifyContent: 'center', backgroundColor: COLORS.blue, padding: 13
-            }}>
-              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold", color: COLORS.white }}>{t('welcome-page.text.login')}</Text>
+          {error.password ? <Text style={globalStyles.errorText}>{error.password}</Text> : null}
+          <View style={globalStyles.buttonContainer}>
+            <TouchableOpacity onPress={handleLogin} style={globalStyles.button}>
+              <Text style={globalStyles.buttonText}>{t('welcome-page.text.login')}</Text>
             </TouchableOpacity>
           </View>
-          <View style={{ width: "90%", alignItems: "center", justifyContent: "center" }}>
+          <View style={styles.forgotPasswordContainer}>
             <TouchableOpacity >
-              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }} onPress={() => navigation.navigate("ForgotPassword")}>{t('welcome-page.text.forgot-password')}</Text>
+              <Text style={styles.forgotPasswordText} onPress={() => navigation.navigate("ForgotPassword")}>{t('welcome-page.text.forgot-password')}</Text>
             </TouchableOpacity>
           </View>
-          <View style={{ width: "80%", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 12 }}>
-            <Text style={{ fontSize: 18, fontFamily: "Montserrat-Regular" }}>{t('welcome-page.text.no-account')}</Text>
+          <View style={styles.registerContainer}>
+            <Text style={styles.registerText}>{t('welcome-page.text.no-account')}</Text>
             <TouchableOpacity>
-              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold", marginLeft: 8 }} onPress={() => navigation.navigate("Registracija")}>{t('welcome-page.text.register')}</Text>
+              <Text style={styles.registerLink} onPress={() => navigation.navigate("Registracija")}>{t('welcome-page.text.register')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -128,3 +130,42 @@ export default function WelcomePage({ navigation }) {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  languageSwitcher: (windowHeight) => ({
+    flexDirection: 'row',
+    marginHorizontal: 12,
+    top: windowHeight * 0.49,
+    justifyContent: 'flex-end'
+  }),
+  flag: {
+    width: 30,
+    height: 20,
+    marginRight: 5
+  },
+  forgotPasswordContainer: {
+    width: "90%",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  forgotPasswordText: {
+    fontSize: 18,
+    fontFamily: "Montserrat-Regular"
+  },
+  registerContainer: {
+    width: "80%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12
+  },
+  registerText: {
+    fontSize: 18,
+    fontFamily: 'Montserrat-Regular'
+  },
+  registerLink: {
+    fontSize: 18,
+    fontFamily: 'Montserrat-Bold',
+    marginLeft: 8
+  }
+});

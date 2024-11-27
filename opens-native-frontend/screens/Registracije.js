@@ -1,8 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ScrollView,
@@ -13,7 +11,6 @@ import {
   View
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import COLORS from "../constants/colors";
 import { AuthContext } from "../contexts/AuthContext";
@@ -36,27 +33,17 @@ export default function Registracija() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isChecked, setIsChecked] = useState(false);
 
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-
-  const [fontsLoaded] = useFonts({
-    "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
-    "Montserrat-Bold": require("../assets/fonts/Montserrat-Bold.ttf"),
+  const [error, setError] = useState({
+    email: '',
+    password: '',
+    ime: '',
+    prezime: '',
+    rod: '',
+    godine: '',
+    mestoBoravista: '',
+    brojTelefona: '',
+    isChecked: ''
   });
-
-  useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
-    }
-    prepare();
-    setBrojTelefona(phoneCode + phoneNumber);
-  }, [phoneCode, phoneNumber]);
-
-  if (!fontsLoaded) {
-    return undefined;
-  } else {
-    SplashScreen.hideAsync();
-  }
 
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
@@ -75,401 +62,349 @@ export default function Registracija() {
 
   const onChangeEmail = (email) => {
     setEmail(email);
-    validateEmail(email);
+    if (error.email) {
+      setError({ ...error, email: '' });
+    }
   };
 
   const onChangePassword = (password) => {
     setPassword(password);
-    validatePassword(password);
+    if (error.password) {
+      setError({ ...error, password: '' });
+    }
   };
 
   const onChangeIme = (ime) => {
     setIme(ime);
+    if (error.ime) {
+      setError({ ...error, ime: '' });
+    }
   };
 
   const onChangePrezime = (prezime) => {
     setPrezime(prezime);
+    if (error.prezime) {
+      setError({ ...error, prezime: '' });
+    }
+  };
+
+  const onChangeRod = (item) => {
+    setRod(item.value);
+    if (error.rod) {
+      setError((prevError) => ({
+        ...prevError,
+        rod: '',
+      }));
+    }
   };
 
   const onChangeGodine = (godine) => {
     setGodine(godine);
+    if (error.godine) {
+      setError({ ...error, godine: '' });
+    }
   };
 
   const onChangeMestoBoravista = (mestoBoravista) => {
     setMestoBoravista(mestoBoravista);
+    if (error.mestoBoravista) {
+      setError({ ...error, mestoBoravista: '' });
+    }
   };
 
-  const onChanegePhoneCode = (phoneCode) => {
-    setPhoneCode(phoneCode);
-  };
-
-  const onChangePhoneNumber = (phoneNumber) => {
-    const cleanedPhoneNumber = phoneNumber.startsWith("0")
-      ? phoneNumber.slice(1)
-      : phoneNumber;
+  onChangeBrojTelefona = (newPhoneCode, newPhoneNumber) => {
+    setPhoneCode(newPhoneCode);
+    const cleanedPhoneNumber = newPhoneNumber.startsWith("0")
+      ? newPhoneNumber.slice(1)
+      : newPhoneNumber;
     setPhoneNumber(cleanedPhoneNumber);
+    const combinedPhoneNumber = phoneCode + phoneNumber;
+    setBrojTelefona(combinedPhoneNumber);
+
+    if (error.brojTelefona) {
+      setError((prevError) => ({
+        ...prevError,
+        brojTelefona: '',
+      }));
+    }
+  }
+
+  const onCheckBoxChange = (newValue) => {
+    setIsChecked(newValue);
+    if (error.isChecked) {
+      setError({ ...error, isChecked: '' });
+    }
   };
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setEmailError(t("setEmailError"));
-    } else {
-      setEmailError("");
-    }
+    return emailRegex.test(email)
   };
 
   const validatePassword = (password) => {
-    // Password must contain at least 8 characters, 1 uppercase letter, 1 number, and 1 special character
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    if (!passwordRegex.test(password)) {
-      setPasswordError(t("setPasswordError"));
-    } else {
-      setPasswordError("");
-    }
+    return passwordRegex.test(password)
   };
 
-  const registracija = async () => {
-    if (emailError || passwordError) {
-      Toast.show({
-        type: 'error',
-        text1: t("alertRegistrationFailedHeader"),
-        text2: t("alertEmailPasswordError"),
-        duration: 7000, // Display for 7 seconds
-      });
-      return;
-    } else if (!isChecked) {
-      Toast.show({
-        type: 'error',
-        text1: t("alertRegistrationFailedHeader"),
-        text2: t("alertCheckbox"),
-        duration: 7000, // Display for 7 seconds
-      });
-      return;
+  const handleRegistracija = async () => {
+    let valid = true;
+    const newError = {
+      email: '',
+      password: '',
+      ime: '',
+      prezime: '',
+      rod: '',
+      godine: '',
+      mestoBoravista: '',
+      brojTelefona: '',
     }
 
-    try {
-      const posetilac = {
-        email,
-        password,
-        ime,
-        prezime,
-        rod,
-        godine,
-        mestoBoravista,
-        brojTelefona,
-      };
+    if (!email) {
+      newError.email = t('welcome-page.error.emailRequired');
+      valid = false;
+    } else if (!validateEmail(email)) {
+      newError.email = t('welcome-page.error.invalidEmail');
+      valid = false;
+    }
 
-      const response = await register(posetilac);
+    if (!password) {
+      newError.password = t('welcome-page.error.passwordRequired');
+      valid = false;
+    } else if (!validatePassword(password)) {
+      newError.password = t('register-page.error.invalidPassword');
+    }
 
-      if (response) {
-        navigation.navigate("Welcome");
+    if (!ime) {
+      newError.ime = t('register-page.error.nameRequired');
+      valid = false;
+    }
+
+    if (!prezime) {
+      newError.prezime = t('register-page.error.surnameRequired');
+      valid = false;
+    }
+
+    if (!rod) {
+      newError.rod = t('register-page.error.genderRequired');
+      valid = false;
+    }
+
+    if (!godine) {
+      newError.godine = t('register-page.error.yearOfBirthRequired');
+      valid = false;
+    }
+
+    if (!mestoBoravista) {
+      newError.mestoBoravista = t('register-page.error.placeOfResidenceRequired');
+      valid = false;
+    }
+
+    if (!phoneCode || !phoneNumber || phoneCode.length < 1 || phoneNumber.length < 1) {
+      newError.brojTelefona = t('register-page.error.phoneRequired');
+      valid = false;
+    } else {
+      const phoneRegex = /^\+?[0-9]{2,3}[0-9]{8,9}$/; // Adjust regex as needed
+      if (!phoneRegex.test(phoneCode + phoneNumber)) {
+        newError.brojTelefona = t('register-page.error.invalidPhone');
+        valid = false;
       }
-    } catch (error) {
-      console.error(t("consoleRegistrationError"), error);
+    }
+
+    if (!isChecked) {
+      newError.isChecked = t('register-page.error.termsRequired');
+      valid = false;
+    }
+
+    setError(newError);
+
+    if (valid) {
+      try {
+        const posetilac = {
+          email,
+          password,
+          ime,
+          prezime,
+          rod,
+          godine,
+          mestoBoravista,
+          brojTelefona,
+        };
+
+        const response = await register(posetilac);
+
+        if (response) {
+          navigation.navigate("Welcome");
+        }
+      } catch (error) {
+        console.error(t("consoleRegistrationError"), error);
+      }
     }
   };
 
   return (
-    <ScrollView style={{ backgroundColor: COLORS.white }}>
-      <View style={{ flex: 1, backgroundColor: COLORS.white }}>
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: "15%",
-          }}
-        >
-          <View
-            style={{
-              width: "80%",
-              borderWidth: 1,
-              height: 50,
-              marginBottom: 20,
-              justifyContent: "center",
-              padding: 20,
-            }}
-          >
-            <TextInput
-              value={email}
-              onChangeText={onChangeEmail}
-              style={{
-                height: 50,
-                color: "black",
-                fontFamily: "Montserrat-Regular",
-              }}
-              placeholder={t("register-page.input.email")}
-            />
+    <ScrollView style={styles.scrollView}>
+      <View style={styles.container}>
+        <View style={styles.form}>
+          <View style={[styles.inputContainer, { borderColor: error.email ? COLORS.red : COLORS.black, marginBottom: error.email ? 10 : 20 }]}>
+            <TextInput value={email} onChangeText={onChangeEmail} style={styles.input} placeholder={t("register-page.input.email")} />
           </View>
-          {emailError ? (
-            <Text
-              style={{
-                color: "red",
-                marginBottom: 20,
-                width: "80%",
-                textAlign: "center",
-              }}
-            >
-              {emailError}
-            </Text>
-          ) : null}
-          <View
-            style={{
-              width: "80%",
-              borderWidth: 1,
-              height: 50,
-              marginBottom: 20,
-              justifyContent: "center",
-              padding: 20,
-            }}
-          >
-            <TextInput
-              value={password}
-              onChangeText={onChangePassword}
-              secureTextEntry={!showPassword}
-              style={{
-                height: 50,
-                color: "black",
-                fontFamily: "Montserrat-Regular",
-              }}
-              placeholder={t("register-page.input.password")}
-            />
-            <TouchableOpacity
-              onPress={toggleShowPassword}
-              style={{ position: "absolute", right: 10 }}
-            >
-              <Icon
-                name={showPassword ? "visibility-off" : "visibility"}
-                size={24}
-                color="gray"
-              />
+          {error.email ? <Text style={styles.errorText}>{error.email}</Text> : null}
+          <View style={[styles.inputContainer, { borderColor: error.password ? COLORS.red : COLORS.black, marginBottom: error.password ? 10 : 20 }]}>
+            <TextInput value={password} onChangeText={onChangePassword} secureTextEntry={!showPassword} style={styles.input} placeholder={t("register-page.input.password")} />
+            <TouchableOpacity onPress={toggleShowPassword} style={styles.visibilityToggle}>
+              <Icon name={showPassword ? "visibility-off" : "visibility"} size={24} color="gray" />
             </TouchableOpacity>
           </View>
-          {passwordError ? (
-            <Text
-              style={{
-                color: "red",
-                marginBottom: 20,
-                width: "80%",
-                textAlign: "center",
-              }}
-            >
-              {passwordError}
-            </Text>
-          ) : null}
-          <View
-            style={{
-              width: "80%",
-              borderWidth: 1,
-              height: 50,
-              marginBottom: 20,
-              justifyContent: "center",
-              padding: 20,
-            }}
-          >
-            <TextInput
-              value={ime}
-              onChangeText={onChangeIme}
-              style={{
-                height: 50,
-                color: "black",
-                fontFamily: "Montserrat-Regular",
-              }}
-              placeholder={t("register-page.input.name")}
-            />
+          {error.password ? <Text style={styles.errorText}>{error.password}</Text> : null}
+          <View style={[styles.inputContainer, { borderColor: error.ime ? COLORS.red : COLORS.black, marginBottom: error.ime ? 10 : 20 }]}>
+            <TextInput value={ime} onChangeText={onChangeIme} style={styles.input} placeholder={t("register-page.input.name")} />
           </View>
-          <View
-            style={{
-              width: "80%",
-              borderWidth: 1,
-              height: 50,
-              marginBottom: 20,
-              justifyContent: "center",
-              padding: 20,
-            }}
-          >
-            <TextInput
-              value={prezime}
-              onChangeText={onChangePrezime}
-              style={{
-                height: 50,
-                color: "black",
-                fontFamily: "Montserrat-Regular",
-              }}
-              placeholder={t("register-page.input.surname")}
-            />
+          {error.ime ? <Text style={styles.errorText}>{error.ime}</Text> : null}
+          <View style={[styles.inputContainer, { borderColor: error.prezime ? COLORS.red : COLORS.black, marginBottom: error.prezime ? 10 : 20 }]}>
+            <TextInput value={prezime} onChangeText={onChangePrezime} style={styles.input} placeholder={t("register-page.input.surname")} />
           </View>
-          <View
-            style={{
-              width: "80%",
-              borderWidth: 1,
-              height: 50,
-              marginBottom: 20,
-              justifyContent: "center",
-              padding: 20,
-            }}
-          >
+          {error.prezime ? <Text style={styles.errorText}>{error.prezime}</Text> : null}
+          <View style={[styles.inputContainer, { borderColor: error.rod ? COLORS.red : COLORS.black, marginBottom: error.rod ? 10 : 20 }]}>
             <Dropdown
-              itemTextStyle={{ fontFamily: "Montserrat-Regular" }}
-              placeholderStyle={{ fontFamily: "Montserrat-Regular" }}
+              itemTextStyle={styles.dropdownText}
+              placeholderStyle={styles.dropdownText}
               data={data}
-              // search
               maxHeight={300}
               labelField="label"
               valueField="value"
               placeholder={!isFocus ? t("register-page.input.gender") : "..."}
-              // searchPlaceholder="Search..."
               value={value}
               onFocus={() => setIsFocus(true)}
               onBlur={() => setIsFocus(false)}
               onChange={(item) => {
                 setValue(item.value);
-                setIsFocus(false);
-                setRod(item.value);
+                onChangeRod(item);
               }}
             />
-            {/* <TextInput style = {{height: 50, color: "black"}} placeholder="Rod" /> */}
           </View>
-          <View
-            style={{
-              width: "80%",
-              borderWidth: 1,
-              height: 50,
-              marginBottom: 20,
-              justifyContent: "center",
-              padding: 20,
-            }}
-          >
-            <TextInput
-              value={godine}
-              onChangeText={onChangeGodine}
-              style={{
-                height: 50,
-                color: "black",
-                fontFamily: "Montserrat-Regular",
-              }}
-              keyboardType="numeric"
-              placeholder={t("register-page.input.yearOfBirth")}
-            />
+          {error.rod ? <Text style={styles.errorText}>{error.rod}</Text> : null}
+          <View style={[styles.inputContainer, { borderColor: error.godine ? COLORS.red : COLORS.black, marginBottom: error.godine ? 10 : 20 }]}>
+            <TextInput value={godine} onChangeText={onChangeGodine} style={styles.input} keyboardType="numeric" placeholder={t("register-page.input.yearOfBirth")} />
           </View>
-          <View
-            style={{
-              width: "80%",
-              borderWidth: 1,
-              height: 50,
-              marginBottom: 20,
-              justifyContent: "center",
-              padding: 20,
-            }}
-          >
-            <TextInput
-              value={mestoBoravista}
-              onChangeText={onChangeMestoBoravista}
-              style={{
-                height: 50,
-                color: "black",
-                fontFamily: "Montserrat-Regular",
-              }}
-              placeholder={t("register-page.input.placeOfResidence")}
-            />
+          {error.godine ? <Text style={styles.errorText}>{error.godine}</Text> : null}
+          <View style={[styles.inputContainer, { borderColor: error.mestoBoravista ? COLORS.red : COLORS.black, marginBottom: error.mestoBoravista ? 10 : 20 }]}>
+            <TextInput value={mestoBoravista} onChangeText={onChangeMestoBoravista} style={styles.input} placeholder={t("register-page.input.placeOfResidence")} />
           </View>
-          <View style={{ flexDirection: "row", width: "80%" }}>
-            <View
-              style={{
-                flex: 1,
-                borderWidth: 1,
-                height: 50,
-                justifyContent: "center",
-                //marginBottom: 20,
-                padding: 20,
-                marginRight: 5,
-              }}
-            >
-              <TextInput
-                value={phoneCode}
-                onChangeText={onChanegePhoneCode}
-                style={{
-                  height: 50,
-                  color: "black",
-                  fontFamily: "Montserrat-Regular",
-                }}
-                keyboardType="numeric"
-                placeholder="+381"
-              />
+          {error.mestoBoravista ? <Text style={styles.errorText}>{error.mestoBoravista}</Text> : null}
+          <View style={[styles.phoneContainer, { marginBottom: error.brojTelefona ? 10 : 20 }]}>
+            <View style={[styles.phoneInputContainer, { flex: 1, marginRight: 5, borderColor: error.brojTelefona ? COLORS.red : COLORS.black }]}>
+              <TextInput value={phoneCode} onChangeText={(phoneCode) => onChangeBrojTelefona(phoneCode, phoneNumber)} style={styles.input} keyboardType="default" maxLength={4} placeholder="+381" />
             </View>
-            <View
-              style={{
-                flex: 4,
-                borderWidth: 1,
-                height: 50,
-                justifyContent: "center",
-                //marginBottom: 20,
-                padding: 20,
-              }}
-            >
-              <TextInput
-                value={phoneNumber}
-                onChangeText={onChangePhoneNumber}
-                style={{
-                  height: 50,
-                  color: "black",
-                  fontFamily: "Montserrat-Regular",
-                }}
-                keyboardType="numeric"
-                placeholder="631234567"
-              />
+            <View style={[styles.phoneInputContainer, { flex: 4, borderColor: error.brojTelefona ? COLORS.red : COLORS.black }]}>
+              <TextInput value={phoneNumber} onChangeText={(phoneNumber) => onChangeBrojTelefona(phoneCode, phoneNumber)} style={styles.input} keyboardType="numeric" placeholder="631234567" />
             </View>
           </View>
-          <View style={styles.container}>
-            <View style={styles.checkboxContainer}>
+          {error.brojTelefona ? <Text style={styles.errorText}>{error.brojTelefona}</Text> : null}
+          <View style={[styles.checkboxContainer, { marginBottom: error.brojTelefona ? 10 : 20 }]}>
+            <View style={styles.checkbox}>
               <Checkbox
                 value={isChecked}
-                onValueChange={setIsChecked}
+                onValueChange={onCheckBoxChange}
                 tintColors={{ true: COLORS.blue, false: undefined }}
               />
               <TouchableOpacity onPress={() => navigation.navigate("Izjava")}>
-                <Text style={styles.text}>{t("consentButton.button")}</Text>
+                <Text style={styles.checkboxText}>{t("consentButton.button")}</Text>
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{ width: "80%", margin: 10 }}>
-            <TouchableOpacity
-              onPress={registracija}
-              style={{
-                alignItems: "center",
-                borderColor: COLORS.blue, borderWidth: 2, alignItems: 'center',
-                justifyContent: 'center', backgroundColor: COLORS.blue,
-                padding: 13,
-              }}
-            >
-              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold", color: COLORS.white }}>
-                {t("register-page.button.register")}
-              </Text>
+          {error.isChecked ? <Text style={styles.errorText}>{error.isChecked}</Text> : null}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={handleRegistracija} style={styles.registerButton}>
+              <Text style={styles.registerText}>{t("register-page.button.register")}</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
     </ScrollView>
   );
+  
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    backgroundColor: COLORS.white
+  },
   container: {
+    flex: 1,
+    backgroundColor: COLORS.white
+  },
+  form: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: "15%"
+  },
+  inputContainer: {
+    width: '80%',
+    borderWidth: 1,
+    height: 50,
+    justifyContent: 'center',
+    padding: 20
+  },
+  input: {
+    height: 50,
+    color: COLORS.black,
+    fontFamily: 'Montserrat-Regular'
+  },
+  errorText: {
+    color: COLORS.red,
+    fontFamily: 'Montserrat-SemiBold',
+    marginBottom: 10
+  },
+  visibilityToggle: {
+    position: 'absolute',
+    right: 10
+  },
+  dropdownText: {
+    fontFamily: 'Montserrat-Regular',
+  },
+  phoneContainer: {
+    flexDirection: 'row',
+    width: '80%',
+  },
+  phoneInputContainer: {
+    borderWidth: 1,
+    height: 50,
+    justifyContent: 'center',
+    padding: 20
+  },
+  checkboxContainer: {
     width: "85%",
     //marginBottom: 20,
     justifyContent: "center",
     padding: 20
   },
-  checkboxContainer: {
+  checkbox: {
     flexDirection: 'row',
-    alignItems: 'center' // Aligns children vertically centered
+    alignItems: 'center'
   },
-  text: {
+  checkboxText: {
     fontFamily: "Montserrat-Bold",
-    marginLeft: 8, // Adjust spacing between checkbox and text
+    marginLeft: 8,
     color: '#0000FF',
     textAlign: 'justify',
     textDecorationLine: 'underline',
-  }
+  },
+  buttonContainer: {
+    width: '80%',
+    margin: 10
+  },
+  registerButton: {
+    borderColor: COLORS.blue,
+    borderWidth: 2,
+    backgroundColor: COLORS.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 13
+  },
+  registerText: {
+    fontSize: 18,
+    fontFamily: "Montserrat-Bold",
+    color: COLORS.white
+  },
 });

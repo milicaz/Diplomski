@@ -6,15 +6,12 @@ import { Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import COLORS from './constants/colors';
 import AuthContextProvider, { AuthContext } from './contexts/AuthContext';
+import FontContextProvider from './contexts/FontContext';
 import BottomTabNavigation from './navigations/BottomTabNavigation';
-import Izjava from './screens/Izjava';
-import ProfileEdit from './screens/ProfileEdit';
-import Registracije from './screens/Registracije';
-import RequestPasswordResetPage from './screens/RequestPasswordResetPage';
-import ResetPasswordPage from './screens/ResetPasswordPage';
-import WelcomePage from './screens/WelcomePage';
+import { Izjava, ProfileEdit, Registracije, RequestPasswordResetPage, ResetPasswordPage, WelcomePage } from './screens';
 import { i18next } from './services/i18next';
 import eventEmitter from './utils/EventEmitter';
+import LoadingWrapper from './utils/LoadingWrapper';
 
 const Stack = createNativeStackNavigator();
 
@@ -73,12 +70,16 @@ const AppNavigator = () => {
 export default function App() {
   return (
     <I18nextProvider i18n={i18next}>
-      <AuthContextProvider>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
-        <Toast config={toastConfig} position='bottom' bottomOffset={30} />
-      </AuthContextProvider>
+      <FontContextProvider>
+        <AuthContextProvider>
+          <LoadingWrapper>
+            <NavigationContainer>
+              <AppNavigator />
+            </NavigationContainer>
+            <Toast config={toastConfig} position='bottom' bottomOffset={30} />
+          </LoadingWrapper>
+        </AuthContextProvider>
+      </FontContextProvider>
     </I18nextProvider>
   );
 }

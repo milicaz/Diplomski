@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Toast } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import useHttpProtected from "../../hooks/useHttpProtected";
+import useToast from "../../hooks/useToast";
 
 const Login = () => {
   const [oprema, setOprema] = useState([]);
@@ -13,13 +14,10 @@ const Login = () => {
   const [mestoPoseteId, setMestaPoseteId] = useState();
   const [selectedOprema, setSelectedOprema] = useState([]);
 
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastVariant, setToastVariant] = useState("");
-
   const httpProtected = useHttpProtected();
   const navigate = useNavigate();
   const location = useLocation();
+  const { handleShowToast } = useToast();
 
   useEffect(() => {
     let isMounted = true;
@@ -47,8 +45,13 @@ const Login = () => {
           setOprema(opremaData.data);
         }
       } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error("Greška prilikom fetching podataka: ", error);
+        if (error.response?.status >= 500) {
+          handleShowToast(
+            "Greška",
+            "Greška prilikom pribavljanja podataka",
+            "error"
+          );
+        } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       }
@@ -76,9 +79,21 @@ const Login = () => {
       await httpProtected.post("/posete", newPoseta, {
         signal: controller.signal,
       });
+      handleShowToast(
+        "Uspešno kreirana poseta",
+        `Uspešno ste kreirali posetu za posetioca: ${posetilac.value}`,
+        "success"
+      );
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška tokom kreiranja posete:", error);
+      if (error.response?.status >= 500) {
+        handleShowToast("Greška", "Greška tokom kreiranja posete", "error");
+      } else if (!error?.response) {
+        handleShowToast(
+          "Greška",
+          "Greška u mreži. Zahtev nije mogao biti poslat zbog greške u mreži.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -86,14 +101,13 @@ const Login = () => {
     }
   };
 
-  const handleShowToast = (message, variant) => {
-    setToastMessage(message);
-    setToastVariant(variant);
-    setShowToast(true);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!posetilac || !posetilac.value) {
+      handleShowToast("Greška", "Molimo Vas odaberite posetioca", "error");
+      return;
+    }
 
     try {
       const posetaData = {
@@ -102,10 +116,6 @@ const Login = () => {
         mestoPoseteID: mestoPoseteId,
       };
       await addPosetu(posetaData);
-      handleShowToast(
-        `Uspešno ste kreirali posetu za posetioca: ${posetilac.value}`,
-        "success"
-      );
       setPosetilac(null);
       setMestaPoseteId(null);
       setSelectedOprema(null);
@@ -167,27 +177,6 @@ const Login = () => {
           </Button>
         </div>
       </Form>
-      <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        style={{
-          position: "fixed",
-          bottom: 20,
-          left: 20,
-          minWidth: 300,
-          backgroundColor: toastVariant === "success" ? "#a3c57b" : "#f56f66",
-          color: "white",
-        }}
-        delay={3000}
-        autohide
-      >
-        <Toast.Header>
-          <strong className="me-auto">
-            {toastVariant === "success" ? "" : "Greška"}
-          </strong>
-        </Toast.Header>
-        <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast>
     </>
   );
 };

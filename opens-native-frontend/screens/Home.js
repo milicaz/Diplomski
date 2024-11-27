@@ -1,65 +1,67 @@
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import COLORS from '../constants/colors';
 import httpCommon from "../http-common";
 import eventEmitter from "../utils/EventEmitter";
 
 export default function Home() {
+  const { t } = useTranslation();
+
   const [obavestenja, setObavesetenja] = useState([]);
-  const [pinovanaObavestenja, setPinovanaObavestenja] = useState([]);
+  //const [pinovanaObavestenja, setPinovanaObavestenja] = useState([]);
   const [selectedObavestenje, setSelectedObavestenje] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const { t } = useTranslation();
-
-  const [fontsLoaded] = useFonts({
-    'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.ttf'),
-    'Montserrat-Thin': require('../assets/fonts/Montserrat-Thin.ttf'),
-  });
-
   useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
-    }
-    prepare();
     fetchObavestenja();
   }, []);
 
-  useEffect(() => {
-    const sortirana = [...obavestenja].sort((a, b) => b.prioritet - a.prioritet); //sortira po prioritetu gde se veci prioritet pokazuje prvi
-    setPinovanaObavestenja(sortirana)
+  const sortiranaObavestenja = useMemo(() => {
+    return [...obavestenja].sort((a, b) => b.prioritet - a.prioritet); //sortira po prioritetu gde se veci prioritet pokazuje prvi
   }, [obavestenja])
 
   const fetchObavestenja = async () => {
     await httpCommon.get("/obavestenja/validna").then((response) => {
       setObavesetenja(response.data);
     }, (error) => {
-      if (error.response && (error.response.status === 401 || error.response.status === 400)) {
-        eventEmitter.emit('LOGOUT');
+      if (error.response) {
+        if (error.response.status === 401 || error.response.status === 400) {
+          eventEmitter.emit('LOGOUT');
+          Toast.show({
+            type: 'error',
+            text1: t('http-common.error.session.header'),
+            text2: t('http-common.error.session.text'),
+            duration: 7000
+          });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: t('http-common.error.server.header'),
+            text2: t('http-common.error.server.text'),
+            duration: 7000
+          });
+        }
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: t('http-common.error.network.header'),
+          text2: t('http-common.error.network.text'),
+          duration: 7000
+        });
       }
     });
-
   }
 
-  const handleShowMore = (obavestenje) => {
+  const handleShowMore = useCallback((obavestenje) => {
     setSelectedObavestenje(obavestenje);
     setShowModal(true);
-  }
-
-  if (!fontsLoaded) {
-    return undefined;
-  } else {
-    SplashScreen.hideAsync();
-  }
+  }, []);
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingTop: 20, paddingBottom: 70 }}>
+      {/* <ScrollView contentContainerStyle={{ flexGrow: 1, paddingTop: 20, paddingBottom: 70 }}>
         {pinovanaObavestenja.map((obavestenje, index) => (
           <View key={index} style={styles.card}>
             <Text style={{ fontSize: 20, fontFamily: 'Montserrat-SemiBold', marginBottom: 15, color: COLORS.purple }}>{obavestenje.naziv}</Text>
@@ -73,7 +75,25 @@ export default function Home() {
             </View>
           </View>
         ))}
-      </ScrollView>
+      </ScrollView> */}
+      <FlatList
+        data={sortiranaObavestenja}
+        keyExtractor={(item) => item.id.toString()} // Koristi id umesto indeksa kao ključeve
+        contentContainerStyle={styles.scrollViewContent}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{item.naziv}</Text>
+            <Text style={styles.cardText}>
+              {item.tekst.length > 250 ? item.tekst.substring(0, 100) + '...' : item.tekst}
+            </Text>
+            <View style={styles.showMoreContainer}>
+              <TouchableOpacity onPress={() => handleShowMore(item)} style={styles.showMoreButton}>
+                <Text style={styles.showMoreButtonText}>{t('home-page.text.show-more')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+      />
 
       <Modal
         animationType="slide"
@@ -83,15 +103,17 @@ export default function Home() {
       >
         <View style={styles.modalContainer}>
           <ScrollView contentContainerStyle={styles.scrollViewContent}>
-            {selectedObavestenje && (
+            {selectedObavestenje ? (
               <>
                 <Text style={styles.modalTitle}>{selectedObavestenje.naziv}</Text>
                 <Markdown style={styles.markdown}>{selectedObavestenje.tekst}</Markdown>
               </>
+            ) : (
+              <ActivityIndicator size="large" color={COLORS.purple} />
             )}
-            <View style={{ flexDirection: "row", justifyContent: 'flex-end' }}>
-              <TouchableOpacity onPress={() => setShowModal(false)} style={{ width: 90, height: 35, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.blue, marginTop: 20 }}>
-                <Text style={{ fontSize: 14, fontFamily: 'Montserrat-SemiBold', color: COLORS.white }}>{t('home-page.text.close')}</Text>
+            <View style={styles.modalCloseContainer}>
+              <TouchableOpacity onPress={() => setShowModal(false)} style={styles.modalCloseButton}>
+                <Text style={styles.modalCloseButtonText}>{t('home-page.text.close')}</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -107,6 +129,11 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: COLORS.white
   },
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingTop: 20,
+    paddingBottom: 70,
+  },
   card: {
     marginBottom: 10,
     padding: 15,
@@ -120,6 +147,35 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
     elevation: 2, // For Android shadow
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontFamily: 'Montserrat-SemiBold',
+    marginBottom: 15,
+    color: COLORS.purple,
+  },
+  cardText: {
+    fontSize: 16,
+    fontFamily: 'Montserrat-Regular',
+    color: COLORS.black,
+    textAlign: 'justify',
+  },
+  showMoreContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  showMoreButton: {
+    width: 110,
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.blue,
+    marginTop: 10,
+  },
+  showMoreButtonText: {
+    fontSize: 14,
+    fontFamily: 'Montserrat-SemiBold',
+    color: COLORS.white,
   },
   modalContainer: {
     flex: 1,
@@ -170,4 +226,21 @@ const styles = StyleSheet.create({
       marginBottom: 5,
     },
   },
+  modalCloseContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  modalCloseButton: {
+    width: 90,
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.blue,
+    marginTop: 20,
+  },
+  modalCloseButtonText: {
+    fontSize: 14,
+    fontFamily: 'Montserrat-SemiBold',
+    color: COLORS.white,
+  }
 });

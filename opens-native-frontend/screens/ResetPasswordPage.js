@@ -1,30 +1,27 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from "expo-splash-screen";
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../constants/colors';
 import httpCommon from '../http-common';
-import Toast from 'react-native-toast-message';
+import { globalStyles } from '../utils/styles';
 
 const ResetPasswordPage = () => {
   const { t } = useTranslation();
   const { height: windowHeight } = useWindowDimensions();
   const navigation = useNavigation();
 
-  const route = useRoute();
-
+  const [token, setToken] = useState('')
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [token, setToken] = useState('')
-
-  const [fontsLoaded] = useFonts({
-    'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf')
+  const [error, setError] = useState({
+    token: '',
+    password: '',
+    confirmPassword: ''
   });
 
   const toggleShowPassword = () => {
@@ -36,129 +33,153 @@ const ResetPasswordPage = () => {
   }
 
   useEffect(() => {
-
   }, [token]);
 
-  useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
+  const onChangeToken = (token) => {
+    setToken(token);
+    if (error.token) {
+      setError({ ...error, token: '' });
     }
-    prepare();
-  }, []);
-
-  if (!fontsLoaded) {
-    return undefined;
-  } else {
-    SplashScreen.hideAsync();
   }
 
-  // const resetPassword = async () => {
-  //   if (password !== confirmPassword) {
-  //     Alert.alert(t("alertResetPassword"));
-  //     return;
-  //   }
-
-  //   try {
-  //     // const response = await fetch('http://10.0.2.2:8080/api/auth/password-reset/reset?token=' + encodeURIComponent(token) + '&newPassword=' + encodeURIComponent(password), {
-  //     //   method: 'PUT'
-  //     // });
-  //     // const result = await response.text();
-  //     const response = await httpCommon.put(`/auth/password-reset/reset?token=${encodeURIComponent(token)}&newPassword=${encodeURIComponent(password)}`, {});
-  //     const result = await response.data;
-  //     Alert.alert(t("alertResetPasswordSuccess"), result);
-  //     navigation.navigate('Welcome');
-  //   } catch (error) {
-  //     Alert.alert(t("alertResetPasswordError"));
-  //   }
-  // };
-
-  const resetPassword = async () => {
-    if (password !== confirmPassword) {
-      Toast.show({
-        type: 'error',
-        text1: t("alertRequestResetPasswordErrorHeader"),
-        text2: t("alertResetPassword"),
-        duration: 7000, 
-        onPress: () => Toast.hide(), 
-      });
-      return;
+  const onChangePassword = (password) => {
+    setPassword(password);
+    if (error.password) {
+      setError({ ...error, password: '' });
     }
-  
-    try {
-      const response = await httpCommon.put(`/auth/password-reset/reset?token=${encodeURIComponent(token)}&newPassword=${encodeURIComponent(password)}`);
-      Toast.show({
-        type: 'success',
-        text1: t("alertRequestResetPasswordSuccessHeader"),
-        text2: t("alertResetPasswordSuccess"),
-        duration: 7000, 
-        onPress: () => Toast.hide(), 
-      });
-      if (response) {
-        navigation.navigate('Welcome');
-      } 
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: t("alertRequestResetPasswordErrorHeader"),
-        text2: t("alertResetPasswordError"),
-        duration: 7000, 
-        onPress: () => Toast.hide(),
-      });
+  }
+
+  const onChangeConfirmPassword = (confirmPassword) => {
+    setConfirmPassword(confirmPassword);
+    if (error.confirmPassword) {
+      setError({ ...error, confirmPassword: '' });
+    }
+  }
+
+  const handleResetPassword = async () => {
+    let valid = true;
+    const newError = {
+      token: '',
+      password: '',
+      confirmPassword: ''
+    }
+
+    if (!token) {
+      newError.token = t('reset-password-page.error.tokenRequired');
+      valid = false;
+    }
+
+    if (!password) {
+      newError.password = t('reset-password-page.error.passwordRequired');
+      valid = false;
+    }
+
+    if (!confirmPassword) {
+      newError.confirmPassword = t('reset-password-page.error.confirmPasswordRequired');
+      valid = false;
+    }
+
+    setError(newError);
+
+    if (valid) {
+      if (password !== confirmPassword) {
+        Toast.show({
+          type: 'error',
+          text1: t('reset-password-page.error.mismatchHeader'),
+          text2: t('reset-password-page.error.mismatchText'),
+          duration: 7000
+        });
+        return;
+      }
+
+      try {
+        const response = await httpCommon.put(`/auth/password-reset/reset?token=${encodeURIComponent(token)}&newPassword=${encodeURIComponent(password)}`);
+        Toast.show({
+          type: 'success',
+          text1: t('reset-password-page.success.header'),
+          text2: t('reset-password-page.success.text'),
+          duration: 7000
+        });
+        if (response) {
+          navigation.navigate('Welcome');
+        }
+      } catch (error) {
+        if (error.response) {
+          if (error.response.status === 401 && error.response.data === "Invalid or expired token.") {
+            Toast.show({
+              type: 'error',
+              text1: t('reset-password-page.error.header'),
+              text2: t('reset-password-page.error.invalidToken'),
+              duration: 7000
+            });
+          }
+        } else if (error.request) {
+          Toast.show({
+            type: 'error',
+            text1: t('reset-password-page.error.header'),
+            text2: t('auth-context.register.error.network'),
+            duration: 7000
+          });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: t('reset-password-page.error.header'),
+            text2: t('reset-password-page.error.text'),
+            duration: 7000
+          });
+        }
+      }
     }
   };
 
   return (
-    <ScrollView style={{ backgroundColor: COLORS.white }}>
-      <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <ScrollView style={globalStyles.scrollView}>
+      <View style={globalStyles.container}>
         <View>
           <Image
-            source={require("../assets/opens2.png")}
-            style={{
-              height: windowHeight * 0.47,
-              width: "100%",
-              position: "absolute",
-            }}
+            source={require("../assets/images/opens2.png")}
+            style={globalStyles.image(windowHeight)}
           />
         </View>
-        <View style={{ justifyContent: "center", alignItems: "center", top: windowHeight * 0.20, width: "100%", height: windowHeight }}>
-          <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+        <View style={globalStyles.form(windowHeight)}>
+          <View style={[globalStyles.inputContainer, { borderColor: error.token ? COLORS.red : COLORS.black, marginBottom: error ? 10 : 20 }]}>
             <TextInput
-              style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }}
+              style={globalStyles.input}
               placeholder={t('reset-password-page.input.token')}
               value={token}
-              onChangeText={setToken}
+              onChangeText={onChangeToken}
             />
           </View>
-          <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+          {error.token ? <Text style={globalStyles.errorText}>{error.token}</Text> : null}
+          <View style={[globalStyles.inputContainer, { borderColor: error.password ? COLORS.red : COLORS.black, marginBottom: error ? 10 : 20 }]}>
             <TextInput
-              style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }}
+              style={globalStyles.input}
               placeholder={t('reset-password-page.input.newPassword')}
               secureTextEntry={!showPassword}
               value={password}
-              onChangeText={setPassword}
+              onChangeText={onChangePassword}
             />
-            <TouchableOpacity onPress={toggleShowPassword} style={{ position: 'absolute', right: 10 }}>
-              <Icon name={showPassword ? 'visibility-off' : 'visibility'} size={24} color="gray" />
+            <TouchableOpacity onPress={toggleShowPassword} style={globalStyles.visibilityToggle}>
+              <Icon name={showPassword ? 'visibility-off' : 'visibility'} size={24} color={COLORS.grey} />
             </TouchableOpacity>
           </View>
-          <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
+          {error.password ? <Text style={globalStyles.errorText}>{error.password}</Text> : null}
+          <View style={[globalStyles.inputContainer, { borderColor: error.confirmPassword ? COLORS.red : COLORS.black, marginBottom: error ? 10 : 20 }]}>
             <TextInput
-              style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }}
+              style={globalStyles.input}
               placeholder={t('reset-password-page.input.confirmPassword')}
               secureTextEntry={!showConfirmPassword}
               value={confirmPassword}
-              onChangeText={setConfirmPassword}
+              onChangeText={onChangeConfirmPassword}
             />
-            <TouchableOpacity onPress={toggleShowConfirmPassword} style={{ position: 'absolute', right: 10 }}>
-              <Icon name={showConfirmPassword ? 'visibility-off' : 'visibility'} size={24} color="gray" />
+            <TouchableOpacity onPress={toggleShowConfirmPassword} style={globalStyles.visibilityToggle}>
+              <Icon name={showConfirmPassword ? 'visibility-off' : 'visibility'} size={24} color={COLORS.grey} />
             </TouchableOpacity>
           </View>
-          <View style={{ width: "80%", margin: 10 }}>
-            <TouchableOpacity onPress={resetPassword} style={{
-              alignItems: 'center', borderColor: COLORS.blue, borderWidth: 2, alignItems: 'center',
-              justifyContent: 'center', backgroundColor: COLORS.blue, padding: 13
-            }}>
-              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold", color: COLORS.white }}>{t('reset-password-page.button.reset')}</Text>
+          {error.confirmPassword ? <Text style={globalStyles.errorText}>{error.confirmPassword}</Text> : null}
+          <View style={globalStyles.buttonContainer}>
+            <TouchableOpacity onPress={handleResetPassword} style={globalStyles.button}>
+              <Text style={globalStyles.buttonText}>{t('reset-password-page.button.reset')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -166,20 +187,5 @@ const ResetPasswordPage = () => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
-  },
-});
 
 export default ResetPasswordPage;

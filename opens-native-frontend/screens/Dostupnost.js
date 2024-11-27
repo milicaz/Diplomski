@@ -1,21 +1,13 @@
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
 import i18next from 'i18next';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Image, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import COLORS from "../constants/colors";
 import httpCommon from '../http-common';
 
 export default function Dostupnost() {
     const { t } = useTranslation();
 
-    const [fontsLoaded] = useFonts({
-        'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
-        'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf'),
-        'Montserrat-BoldItalic': require('../assets/fonts/Montserrat-BoldItalic.ttf')
-    });
-    
     const [spaceCount, setSpaceCount] = useState("")
     const [laptopCount, setLaptopCount] = useState("")
     const [mouseCount, setMouseCount] = useState("")
@@ -23,17 +15,15 @@ export default function Dostupnost() {
     const [sonyOccupied, setSonyOccupied] = useState(false)
 
     useEffect(() => {
-        async function prepare() {
-            await SplashScreen.preventAutoHideAsync();
-        }
-        prepare();
         const fetchData = async () => {
             try {
-                const response = await httpCommon.get('/dostupnostView');
-                const responseData = response.data; // Assuming response.data is an array
+                const requests = [
+                    httpCommon.get('/dostupnostView'),
+                    httpCommon.get('/dostupnostMestoView')
+                ];
+                const [uredjajiData, mestaData] = await Promise.all(requests);
 
-                // Process the array
-                responseData.forEach(item => {
+                uredjajiData.data.forEach(item => {
                     switch (item.naziv_opreme) {
                         // case 'igrice':
                         //     setSpaceCount(item.ukupno_opreme)
@@ -52,166 +42,103 @@ export default function Dostupnost() {
                             break;
                     }
                 });
+
+                setSpaceCount(mestaData.data[0].slobodna_mesta);
             } catch (error) {
-                console.error('Error fetching data:', error);
-                Alert.alert('Error', 'Failed to fetch data');
-            }
-            try {
-                const response = await httpCommon.get('/dostupnostMestoView');
-                setSpaceCount(response.data[0].slobodna_mesta)
-            } catch (error) {
-                console.error('Error fetching mesto:', error);
-                Alert.alert('Error', 'Failed to fetch mesto');
+                if (error.response) {
+                    if (error.response.status === 401 || error.response.status === 400) {
+                        eventEmitter.emit('LOGOUT');
+                        Toast.show({
+                            type: 'error',
+                            text1: t('http-common.error.session.header'),
+                            text2: t('http-common.error.session.text'),
+                            duration: 7000
+                        });
+                    } else {
+                        Toast.show({
+                            type: 'error',
+                            text1: t('http-common.error.server.header'),
+                            text2: t('http-common.error.server.text'),
+                            duration: 7000
+                        });
+                    }
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        text1: t('http-common.error.network.header'),
+                        text2: t('http-common.error.network.text'),
+                        duration: 7000
+                    });
+                }
             }
         };
 
-        fetchData(); // Fetch data initially
-        // Set up interval to fetch data every 10 seconds
+        fetchData();
         const intervalId = setInterval(fetchData, 10000); // 10000 milliseconds = 10 seconds
-        // Cleanup on component unmount
         return () => clearInterval(intervalId);
     }, []); // Empty dependency array ensures this runs once on mount
 
-
-    if (!fontsLoaded) {
-        return null;
-    } else {
-        SplashScreen.hideAsync();
-    }
-
-    const getSpaceTranslationKey = (count) => {
+    const getTranslationKey = (count, key) => {
         const language = i18next.language;
         if (language === 'sr') {
             if (count % 10 === 1 && count % 100 !== 11) {
-                return 'dostupnost-page.text.space_one';
+                return `${key}_one`;
             } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
-                return 'dostupnost-page.text.space_few';
+                return `${key}_few`;
             } else {
-                return 'dostupnost-page.text.space_other';
+                return `${key}_other`;
             }
         } else if (language === 'en') {
-            if (count === 1) {
-                return 'dostupnost-page.text.space_one';
-            } else {
-                return 'dostupnost-page.text.space_other';
-            }
+            return count === 1 ? `${key}_one` : `${key}_other`;
         }
     };
 
-    const getLaptopTranslationKey = (count) => {
-        const language = i18next.language;
-        if (language === 'sr') {
-            if (count % 10 === 1 && count % 100 !== 11) {
-                return 'dostupnost-page.text.laptop_one';
-            } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
-                return 'dostupnost-page.text.laptop_few';
-            } else {
-                return 'dostupnost-page.text.laptop_other';
-            }
-        } else if (language === 'en') {
-            if (count === 1) {
-                return 'dostupnost-page.text.laptop_one';
-            } else {
-                return 'dostupnost-page.text.laptop_other';
-            }
-        }
-    };
-
-    const getMouseTranslationKey = (count) => {
-        const language = i18next.language;
-        if (language === 'sr') {
-            if (count % 10 === 1 && count % 100 !== 11) {
-                return 'dostupnost-page.text.mouse_one';
-            } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
-                return 'dostupnost-page.text.mouse_few';
-            } else {
-                return 'dostupnost-page.text.mouse_other';
-            }
-        } else if (language === 'en') {
-            if (count === 1) {
-                return 'dostupnost-page.text.mouse_one';
-            } else {
-                return 'dostupnost-page.text.mouse_other';
-            }
-        }
-    };
-
-    const getHeadphoneTranslationKey = (count) => {
-        const language = i18next.language
-        if (language === 'sr') {
-            if (count % 10 === 1 && count % 100 !== 11) {
-                return 'dostupnost-page.text.headphone_one';
-            } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
-                return 'dostupnost-page.text.headphone_few';
-            } else {
-                return 'dostupnost-page.text.headphone_other';
-            }
-        } else if (language === 'en') {
-            if (count === 1) {
-                return 'dostupnost-page.text.headphone_one';
-            } else {
-                return 'dostupnost-page.text.headphone_other';
-            }
-        }
-    };
-
-    // Get translations
-    const spaceTranslation = t(getSpaceTranslationKey(spaceCount), { count: spaceCount });
-    const laptopTranslation = t(getLaptopTranslationKey(laptopCount), { count: laptopCount });
-    const mouseTranslation = t(getMouseTranslationKey(mouseCount), { count: mouseCount });
-    const headphoneTranslation = t(getHeadphoneTranslationKey(headphoneCount), { count: headphoneCount });
+    const spaceTranslation = t(getTranslationKey(spaceCount, 'dostupnost-page.text.space'), { count: spaceCount });
+    const laptopTranslation = t(getTranslationKey(laptopCount, 'dostupnost-page.text.laptop'), { count: laptopCount });
+    const mouseTranslation = t(getTranslationKey(mouseCount, 'dostupnost-page.text.mouse'), { count: mouseCount });
+    const headphoneTranslation = t(getTranslationKey(headphoneCount, 'dostupnost-page.text.headphone'), { count: headphoneCount });
 
     return (
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.white }}>
-            <Text style={{ fontFamily: "Montserrat-Bold", fontSize: 50, marginBottom: 40 }}>
-                {t('dostupnost-page.text.availability')}
-            </Text>
-            <View style={{ flexDirection: "row", width: "90%", marginBottom: 20 }}>
+        <View style={styles.container}>
+            <Text style={styles.headerText}> {t('dostupnost-page.text.availability')} </Text>
+            <View style={styles.itemContainer}>
                 <View style={{ flex: 1 }}>
-                    <Image source={require("../assets/stolica.png")} style={{ height: 55, width: 55 }} />
+                    <Image source={require("../assets/images/stolica.png")} style={{ height: 55, width: 55 }} />
                 </View>
                 <View style={{ flex: 4 }}>
-                    <Text style={{ fontFamily: "Montserrat-Regular", backgroundColor: '#A3C57B', padding: 18 }}>
-                        {spaceTranslation}
-                    </Text>
+                    <Text style={[styles.itemText, { backgroundColor: COLORS.green }]}>{spaceTranslation}</Text>
                 </View>
             </View>
-            <View style={{ flexDirection: "row", width: "90%", marginBottom: 20 }}>
+            <View style={styles.itemContainer}>
                 <View style={{ flex: 1 }}>
-                    <Image source={require("../assets/laptop.png")} style={{ height: 55, width: 55 }} />
+                    <Image source={require("../assets/images/laptop.png")} style={styles.icon} />
                 </View>
                 <View style={{ flex: 4 }}>
-                    <Text style={{ fontFamily: "Montserrat-Regular", backgroundColor: '#F56F66', padding: 18 }}>
-                        {laptopTranslation}
-                    </Text>
+                    <Text style={[styles.itemText, { backgroundColor: COLORS.red }]}>{laptopTranslation}</Text>
                 </View>
             </View>
-            <View style={{ flexDirection: "row", width: "90%", marginBottom: 20 }}>
+            <View style={styles.itemContainer}>
                 <View style={{ flex: 1 }}>
-                    <Image source={require("../assets/mis.png")} style={{ height: 55, width: 55 }} />
+                    <Image source={require("../assets/images/mis.png")} style={styles.icon} />
                 </View>
                 <View style={{ flex: 4 }}>
-                    <Text style={{ fontFamily: "Montserrat-Regular", backgroundColor: '#FBB537', padding: 18 }}>
-                        {mouseTranslation}
-                    </Text>
+                    <Text style={[styles.itemText, { backgroundColor: COLORS.yellow }]}>{mouseTranslation}</Text>
                 </View>
             </View>
-            <View style={{ flexDirection: "row", width: "90%", marginBottom: 20 }}>
+            <View style={styles.itemContainer}>
                 <View style={{ flex: 1 }}>
-                    <Image source={require("../assets/slusalice.png")} style={{ height: 55, width: 55 }} />
+                    <Image source={require("../assets/images/slusalice.png")} style={styles.icon} />
                 </View>
                 <View style={{ flex: 4 }}>
-                    <Text style={{ fontFamily: "Montserrat-Regular", backgroundColor: '#61CDCD', padding: 18 }}>
-                        {headphoneTranslation}
-                    </Text>
+                    <Text style={[styles.itemText, { backgroundColor: COLORS.blue }]}>{headphoneTranslation}</Text>
                 </View>
             </View>
-            <View style={{ flexDirection: "row", width: "90%", marginBottom: 20 }}>
+            <View style={styles.itemContainer}>
                 <View style={{ flex: 1 }}>
-                    <Image source={require("../assets/sony.png")} style={{ height: 55, width: 55 }} />
+                    <Image source={require("../assets/images/sony.png")} style={styles.icon} />
                 </View>
                 <View style={{ flex: 4 }}>
-                    <Text style={{ fontFamily: "Montserrat-Regular", backgroundColor: '#A18BBD', padding: 18 }}>
+                    <Text style={[styles.itemText, { backgroundColor: COLORS.purple }]}>
                         {sonyOccupied ? t('dostupnost-page.text.sony_negative') : t('dostupnost-page.text.sony')}
                     </Text>
                 </View>
@@ -219,3 +146,31 @@ export default function Dostupnost() {
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: COLORS.white,
+        paddingTop: 40,
+    },
+    headerText: {
+        fontFamily: 'Montserrat-Bold',
+        fontSize: 50,
+        marginBottom: 40,
+    },
+    itemContainer: {
+        flexDirection: 'row',
+        width: '90%',
+        marginBottom: 20,
+    },
+    icon: {
+        height: 55,
+        width: 55,
+    },
+    itemText: {
+        fontFamily: 'Montserrat-Regular',
+        padding: 18,
+    }
+});

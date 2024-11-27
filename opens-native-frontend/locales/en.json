@@ -5,11 +5,83 @@
             "password": "Password"
         },
         "text": {
-            "forgot-password": "Forgot password?",
             "login": "Login",
+            "forgot-password": "Forgot password?",
             "no-account": "Don't have an account yet?",
-            "register": "Register",
-            "language": "Choose language"
+            "register": "Register"
+        },
+        "error": {
+            "emailRequired": "Please provide your email.",
+            "invalidEmail": "Please enter a valid email address. Example: name@example.com",
+            "passwordRequired": "Please provide your password."
+        }
+    },
+    "register-page": {
+        "input": {
+            "email": "Email *",
+            "password": "Password *",
+            "name": "Name *",
+            "surname": "Surname *",
+            "gender": "Gender *",
+            "yearOfBirth": "Year of birth *",
+            "placeOfResidence": "Place of residence *"
+        },
+        "button": {
+            "register": "Register"
+        },
+        "error": {
+            "invalidPassword": "Password must contain at least eight characters, including 1 capital letter, 1 number and 1 special character(@$!%*?&)!",
+            "nameRequired": "Please provide your first name.",
+            "surnameRequired": "Please provide your surname.",
+            "genderRequired": "Please select your gender.",
+            "yearOfBirthRequired": "Please enter your year of birth.",
+            "invalidYear": "Please enter a valid 4-digit year of birth (e.g., 1990).",
+            "placeOfResidenceRequired": "Please provide your place of residence.",
+            "phoneRequired": "Please enter your phone number.",
+            "invalidPhone": "Invalid phone number format. Please enter a valid phone number, e.g., +381 61 2345678.",
+            "termsRequired": "You must agree to the terms and conditions to proceed with registration."
+        }
+    },
+    "forgot-password-page": {
+        "input": {
+            "emailField": "Enter your email"
+        },
+        "button": {
+            "request": "Request password reset"
+        },
+        "success": {
+            "header": "Password reset request",
+            "text": "A password reset token has been sent to your email. Please check your inbox to reset your password."
+        },
+        "error": {
+            "header": "Password reset error",
+            "user-not-found": "The email is not registered with us. Please check the email and try again.",
+            "email": "There was an error while sending the reset email. Please try again later.",
+            "text": "Failed to send reset token. Please try again later."
+        }
+    },
+    "reset-password-page": {
+        "input": {
+            "token": "Token",
+            "newPassword": "New password",
+            "confirmPassword": "Confirm new password"
+        },
+        "button": {
+            "reset": "Reset password"
+        },
+        "success": {
+            "header": "Password reset successful",
+            "text": "Your password has been successfully reset. You can now log in with your new password."
+        },
+        "error": {
+            "tokenRequired": "Please enter the reset token you received via email.",
+            "passwordRequired": "Please enter a new password.",
+            "confirmPasswordRequired": "Please confirm your new password.",
+            "mismatchHeader": "Password mismatch",
+            "mismatchText": "Password and confirm password do not match. Please try again.",
+            "header": "Password reset error",
+            "invalidToken": "The reset token is invalid or expired. Please request a new password reset.",
+            "text": "An error occurred while resetting your password. Please try again later."
         }
     },
     "home-page": {
@@ -18,18 +90,10 @@
             "close": "Close"
         }
     },
-    "register-page": {
-        "input": {
-            "email": "Email",
-            "password": "Password",
-            "name": "Name",
-            "surname": "Surname",
-            "gender": "Gender",
-            "yearOfBirth": "Year of birth",
-            "placeOfResidence": "Place of residence"
-        },
-        "button": {
-            "register": "Register"
+    "qr-page": {
+        "text": {
+            "explanation": "This QR code allows you to easily register your visit in the Youth Allance “OPENS”.",
+            "instruction": "Scan the QR code when visiting OPENS."
         }
     },
     "profile-page": {
@@ -73,22 +137,50 @@
             "sony_negative": "Sony is occupied"
         }
     },
-    "forgot-password-page": {
-        "input": {
-            "emailField": "Enter your email"
+    "auth-context": {
+        "register": {
+            "success": {
+                "header": "Registration successful",
+                "text": "You have been successfully registered."
+            },
+            "failed": {
+                "header": "Registration failed",
+                "text": "An unexpected error occurred during registration."
+            },
+            "error": {
+                "used-email": "This email is already in use. Please try a different one.",
+                "server": "There was a problem with the server. Please try again later.",
+                "network": "Network error. Please check your internet connection."
+            }
         },
-        "button": {
-            "request": "Request password reset"
+        "login": {
+            "success": {
+                "header": "Login successful",
+                "text": "You have been successfully logged in."
+            },
+            "failed": {
+                "header": "Login failed",
+                "text": "An unexpected error occurred during login."
+            },
+            "error": {
+                "unauthorized": "Invalid credentials. Please check your email and password."
+            }
         }
     },
-    "reset-password-page": {
-        "input": {
-            "token": "Token",
-            "newPassword": "New password",
-            "confirmPassword": "Confirm new password"
-        },
-        "button": {
-            "reset": "Reset password"
+    "http-common": {
+        "error": {
+            "session": {
+                "header": "Authorization error",
+                "text": "Please login again to continue."
+            },
+            "server": {
+                "header": "Server unavailable",
+                "text": "There was an error processing your request. Please try again later."
+            },
+            "network": {
+                "header": "Network error",
+                "text": "Check your internet connection and try again."
+            }
         }
     },
     "gender-label": {
@@ -120,21 +212,5 @@
     },
     "consentButton": {
         "button": "I have read and accept the Terms of Use. I am familiar with the Privacy Policy and agree to the processing of personal data."
-    },
-    "setEmailError": "Incorrect email format!",
-    "setPasswordError": "Password must contain at least eight characters, including 1 capital letter, 1 number and 1 special character(@$!%*?&)!",
-    "alertEmailPasswordError": "You must enter a valid e-mail address and a valid password!",
-    "alertCheckbox": "You must agree to the terms of use before proceeding!",
-    "alertRegistrationSuccessHeader": "Registration successful",
-    "alertRegistrationSuccess": "You have registered successfully!",
-    "alertRegistrationFailedHeader": "Registration failed",
-    "alertRegistrationFailed": "Registration failed. Please try again!",
-    "consoleRegistrationError": "Error during registration:",
-    "alertRequestResetPasswordSuccessHeader": "Success!",
-    "alertRequestPasswordSuccess": "A password reset token has been sent to your email. Please check your inbox to reset your password.",
-    "alertRequestResetPasswordErrorHeader": "Error!",
-    "alertRequestPasswordError": "Failed to send reset token. Please try again.",
-    "alertResetPassword": "Passwords do not match.",
-    "alertResetPasswordSuccess": "Password reset successful! You can now log in with your new password.",
-    "alertResetPasswordError": "An error occurred while resetting the password."
+    }
 }

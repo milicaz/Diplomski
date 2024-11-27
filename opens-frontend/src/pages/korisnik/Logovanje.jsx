@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Button, Card, Form, InputGroup, Toast } from "react-bootstrap";
+import { Button, Card, Form, InputGroup } from "react-bootstrap";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { httpProtected } from "../../apis/http";
 import { opensBojaImage } from "../../assets";
 import useAuth from "../../hooks/useAuth";
+import useToast from "../../hooks/useToast";
 
 const Logovanje = () => {
   const { setAuth } = useAuth();
+  const { handleShowToast } = useToast();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,20 +20,10 @@ const Logovanje = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastVariant, setToastVariant] = useState("");
-
   const isValidEmail = (email) => {
     // Simple email validation regex
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
-  };
-
-  const handleShowToast = (message, variant) => {
-    setToastMessage(message);
-    setToastVariant(variant);
-    setShowToast(true);
   };
 
   const handleLogin = async (event) => {
@@ -47,17 +39,35 @@ const Logovanje = () => {
         const accessToken = data?.accessToken;
         const roles = data?.roles;
         setAuth({ email, roles, accessToken });
-        handleShowToast("Uspešno ste se prijavili!", "success");
+        handleShowToast(
+          "Prijava uspešna",
+          "Uspešno ste se prijavili",
+          "success"
+        );
         // Reset the form
         setValidated(false);
         setEmail("");
         setPassword("");
         navigate(from, { replace: true });
       } catch (error) {
-        if (!error?.response) {
-          handleShowToast("Nema odgovora sa servera", "danger");
-        } else if (error.response?.status === 401) {
-          handleShowToast("Prijava nije uspela!", "danger");
+        if (error.response?.status === 401) {
+          handleShowToast(
+            "Prijava neuspešna",
+            "Nevažeći podaci. Molimo Vas da proverite svoj email i lozinku.",
+            "danger"
+          );
+        } else if (error.response.status >= 500) {
+          handleShowToast(
+            "Prijava neuspešna",
+            "Došlo je do problema sa serverom. Molimo Vas da pokušate ponovo kasnije.",
+            "danger"
+          );
+        } else if (!error?.response) {
+          handleShowToast(
+            "Prijava neuspešna",
+            "Greška u mreži. Zahtev nije mogao biti poslat zbog greške u mreži.",
+            "danger"
+          );
         }
       }
     }
@@ -130,27 +140,6 @@ const Logovanje = () => {
           </Card.Body>
         </Card>
       </div>
-      <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        style={{
-          position: "fixed",
-          bottom: 20,
-          left: 20,
-          minWidth: 300,
-          backgroundColor: toastVariant === "success" ? "#a3c57b" : "#f56f66",
-          color: "white",
-        }}
-        delay={3000}
-        autohide
-      >
-        <Toast.Header>
-          <strong className="me-auto">
-            {toastVariant === "success" ? "" : "Greška"}
-          </strong>
-        </Toast.Header>
-        <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast>
     </>
   );
 };

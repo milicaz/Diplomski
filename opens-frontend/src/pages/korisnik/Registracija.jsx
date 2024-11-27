@@ -1,10 +1,20 @@
 import { useState } from "react";
-import { Button, Card, Col, Form, InputGroup, Row, Toast } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  InputGroup,
+  Row
+} from "react-bootstrap";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { httpPublic } from "../../apis/http";
 import { opensBojaImage } from "../../assets";
+import useToast from "../../hooks/useToast";
 
 const Registracija = () => {
+  const { handleShowToast } = useToast();
+
   const [validated, setValidated] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,10 +26,6 @@ const Registracija = () => {
   const [brojTelefona, setBrojTelefona] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
-
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastVariant, setToastVariant] = useState("");
 
   const rodMapping = {
     MUSKO: "muško",
@@ -36,12 +42,6 @@ const Registracija = () => {
     const passwordPattern =
       /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordPattern.test(password);
-  };
-
-  const handleShowToast = (message, variant) => {
-    setToastMessage(message);
-    setToastVariant(variant);
-    setShowToast(true);
   };
 
   const handleRegistracija = async (e) => {
@@ -68,7 +68,11 @@ const Registracija = () => {
           brojTelefona,
         };
         await httpPublic.post("/signupPosetilac", posetilacDTO);
-        handleShowToast("Uspešno ste se registrovali posetioca!", "success");
+        handleShowToast(
+          "Registracija uspešna",
+          "Uspešno ste se registrovali posetioca",
+          "success"
+        );
         setValidated(false);
         setEmail("");
         setPassword("");
@@ -80,11 +84,29 @@ const Registracija = () => {
         setBrojTelefona("");
       } catch (error) {
         if (!error.response) {
-          handleShowToast("Nema odgovora sa servera", "danger");
+          handleShowToast(
+            "Registracija neuspešna",
+            "Greška u mreži. Zahtev nije mogao biti poslat zbog greške u mreži.",
+            "danger"
+          );
         } else if (error.response?.status === 409) {
-          handleShowToast("E-mail je već u upotrebi", "danger");
+          handleShowToast(
+            "Registracija neuspešna",
+            "Email je već u upotrebi. Molimo Vas da pokušate sa nekim drugim.",
+            "danger"
+          );
+        } else if (error.response.status >= 500) {
+          handleShowToast(
+            "Registracija neuspešna",
+            "Došlo je do problema sa serverom. Molimo Vas da pokušate ponovo kasnije.",
+            "danger"
+          );
         } else {
-          handleShowToast("Registracija posetioca nije uspela!", "danger");
+          handleShowToast(
+            "Registracija neuspešna",
+            "Došlo je do neočekivane greške tokom registracije.",
+            "danger"
+          );
         }
       }
     }
@@ -263,27 +285,6 @@ const Registracija = () => {
           </Card.Body>
         </Card>
       </div>
-      <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        style={{
-          position: "fixed",
-          bottom: 20,
-          left: 20,
-          minWidth: 300,
-          backgroundColor: toastVariant === "success" ? "#a3c57b" : "#f56f66",
-          color: "white",
-        }}
-        delay={3000}
-        autohide
-      >
-        <Toast.Header>
-          <strong className="me-auto">
-            {toastVariant === "success" ? "" : "Greška"}
-          </strong>
-        </Toast.Header>
-        <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast>
     </>
   );
 };

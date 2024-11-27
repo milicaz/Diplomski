@@ -5,11 +5,83 @@
             "password": "Lozinka"
         },
         "text": {
-            "forgot-password": "Zaboravili ste lozinku?",
             "login": "Logovanje",
+            "forgot-password": "Zaboravili ste lozinku?",
             "no-account": "Nemate nalog?",
-            "register": "Registracija",
-            "language": "Izaberite jezik"
+            "register": "Registracija"
+        },
+        "error": {
+            "emailRequired": "Molimo Vas da unesete svoj email.",
+            "invalidEmail": "Molimo Vas da unesete važeću email adresu. Primer: ime@primer.com",
+            "passwordRequired": "Molimo Vas da unesete svoju lozinku."
+        }
+    },
+    "register-page": {
+        "input": {
+            "email": "Email *",
+            "password": "Lozinka *",
+            "name": "Ime *",
+            "surname": "Prezime *",
+            "gender": "Rod *",
+            "yearOfBirth": "Godina rođenja *",
+            "placeOfResidence": "Mesto boravišta *"
+        },
+        "button": {
+            "register": "Registracija"
+        },
+        "error": {
+            "invalidPassword": "Lozinka mora sadržati najmanje osam karaktera, uključujući 1 veliko slovo, 1 broj i 1 specijalan karakter (@$!%*?&)!",
+            "nameRequired": "Molimo Vas da unesete svoje ime.",
+            "surnameRequired": "Molimo Vas da unesete svoje prezime.",
+            "genderRequired": "Molimo Vas da odaberete svoj rod.",
+            "yearOfBirthRequired": "Molimo Vas da unesete svoju godinu rođenja.",
+            "invalidYear": "Molimo Vas da unesete validnu godinu rođenja (npr. 1990).",
+            "placeOfResidenceRequired": "Molimo Vas da unesete svoje mesto prebivališta.",
+            "phoneRequired": "Molimo Vas da unesete svoj broj telefona.",
+            "invalidPhone": "Neispravan format broja telefona. Molimo Vas da unesete validan broj telefona, npr. +381 61 2345678.",
+            "termsRequired": "Morate pristati na uslove i odredbe kako biste nastavili registraciju."
+        }
+    },
+    "forgot-password-page": {
+        "input": {
+            "emailField": "Unesite svoju email adresu"
+        },
+        "button": {
+            "request": "Zahtev za promenu lozinke"
+        },
+        "success": {
+            "header": "Zahtev za resetovanje lozinke",
+            "text": "Token za resetovanje lozinke je poslat na Vaš email. Molimo Vas da proverite svoj inbox kako biste resetovali lozinku."
+        },
+        "error": {
+            "header": "Greška pri resetovanju lozinke",
+            "user-not-found": "Email nije registrovan kod nas. Molimo Vas da proverite email i pokušate ponovo.",
+            "email": "Došlo je do greške prilikom slanja email-a za resetovanje. Molimo Vas da pokušate kasnije.",
+            "text": "Nije uspelo slanje tokena za resetovanje. Molimo Vas da pokušate ponovo kasnije."
+        }
+    },
+    "reset-password-page": {
+        "input": {
+            "token": "Token",
+            "newPassword": "Nova lozinka",
+            "confirmPassword": "Potvrdi novu lozinku"
+        },
+        "button": {
+            "reset": "Promeni lozinku"
+        },
+        "success": {
+            "header": "Resetovanje lozinke uspešno",
+            "text": "Vaša lozinka je uspešno resetovana. Sada se možete prijaviti sa novom lozinkom."
+        },
+        "error": {
+            "tokenRequired": "Molimo Vas da unesete token za resetovanje koji ste primili putem email-a.",
+            "passwordRequired": "Molimo Vas da unesete novu lozinku.",
+            "confirmPasswordRequired": "Molimo Vas da potvrdite novu lozinku.",
+            "mismatchHeader": "Neusaglašenost lozinki",
+            "mismatchText": "Lozinke se ne poklapaju. Molimo Vas da pokušate ponovo.",
+            "header": "Greška pri resetovanju lozinke",
+            "invalidToken": "Token za resetovanje lozinke je nevažeći ili istekao. Molimo Vas da zatražite novi zahtev za resetovanje lozinke.",
+            "text": "Došlo je do greške prilikom resetovanja Vaše lozinke. Molimo Vas da pokušate ponovo kasnije."
         }
     },
     "home-page": {
@@ -18,18 +90,10 @@
             "close": "Zatvori"
         }
     },
-    "register-page": {
-        "input": {
-            "email": "Email",
-            "password": "Lozinka",
-            "name": "Ime",
-            "surname": "Prezime",
-            "gender": "Rod",
-            "yearOfBirth": "Godina rođenja",
-            "placeOfResidence": "Mesto boravišta"
-        },
-        "button": {
-            "register": "Registracija"
+    "qr-page": {
+        "text": {
+            "explanation": "Ovaj QR kod Vam omogućava lakšu prijavu posete u Omladinskom centru OPENS.",
+            "instruction": "Skenirajte QR kod kada posećujete OPENS."
         }
     },
     "profile-page": {
@@ -73,22 +137,50 @@
             "sony_negative": "Sony je zauzet"
         }
     },
-    "forgot-password-page": {
-        "input": {
-            "emailField": "Unesite svoju email adresu"
+    "auth-context": {
+        "register": {
+            "success": {
+                "header": "Registracija uspešna",
+                "text": "Uspešno ste se registrovali."
+            },
+            "failed": {
+                "header": "Registracija neuspešna",
+                "text": "Došlo je do neočekivane greške tokom registracije."
+            },
+            "error": {
+                "used-email": "Ovaj email je već u upotrebi. Molimo Vas da pokušate sa nekim drugim.",
+                "server": "Došlo je do problema sa serverom. Molimo Vas da pokušate ponovo kasnije.",
+                "network": "Greška u mreži. Molimo Vas da proverite svoju internet konekciju."
+            }
         },
-        "button": {
-            "request": "Zahtev za promenu lozinke"
+        "login": {
+            "success": {
+                "header": "Prijava uspešna",
+                "text": "Uspešno ste se prijavili."
+            },
+            "failed": {
+                "header": "Prijava neuspešna",
+                "text": "Došlo je do neočekivane greške tokom prijave."
+            },
+            "error": {
+                "unauthorized": "Nevažeći podaci. Molimo Vas da proverite svoj email i lozinku."
+            }
         }
     },
-    "reset-password-page": {
-        "input": {
-            "token": "Token",
-            "newPassword": "Nova lozinka",
-            "confirmPassword": "Potvrdi novu lozinku"
-        },
-        "button": {
-            "reset": "Promeni lozinku"
+    "http-common": {
+        "error": {
+            "session": {
+                "header": "Greška u autorizaciji",
+                "text": "Molimo Vas da se ponovo ulogujete da biste nastavili."
+            },
+            "server": {
+                "header": "Server nije dostupan",
+                "text": "Došlo je do greške prilikom obrade Vašeg zahteva. Pokušajte kasnije."
+            },
+            "network": {
+                "header": "Mrežna greška",
+                "text": "Proverite vašu internet vezu i pokušajte ponovo."
+            }
         }
     },
     "gender-label": {
@@ -120,21 +212,5 @@
     },
     "consentButton": {
         "button": "Upoznat sam i prihvatam Uslove korišćenja. Upoznat sam sa Pravilima privatnosti i pristajem na obradu ličnih podataka."
-    },
-    "setEmailError": "Neispravan format e-maila!",
-    "setPasswordError": "Lozinka mora sadržati najmanje osam karaktera, od toga 1 veliko slovo, 1 broj i 1 specijalni karakter(@$!%*?&)",
-    "alertEmailPasswordError": "Morate uneti validnu e-mail adresu i validnu lozinku!",
-    "alertCheckbox": "Morate se složiti sa uslovima korišćenja pre nego što nastavite!",
-    "alertRegistrationSuccessHeader": "Uspešna registracija",
-    "alertRegistrationSuccess": "Uspešno ste se registrovali!",
-    "alertRegistrationFailedHeader": "Neuspešna registracija",
-    "alertRegistrationFailed": "Registracija nije uspela. Pokušajte ponovo!",
-    "consoleRegistrationError": "Greška prilikom registracije: ",
-    "alertRequestResetPasswordSuccessHeader": "Uspešno!",
-    "alertRequestPasswordSuccess": "Token za resetovanje lozinke je poslat na Vašu email adresu. Molimo vas da proverite svoj inbox kako biste resetovali lozinku.",
-    "alertRequestResetPasswordErrorHeader": "Greška!",
-    "alertRequestPasswordError": "Slanje tokena za resetovanje lozinke nije uspelo. Molimo pokušajte ponovo.",
-    "alertResetPassword": "Lozinke se ne poklapaju.",
-    "alertResetPasswordSuccess": "Resetovanje lozinke je uspešno! Sada se možete prijaviti sa svojom novom lozinkom.",
-    "alertResetPasswordError": "Došlo je do greške pri resetovanju lozinke."
+    }
 }

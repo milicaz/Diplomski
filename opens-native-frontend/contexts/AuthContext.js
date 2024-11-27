@@ -37,24 +37,56 @@ const AuthContextProvider = ({ children }) => {
             const { data } = await httpCommon.post('/auth/signupPosetilac', credentials);
             Toast.show({
                 type: 'success',
-                text1: t("alertRegistrationSuccessHeader"),
-                text2: t("alertRegistrationSuccess"),
+                text1: t('auth-context.register.success.header'),
+                text2: t('auth-context.register.success.text'),
                 duration: 7000
             });
             return data;
         } catch (e) {
-            Toast.show({
-                type: 'error',
-                text1: t( "alertRegistrationFailedHeader"),
-                text2: t("alertRegistrationFailed"),
-                duration: 7000
-            });
+            if (e.response) {
+                if (e.response.status === 409) {
+                    Toast.show({
+                        type: 'error',
+                        text1: t('auth-context.register.failed.header'),
+                        text2: t('auth-context.register.error.used-email'),
+                        duration: 7000
+                    });
+                } else if (e.response.status >= 500) {
+                    Toast.show({
+                        type: 'error',
+                        text1: t('auth-context.register.failed.header'),
+                        text2: t('auth-context.register.error.server'),
+                        duration: 7000
+                    });
+                }
+            } else if (e.request) {
+                Toast.show({
+                    type: 'error',
+                    text1: t('auth-context.register.failed.header'),
+                    text2: t('auth-context.register.error.network'),
+                    duration: 7000
+                });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: t('auth-context.register.failed.header'),
+                    text2: t('auth-context.register.failed.text'),
+                    duration: 7000
+                });
+            }
         }
     };
 
     const login = async (credentials) => {
         try {
             const { data } = await httpCommon.post('/auth/loginPosetilac', credentials);
+
+            Toast.show({
+                type: 'success',
+                text1: t('auth-context.login.success.header'),
+                text2: t('auth-context.login.success.text'),
+                duration: 7000
+            });
 
             await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, data.accessToken);
             await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, data.refreshToken);
@@ -64,7 +96,37 @@ const AuthContextProvider = ({ children }) => {
                 isAuthenticated: true
             });
         } catch (error) {
-            console.error('--- AuthContext.js --- Line: 60 --- Login failed:', error);
+            if (error.response) {
+                if (error.response.status === 401) {
+                    Toast.show({
+                        type: 'error',
+                        text1: t('auth-context.login.failed.header'),
+                        text2: t('auth-context.login.error.unauthorized'),
+                        duration: 7000
+                    });
+                } else if (error.response.status >= 500) {
+                    Toast.show({
+                        type: 'error',
+                        text1: t('auth-context.login.failed.header'),
+                        text2: t('auth-context.register.error.server'),
+                        duration: 7000
+                    });
+                }
+            } else if (error.request) {
+                Toast.show({
+                    type: 'error',
+                    text1: t('auth-context.login.failed.header'),
+                    text2: t('auth-context.register.error.network'),
+                    duration: 7000
+                });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: t('auth-context.login.failed.header'),
+                    text2: t('auth-context.login.failed.text'),
+                    duration: 7000
+                });
+            }
         }
     }
 

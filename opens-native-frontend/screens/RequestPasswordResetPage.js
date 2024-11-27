@@ -1,12 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { Image, ScrollView, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 import COLORS from '../constants/colors';
 import httpCommon from '../http-common';
-import Toast from 'react-native-toast-message';
+import { globalStyles } from '../utils/styles';
 
 const RequestPasswordResetPage = () => {
   const { t } = useTranslation();
@@ -14,80 +13,103 @@ const RequestPasswordResetPage = () => {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
 
-  const [fontsLoaded] = useFonts({
-    'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf')
-  });
-
-  useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
+  onChangeEmail = (email) => {
+    setEmail(email);
+    if (error) {
+      setError('');
     }
-    prepare();
-  }, []);
-
-  if (!fontsLoaded) {
-    return undefined;
-  } else {
-    SplashScreen.hideAsync();
   }
 
-  const requestPasswordReset = async () => {
-    try {
-      const response = await httpCommon.post(`/auth/password-reset/request?email=` + encodeURIComponent(email), {});
-      // const result = response.data;
-      // Alert.alert(t("alertResetPasswordSuccess"), result);
-      // navigation.navigate('ResetPassword')
-      Toast.show({
-        type: 'success',
-        text1: t("alertRequestResetPasswordSuccessHeader"),
-        text2: t("alertRequestPasswordSuccess"),
-        duration: 7000,
-        onPress: () => Toast.hide(),
-      });
-      if (response) {
-        navigation.navigate('ResetPassword');
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleRequestPasswordReset = async () => {
+    let valid = true;
+    let newError = '';
+
+    if (!email) {
+      newError = t('welcome-page.error.emailRequired');
+      valid = false;
+    } else if (!validateEmail(email)) {
+      newError = t('welcome-page.error.invalidEmail');
+      valid = false;
+    }
+
+    setError(newError);
+
+    if (valid) {
+      try {
+        const response = await httpCommon.post(`/auth/password-reset/request?email=` + encodeURIComponent(email), {});
+        Toast.show({
+          type: 'success',
+          text1: t('forgot-password-page.success.header'),
+          text2: t('forgot-password-page.success.text'),
+          duration: 7000
+        });
+        if (response) {
+          navigation.navigate('ResetPassword');
+        }
+      } catch (error) {
+        if (error.response) {
+          if (error.response.status === 404) {
+            Toast.show({
+              type: 'error',
+              text1: t('forgot-password-page.error.header'),
+              text2: t('forgot-password-page.error.user-not-found'),
+              duration: 7000
+            });
+          } else if (error.response.status === 500) {
+            Toast.show({
+              type: 'error',
+              text1: t('forgot-password-page.error.header'),
+              text2: t('forgot-password-page.error.email'),
+              duration: 7000
+            });
+          }
+        } else if (error.request) {
+          Toast.show({
+            type: 'error',
+            text1: t('forgot-password-page.error.header'),
+            text2: t('auth-context.register.error.network'),
+            duration: 7000
+          });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: t('forgot-password-page.error.header'),
+            text2: t('forgot-password-page.error.text'),
+            duration: 7000
+          });
+        }
       }
-    } catch (error) {
-      //Alert.alert(t("alertRequestResetPasswordError"));
-      Toast.show({
-        type: 'error',
-        text1: t("alertRequestResetPasswordErrorHeader"),
-        text2: t("alertRequestPasswordError"),
-        duration: 7000,
-        onPress: () => Toast.hide(),
-      });
     }
   };
 
   return (
-    <ScrollView style={{ backgroundColor: COLORS.white }}>
-      <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+    <ScrollView style={globalStyles.scrollView}>
+      <View style={globalStyles.container}>
         <View>
           <Image
-            source={require("../assets/opens2.png")}
-            style={{
-              height: windowHeight * 0.47,
-              width: "100%",
-              position: "absolute",
-            }}
+            source={require("../assets/images/opens2.png")}
+            style={globalStyles.image(windowHeight)}
           />
         </View>
-        <View style={{ justifyContent: "center", alignItems: "center", top: windowHeight * 0.20, width: "100%", height: windowHeight }}>
-          <View style={{ width: "80%", borderWidth: 1, height: 50, marginBottom: 20, justifyContent: "center", padding: 20 }}>
-            <TextInput style={{ height: 50, color: "black", fontFamily: "Montserrat-Regular" }}
+        <View style={globalStyles.form(windowHeight)}>
+          <View style={[globalStyles.inputContainer, { borderColor: error ? COLORS.red : COLORS.black, marginBottom: error ? 10 : 20 }]}>
+            <TextInput style={globalStyles.input}
               placeholder={t('forgot-password-page.input.emailField')}
               value={email}
-              onChangeText={setEmail}
+              onChangeText={onChangeEmail}
             />
           </View>
-          <View style={{ width: "80%", margin: 10 }}>
-            <TouchableOpacity onPress={requestPasswordReset} style={{
-              alignItems: 'center', borderColor: COLORS.blue, borderWidth: 2, alignItems: 'center',
-              justifyContent: 'center', backgroundColor: COLORS.blue, padding: 13
-            }}>
-              <Text style={{ fontSize: 18, fontFamily: "Montserrat-Bold", color: COLORS.white }}>{t('forgot-password-page.button.request')}</Text>
+          {error ? <Text style={globalStyles.errorText}>{error}</Text> : null}
+          <View style={globalStyles.buttonContainer}>
+            <TouchableOpacity onPress={handleRequestPasswordReset} style={globalStyles.button}>
+              <Text style={globalStyles.buttonText}>{t('forgot-password-page.button.request')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -95,20 +117,5 @@ const RequestPasswordResetPage = () => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
-  },
-});
 
 export default RequestPasswordResetPage;
