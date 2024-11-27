@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Form, Toast } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHttpProtected from "../../../../hooks/useHttpProtected";
+import useToast from "../../../../hooks/useToast";
 import { OpremaContext } from "../OpremaContext";
 
 export const AddOpremaForm = ({ onOpremaAdded }) => {
@@ -9,6 +10,7 @@ export const AddOpremaForm = ({ onOpremaAdded }) => {
   const httpProtected = useHttpProtected();
   const navigate = useNavigate();
   const location = useLocation();
+  const { handleShowToast } = useToast();
 
   const [validated, setValidated] = useState(false);
   const [tipoviOpreme, setTipoveOpreme] = useState([]);
@@ -24,8 +26,13 @@ export const AddOpremaForm = ({ onOpremaAdded }) => {
         setTipoveOpreme(data);
         setIsFetched(true);
       } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error("Greška prilikom fetching tipove opreme: ", error);
+        if (error.response?.status >= 500) {
+          handleShowToast(
+            "Greška",
+            "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+            "danger"
+          );
+        } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       } finally {
@@ -38,10 +45,6 @@ export const AddOpremaForm = ({ onOpremaAdded }) => {
     fetchTipoveOpreme();
   }, []);
 
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastVariant, setToastVariant] = useState("");
-
   const [newOprema, setNewOprema] = useState({
     tipOpremeID: "",
     serijskiBroj: "",
@@ -52,12 +55,6 @@ export const AddOpremaForm = ({ onOpremaAdded }) => {
   };
 
   const { tipOpremeID, serijskiBroj } = newOprema;
-
-  const handleShowToast = (message, variant) => {
-    setToastMessage(message);
-    setToastVariant(variant);
-    setShowToast(true);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,24 +71,30 @@ export const AddOpremaForm = ({ onOpremaAdded }) => {
         const status = response.data;
         if (status === "exists") {
           handleShowToast(
+            "Greška",
             "Oprema sa unetim serijskim brojem već postoji. Unesite novi serijski broj opreme.",
             "danger"
           );
         } else if (status === "do-not-exist") {
-          handleShowToast("Uspešno ste dodali novu opremu", "success");
           await addOpremu(newOprema);
+          handleShowToast("", `Opema sa serijskim brojem: ${newOprema.serijskiBroj} je uspešno kreirana.`, "success");
           onOpremaAdded();
         }
       } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error("Error dodavanje opreme:", error);
+        if (error.response?.status >= 500) {
+          handleShowToast(
+            "Greška",
+            "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+            "danger"
+          );
+        } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       } finally {
         controller.abort();
       }
     } else {
-      handleShowToast("Popunite sve obavezne podatke.", "danger");
+      handleShowToast("Greška", "Popunite sve obavezne podatke.", "danger");
     }
     setValidated(true);
   };
@@ -137,27 +140,6 @@ export const AddOpremaForm = ({ onOpremaAdded }) => {
           </Button>
         </div>
       </Form>
-      <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        style={{
-          position: "fixed",
-          bottom: 20,
-          left: 20,
-          minWidth: 300,
-          backgroundColor: toastVariant === "success" ? "#a3c57b" : "#f56f66",
-          color: "white",
-        }}
-        delay={3000}
-        autohide
-      >
-        <Toast.Header>
-          <strong className="me-auto">
-            {toastVariant === "success" ? "" : "Greška"}
-          </strong>
-        </Toast.Header>
-        <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast>
     </>
   );
 };

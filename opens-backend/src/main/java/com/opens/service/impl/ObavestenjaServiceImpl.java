@@ -54,7 +54,12 @@ public class ObavestenjaServiceImpl implements ObavestenjaService {
 
 	@Override
 	public void deleteObavestenje(Long id) {
-		// TODO Auto-generated method stub
+		Optional<Obavestenja> obavestenjaData = obavestenjaRepository.findById(id);
+		
+		if(obavestenjaData.isPresent()) {
+			Obavestenja _obavestenje = obavestenjaData.get();
+			obavestenjaRepository.delete(_obavestenje);
+		}
 
 	}
 

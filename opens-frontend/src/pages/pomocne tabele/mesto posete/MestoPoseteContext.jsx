@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import useHttpProtected from "../../../hooks/useHttpProtected";
+import useToast from "../../../hooks/useToast";
 
 export const MestoPoseteContext = createContext();
 
@@ -7,6 +8,7 @@ const MestoPoseteContextProvider = ({ children, navigate, location }) => {
   const [mestaPosete, setMestaPosete] = useState([]);
 
   const httpProtected = useHttpProtected();
+  const { handleShowToast } = useToast();
 
   useEffect(() => {
     let isMounted = true;
@@ -34,8 +36,13 @@ const MestoPoseteContextProvider = ({ children, navigate, location }) => {
         setMestaPosete(data);
       }
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching mesta posete: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
@@ -47,10 +54,22 @@ const MestoPoseteContextProvider = ({ children, navigate, location }) => {
       await httpProtected.post("/mestaPosete", newMestoPosete, {
         signal: controller.signal,
       });
+      handleShowToast("", `Mesto posete ${newMestoPosete.nazivMesta} je uspešno kreirano.`, "success");
       fetchMestaPosete(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom dodavanja mesta posete: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o mestu posete su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom kreiranja mesta posete. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -64,10 +83,22 @@ const MestoPoseteContextProvider = ({ children, navigate, location }) => {
       await httpProtected.put(`/mestaPosete/${id}`, updatedMestoPosete, {
         signal: controller.signal,
       });
+      handleShowToast("", `Mesto posete ${updatedMestoPosete.nazivMesta} je uspešno izmenjeno.`, "success");
       fetchMestaPosete(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom izmene mesta posete: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o mestu posete su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom izmene mesta posete. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -81,10 +112,22 @@ const MestoPoseteContextProvider = ({ children, navigate, location }) => {
       await httpProtected.delete(`/mestaPosete/${id}`, {
         signal: controller.signal,
       });
+      handleShowToast("", "Mesto posete je uspešno obrisano.", "success");
       fetchMestaPosete(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom brisanja mesta posete: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Nevalidan ID za brisanje mesta posete. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom brisanja mesta posete. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {

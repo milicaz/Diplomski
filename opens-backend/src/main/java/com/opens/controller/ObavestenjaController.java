@@ -73,8 +73,7 @@ public class ObavestenjaController {
 	@DeleteMapping("/obavestenja/{id}")
 	public ResponseEntity<HttpStatus> deleteObavestenje(@PathVariable Long id) {
 		try {
-			// TODO Odraditi logicko brisanje
-			// obavestenjaRepository.deleteById(id);
+			obavestenjaService.deleteObavestenje(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

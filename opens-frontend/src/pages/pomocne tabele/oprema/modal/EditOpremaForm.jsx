@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Button, Form, Toast } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHttpProtected from "../../../../hooks/useHttpProtected";
+import useToast from "../../../../hooks/useToast";
 import { OpremaContext } from "../OpremaContext";
 
 export const EditOpremaForm = ({ updatedOprema, onOpremaEdited }) => {
@@ -9,6 +10,7 @@ export const EditOpremaForm = ({ updatedOprema, onOpremaEdited }) => {
   const httpProtected = useHttpProtected();
   const navigate = useNavigate();
   const location = useLocation();
+  const { handleShowToast } = useToast();
 
   const [validated, setValidated] = useState(false);
 
@@ -16,7 +18,7 @@ export const EditOpremaForm = ({ updatedOprema, onOpremaEdited }) => {
   const id = updatedOprema.id;
   const [tipOpremeID, setTipOpremeID] = useState(updatedOprema.tipOpreme.id);
   const [serijskiBroj, setSerijskiBroj] = useState(updatedOprema.serijskiBroj);
-  const [isFetched, setIsFetched] = useState(false); // Track if data has been fetched
+  const [isFetched, setIsFetched] = useState(false);
 
   const fetchTipoveOpreme = async () => {
     if (!isFetched) {
@@ -28,8 +30,13 @@ export const EditOpremaForm = ({ updatedOprema, onOpremaEdited }) => {
         setTipoveOpreme(data);
         setIsFetched(true);
       } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error("Greška prilikom fetching tipove opreme: ", error);
+        if (error.response?.status >= 500) {
+          handleShowToast(
+            "Greška",
+            "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+            "danger"
+          );
+        } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       } finally {
@@ -41,16 +48,6 @@ export const EditOpremaForm = ({ updatedOprema, onOpremaEdited }) => {
     fetchTipoveOpreme();
   }, []);
 
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastVariant, setToastVariant] = useState("");
-
-  const handleShowToast = (message, variant) => {
-    setToastMessage(message);
-    setToastVariant(variant);
-    setShowToast(true);
-  };
-
   const editedOprema = { tipOpremeID, serijskiBroj };
 
   const handleSubmit = async (e) => {
@@ -58,11 +55,11 @@ export const EditOpremaForm = ({ updatedOprema, onOpremaEdited }) => {
     const form = e.currentTarget;
 
     if (form.checkValidity() && tipOpremeID !== "") {
-      handleShowToast("Uspešno ste dodali novu opremu", "success");
       await editOpremu(id, editedOprema);
+      handleShowToast("", `Opema sa serijskim brojem: ${editedOprema.serijskiBroj} je uspešno izmenjena.`, "success");
       onOpremaEdited();
     } else {
-      handleShowToast("Popunite sve obavezne podatke.", "danger");
+      handleShowToast("Greška", "Popunite sve obavezne podatke.", "danger");
     }
     setValidated(true);
   };
@@ -104,27 +101,6 @@ export const EditOpremaForm = ({ updatedOprema, onOpremaEdited }) => {
           </Button>
         </div>
       </Form>
-      <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        style={{
-          position: "fixed",
-          bottom: 20,
-          left: 20,
-          minWidth: 300,
-          backgroundColor: toastVariant === "success" ? "#a3c57b" : "#f56f66",
-          color: "white",
-        }}
-        delay={3000}
-        autohide
-      >
-        <Toast.Header>
-          <strong className="me-auto">
-            {toastVariant === "success" ? "" : "Greška"}
-          </strong>
-        </Toast.Header>
-        <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast>
     </>
   );
 };

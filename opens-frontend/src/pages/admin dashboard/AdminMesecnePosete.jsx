@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHttpProtected from "../../hooks/useHttpProtected";
+import useToast from "../../hooks/useToast";
 
 export const AdminMesecnePoseteCoworking = ({ mestoPoseteId }) => {
   const [mesecnePosete, setMesecnePosete] = useState([]);
@@ -10,6 +11,7 @@ export const AdminMesecnePoseteCoworking = ({ mestoPoseteId }) => {
   const httpProtected = useHttpProtected();
   const navigate = useNavigate();
   const location = useLocation();
+  const { handleShowToast } = useToast();
 
   useEffect(() => {
     let isMounted = true;
@@ -24,7 +26,11 @@ export const AdminMesecnePoseteCoworking = ({ mestoPoseteId }) => {
           setMesecnePosete(data);
         }
       } catch (error) {
-        if (error.name !== "CanceledError") {
+        if (error.response?.status === 404) {
+          handleShowToast("Greška", "", "danger");
+        } else if (error.response?.status >= 500) {
+          handleShowToast("Greška", "", "danger");
+        } else if (error.name !== "CanceledError") {
           console.error(
             "An error occurred while fetching mesecne posete: ",
             error

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHttpProtected from "../hooks/useHttpProtected";
+import useToast from "../hooks/useToast";
 import { AdminGodisnjeAktivnosti, AdminMesecnePosete } from "./admin dashboard";
 
 export const Home = () => {
@@ -14,6 +15,7 @@ export const Home = () => {
   const httpProtected = useHttpProtected();
   const navigate = useNavigate();
   const location = useLocation();
+  const { handleShowToast } = useToast();
 
   useEffect(() => {
     let isMounted = true;
@@ -40,8 +42,13 @@ export const Home = () => {
           setMestaPosete(mestaPoseteData.data);
         }
       } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error("Greška prilikom fetching podataka: ", error);
+        if (error.response?.status >= 500) {
+          handleShowToast(
+            "Greška",
+            "Došlo je do greške na serveru prilikom učitavanju podataka. Molimo pokušajte ponovo kasnije.",
+            "danger"
+          );
+        } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       }

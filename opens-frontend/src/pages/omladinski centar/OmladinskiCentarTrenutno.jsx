@@ -7,16 +7,15 @@ import {
   Form,
   ListGroup,
   Row,
-  Tab,
-  Toast,
+  Tab
 } from "react-bootstrap";
 import { BiGame, BiSolidJoystick } from "react-icons/bi";
 import { FaHeadphones, FaLaptop } from "react-icons/fa";
 import { FaComputerMouse } from "react-icons/fa6";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHttpProtected from "../../hooks/useHttpProtected";
+import useToast from "../../hooks/useToast";
 import Pagination from "../Pagination";
-
 export const OmladinskiCentarTrenutno = ({
   mestoPoseteId,
   mestoPoseteNaziv,
@@ -29,15 +28,12 @@ export const OmladinskiCentarTrenutno = ({
   const httpProtected = useHttpProtected();
   const navigate = useNavigate();
   const location = useLocation();
-
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastVariant, setToastVariant] = useState("");
+  const { handleShowToast } = useToast();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(15);
 
-  const fetchData = async (isMounted, controller) => {
+  const fetchData = async (controller) => {
     try {
       const requests = [
         httpProtected.get(`/posete/${mestoPoseteId}/datumPosete`, {
@@ -47,10 +43,8 @@ export const OmladinskiCentarTrenutno = ({
       ];
       const [poseteData, tipoviOpremeData] = await Promise.all(requests);
 
-      if (isMounted) {
-        setTrenutno(poseteData.data);
-        setTipoviOpreme(tipoviOpremeData.data);
-      }
+      setTrenutno(poseteData.data);
+      setTipoviOpreme(tipoviOpremeData.data);
     } catch (error) {
       if (error.name !== "CanceledError") {
         console.error("Greška prilikom fetching podataka: ", error);
@@ -63,7 +57,7 @@ export const OmladinskiCentarTrenutno = ({
     let isMounted = true;
     const controller = new AbortController();
 
-    fetchData(isMounted, controller);
+    fetchData(controller);
 
     return () => {
       isMounted = false;
@@ -77,7 +71,14 @@ export const OmladinskiCentarTrenutno = ({
       await httpProtected.put(`/posete/${id}/odjava`, {
         signal: controller.signal,
       });
-      fetchData(true, controller);
+
+      setTrenutno((prevTrenutno) =>
+        prevTrenutno.filter((poseta) => poseta.id !== id)
+      );
+
+      handleShowToast("", "Uspešno ste odjavili posetioca", "success");
+
+      fetchData(controller);
     } catch (error) {
       if (error.name !== "CanceledError") {
         console.error("Greška prilikom check out-a:", error);
@@ -94,7 +95,16 @@ export const OmladinskiCentarTrenutno = ({
       await httpProtected.put(`/posete/${id}/oprema`, {
         signal: controller.signal,
       });
-      fetchData(true, controller);
+
+      setTrenutno((prevTrenutno) =>
+        prevTrenutno.map((poseta) =>
+          poseta.id === id ? { ...poseta, oprema: [] } : poseta
+        )
+      );
+
+      handleShowToast("", "Uspešno ste odjavili opremu", "success");
+
+      fetchData(controller);
     } catch (error) {
       if (error.name !== "CanceledError") {
         console.error("Greška prilikom check out-a opreme:", error);
@@ -103,12 +113,6 @@ export const OmladinskiCentarTrenutno = ({
     } finally {
       controller.abort();
     }
-  };
-
-  const handleShowToast = (message, variant) => {
-    setToastMessage(message);
-    setToastVariant(variant);
-    setShowToast(true);
   };
 
   const filteredTrenutno =
@@ -334,6 +338,7 @@ export const OmladinskiCentarTrenutno = ({
                             className="btn-table mx-2"
                             onClick={() =>
                               handleShowToast(
+                                "Greška",
                                 "Prvo morate odjaviti opremu!",
                                 "danger"
                               )
@@ -345,10 +350,6 @@ export const OmladinskiCentarTrenutno = ({
                             className="btn-table mx-2"
                             onClick={() => {
                               handleCheckOutOpremu(poseta.id);
-                              handleShowToast(
-                                "Uspešno ste odjavili opremu!",
-                                "success"
-                              );
                             }}
                           >
                             Odjavi opremu
@@ -359,28 +360,6 @@ export const OmladinskiCentarTrenutno = ({
                   )
                 )}
               </Tab.Content>
-              <Toast
-                show={showToast}
-                onClose={() => setShowToast(false)}
-                style={{
-                  position: "fixed",
-                  bottom: 20,
-                  left: 20,
-                  minWidth: 300,
-                  backgroundColor:
-                    toastVariant === "success" ? "#a3c57b" : "#f56f66",
-                  color: "white",
-                }}
-                delay={3000}
-                autohide
-              >
-                <Toast.Header>
-                  <strong className="me-auto">
-                    {toastVariant === "success" ? "" : "Greška"}
-                  </strong>
-                </Toast.Header>
-                <Toast.Body>{toastMessage}</Toast.Body>
-              </Toast>
             </Col>
           </Row>
           {trenutno && shouldShowPagination && (

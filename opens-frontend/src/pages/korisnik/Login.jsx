@@ -49,7 +49,7 @@ const Login = () => {
           handleShowToast(
             "Greška",
             "Greška prilikom pribavljanja podataka",
-            "error"
+            "danger"
           );
         } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
@@ -86,7 +86,7 @@ const Login = () => {
       );
     } catch (error) {
       if (error.response?.status >= 500) {
-        handleShowToast("Greška", "Greška tokom kreiranja posete", "error");
+        handleShowToast("Greška", "Greška tokom kreiranja posete", "danger");
       } else if (!error?.response) {
         handleShowToast(
           "Greška",
@@ -105,7 +105,12 @@ const Login = () => {
     e.preventDefault();
 
     if (!posetilac || !posetilac.value) {
-      handleShowToast("Greška", "Molimo Vas odaberite posetioca", "error");
+      handleShowToast("Greška", "Molimo Vas odaberite posetioca", "danger");
+      return;
+    }
+
+    if (!mestoPoseteId) {
+      handleShowToast("Greška", "Molimo Vas izaberite mesto posete.", "danger");
       return;
     }
 
@@ -121,9 +126,9 @@ const Login = () => {
       setSelectedOprema(null);
     } catch (error) {
       console.error("Greska tokom kreiranja posete:", error);
-      handleShowToast(
+      handleShowToast("",
         `Greška tokom kreiranja posete za posetioca: ${posetilac.value}`,
-        "error"
+        "danger"
       );
     }
   };

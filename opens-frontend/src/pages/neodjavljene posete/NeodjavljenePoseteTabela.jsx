@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHttpProtected from "../../hooks/useHttpProtected";
+import useToast from "../../hooks/useToast";
 
 export const NeodjavljenePoseteTabela = () => {
   const [neodjavljene, setNeodjavljene] = useState([]);
@@ -18,6 +19,7 @@ export const NeodjavljenePoseteTabela = () => {
   const httpProtected = useHttpProtected();
   const navigate = useNavigate();
   const location = useLocation();
+  const { handleShowToast } = useToast();
 
   useEffect(() => {
     let isMounted = true;
@@ -32,11 +34,13 @@ export const NeodjavljenePoseteTabela = () => {
           setNeodjavljene(data);
         }
       } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error(
-            "Greška prilikom fetching neodjavljane posete: ",
-            error
+        if (error.response?.status >= 500) {
+          handleShowToast(
+            "Greška",
+            "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+            "danger"
           );
+        } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       }
@@ -60,8 +64,13 @@ export const NeodjavljenePoseteTabela = () => {
         prevNeodjavljene.filter((poseta) => poseta.id !== id)
       );
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Error:", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {

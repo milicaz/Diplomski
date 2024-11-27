@@ -14,6 +14,7 @@ import { FaRegFilePdf } from "react-icons/fa";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHttpProtected from "../../hooks/useHttpProtected";
+import useToast from "../../hooks/useToast";
 import Pagination from "../Pagination";
 import OmladinskiCentarTabelaItem from "./OmladinskiCentarTabelaItem";
 
@@ -26,13 +27,10 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
   const httpProtected = useHttpProtected();
   const navigate = useNavigate();
   const location = useLocation();
+  const { handleShowToast } = useToast();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
-
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastVariant, setToastVariant] = useState("");
 
   const [downloading, setDownloading] = useState(false);
   const [downloadingXlsx, setDownloadingXlsx] = useState(false);
@@ -80,8 +78,13 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
           setLogos(logoiData.data);
         }
       } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error("Greška prilikom fetching podataka: ", error);
+        if (error.response?.status >= 500) {
+          handleShowToast(
+            "Greška",
+            "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+            "danger"
+          );
+        } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       }
@@ -221,12 +224,6 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
     return nazivMesta;
   };
 
-  const handleShowToast = (message, variant) => {
-    setToastMessage(message);
-    setToastVariant(variant);
-    setShowToast(true);
-  };
-
   const handleNext = (e) => {
     e.preventDefault();
     handleCloseHeader();
@@ -249,7 +246,11 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
 
   const handlePDFDownload = async () => {
     if (!headerImageId || !footerImageId) {
-      handleShowToast("Molimo izaberite logoe za header i footer.", "danger");
+      handleShowToast(
+        "Greška",
+        "Molimo izaberite logoe za header i footer.",
+        "danger"
+      );
       return;
     }
 
@@ -287,8 +288,13 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
 
       setDownloading(false);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Error downloading PDF:", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri kreiranju PDF-a. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         setDownloading(false);
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
@@ -299,7 +305,11 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
 
   const handleXLSXDownload = async () => {
     if (!headerImageId || !footerImageId) {
-      handleShowToast("Molimo izaberite logoe za header i footer.", "danger");
+      handleShowToast(
+        "Greška",
+        "Molimo izaberite logoe za header i footer.",
+        "danger"
+      );
       return;
     }
 
@@ -336,8 +346,13 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
         link.parentNode.removeChild(link);
         window.URL.revokeObjectURL(url);
       } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error("Error downloading PDF:", error);
+        if (error.response?.status >= 500) {
+          handleShowToast(
+            "Greška",
+            "Greška pri kreiranju Excel-a. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+            "danger"
+          );
+        } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       } finally {
@@ -501,28 +516,6 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
         <OmladinskiCentarTabelaItem key={index} posetilac={posetilac} />
       ))}
 
-      <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        style={{
-          position: "fixed",
-          bottom: 20,
-          left: 20,
-          minWidth: 300,
-          backgroundColor: toastVariant === "success" ? "#a3c57b" : "#f56f66",
-          color: "white",
-        }}
-        delay={3000}
-        autohide
-      >
-        <Toast.Header>
-          <strong className="me-auto">
-            {toastVariant === "success" ? "" : "Greška"}
-          </strong>
-        </Toast.Header>
-        <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast>
-
       {poseteZaPrikaz && shouldShowPagination && (
         <Pagination
           pages={totalPages}
@@ -597,7 +590,7 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showFooter} onHide={handleCloseFooter} centered>
+      <Modal show={showFooter} onHide={handleCloseFooter} centered size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Izaberite footer logo</Modal.Title>
         </Modal.Header>

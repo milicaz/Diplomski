@@ -108,7 +108,7 @@ const TipOprList = () => {
         />
       )}
 
-      <Modal show={show} onHide={handleClose} centered size="sm">
+      <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Dodaj tip opreme</Modal.Title>
         </Modal.Header>

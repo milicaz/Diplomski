@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import useHttpProtected from "../../../hooks/useHttpProtected";
+import useToast from "../../../hooks/useToast";
 
 export const TipOprContext = createContext();
 
@@ -7,6 +8,7 @@ const TipOprContextProvider = ({ children, navigate, location }) => {
   const [tipoviOpreme, setTipoviOpreme] = useState([]);
 
   const httpProtected = useHttpProtected();
+  const { handleShowToast } = useToast();
 
   useEffect(() => {
     let isMounted = true;
@@ -34,8 +36,13 @@ const TipOprContextProvider = ({ children, navigate, location }) => {
         setTipoviOpreme(data);
       }
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching tipova opreme: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
@@ -47,10 +54,26 @@ const TipOprContextProvider = ({ children, navigate, location }) => {
       await httpProtected.post("/tipoviOpreme", newTipOpreme, {
         signal: controller.signal,
       });
+      handleShowToast(
+        "",
+        `Tip opreme ${newTipOpreme.naziv} je uspešno kreiran.`,
+        "success"
+      );
       fetchTipoveOpreme(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom dodavanja tipa opreme: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o tipu opreme su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom kreiranja tipa opreme. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -64,10 +87,26 @@ const TipOprContextProvider = ({ children, navigate, location }) => {
       await httpProtected.put(`/tipoviOpreme/${id}`, updatedTipOpreme, {
         signal: controller.signal,
       });
+      handleShowToast(
+        "",
+        `Tip opreme ${updatedTipOpreme.naziv} je uspešno izmenjen.`,
+        "success"
+      );
       fetchTipoveOpreme(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom izmene tipa opreme: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o tipu opreme su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom izmene tipa opreme. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -81,10 +120,22 @@ const TipOprContextProvider = ({ children, navigate, location }) => {
       await httpProtected.delete(`/tipoviOpreme/${id}`, {
         signal: controller.signal,
       });
+      handleShowToast("", "Tip opreme je uspešno obrisan.", "success");
       fetchTipoveOpreme(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom brisanja tipa opreme: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Nevalidan ID za brisanje mesta posete. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom brisanja mesta posete. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {

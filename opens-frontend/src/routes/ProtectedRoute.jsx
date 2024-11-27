@@ -23,9 +23,7 @@ export const ProtectedRoute = ({ element, allowedRoles }) => {
   }, [auth.accessToken, refreshToken]);
 
   const decoded = auth?.accessToken ? jwtDecode(auth.accessToken) : undefined;
-  console.log("DECODED u PROTECTED ROUTE JE: ", JSON.stringify(decoded));
   const roles = decoded?.roles || [];
-  console.log("ROLES u PROTECTED ROUTE JE: ", roles);
 
   if (!auth.accessToken) {
     return <Navigate to="/logovanje" state={{ from: location }} replace />;
