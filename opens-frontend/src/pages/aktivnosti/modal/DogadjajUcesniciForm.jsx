@@ -8,6 +8,7 @@ import { RiFileExcel2Fill } from "react-icons/ri";
 import { httpProtected } from "../../../apis/http";
 import { useLocation, useNavigate } from "react-router-dom";
 import DeleteUcesnikForm from "./DeleteUcesnikForm";
+import EditUcesnikForm from "./EditUcesnikFrom";
 
 const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   const { getUcesnici } = useContext(DogadjajContext);
@@ -15,11 +16,14 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   const { kreirajPdfUcesnici } = useContext(DogadjajContext)
   const { dodajUcesnika } = useContext(DogadjajContext);
   const { deleteUcesnik } = useContext(DogadjajContext);
+  const { editUcesnik } = useContext(DogadjajContext);
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const [ucesnici, setUcesnici] = useState([]);
+
+  const [currentUcesnik, setCurrentUcesnik] = useState(null);
 
   const id = currentDogadjaj.id;
 
@@ -79,6 +83,21 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   };
   const handleCloseDelete = () => setShowDelete(false);
 
+  const [showEdit, setShowEdit] = useState(false);
+  const handleShowEdit = (ucesnik) => {
+    console.log("Id je: " + ucesnik.id); // Log `ucesnik` directly here
+    console.log("Current ucesnik je: ", ucesnik); // Log `ucesnik` directly here
+    
+    setCurrentUcesnik(ucesnik); // Set the participant data you want to edit
+    setShowEdit(true);
+};
+  
+  const handleCloseEdit = () => {
+    setShowEdit(false);
+    setCurrentUcesnik(null);
+  };
+
+
   const [headerImageId, setHeaderImageId] = useState(null);
   const [footerImageId, setFooterImageId] = useState(null);
 
@@ -125,7 +144,11 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     };
 
     fetchUcesnici(); // Call the async function
-  }, [id]);
+
+    if (!showEdit) {
+      console.log("Modal closed, Ucesnici updated:", ucesnici);
+    }
+  }, [id, showEdit]);
 
   const handleDodajUcesnika = (event) => {
     event.preventDefault();
@@ -150,6 +173,41 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
 
     // fetchUcesnici();
   };
+
+//   const handleUcesnikEdit = async () => {
+//     try {
+//         // Update the local state after edit
+//         setUcesnici((prevUcesnici) =>
+//             prevUcesnici.map((participant) =>
+//                 participant.id === currentUcesnik.id ? currentUcesnik : participant
+//             )
+//         );
+
+//         // Close the modal after editing
+//         setShowEdit(false);
+//     } catch (error) {
+//         console.error("Error updating participant: ", error);
+//     }
+// };
+
+const handleUcesnikEdit = async () => {
+  try {
+      console.log("Current participant before update:", currentUcesnik);
+
+      // Update the local state after edit
+      setUcesnici((prevUcesnici) =>
+          prevUcesnici.map((participant) =>
+              participant.id === currentUcesnik.id ? currentUcesnik : participant
+          )
+      );
+
+      // Ensure the modal closes after the update
+      setShowEdit(false); // You may need to handle async issues here
+
+  } catch (error) {
+      console.error("Error updating participant: ", error);
+  }
+};
 
   // Handle the change in the limit select dropdown
   const onInputChange = (e) => {
@@ -297,7 +355,9 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                   <td>{ucesnik.email}</td>
                   <td>
                     {/* <div className="button-row" title="Izmena"> */}
-                      <button className="btn text-warning btn-act" title="Izmena">
+                      <button className="btn text-warning btn-act" title="Izmena"
+                        onClick={() => handleShowEdit(ucesnik)}
+                      >
                         <MdEdit />
                       </button>
                       <button
@@ -575,6 +635,20 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
         </Modal.Footer>
       </Modal>
 
+      <Modal show={showEdit} onHide={handleCloseEdit} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Izmeni učesnika</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        {currentUcesnik && (  // Ensure currentUcesnik is not null before rendering the form
+            <EditUcesnikForm
+                currentUcesnik={currentUcesnik}
+                onUcesnikEdited={handleUcesnikEdit}
+            />
+        )}
+        </Modal.Body>
+      </Modal>
+
       <Modal show={showDelete} onHide={handleCloseDelete} centered>
         <Modal.Header closeButton>
           <Modal.Title>Obriši učesnika događaja</Modal.Title>
@@ -585,10 +659,6 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
         <Modal.Footer>
           <Button
             className="btn btn-danger"
-            // onClick={async () => {
-            //   await deleteUcesnik(ucesnik.id);
-            //   handleUcesnikDelete();
-            // }}
             onClick={handleUcesnikDelete}
           >
             Obriši

@@ -108,4 +108,22 @@ public class UcesnikServiceImpl implements UcesnikService {
 		return "Učesnik je obrisan!";
 	}
 
+	@Override
+	public Ucesnik updateUcesnik(Long id, Ucesnik ucesnik) {
+		Optional<Ucesnik> updateUcesnik = ucesnikRepo.findById(id);
+		
+		Ucesnik upUcesnik = updateUcesnik.get();
+		upUcesnik.setIme(ucesnik.getIme());
+		upUcesnik.setPrezime(ucesnik.getPrezime());
+		upUcesnik.setRod(ucesnik.getRod());
+		upUcesnik.setGodine(ucesnik.getGodine());
+		upUcesnik.setMestoBoravista(ucesnik.getMestoBoravista());
+		upUcesnik.setBrojTelefona(ucesnik.getBrojTelefona());
+		upUcesnik.setEmail(ucesnik.getEmail());
+		upUcesnik.setOrganizacija(ucesnik.getOrganizacija());
+		ucesnikRepo.save(upUcesnik);
+		
+		return upUcesnik;
+	}
+
 }
