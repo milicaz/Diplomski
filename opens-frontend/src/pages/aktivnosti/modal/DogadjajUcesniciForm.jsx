@@ -12,6 +12,7 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   const { getUcesnici } = useContext(DogadjajContext);
   const { kreirajExcelUcesnici } = useContext(DogadjajContext);
   const { kreirajPdfUcesnici } = useContext(DogadjajContext)
+  const { dodajUcesnika } = useContext(DogadjajContext);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,6 +28,34 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
 
   const [logos, setLogos] = useState([]);
 
+  const [ucesnik, setUcesnik] = useState({
+    ime: "",
+    prezime: "",
+    rod: "",
+    godine: "",
+    mestoBoravista: "",
+    brojTelefona: "",
+    email: "",
+    organizacija: "",
+  });
+
+  const r = [
+    { id: 1, naziv: "ZENSKO" },
+    { id: 2, naziv: "MUSKO" },
+    { id: 3, naziv: "DRUGO" },
+  ];
+
+  const rodMapping = {
+    MUSKO: "muško",
+    ZENSKO: "žensko",
+    DRUGO: "drugo",
+  };
+
+  const handleChangeUcesnik = (event) => {
+    const { name, value } = event.target;
+    setUcesnik({ ...ucesnik, [name]: value });
+  };
+
   const [showHeader, setShowHeader] = useState(false);
   const [showFooter, setShowFooter] = useState(false);
 
@@ -35,6 +64,11 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
 
   const handleShowFooter = () => setShowFooter(true);
   const handleCloseFooter = () => setShowFooter(false);
+
+  const [showUcesnik, setShowUcesnik] = useState(false);
+
+  const handleShowUcesnik = () => setShowUcesnik(true);
+  const handleCloseUcesnik = () => setShowUcesnik(false);
 
   const [headerImageId, setHeaderImageId] = useState(null);
   const [footerImageId, setFooterImageId] = useState(null);
@@ -83,6 +117,30 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
 
     fetchUcesnici(); // Call the async function
   }, [id]);
+
+  const handleDodajUcesnika = (event) => {
+    event.preventDefault();
+    dodajUcesnika(ucesnik, currentDogadjaj.id);
+
+    // Update the `ucesnici` state manually by adding the new participant
+  setUcesnici((prevUcesnici) => [
+    ...prevUcesnici,
+    { ...ucesnik, id: prevUcesnici.length + 1 }, // Add a new id for the added participant (or get it from the response)
+  ]);
+
+    setUcesnik({
+      ime: "",
+      prezime: "",
+      rod: "",
+      godine: "",
+      mestoBoravista: "",
+      brojTelefona: "",
+      email: "",
+      organizacija: "",
+    });
+
+    // fetchUcesnici();
+  };
 
   // Handle the change in the limit select dropdown
   const onInputChange = (e) => {
@@ -175,9 +233,14 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
 
           {/* Right aligned: Učesnici događaja text */}
           <div className="col-sm-6 d-flex justify-content-end">
-            {/* <p>
-              <b>Učesnici događaja: {naziv}</b>
-            </p> */}
+          <Button
+              onClick={handleShowUcesnik}
+              className="btn btn-success"
+              data-toggle="modal"
+            >
+              <i className="material-icons">&#xE147;</i>
+              <span>Dodaj novog učesnika</span>
+            </Button>
           </div>
         </div>
       </div>
@@ -207,8 +270,8 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                   <td>{ucesnik.brojTelefona}</td>
                   <td>{ucesnik.email}</td>
                   <td>
-                    <div className="button-row" title="Izmena">
-                      <button className="btn text-warning btn-act">
+                    {/* <div className="button-row" title="Izmena"> */}
+                      <button className="btn text-warning btn-act" title="Izmena">
                         <MdEdit />
                       </button>
                       <button
@@ -217,9 +280,8 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                       >
                         <MdDelete />
                       </button>
-                    </div>
+                    {/* </div> */}
                   </td>
-                  <td>{/* Add actions here, like Edit or Delete */}</td>
                 </tr>
               ))}
           </tbody>
@@ -359,6 +421,130 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
           <Button onClick={handleCloseFooter} variant="danger">
             Zatvori
           </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showUcesnik} onHide={handleCloseUcesnik}>
+        <Modal.Header closeButton>
+          <Modal.Title>Dodaj učesnika</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
+            <Form>
+              <Form.Group>
+                <Form.Control
+                  name="ime"
+                  value={ucesnik.ime}
+                  onChange={handleChangeUcesnik}
+                  style={{ width: "80%", maxWidth: "90%" }}
+                  type="text"
+                  placeholder="Ime"
+                  required
+                />
+              </Form.Group>
+              <br />
+              <Form.Group>
+                <Form.Control
+                  name="prezime"
+                  value={ucesnik.prezime}
+                  onChange={handleChangeUcesnik}
+                  style={{ width: "80%", maxWidth: "90%" }}
+                  type="text"
+                  placeholder="Prezime"
+                  required
+                />
+              </Form.Group>
+              <br />
+              <Form.Group>
+                <Form.Control
+                  as="select"
+                  name="rod"
+                  value={ucesnik.rod}
+                  onChange={handleChangeUcesnik}
+                  style={{ width: "80%", maxWidth: "90%" }}
+                  required
+                >
+                  <option value="">Izaberite rod</option>
+                  {Object.entries(rodMapping).map(([key, value]) => (
+                    <option key={key} value={key}>
+                      {value}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+              <br />
+              <Form.Group>
+                <Form.Control
+                  name="godine"
+                  value={ucesnik.godine}
+                  onChange={handleChangeUcesnik}
+                  style={{ width: "80%", maxWidth: "90%" }}
+                  type="number"
+                  placeholder="Godina rođenja"
+                  required
+                />
+              </Form.Group>
+              <br />
+              <Form.Group>
+                <Form.Control
+                  name="mestoBoravista"
+                  value={ucesnik.mestoBoravista}
+                  onChange={handleChangeUcesnik}
+                  style={{ width: "80%", maxWidth: "90%" }}
+                  type="text"
+                  placeholder="Mesto boravišta"
+                  required
+                />
+              </Form.Group>
+              <br />
+              <Form.Group>
+                <Form.Control
+                  name="brojTelefona"
+                  value={ucesnik.brojTelefona}
+                  onChange={handleChangeUcesnik}
+                  style={{ width: "80%", maxWidth: "90%" }}
+                  type="text"
+                  placeholder="Broj telefona"
+                  required
+                />
+              </Form.Group>
+              <br />
+              <Form.Group>
+                <Form.Control
+                  name="email"
+                  value={ucesnik.email}
+                  onChange={handleChangeUcesnik}
+                  style={{ width: "80%", maxWidth: "90%" }}
+                  type="text"
+                  placeholder="E-mail"
+                  required
+                />
+              </Form.Group>
+              <br />
+              <Form.Group>
+                <Form.Control
+                  name="organizacija"
+                  value={ucesnik.organizacija}
+                  onChange={handleChangeUcesnik}
+                  style={{ width: "80%", maxWidth: "90%" }}
+                  type="text"
+                  placeholder="Organizacija"
+                  required
+                />
+              </Form.Group>
+              <br />
+            </Form>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleDodajUcesnika} variant="success">
+            Dodaj učesnika
+          </Button>
+          &nbsp;
+          <Button onClick={handleCloseUcesnik} variant="danger">
+            Završi
+          </Button>
+          &nbsp;
         </Modal.Footer>
       </Modal>
     </div>

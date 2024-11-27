@@ -312,7 +312,7 @@ const Dogadjaj = ({ dogadjaj }) => {
       </Modal>
 
       {/* DogadjajUcesnici Modal */}
-      <Modal show={showUcesnici} onHide={handleCloseUcesnici} size="lg" centered>
+      <Modal show={showUcesnici} onHide={handleCloseUcesnici} fullscreen centered >
         <Modal.Header closeButton>
         <Modal.Title>
           {dogadjaj ? `Učesnici događaja: ${dogadjaj.naziv}` : 'Učesnici događaja'}
