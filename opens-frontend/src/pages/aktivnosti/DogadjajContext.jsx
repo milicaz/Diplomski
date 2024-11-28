@@ -97,6 +97,23 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     }
   };
 
+  const updateDogadjaj = async (id, updateDogadjaj) => {
+    const controller = new AbortController();
+    try {
+      const response = await httpProtected.put(`/dogadjaji/${id}`, updateDogadjaj, {
+        signal: controller.signal,
+      });
+      getDogadjaji(true, controller);
+    } catch (error) {
+      if (error.name !== "CanceledError") {
+        console.error("Greška prilikom izmene događaja: ", error);
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    } finally {
+      controller.abort();
+    }
+  };
+
   const deleteDogadjaj = async (id) => {
     const controller = new AbortController();
     try {
@@ -519,7 +536,8 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         kreirajExcelUcesnici,
         kreirajPdfUcesnici,
         deleteUcesnik,
-        editUcesnik
+        editUcesnik,
+        updateDogadjaj
       }}
     >
       {children}

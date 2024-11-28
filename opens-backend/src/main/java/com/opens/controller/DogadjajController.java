@@ -62,11 +62,7 @@ public class DogadjajController {
 
 	@GetMapping("/dogadjaji")
 	public ResponseEntity<List<Dogadjaj>> getAll() {
-//		List<Dogadjaj> dogadjaji = new ArrayList<>();
-//		dogadjaji = dogadjajRepo.findAll();
-
 		return new ResponseEntity<>(dogadjajService.findAllActive(), HttpStatus.OK);
-
 	}
 	
 //	@GetMapping("/dogadjaj/{id}")
@@ -76,132 +72,147 @@ public class DogadjajController {
 
 	@PostMapping("/dogadjaji")
 	public ResponseEntity<Dogadjaj> save(@RequestBody DogadjajDTO dogadjajDTO) {
+		return new ResponseEntity<>(dogadjajService.addDogadjaj(dogadjajDTO), HttpStatus.OK);
+	}
+
+//	@PutMapping("/dogadjaji/{id}")
+//	public ResponseEntity<String> updateDogadjaj(@PathVariable Long id, @RequestBody DogadjajDTO dogadjajDTO) {
 //		Optional<MestoDogadjaja> mestoDogadjaja = mestoDogadjajaRepo.findById(dogadjajDTO.getMestoDogadjajaId());
 //		Optional<TipDogadjaja> tipDogadjaja = tipDogadjajaRepo.findById(dogadjajDTO.getVrstaDogadjajaId());
 //		Optional<Organizacija> organizacija = organizacijaRepo.findById(dogadjajDTO.getOrganizacijaId());
 //
-//		Dogadjaj dogadjaj = new Dogadjaj();
-//		dogadjaj.setNaziv(dogadjajDTO.getNaziv());
-//		dogadjaj.setDatum(dogadjajDTO.getDatum());
-//		dogadjaj.setPocetakDogadjaja(dogadjajDTO.getPocetakDogadjaja());
-//		dogadjaj.setKrajDogadjaja(dogadjajDTO.getKrajDogadjaja());
-//		dogadjaj.setMesto(mestoDogadjaja.get());
-//		dogadjaj.setVrsta(tipDogadjaja.get());
-//		dogadjaj.setOrganizacija(organizacija.get());
-//		dogadjajRepo.save(dogadjaj);
-		
-//		System.out.println("Id dogadjaja je: " + dogadjaj.getId());
-
-		return new ResponseEntity<>(dogadjajService.addDogadjaj(dogadjajDTO), HttpStatus.OK);
-
-	}
-
+//		Optional<Dogadjaj> upDogadjaj = dogadjajRepo.findById(id);
+//
+//		MestoDogadjaja updateMesto = mestoDogadjaja.get();
+//
+//		TipDogadjaja updateTip = tipDogadjaja.get();
+//
+//		Organizacija updateOrganizacija = organizacija.get();
+//
+////		Set<Ucesnik> updateUcesnici = new HashSet<>();
+//
+//		Dogadjaj updateDogadjaj = upDogadjaj.get();
+//		updateDogadjaj.setNaziv(dogadjajDTO.getNaziv());
+//		updateDogadjaj.setDatum(dogadjajDTO.getDatum());
+//		updateDogadjaj.setPocetakDogadjaja(dogadjajDTO.getPocetakDogadjaja());
+//		updateDogadjaj.setKrajDogadjaja(dogadjajDTO.getKrajDogadjaja());
+//		
+//		updateDogadjaj.setMesto(updateMesto);
+//		updateDogadjaj.setVrsta(updateTip);
+//		updateDogadjaj.setOrganizacija(updateOrganizacija);
+////		updateDogadjaj.setUcesnici(dogadjajDTO.getUcesnici());
+////
+////		List<Ucesnik> postojeciUcesnici = new ArrayList<>();
+////		postojeciUcesnici = ucesniciRepo.findAll();
+////
+////		Set<Dogadjaj> dogadjaji = new HashSet<>();
+////		dogadjaji.add(updateDogadjaj);
+////
+////		List<PrigradskaNaselja> pn = new ArrayList<>();
+////		pn = pnRepo.findAll();
+//
+////		for (Ucesnik ucesnik : dogadjajDTO.getUcesnici()) {
+////			if (postojeciUcesnici != null && !postojeciUcesnici.isEmpty()) {
+////				for (Ucesnik uc : postojeciUcesnici) {
+////					if (uc.getId() == ucesnik.getId()) {
+////						Optional<Ucesnik> ucesnici = ucesniciRepo.findById(ucesnik.getId());
+////						
+////							Ucesnik postojeciUcesnik = ucesnici.get();
+////							postojeciUcesnik.setDogadjaji(dogadjaji);
+////							postojeciUcesnik.setIme(ucesnik.getIme());
+////							postojeciUcesnik.setPrezime(ucesnik.getPrezime());
+////							postojeciUcesnik.setBrojTelefona(ucesnik.getBrojTelefona());
+////							postojeciUcesnik.setEmail(ucesnik.getEmail());
+////							postojeciUcesnik.setGodine(ucesnik.getGodine());
+////							postojeciUcesnik.setMestoBoravista(ucesnik.getMestoBoravista());
+////							postojeciUcesnik.setOrganizacija(ucesnik.getOrganizacija());
+////							postojeciUcesnik.setRod(ucesnik.getRod());
+////							for (PrigradskaNaselja naselje : pn) {
+////								if (postojeciUcesnik.getMestoBoravista().equals(naselje.getNaziv())) {
+////									postojeciUcesnik.setPrigradskoNaselje(true);
+////								}
+////							}
+////							ucesniciRepo.save(postojeciUcesnik);
+////					}else {
+////						for (PrigradskaNaselja naselje : pn) {
+////							if (ucesnik.getMestoBoravista().equals(naselje.getNaziv())) {
+////								ucesnik.setPrigradskoNaselje(true);
+////							}
+////						}
+////						ucesnik.setDogadjaji(dogadjaji);
+////						updateUcesnici.add(ucesnik);
+////						
+////					}
+////				}
+////			}else {
+////						for (PrigradskaNaselja naselje : pn) {
+////							if (ucesnik.getMestoBoravista().equals(naselje.getNaziv())) {
+////								ucesnik.setPrigradskoNaselje(true);
+////							}
+////						}
+////						ucesnik.setDogadjaji(dogadjaji);
+////						updateUcesnici.add(ucesnik);
+////						
+////					}
+////			ucesniciRepo.saveAll(updateUcesnici);
+////		}
+//
+//		dogadjajRepo.save(updateDogadjaj);
+//
+//		return new ResponseEntity<>("Dogadjaj je izmenjen!", HttpStatus.OK);
+//	}
+	
 	@PutMapping("/dogadjaji/{id}")
-	public ResponseEntity<String> updateDogadjaj(@PathVariable Long id, @RequestBody DogadjajDTO dogadjajDTO) {
-		Optional<MestoDogadjaja> mestoDogadjaja = mestoDogadjajaRepo.findById(dogadjajDTO.getMestoDogadjajaId());
-		Optional<TipDogadjaja> tipDogadjaja = tipDogadjajaRepo.findById(dogadjajDTO.getVrstaDogadjajaId());
-		Optional<Organizacija> organizacija = organizacijaRepo.findById(dogadjajDTO.getOrganizacijaId());
+	public ResponseEntity<String> updateDogadjaj(@PathVariable Long id, @RequestBody Dogadjaj dogadjaj) {
+	    // Retrieve related entities
+	    Optional<MestoDogadjaja> mestoDogadjajaOpt = mestoDogadjajaRepo.findById(dogadjaj.getMesto().getId());
+	    Optional<TipDogadjaja> tipDogadjajaOpt = tipDogadjajaRepo.findById(dogadjaj.getVrsta().getId());
+	    Optional<Organizacija> organizacijaOpt = organizacijaRepo.findById(dogadjaj.getOrganizacija().getId());
 
-		Optional<Dogadjaj> upDogadjaj = dogadjajRepo.findById(id);
+	    // Ensure the entities exist
+	    if (!mestoDogadjajaOpt.isPresent() || !tipDogadjajaOpt.isPresent() || !organizacijaOpt.isPresent()) {
+	        return new ResponseEntity<>("One or more related entities not found", HttpStatus.BAD_REQUEST);
+	    }
 
-		MestoDogadjaja updateMesto = mestoDogadjaja.get();
+	    MestoDogadjaja updateMesto = mestoDogadjajaOpt.get();
+	    TipDogadjaja updateTip = tipDogadjajaOpt.get();
+	    Organizacija updateOrganizacija = organizacijaOpt.get();
+	    
+	    updateMesto.setNazivSale(dogadjaj.getMesto().getNazivSale());
+	    
+	    updateTip.setNaziv(dogadjaj.getVrsta().getNaziv());
 
-		TipDogadjaja updateTip = tipDogadjaja.get();
+	    // Update fields of the Organizacija
+	    updateOrganizacija.setNaziv(dogadjaj.getOrganizacija().getNaziv());
+	    updateOrganizacija.setOdgovornaOsoba(dogadjaj.getOrganizacija().getOdgovornaOsoba());
+	    updateOrganizacija.setBrojTelefona(dogadjaj.getOrganizacija().getBrojTelefona());
+	    updateOrganizacija.setEmail(dogadjaj.getOrganizacija().getEmail());
+	    updateOrganizacija.setDelatnost(dogadjaj.getOrganizacija().getDelatnost());
+	    updateOrganizacija.setOpis(dogadjaj.getOrganizacija().getOpis());
+	    updateOrganizacija.setLink(dogadjaj.getOrganizacija().getLink());
 
-		Organizacija updateOrganizacija = organizacija.get();
+	    // Save the updated Organizacija (if needed)
+	    organizacijaRepo.save(updateOrganizacija);
 
-		Set<Ucesnik> updateUcesnici = new HashSet<>();
+	    // Get the existing Dogadjaj to update
+	    Optional<Dogadjaj> upDogadjaj = dogadjajRepo.findById(id);
+	    if (!upDogadjaj.isPresent()) {
+	        return new ResponseEntity<>("Dogadjaj not found", HttpStatus.NOT_FOUND);
+	    }
 
-		Dogadjaj updateDogadjaj = upDogadjaj.get();
-		updateDogadjaj.setNaziv(dogadjajDTO.getNaziv());
-		updateDogadjaj.setDatum(dogadjajDTO.getDatum());
-		updateDogadjaj.setPocetakDogadjaja(dogadjajDTO.getPocetakDogadjaja());
-		updateDogadjaj.setKrajDogadjaja(dogadjajDTO.getKrajDogadjaja());
-		updateDogadjaj.setMesto(updateMesto);
-		updateDogadjaj.setVrsta(updateTip);
-		updateDogadjaj.setOrganizacija(updateOrganizacija);
+	    Dogadjaj updateDogadjaj = upDogadjaj.get();
+	    updateDogadjaj.setNaziv(dogadjaj.getNaziv());
+	    updateDogadjaj.setDatum(dogadjaj.getDatum());
+	    updateDogadjaj.setPocetakDogadjaja(dogadjaj.getPocetakDogadjaja());
+	    updateDogadjaj.setKrajDogadjaja(dogadjaj.getKrajDogadjaja());
+	    updateDogadjaj.setMesto(updateMesto);
+	    updateDogadjaj.setVrsta(updateTip);
+	    updateDogadjaj.setOrganizacija(updateOrganizacija);
 
-		List<Ucesnik> postojeciUcesnici = new ArrayList<>();
-		postojeciUcesnici = ucesniciRepo.findAll();
+	    // Save the updated Dogadjaj
+	    dogadjajRepo.save(updateDogadjaj);
 
-		Set<Dogadjaj> dogadjaji = new HashSet<>();
-		dogadjaji.add(updateDogadjaj);
-
-		List<PrigradskaNaselja> pn = new ArrayList<>();
-		pn = pnRepo.findAll();
-
-		for (Ucesnik ucesnik : dogadjajDTO.getUcesnici()) {
-//			System.out.println("Usao je u prvi for");
-//			System.out.println("Provera " + postojeciUcesnici != null && !postojeciUcesnici.isEmpty());
-//			System.out.println("Ucesnik je: " + ucesnik.toString());
-			if (postojeciUcesnici != null && !postojeciUcesnici.isEmpty()) {
-//				System.out.println("Postojeci nisu jednaki null");
-				for (Ucesnik uc : postojeciUcesnici) {
-//					System.out.println("Usao je u drugi for");
-//					System.out.println("Uc id " + uc.getId());
-//					System.out.println("Ucesnik id " + ucesnik.getId());
-					if (uc.getId() == ucesnik.getId()) {
-//						System.out.println("Provera" + dogadjajRepo.existsById(ucesnik.getId()));
-						Optional<Ucesnik> ucesnici = ucesniciRepo.findById(ucesnik.getId());
-						
-							Ucesnik postojeciUcesnik = ucesnici.get();
-							postojeciUcesnik.setDogadjaji(dogadjaji);
-							postojeciUcesnik.setIme(ucesnik.getIme());
-							postojeciUcesnik.setPrezime(ucesnik.getPrezime());
-							postojeciUcesnik.setBrojTelefona(ucesnik.getBrojTelefona());
-							postojeciUcesnik.setEmail(ucesnik.getEmail());
-							postojeciUcesnik.setGodine(ucesnik.getGodine());
-							postojeciUcesnik.setMestoBoravista(ucesnik.getMestoBoravista());
-							postojeciUcesnik.setOrganizacija(ucesnik.getOrganizacija());
-							postojeciUcesnik.setRod(ucesnik.getRod());
-							for (PrigradskaNaselja naselje : pn) {
-//								System.out.println("Mesto boravista je: " + postojeciUcesnik.getMestoBoravista());
-//								System.out.println("Naselje je: " + naselje.getNaziv());
-								if (postojeciUcesnik.getMestoBoravista().equals(naselje.getNaziv())) {
-									postojeciUcesnik.setPrigradskoNaselje(true);
-//									System.out.println("Usao je u prvi if");
-								}
-							}
-							ucesniciRepo.save(postojeciUcesnik);
-						
-//				ucesnik.setDogadjaji(dogadjaji);
-//				updateUcesnici.add(ucesnik);
-					}else {
-//				System.out.println("Usao je u else");
-						for (PrigradskaNaselja naselje : pn) {
-//							System.out.println("Mesto boravista je: " + ucesnik.getMestoBoravista());
-//							System.out.println("Naselje je: " + naselje.getNaziv());
-							if (ucesnik.getMestoBoravista().equals(naselje.getNaziv())) {
-								ucesnik.setPrigradskoNaselje(true);
-//								System.out.println("Usao je u prvi if");
-							}
-						}
-						ucesnik.setDogadjaji(dogadjaji);
-						updateUcesnici.add(ucesnik);
-						
-					}
-				}
-			}else {
-//				System.out.println("Usao je u else");
-						for (PrigradskaNaselja naselje : pn) {
-//							System.out.println("Mesto boravista je: " + ucesnik.getMestoBoravista());
-//							System.out.println("Naselje je: " + naselje.getNaziv());
-							if (ucesnik.getMestoBoravista().equals(naselje.getNaziv())) {
-								ucesnik.setPrigradskoNaselje(true);
-//								System.out.println("Usao je u prvi if");
-							}
-						}
-						ucesnik.setDogadjaji(dogadjaji);
-						updateUcesnici.add(ucesnik);
-						
-					}
-			ucesniciRepo.saveAll(updateUcesnici);
-		}
-//		ucesniciRepo.saveAll(updateUcesnici);
-
-		dogadjajRepo.save(updateDogadjaj);
-
-		return new ResponseEntity<>("Dogadjaj je izmenjen!", HttpStatus.OK);
+	    return new ResponseEntity<>("Dogadjaj is updated!", HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/dogadjaj/delete/{id}")

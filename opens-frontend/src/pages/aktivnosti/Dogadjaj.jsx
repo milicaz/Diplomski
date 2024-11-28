@@ -7,6 +7,7 @@ import { FaUsers } from "react-icons/fa";
 import { FcViewDetails } from "react-icons/fc";
 import DetailDogadjajForm from "./modal/DetailDogadjajForm";
 import DogadjajUcesniciForm from "./modal/DogadjajUcesniciForm";
+import EditDogadjajForm from "./modal/EditDogadjajForm";
 
 const Dogadjaj = ({ dogadjaj }) => {
   const { dodajUcesnika } = useContext(DogadjajContext);
@@ -90,6 +91,21 @@ const Dogadjaj = ({ dogadjaj }) => {
     });
   };
 
+  const [showEditDogadjaj, setShowEditDogadjaj] = useState(false)
+  const handleShowEditDogadjaj = () => setShowEditDogadjaj(true)
+  const handleCloseEditDogadjaj = () => setShowEditDogadjaj(false)
+
+  const handleDogadjajEdit = () => {
+    try {
+      // console.log("Current  before update:", currentUcesnik);
+      // Ensure the modal closes after the update
+      setShowEditDogadjaj(false); // You may need to handle async issues here
+
+  } catch (error) {
+      console.error("Error updating advent: ", error);
+  }
+  }
+
   const formatTimeRange = (start, end) => {
     const startTime = new Date(`1970-01-01T${start}`).toLocaleTimeString(
       "en-GB",
@@ -142,8 +158,8 @@ const Dogadjaj = ({ dogadjaj }) => {
             <MdPeople />
           </button> */}
         </div>
-        <div className="button-row" title="Izmena">
-          <button className="btn text-warning btn-act">
+        <div className="button-row">
+          <button className="btn text-warning btn-act" title="Izmena" onClick={handleShowEditDogadjaj}>
             <MdEdit />
           </button>
           <button className="btn text-danger btn-act" title="Brisanje" onClick={handleShowDelete}>
@@ -304,7 +320,8 @@ const Dogadjaj = ({ dogadjaj }) => {
     </Modal.Title> */}
         </Modal.Header>
         <Modal.Body>
-          <DetailDogadjajForm currentDogadjaj={dogadjaj} />
+          <DetailDogadjajForm currentDogadjaj={dogadjaj} 
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseDetails}>Zatvori</Button>
@@ -323,6 +340,22 @@ const Dogadjaj = ({ dogadjaj }) => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseUcesnici}>Zatvori</Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showEditDogadjaj} onHide={handleCloseEditDogadjaj} size="lg" centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Izmeni događaj</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <EditDogadjajForm editDogadjaj={dogadjaj} 
+           onDogadjajEdited = {handleDogadjajEdit}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseEditDogadjaj}>
+            Zatvori
+          </Button>
         </Modal.Footer>
       </Modal>
     </>
