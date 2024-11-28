@@ -1,19 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Col, Form, Image, Modal, Row } from "react-bootstrap";
+import { FaRegFilePdf } from "react-icons/fa";
+import { FaSquarePlus } from "react-icons/fa6";
 import { MdDelete, MdEdit } from "react-icons/md";
+import { RiFileExcel2Fill } from "react-icons/ri";
+import { useLocation, useNavigate } from "react-router-dom";
+import { httpProtected } from "../../../apis/http";
 import Pagination from "../../Pagination";
 import { DogadjajContext } from "../DogadjajContext";
-import { FaRegFilePdf } from "react-icons/fa";
-import { RiFileExcel2Fill } from "react-icons/ri";
-import { httpProtected } from "../../../apis/http";
-import { useLocation, useNavigate } from "react-router-dom";
 import DeleteUcesnikForm from "./DeleteUcesnikForm";
 import EditUcesnikForm from "./EditUcesnikFrom";
 
 const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   const { getUcesnici } = useContext(DogadjajContext);
   const { kreirajExcelUcesnici } = useContext(DogadjajContext);
-  const { kreirajPdfUcesnici } = useContext(DogadjajContext)
+  const { kreirajPdfUcesnici } = useContext(DogadjajContext);
   const { dodajUcesnika } = useContext(DogadjajContext);
   const { deleteUcesnik } = useContext(DogadjajContext);
   const { editUcesnik } = useContext(DogadjajContext);
@@ -87,16 +88,15 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   const handleShowEdit = (ucesnik) => {
     console.log("Id je: " + ucesnik.id); // Log `ucesnik` directly here
     console.log("Current ucesnik je: ", ucesnik); // Log `ucesnik` directly here
-    
+
     setCurrentUcesnik(ucesnik); // Set the participant data you want to edit
     setShowEdit(true);
-};
-  
+  };
+
   const handleCloseEdit = () => {
     setShowEdit(false);
     setCurrentUcesnik(null);
   };
-
 
   const [headerImageId, setHeaderImageId] = useState(null);
   const [footerImageId, setFooterImageId] = useState(null);
@@ -109,38 +109,40 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     setFooterImageId(logoId);
   };
 
-
   useEffect(() => {
     const fetchUcesnici = async () => {
       const fetchedUcesnici = await getUcesnici(id);
       setUcesnici(fetchedUcesnici); // Set the participants data after it's fetched
       let isMounted = true;
-    const controller = new AbortController();
+      const controller = new AbortController();
 
-    const fetchData = async () => {
-      try {
-        const requests = [
-          httpProtected.get("/logoi", { signal: controller.signal }),
-        ];
-        const [ logoiData] = await Promise.all(requests);
+      const fetchData = async () => {
+        try {
+          const requests = [
+            httpProtected.get("/logoi", { signal: controller.signal }),
+          ];
+          const [logoiData] = await Promise.all(requests);
 
-        if (isMounted) {
-          setLogos(logoiData.data);
+          if (isMounted) {
+            setLogos(logoiData.data);
+          }
+        } catch (error) {
+          if (error.name !== "CanceledError") {
+            console.error("Greška prilikom fetching podataka: ", error);
+            navigate("/logovanje", {
+              state: { from: location },
+              replace: true,
+            });
+          }
         }
-      } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error("Greška prilikom fetching podataka: ", error);
-          navigate("/logovanje", { state: { from: location }, replace: true });
-        }
-      }
-    };
+      };
 
-    fetchData();
+      fetchData();
 
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
+      return () => {
+        isMounted = false;
+        controller.abort();
+      };
     };
 
     fetchUcesnici(); // Call the async function
@@ -155,10 +157,10 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     dodajUcesnika(ucesnik, currentDogadjaj.id);
 
     // Update the `ucesnici` state manually by adding the new participant
-  setUcesnici((prevUcesnici) => [
-    ...prevUcesnici,
-    { ...ucesnik, id: prevUcesnici.length + 1 }, // Add a new id for the added participant (or get it from the response)
-  ]);
+    setUcesnici((prevUcesnici) => [
+      ...prevUcesnici,
+      { ...ucesnik, id: prevUcesnici.length + 1 }, // Add a new id for the added participant (or get it from the response)
+    ]);
 
     setUcesnik({
       ime: "",
@@ -174,40 +176,39 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     // fetchUcesnici();
   };
 
-//   const handleUcesnikEdit = async () => {
-//     try {
-//         // Update the local state after edit
-//         setUcesnici((prevUcesnici) =>
-//             prevUcesnici.map((participant) =>
-//                 participant.id === currentUcesnik.id ? currentUcesnik : participant
-//             )
-//         );
+  //   const handleUcesnikEdit = async () => {
+  //     try {
+  //         // Update the local state after edit
+  //         setUcesnici((prevUcesnici) =>
+  //             prevUcesnici.map((participant) =>
+  //                 participant.id === currentUcesnik.id ? currentUcesnik : participant
+  //             )
+  //         );
 
-//         // Close the modal after editing
-//         setShowEdit(false);
-//     } catch (error) {
-//         console.error("Error updating participant: ", error);
-//     }
-// };
+  //         // Close the modal after editing
+  //         setShowEdit(false);
+  //     } catch (error) {
+  //         console.error("Error updating participant: ", error);
+  //     }
+  // };
 
-const handleUcesnikEdit = async () => {
-  try {
+  const handleUcesnikEdit = async () => {
+    try {
       console.log("Current participant before update:", currentUcesnik);
 
       // Update the local state after edit
       setUcesnici((prevUcesnici) =>
-          prevUcesnici.map((participant) =>
-              participant.id === currentUcesnik.id ? currentUcesnik : participant
-          )
+        prevUcesnici.map((participant) =>
+          participant.id === currentUcesnik.id ? currentUcesnik : participant
+        )
       );
 
       // Ensure the modal closes after the update
       setShowEdit(false); // You may need to handle async issues here
-
-  } catch (error) {
+    } catch (error) {
       console.error("Error updating participant: ", error);
-  }
-};
+    }
+  };
 
   // Handle the change in the limit select dropdown
   const onInputChange = (e) => {
@@ -222,7 +223,7 @@ const handleUcesnikEdit = async () => {
   const handleExcel = (event) => {
     event.preventDefault();
     const response = kreirajExcelUcesnici(id, headerImageId, footerImageId);
-  }
+  };
 
   const halfLength = Math.ceil(logos.length / 2);
   const firstHalf = logos.slice(0, halfLength);
@@ -236,22 +237,22 @@ const handleUcesnikEdit = async () => {
 
   const handleChoose = (event) => {
     event.preventDefault(); // Call preventDefault on the current event
-    
+
     handleCloseFooter();
-    
+
     // Pass the event object to handlePDF
     handlePDF(event);
   };
-  
+
   const handlePDF = (event) => {
     event.preventDefault(); // Call preventDefault on the event
-    
+
     // // Ensure valid inputs
     // if (!mesec || !godina || !vrsta || !ime || !prezime) {
     //   console.error("Please fill all required fields.");
     //   return;
     // }
-    
+
     // Call kreirajPDF with validated parameters
     kreirajPdfUcesnici(id, headerImageId, footerImageId);
   };
@@ -260,12 +261,12 @@ const handleUcesnikEdit = async () => {
     try {
       // First, delete the participant using the provided API method.
       await deleteUcesnik(ucesnik.id);
-      
+
       // Now, remove the deleted participant from the local state
       setUcesnici((prevUcesnici) =>
         prevUcesnici.filter((participant) => participant.id !== ucesnik.id)
       );
-  
+
       // Close the delete modal
       handleCloseDelete();
     } catch (error) {
@@ -279,7 +280,11 @@ const handleUcesnikEdit = async () => {
         <Col md={6}>
           <Row>
             <Col className="d-flex align-items-center">
-              <Button className="mx-1" variant="danger" onClick={handleShowHeader}>
+              <Button
+                className="mx-1"
+                variant="danger"
+                onClick={handleShowHeader}
+              >
                 <FaRegFilePdf size={20} /> PDF
               </Button>
               <Button className="mx-1" variant="success" onClick={handleExcel}>
@@ -317,13 +322,9 @@ const handleUcesnikEdit = async () => {
 
           {/* Right aligned: Učesnici događaja text */}
           <div className="col-sm-6 d-flex justify-content-end">
-          <Button
-              onClick={handleShowUcesnik}
-              className="btn btn-success"
-              data-toggle="modal"
-            >
-              <i className="material-icons">&#xE147;</i>
-              <span>Dodaj novog učesnika</span>
+            <Button onClick={handleShowUcesnik} className="btn btn-success">
+              <FaSquarePlus size={20} className="mx-1" />
+              Dodaj novog učesnika
             </Button>
           </div>
         </div>
@@ -355,18 +356,20 @@ const handleUcesnikEdit = async () => {
                   <td>{ucesnik.email}</td>
                   <td>
                     {/* <div className="button-row" title="Izmena"> */}
-                      <button className="btn text-warning btn-act" title="Izmena"
-                        onClick={() => handleShowEdit(ucesnik)}
-                      >
-                        <MdEdit />
-                      </button>
-                      <button
-                        className="btn text-danger btn-act"
-                        title="Brisanje"
-                        onClick={() => handleShowDelete(ucesnik)} // Pass the selected ucesnik to delete
-                      >
-                        <MdDelete />
-                      </button>
+                    <button
+                      className="btn text-warning btn-act"
+                      title="Izmena"
+                      onClick={() => handleShowEdit(ucesnik)}
+                    >
+                      <MdEdit />
+                    </button>
+                    <button
+                      className="btn text-danger btn-act"
+                      title="Brisanje"
+                      onClick={() => handleShowDelete(ucesnik)} // Pass the selected ucesnik to delete
+                    >
+                      <MdDelete />
+                    </button>
                     {/* </div> */}
                   </td>
                 </tr>
@@ -383,7 +386,7 @@ const handleUcesnikEdit = async () => {
         maxVisibleButtons={3}
       />
 
-<Modal show={showHeader} onHide={handleCloseHeader} centered size="lg">
+      <Modal show={showHeader} onHide={handleCloseHeader} centered size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Izaberite header logo</Modal.Title>
         </Modal.Header>
@@ -447,7 +450,7 @@ const handleUcesnikEdit = async () => {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showFooter} onHide={handleCloseFooter} centered>
+      <Modal show={showFooter} onHide={handleCloseFooter} centered size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Izaberite footer logo</Modal.Title>
         </Modal.Header>
@@ -511,47 +514,47 @@ const handleUcesnikEdit = async () => {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showUcesnik} onHide={handleCloseUcesnik}>
+      <Modal
+        show={showUcesnik}
+        onHide={handleCloseUcesnik}
+        centered
+        backdrop="static"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Dodaj učesnika</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
             <Form>
-              <Form.Group>
+              <Form.Group className="mb-3">
                 <Form.Control
                   name="ime"
                   value={ucesnik.ime}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
-                  placeholder="Ime"
+                  placeholder="Ime *"
                   required
                 />
               </Form.Group>
-              <br />
-              <Form.Group>
+              <Form.Group className="mb-3">
                 <Form.Control
                   name="prezime"
                   value={ucesnik.prezime}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
-                  placeholder="Prezime"
+                  placeholder="Prezime *"
                   required
                 />
               </Form.Group>
-              <br />
-              <Form.Group>
+              <Form.Group className="mb-3">
                 <Form.Control
                   as="select"
                   name="rod"
                   value={ucesnik.rod}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
                   required
                 >
-                  <option value="">Izaberite rod</option>
+                  <option value="">Izaberite rod *</option>
                   {Object.entries(rodMapping).map(([key, value]) => (
                     <option key={key} value={key}>
                       {value}
@@ -559,67 +562,54 @@ const handleUcesnikEdit = async () => {
                   ))}
                 </Form.Control>
               </Form.Group>
-              <br />
-              <Form.Group>
+              <Form.Group className="mb-3">
                 <Form.Control
                   name="godine"
                   value={ucesnik.godine}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
                   type="number"
-                  placeholder="Godina rođenja"
+                  placeholder="Godina rođenja *"
                   required
                 />
               </Form.Group>
-              <br />
-              <Form.Group>
+              <Form.Group className="mb-3">
                 <Form.Control
                   name="mestoBoravista"
                   value={ucesnik.mestoBoravista}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
-                  placeholder="Mesto boravišta"
+                  placeholder="Mesto boravišta *"
                   required
                 />
               </Form.Group>
-              <br />
-              <Form.Group>
+              <Form.Group className="mb-3">
                 <Form.Control
                   name="brojTelefona"
                   value={ucesnik.brojTelefona}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Broj telefona"
-                  required
                 />
               </Form.Group>
-              <br />
-              <Form.Group>
+              <Form.Group className="mb-3">
                 <Form.Control
                   name="email"
                   value={ucesnik.email}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="E-mail"
-                  required
                 />
               </Form.Group>
-              <br />
-              <Form.Group>
+              <Form.Group className="mb-3">
                 <Form.Control
                   name="organizacija"
                   value={ucesnik.organizacija}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
-                  placeholder="Organizacija"
+                  placeholder="Organizacija *"
                   required
                 />
               </Form.Group>
-              <br />
             </Form>
           </div>
         </Modal.Body>
@@ -627,29 +617,37 @@ const handleUcesnikEdit = async () => {
           <Button onClick={handleDodajUcesnika} variant="success">
             Dodaj učesnika
           </Button>
-          &nbsp;
           <Button onClick={handleCloseUcesnik} variant="danger">
             Završi
           </Button>
-          &nbsp;
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showEdit} onHide={handleCloseEdit} centered>
+      <Modal
+        show={showEdit}
+        onHide={handleCloseEdit}
+        centered
+        backdrop="static"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Izmeni učesnika</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        {currentUcesnik && (  // Ensure currentUcesnik is not null before rendering the form
+          {currentUcesnik && ( // Ensure currentUcesnik is not null before rendering the form
             <EditUcesnikForm
-                currentUcesnik={currentUcesnik}
-                onUcesnikEdited={handleUcesnikEdit}
+              currentUcesnik={currentUcesnik}
+              onUcesnikEdited={handleUcesnikEdit}
             />
-        )}
+          )}
         </Modal.Body>
       </Modal>
 
-      <Modal show={showDelete} onHide={handleCloseDelete} centered>
+      <Modal
+        show={showDelete}
+        onHide={handleCloseDelete}
+        centered
+        backdrop="static"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Obriši učesnika događaja</Modal.Title>
         </Modal.Header>
@@ -657,10 +655,7 @@ const handleUcesnikEdit = async () => {
           <DeleteUcesnikForm deleteUcesnik={ucesnik} />
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            className="btn btn-danger"
-            onClick={handleUcesnikDelete}
-          >
+          <Button className="btn btn-danger" onClick={handleUcesnikDelete}>
             Obriši
           </Button>
           <Button variant="secondary" onClick={handleCloseDelete}>

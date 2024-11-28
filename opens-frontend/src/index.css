@@ -618,3 +618,16 @@ td {
   flex-direction: column;
   /* Ensures content is stacked vertically */
 }
+
+.modal-backdrop.show {
+  background-color: rgba(0, 0, 0, 0.5); /* Darker backdrop for better visibility */
+}
+
+/* If multiple modals are shown, ensure they are stacked properly */
+.modal.show {
+  z-index: 1050; /* Default Bootstrap value */
+}
+
+.modal.show + .modal {
+  z-index: 1060; /* Higher value for the next modal */
+}

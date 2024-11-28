@@ -10,6 +10,7 @@ import Pagination from "../Pagination";
 import Dogadjaj from "./Dogadjaj";
 import { DogadjajContext } from "./DogadjajContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import CustomDateRangePicker from "../../utils/CustomDateRangePicker";
 
 const DogadjajList = () => {
   const { sortedDogadjaji } = useContext(DogadjajContext);
@@ -24,8 +25,8 @@ const DogadjajList = () => {
   const { dogadjajId } = useContext(DogadjajContext);
   const { dodajUcesnika } = useContext(DogadjajContext);
   const { kreirajPDF } = useContext(DogadjajContext);
-  const {organizacije} = useContext(DogadjajContext);
-  const {kreirajExcel} = useContext(DogadjajContext);
+  const { organizacije } = useContext(DogadjajContext);
+  const { kreirajExcel } = useContext(DogadjajContext);
 
   const httpProtected = useHttpProtected();
 
@@ -131,7 +132,7 @@ const DogadjajList = () => {
     setId(organizacijaId);
     setIdDogadjaja(dogadjajId);
     setAllDogadjaji(sortedDogadjaji);
-    setExistingOrganizacije(organizacije)
+    setExistingOrganizacije(organizacije);
 
     let isMounted = true;
     const controller = new AbortController();
@@ -141,7 +142,7 @@ const DogadjajList = () => {
         const requests = [
           httpProtected.get("/logoi", { signal: controller.signal }),
         ];
-        const [ logoiData] = await Promise.all(requests);
+        const [logoiData] = await Promise.all(requests);
 
         if (isMounted) {
           setLogos(logoiData.data);
@@ -160,20 +161,40 @@ const DogadjajList = () => {
       isMounted = false;
       controller.abort();
     };
-  }, [organizacijaId, currentOrganizacija, dogadjajId, organizacija.naziv, sortedDogadjaji, organizacije]);
+  }, [
+    organizacijaId,
+    currentOrganizacija,
+    dogadjajId,
+    organizacija.naziv,
+    sortedDogadjaji,
+    organizacije,
+  ]);
 
   //DODATU ZA PRETRAGU
   const [allDogadjaji, setAllDogadjaji] = useState([]); // Store all events
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   //
 
+  // Stanja za pretragu po periodu
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  // Filter dogadjaji na osnovu izabranog perioda
+  const filteredByDate = allDogadjaji.filter((dogadjaj) => {
+    if (!startDate || !endDate) return true; // Vraca sve ukoliko nisu izabrani datumi
+    const eventDate = new Date(dogadjaj.datum);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    return eventDate >= start && eventDate <= end;
+  });
+
   // DODATO ZA SEARCH BAR
-  const filteredDogadjaji = allDogadjaji.filter(dogadjaj => {
+  const filteredDogadjaji = filteredByDate.filter((dogadjaj) => {
     const { naziv, organizacija } = dogadjaj;
     const organizacijaNaziv = organizacija.naziv.toLowerCase();
     const odgovornaOsoba = organizacija.odgovornaOsoba.toLowerCase();
     const dogadjajNaziv = naziv.toLowerCase();
-  
+
     return (
       dogadjajNaziv.includes(searchQuery.toLowerCase()) ||
       organizacijaNaziv.includes(searchQuery.toLowerCase()) ||
@@ -185,23 +206,25 @@ const DogadjajList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [startDate, endDate, searchQuery]);
+
   const indexOfLastDogadjaj = currentPage * limit;
   const indexOfFirstDogadjaj = indexOfLastDogadjaj - limit;
-  const currentDogadjaji = sortedDogadjaji.slice(
-    indexOfFirstDogadjaj,
-    indexOfLastDogadjaj
-  );
-  // const totalPagesNumber = Math.ceil(sortedDogadjaji.length / limit);
 
   //IZMENJONO ZBOG SEARCH BAR-A
   // Use filtered results for pagination when searchQuery is not empty
-  const resultsToPaginate = searchQuery ? filteredDogadjaji : allDogadjaji;
+  //const resultsToPaginate = searchQuery ? filteredDogadjaji : allDogadjaji;
 
   // Calculate pagination based on results to paginate
-  const totalPagesNumber = Math.ceil(resultsToPaginate.length / limit);
+  const totalPagesNumber = Math.ceil(filteredDogadjaji.length / limit);
   // const indexOfLastDogadjaj = currentPage * dogadjajiPerPage;
   // const indexOfFirstDogadjaj = indexOfLastDogadjaj - dogadjajiPerPage;
-  const currentPageDogadjaji = resultsToPaginate.slice(indexOfFirstDogadjaj, indexOfLastDogadjaj);
+  const currentPageDogadjaji = filteredDogadjaji.slice(
+    indexOfFirstDogadjaj,
+    indexOfLastDogadjaj
+  );
   //
 
   const onInputChange = (e) => {
@@ -299,10 +322,12 @@ const DogadjajList = () => {
   const handleSelectChange = (selectedOption) => {
     if (selectedOption) {
       const selectedNaziv = selectedOption.value;
-      
+
       // Check if it's a pre-existing organization
-      const selectedOrg = existingOrganizacije.find((org) => org.naziv === selectedNaziv);
-  
+      const selectedOrg = existingOrganizacije.find(
+        (org) => org.naziv === selectedNaziv
+      );
+
       if (selectedOrg) {
         // If it's an existing organization, update the form fields with its details
         setOrganizacija({
@@ -314,7 +339,7 @@ const DogadjajList = () => {
           opis: selectedOrg.opis,
           link: selectedOrg.link,
         });
-  
+
         // Set the organizacijaId from the context
         setOrganizacijaId(selectedOrg.id);
         setIsExisting(true);
@@ -322,7 +347,7 @@ const DogadjajList = () => {
         // If it's a new organization, update only the naziv field
         setOrganizacija({
           ...organizacija,
-          naziv: selectedNaziv,  // Set the new naziv
+          naziv: selectedNaziv, // Set the new naziv
         });
         setOrganizacijaId(null); // Reset organizacijaId because it's a new one
         setIsExisting(false);
@@ -330,23 +355,23 @@ const DogadjajList = () => {
     } else {
       // If no option is selected, reset the form fields
       setOrganizacija({
-        naziv: '',
-        odgovornaOsoba: '',
-        brojTelefona: '',
-        email: '',
-        delatnost: '',
-        opis: '',
-        link: '',
+        naziv: "",
+        odgovornaOsoba: "",
+        brojTelefona: "",
+        email: "",
+        delatnost: "",
+        opis: "",
+        link: "",
       });
       setOrganizacijaId(null);
       setIsExisting(false);
     }
   };
 
-   // Create options for the Creatable dropdown
-   const options = existingOrganizacije.map((org) => ({
+  // Create options for the Creatable dropdown
+  const options = existingOrganizacije.map((org) => ({
     value: org.naziv,
-    label: org.naziv
+    label: org.naziv,
   }));
   //
 
@@ -359,17 +384,17 @@ const DogadjajList = () => {
 
   const handleDalje = (event) => {
     event.preventDefault();
-  
+
     if (isExisting) {
       // If the organization is already existing, just proceed with the existing organization
-      console.log('Using existing organization:', organizacija);
-      handleCloseOrganizacija();  // Close modal
-      handleShowDogadjaj();       // Proceed to the next modal/step
+      console.log("Using existing organization:", organizacija);
+      handleCloseOrganizacija(); // Close modal
+      handleShowDogadjaj(); // Proceed to the next modal/step
     } else {
       // If it's a new organization, add it to the database
       addOrganizacija(organizacija); // Replace with your actual add organization function
-      handleCloseOrganizacija();     // Close modal
-      handleShowDogadjaj();          // Proceed to the next modal/step
+      handleCloseOrganizacija(); // Close modal
+      handleShowDogadjaj(); // Proceed to the next modal/step
     }
   };
 
@@ -539,37 +564,53 @@ const DogadjajList = () => {
   //     console.error("Please fill all required fields.");
   //     return;
   //   }
-  
+
   //   // Call kreirajPDF with validated parameters
   //   kreirajPDF(mesec, godina, vrsta, ime, prezime, headerImageId, footerImageId);
   // };
 
   const handleChoose = (event) => {
     event.preventDefault(); // Call preventDefault on the current event
-    
+
     handleCloseFooter();
-    
+
     // Pass the event object to handlePDF
     handlePDF(event);
   };
-  
+
   const handlePDF = (event) => {
     event.preventDefault(); // Call preventDefault on the event
-    
+
     // Ensure valid inputs
     if (!mesec || !godina || !vrsta || !ime || !prezime) {
       console.error("Please fill all required fields.");
       return;
     }
-    
+
     // Call kreirajPDF with validated parameters
-    kreirajPDF(mesec, godina, vrsta, ime, prezime, headerImageId, footerImageId);
+    kreirajPDF(
+      mesec,
+      godina,
+      vrsta,
+      ime,
+      prezime,
+      headerImageId,
+      footerImageId
+    );
   };
 
   const handleExcel = (event) => {
     event.preventDefault();
-    const response = kreirajExcel(mesec, godina, vrsta, ime, prezime, headerImageId, footerImageId);
-  }
+    const response = kreirajExcel(
+      mesec,
+      godina,
+      vrsta,
+      ime,
+      prezime,
+      headerImageId,
+      footerImageId
+    );
+  };
 
   const formatTimeRange = (start, end) => {
     const startTime = new Date(`1970-01-01T${start}`).toLocaleTimeString(
@@ -582,8 +623,6 @@ const DogadjajList = () => {
     });
     return `${startTime} - ${endTime}`;
   };
-
-
 
   return (
     <>
@@ -623,7 +662,11 @@ const DogadjajList = () => {
               />
             </Col>
             <Col className="d-flex align-items-center">
-              <Button className="mx-1" variant="danger" onClick={handleShowHeader}>
+              <Button
+                className="mx-1"
+                variant="danger"
+                onClick={handleShowHeader}
+              >
                 <FaRegFilePdf size={20} /> PDF
               </Button>
               <Button className="mx-1" variant="success" onClick={handleExcel}>
@@ -635,7 +678,7 @@ const DogadjajList = () => {
       </Row>
       <div className="table-title">
         <div className="row align-items-center mb-3">
-          <div className="col-sm-4">
+          <div className="col-sm-2">
             <div className="row align-items-center">
               <div className="col-auto pe-0">
                 <span>Prikaži</span>
@@ -658,7 +701,7 @@ const DogadjajList = () => {
             </div>
           </div>
           {/* SEARCH BAR */}
-          <div className="col-sm-4">
+          <div className="col-sm-3">
             {/* <Form.Control
               type="text"
               placeholder="Pretraži događaje..."
@@ -675,16 +718,23 @@ const DogadjajList = () => {
               }}
             />
           </div>
-          
+
+          <div className="col-sm-5">
+            <CustomDateRangePicker
+              startDate={startDate}
+              setStartDate={setStartDate}
+              endDate={endDate}
+              setEndDate={setEndDate}
+            />
+          </div>
           {/* BUTTON FOR ADDING NEW EVENT */}
-          <div className="col-sm-4 text-end">
+          <div className="col-sm-2 text-end">
             <Button
               onClick={handleShowOrganizacija}
               className="btn btn-success"
-              data-toggle="modal"
             >
-              <i className="material-icons">&#xE147;</i>
-              <span>Dodaj novi događaj</span>
+              <FaSquarePlus size={20} className="mx-1" />
+              Dodaj novi događaj
             </Button>
           </div>
           {/* <div className="col-sm-6">
@@ -730,13 +780,16 @@ const DogadjajList = () => {
         </tbody>
       </table>
 
-      <Pagination
-        pages={totalPagesNumber}
-        setCurrentPage={setCurrentPage}
-        array={resultsToPaginate}
-        limit={limit}
-        maxVisibleButtons={3}
-      />
+      {totalPagesNumber > 0 && (
+        <Pagination
+          pages={totalPagesNumber}
+          currentPage={currentPage} // Pass currentPage here
+          setCurrentPage={setCurrentPage}
+          array={filteredDogadjaji}
+          limit={limit}
+          maxVisibleButtons={3}
+        />
+      )}
 
       <Modal show={showOrganizacija} onHide={handleCloseOrganizacija}>
         <Modal.Header closeButton>

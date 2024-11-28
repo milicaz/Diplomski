@@ -7,7 +7,7 @@ import {
   Form,
   ListGroup,
   Row,
-  Tab
+  Tab,
 } from "react-bootstrap";
 import { BiGame, BiSolidJoystick } from "react-icons/bi";
 import { FaHeadphones, FaLaptop } from "react-icons/fa";
@@ -16,6 +16,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useHttpProtected from "../../hooks/useHttpProtected";
 import useToast from "../../hooks/useToast";
 import Pagination from "../Pagination";
+
 export const OmladinskiCentarTrenutno = ({
   mestoPoseteId,
   mestoPoseteNaziv,
@@ -78,7 +79,7 @@ export const OmladinskiCentarTrenutno = ({
 
       handleShowToast("", "Uspešno ste odjavili posetioca", "success");
 
-      fetchData(controller);
+      await fetchData(controller);
     } catch (error) {
       if (error.name !== "CanceledError") {
         console.error("Greška prilikom check out-a:", error);
@@ -104,7 +105,7 @@ export const OmladinskiCentarTrenutno = ({
 
       handleShowToast("", "Uspešno ste odjavili opremu", "success");
 
-      fetchData(controller);
+      await fetchData(controller);
     } catch (error) {
       if (error.name !== "CanceledError") {
         console.error("Greška prilikom check out-a opreme:", error);
@@ -152,8 +153,7 @@ export const OmladinskiCentarTrenutno = ({
     setLimit(e.target.value);
   };
 
-  const shouldShowPagination =
-    searchQuery.trim() === "" && filteredTrenutno.length >= 10;
+  const shouldShowPagination = filteredTrenutno.length >= 10 && totalPages > 1;
 
   const modifyNaziv = (nazivMesta) => {
     if (nazivMesta === "Coworking prostor") {
@@ -170,7 +170,10 @@ export const OmladinskiCentarTrenutno = ({
           type="text"
           placeholder="Pretraga po imenu ili prezimenu"
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1);
+          }}
           className="mb-4"
         />
       </div>
@@ -365,6 +368,7 @@ export const OmladinskiCentarTrenutno = ({
           {trenutno && shouldShowPagination && (
             <Pagination
               pages={totalPages}
+              currentPage={currentPage}
               setCurrentPage={setCurrentPage}
               array={filteredTrenutno}
               limit={limit}

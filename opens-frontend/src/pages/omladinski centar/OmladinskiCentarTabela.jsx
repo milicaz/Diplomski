@@ -7,8 +7,7 @@ import {
   Image,
   Modal,
   Row,
-  Spinner,
-  Toast,
+  Spinner
 } from "react-bootstrap";
 import { FaRegFilePdf } from "react-icons/fa";
 import { RiFileExcel2Fill } from "react-icons/ri";
@@ -17,7 +16,6 @@ import useHttpProtected from "../../hooks/useHttpProtected";
 import useToast from "../../hooks/useToast";
 import Pagination from "../Pagination";
 import OmladinskiCentarTabelaItem from "./OmladinskiCentarTabelaItem";
-
 export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
   const [posete, setPosete] = useState([]);
   const [searchInput, setSearchInput] = useState("");
@@ -203,8 +201,7 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
   const currentItems = filteredPosete.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredPosete.length / limit);
 
-  const shouldShowPagination =
-    searchInput.trim() === "" && poseteZaPrikaz.length >= 10;
+  const shouldShowPagination = filteredPosete.length >= 10 && totalPages > 1;
 
   const onInputChange = (e) => {
     setLimit(e.target.value);
@@ -369,7 +366,10 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
             type="text"
             placeholder="Pretraga po imenu ili prezimenu"
             value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
+            onChange={(e) => {
+              setSearchInput(e.target.value);
+              setCurrentPage(1);
+            }}
           />
         </div>
 
@@ -456,7 +456,7 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
 
       <div className="row my-2">
         <div className="col-sm-8">
-          {poseteZaPrikaz && shouldShowPagination && (
+          {poseteZaPrikaz && totalPages > 0 && shouldShowPagination && (
             <div className="row align-items-center mb-3">
               <div className="col-auto pe-0">
                 <span>Prikaži</span>
@@ -516,9 +516,10 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
         <OmladinskiCentarTabelaItem key={index} posetilac={posetilac} />
       ))}
 
-      {poseteZaPrikaz && shouldShowPagination && (
+      {shouldShowPagination && (
         <Pagination
           pages={totalPages}
+          currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           array={filteredPosete}
           limit={limit}

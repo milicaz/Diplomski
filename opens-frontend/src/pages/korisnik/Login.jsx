@@ -19,45 +19,47 @@ const Login = () => {
   const location = useLocation();
   const { handleShowToast } = useToast();
 
+  const fetchData = async (isMounted, controller) => {
+    try {
+      const requests = [
+        httpProtected.get("/posetioci/bezPosete", {
+          signal: controller.signal,
+        }),
+        httpProtected.get("/mestaPosete", { signal: controller.signal }),
+        httpProtected.get("/oprema/slobodna", { signal: controller.signal }),
+      ];
+      const [posetiociData, mestaPoseteData, opremaData] = await Promise.all(
+        requests
+      );
+
+      if (isMounted) {
+        const formattedOptions = posetiociData.data.map((option) => ({
+          value: option.email,
+          label: `${option.ime} ${option.prezime} (${option.email})`,
+          data: option,
+        }));
+        setOptions(formattedOptions);
+        setMestaPosete(mestaPoseteData.data);
+        setOprema(opremaData.data);
+      }
+    } catch (error) {
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška prilikom pribavljanja podataka",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
+        navigate("/logovanje", { state: { from: location }, replace: true });
+      }
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
 
-    const fetchData = async () => {
-      try {
-        const requests = [
-          httpProtected.get("/posetioci", { signal: controller.signal }),
-          httpProtected.get("/mestaPosete", { signal: controller.signal }),
-          httpProtected.get("/oprema/slobodna", { signal: controller.signal }),
-        ];
-        const [posetiociData, mestaPoseteData, opremaData] = await Promise.all(
-          requests
-        );
-
-        if (isMounted) {
-          const formattedOptions = posetiociData.data.map((option) => ({
-            value: option.email,
-            label: `${option.ime} ${option.prezime} (${option.email})`,
-            data: option,
-          }));
-          setOptions(formattedOptions);
-          setMestaPosete(mestaPoseteData.data);
-          setOprema(opremaData.data);
-        }
-      } catch (error) {
-        if (error.response?.status >= 500) {
-          handleShowToast(
-            "Greška",
-            "Greška prilikom pribavljanja podataka",
-            "danger"
-          );
-        } else if (error.name !== "CanceledError") {
-          navigate("/logovanje", { state: { from: location }, replace: true });
-        }
-      }
-    };
-
-    fetchData();
+    fetchData(isMounted, controller);
 
     return () => {
       isMounted = false;
@@ -79,6 +81,7 @@ const Login = () => {
       await httpProtected.post("/posete", newPoseta, {
         signal: controller.signal,
       });
+      await fetchData(true, controller);
       handleShowToast(
         "Uspešno kreirana poseta",
         `Uspešno ste kreirali posetu za posetioca: ${posetilac.value}`,
@@ -126,7 +129,8 @@ const Login = () => {
       setSelectedOprema(null);
     } catch (error) {
       console.error("Greska tokom kreiranja posete:", error);
-      handleShowToast("",
+      handleShowToast(
+        "",
         `Greška tokom kreiranja posete za posetioca: ${posetilac.value}`,
         "danger"
       );

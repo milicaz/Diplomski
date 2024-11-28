@@ -43,6 +43,16 @@ public class PosetilacController {
 		return new ResponseEntity<>(posetioci, HttpStatus.OK);
 	}
 	
+	@GetMapping("/posetioci/bezPosete")
+	public ResponseEntity<List<Posetilac>> getPosetiociBezPosete() {
+		List<Posetilac> posetioci = new ArrayList<Posetilac>();
+		posetilacRepository.findPosetiociBezPosete().forEach(posetioci::add);
+		if (posetioci.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<>(posetioci, HttpStatus.OK);
+	}
+	
 	@GetMapping("/posetioci/{id}")
 	public ResponseEntity<Posetilac> getPosetilac(@PathVariable Long id) {
 		Posetilac posetilac = posetilacRepository.findById(id).get();
