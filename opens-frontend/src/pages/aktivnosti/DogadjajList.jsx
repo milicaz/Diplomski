@@ -11,6 +11,7 @@ import Dogadjaj from "./Dogadjaj";
 import { DogadjajContext } from "./DogadjajContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import CustomDateRangePicker from "../../utils/CustomDateRangePicker";
+import CreatableSelect from 'react-select/creatable';
 
 const DogadjajList = () => {
   const { sortedDogadjaji } = useContext(DogadjajContext);
@@ -373,14 +374,6 @@ const DogadjajList = () => {
     value: org.naziv,
     label: org.naziv,
   }));
-  //
-
-  // const handleDalje = (event) => {
-  //   event.preventDefault();
-  //   addOrganizacija(organizacija);
-  //   handleCloseOrganizacija();
-  //   handleShowDogadjaj();
-  // };
 
   const handleDalje = (event) => {
     event.preventDefault();
@@ -405,29 +398,6 @@ const DogadjajList = () => {
 
   const handleDodaj = (event) => {
     event.preventDefault();
-    // dogadjaj.organizacijaId = organizacijaId;
-    // addDogadjaj(dogadjaj);
-    // handleCloseDogadjaj();
-    // setOrganizacija({
-    //   naziv: "",
-    //   odgovornaOsoba: "",
-    //   brojTelefona: "",
-    //   email: "",
-    //   delatnost: "",
-    //   opis: "",
-    //   link: "",
-    // });
-    // setDogadjaj({
-    //   naziv: "",
-    //   datum: LocalDate.now(),
-    //   pocetakDogadjaja: LocalTime.MIDNIGHT,
-    //   krajDogadjaja: LocalTime.MIDNIGHT,
-    //   organizacijaId: organizacijaId,
-    //   mestoDogadjajaId: "",
-    //   vrstaDogadjajaId: "",
-    // });
-    // handleShowDialogUcesnik();
-    // Use organizacijaId from existing or newly created organization
     const currentOrganizacijaId = organizacijaId;
 
     if (!currentOrganizacijaId) {
@@ -545,29 +515,6 @@ const DogadjajList = () => {
     handleCloseHeader();
     handleShowFooter();
   };
-
-  // const handleChoose = (event) => {
-  //   event.preventDefault();
-  //   handleCloseFooter();
-  //     handlePDF();
-  // };
-
-  // const handlePDF = (event) => {
-  //   event.preventDefault();
-  //   const response = kreirajPDF(mesec, godina, vrsta, ime, prezime, headerImageId, footerImageId);
-  // };
-
-  // const handlePDF = (event) => {
-  //   event.preventDefault();
-  //   // Ensure valid inputs
-  //   if (!mesec || !godina || !vrsta || !ime || !prezime) {
-  //     console.error("Please fill all required fields.");
-  //     return;
-  //   }
-
-  //   // Call kreirajPDF with validated parameters
-  //   kreirajPDF(mesec, godina, vrsta, ime, prezime, headerImageId, footerImageId);
-  // };
 
   const handleChoose = (event) => {
     event.preventDefault(); // Call preventDefault on the current event
@@ -797,16 +744,21 @@ const DogadjajList = () => {
         </Modal.Header>
         <Modal.Body>
           <div>
-            <Form>
+          <Form>
+              {/* Creatable Dropdown for organization name */}
               <Form.Group>
-                <Form.Control
-                  name="naziv"
-                  value={organizacija.naziv}
-                  onChange={handleChange}
-                  style={{ width: "80%", maxWidth: "90%" }}
-                  type="text"
-                  placeholder="Naziv"
-                  required
+                <Form.Label>Naziv Organizacije</Form.Label>
+                <CreatableSelect
+                  value={{ value: organizacija.naziv, label: organizacija.naziv }} // Set the initial value
+                  onChange={handleSelectChange}
+                  options={options}
+                  // placeholder="Naziv organizacije"
+                  isClearable
+                  placeholder="Izaberite ili unesite novu organizaciju"
+                  isValidNewOption={(inputValue, selectedOptions) => {
+                    // Optionally control when a new option can be created (e.g., disallow empty input)
+                    return inputValue.length > 0;
+                  }}
                 />
               </Form.Group>
               <br />
@@ -815,7 +767,7 @@ const DogadjajList = () => {
                   name="odgovornaOsoba"
                   value={organizacija.odgovornaOsoba}
                   onChange={handleChange}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "90%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Odgovorna osoba"
                   required
@@ -827,7 +779,7 @@ const DogadjajList = () => {
                   name="brojTelefona"
                   value={organizacija.brojTelefona}
                   onChange={handleChange}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Broj telefon"
                   required
@@ -839,7 +791,7 @@ const DogadjajList = () => {
                   name="email"
                   value={organizacija.email}
                   onChange={handleChange}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="E-mail"
                   required
@@ -848,10 +800,12 @@ const DogadjajList = () => {
               <br />
               <Form.Group>
                 <Form.Control
+                  as="textarea"  // This makes it a textarea
+                  rows={4}  // You can adjust the number of rows to control the height of the textarea
                   name="delatnost"
                   value={organizacija.delatnost}
                   onChange={handleChange}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Delatnost"
                   required
@@ -860,10 +814,12 @@ const DogadjajList = () => {
               <br />
               <Form.Group>
                 <Form.Control
+                  as="textarea"  // This makes it a textarea
+                  rows={4}  // You can adjust the number of rows to control the height of the textarea
                   name="opis"
                   value={organizacija.opis}
                   onChange={handleChange}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Opis"
                   required
@@ -875,7 +831,7 @@ const DogadjajList = () => {
                   name="link"
                   value={organizacija.link}
                   onChange={handleChange}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Link"
                   required
