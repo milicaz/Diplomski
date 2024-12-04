@@ -103,7 +103,7 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       const response = await httpProtected.put(`/dogadjaji/${id}`, updateDogadjaj, {
         signal: controller.signal,
       });
-      getDogadjaji(true, controller);
+      await getDogadjaji(true, controller);
     } catch (error) {
       if (error.name !== "CanceledError") {
         console.error("Greška prilikom izmene događaja: ", error);

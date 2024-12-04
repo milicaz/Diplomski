@@ -338,25 +338,19 @@ const Dogadjaj = ({ dogadjaj }) => {
         <Modal.Body>
           <DogadjajUcesniciForm currentDogadjaj={dogadjaj} />
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseUcesnici}>Zatvori</Button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal>
 
       <Modal show={showEditDogadjaj} onHide={handleCloseEditDogadjaj} size="lg" centered>
         <Modal.Header closeButton>
-          <Modal.Title>Izmeni događaj</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <EditDogadjajForm editDogadjaj={dogadjaj} 
            onDogadjajEdited = {handleDogadjajEdit}
           />
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseEditDogadjaj}>
-            Zatvori
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );
