@@ -23,6 +23,10 @@ export const DeleteMestoPoseteForm = ({ mestoPosete }) => {
             </b>{" "}
             (ukupan broj mesta: <i>{mestoPosete.ukupanBrojMesta}</i>)?
           </p>
+          <p className="text-danger">
+            <strong>Upozorenje:</strong> Ako obrišete ovo mesto posete, nećete
+            biti više u mogućnosti da generišete izveštaje za njega.
+          </p>
         </Col>
       </Row>
     </>

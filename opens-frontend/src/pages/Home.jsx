@@ -67,15 +67,29 @@ export const Home = () => {
       ? mestaPosete.sort((a, b) => (a.id < b.id ? -1 : 1))
       : [];
 
-  const getCardColor = (tipDogadjaja) => {
-    switch (tipDogadjaja.toLowerCase()) {
-      case "interne aktivnosti":
-        return "card-shadow bg-c-red";
-      case "eksterne aktivnosti":
-        return "card-shadow bg-c-blue";
-      case "kulturna stanica":
-        return "card-shadow bg-c-purple";
-    }
+  const getPoseteCardColor = (index) => {
+    return index % 2 === 0 ? 'card-shadow bg-c-green' : 'card-shadow bg-c-yellow';
+  }
+
+  const getAdminMesecnePoseteCardColors = (index) => {
+    return index % 2 === 0
+      ? { backgroundColor: 'rgba(163, 197, 123, 0.5)', borderColor: 'rgba(163, 197, 123, 1)' }
+      : { backgroundColor: 'rgba(251, 181, 55, 0.5)', borderColor: 'rgba(251, 181, 55, 1)' };
+  };
+
+  // const getCardColor = (tipDogadjaja) => {
+  //   switch (tipDogadjaja.toLowerCase()) {
+  //     case "interne aktivnosti":
+  //       return "card-shadow bg-c-red";
+  //     case "eksterne aktivnosti":
+  //       return "card-shadow bg-c-blue";
+  //     case "kulturna stanica":
+  //       return "card-shadow bg-c-purple";
+  //   }
+  // };
+  const getUcesniciCardColor = (index) => {
+    const colors = ["card-shadow bg-c-red", "card-shadow bg-c-blue", "card-shadow bg-c-purple"];
+    return colors[index % 3];
   };
 
   const capitalizeFirstLetter = (string) => {
@@ -85,17 +99,13 @@ export const Home = () => {
   return (
     <>
       <Row>
-        {posete.map((p) => (
+        {posete.map((p, index) => (
           <Col key={p.mestoPoseteId}>
             <Card
-              className={
-                p.mestoPoseteId % 2 === 0
-                  ? "card-shadow bg-c-yellow"
-                  : "card-shadow bg-c-green"
-              }
+              className={ getPoseteCardColor(index)}
             >
               <Card.Body>
-                <h6 className="card-naslov">{p.nazivMesta}</h6>
+                <h6 className="card-naslov">{capitalizeFirstLetter(p.nazivMesta)}</h6>
                 <Row>
                   <Col>Ukupno poseta</Col>
                 </Row>
@@ -117,9 +127,9 @@ export const Home = () => {
           </Col>
         ))}
 
-        {ucesnici.map((u) => (
+        {ucesnici.map((u, index) => (
           <Col key={u.tipDogadjajaId}>
-            <Card className={getCardColor(u.tipDogadjaja)}>
+            <Card className={getUcesniciCardColor(index)}>
               <Card.Body>
                 <h6 className="card-naslov">
                   {capitalizeFirstLetter(u.tipDogadjaja)}
@@ -148,17 +158,17 @@ export const Home = () => {
       <Container className="mt-3">
         <Row>
           <Col md={6}>
-            {sortedMestaPosete.map((mestoPosete) => (
-              <Row className="mb-3" key={mestoPosete.id}>
-                <Col>
-                  <Card className="card-shadow">
-                    <Card.Body>
-                      <AdminMesecnePosete mestoPoseteId={mestoPosete.id} />
-                    </Card.Body>
-                  </Card>
-                </Col>
-              </Row>
-            ))}
+            {sortedMestaPosete.map((mestoPosete, index) => {
+              const { backgroundColor, borderColor } = getAdminMesecnePoseteCardColors(index);
+              return (
+                <Row className="mb-3" key={mestoPosete.id}>
+                  <Col>
+                    <AdminMesecnePosete mestoPoseteId={mestoPosete.id} backgroundColor={backgroundColor}
+                      borderColor={borderColor} />
+                  </Col>
+                </Row>
+              )
+            })}
           </Col>
           <Col md={6}>
             <Card className="card-shadow card-height">

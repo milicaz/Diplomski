@@ -120,13 +120,14 @@ const Login = () => {
     try {
       const posetaData = {
         posetilacEmail: posetilac.value,
-        oprema: selectedOprema.map((oprema) => ({ id: oprema.value })),
         mestoPoseteID: mestoPoseteId,
+        oprema: selectedOprema.map((oprema) => ({ id: oprema.value })),
       };
+      console.log("Saljem: ", posetaData);
       await addPosetu(posetaData);
       setPosetilac(null);
       setMestaPoseteId(null);
-      setSelectedOprema(null);
+      setSelectedOprema([]);
     } catch (error) {
       console.error("Greska tokom kreiranja posete:", error);
       handleShowToast(

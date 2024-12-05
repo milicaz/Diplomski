@@ -269,6 +269,7 @@ export const Navigation = () => {
                 )}
                 <Nav className="justify-content-end">
                   <NavDropdown
+                    align="end"
                     title={
                       <span>
                         <FaUser />

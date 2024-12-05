@@ -212,15 +212,6 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
     date.getMonth() + 1
   }-${date.getFullYear()}`;
 
-  const modifyNaziv = (nazivMesta) => {
-    if (nazivMesta === "Coworking prostor") {
-      return "Coworking prostora";
-    } else if (nazivMesta === "Omladinski centar") {
-      return "Omladinskog centra";
-    }
-    return nazivMesta;
-  };
-
   const handleNext = (e) => {
     e.preventDefault();
     handleCloseHeader();
@@ -232,8 +223,8 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
     handleCloseFooter();
     if (downloadType === "pdf") {
       handlePDFDownload();
-    } else if (downloadType === "excel") {
-      handleXLSXDownload();
+    // } else if (downloadType === "excel") {
+    //   handleXLSXDownload();
     }
   };
 
@@ -273,7 +264,7 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
 
       link.setAttribute(
         "download",
-        `Evidencija direktnih posetioca ${modifyNaziv(mestoPoseteNaziv)}-` +
+        `${mestoPoseteNaziv} - evidencija direktnih posetilaca-` +
           formattedDate +
           ".pdf"
       );
@@ -301,10 +292,18 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
   };
 
   const handleXLSXDownload = async () => {
-    if (!headerImageId || !footerImageId) {
+    // if (!headerImageId || !footerImageId) {
+    //   handleShowToast(
+    //     "Greška",
+    //     "Molimo izaberite logoe za header i footer.",
+    //     "danger"
+    //   );
+    //   return;
+    // }
+    if (!dateInput) {
       handleShowToast(
         "Greška",
-        "Molimo izaberite logoe za header i footer.",
+        "Prvo morate izabrati mesec i godinu za koju želite da generišete EXCEL izveštaj.",
         "danger"
       );
       return;
@@ -333,7 +332,7 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
 
         link.setAttribute(
           "download",
-          `Evidencija direktnih posetioca ${modifyNaziv(mestoPoseteNaziv)}-` +
+          `${mestoPoseteNaziv} - evidencija direktnih posetilaca-` +
             formattedDate +
             ".xlsx"
         );
@@ -389,6 +388,7 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
             onClick={() => {
               if (!dateInput) {
                 handleShowToast(
+                  "Greška",
                   "Prvo morate izabrati mesec i godinu za koju želite da generišete PDF izveštaj.",
                   "danger"
                 );
@@ -420,17 +420,19 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
           <Button
             className="mx-1"
             variant="success"
-            onClick={() => {
-              if (!dateInput) {
-                handleShowToast(
-                  "Prvo morate izabrati mesec i godinu za koju želite da generišete EXCEL izveštaj.",
-                  "danger"
-                );
-              } else {
-                handleShowHeader();
-                setDownloadType("excel");
-              }
-            }}
+            onClick={handleXLSXDownload}
+            // onClick={() => {
+            //   if (!dateInput) {
+            //     handleShowToast(
+            //       "Greška",
+            //       "Prvo morate izabrati mesec i godinu za koju želite da generišete EXCEL izveštaj.",
+            //       "danger"
+            //     );
+            //   } else {
+            //     handleShowHeader();
+            //     setDownloadType("excel");
+            //   }
+            // }}
             disabled={downloadingXlsx}
           >
             {downloadingXlsx ? (

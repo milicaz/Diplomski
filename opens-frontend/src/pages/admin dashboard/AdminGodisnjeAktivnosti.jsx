@@ -5,22 +5,51 @@ import { Pie } from "react-chartjs-2";
 export const AdminGodisnjeAktivnosti = ({ aktivnosti }) => {
   const currentYear = new Date().getFullYear();
 
+  const baseColors = [
+    [
+      "rgba(245, 111, 102, 0.5)",  // Light red
+      "rgba(97, 205, 220, 0.5)",   // Light blue
+      "rgba(161, 139, 189, 0.5)",  // Light purple
+    ],
+    [
+      "rgba(245, 111, 102, 0.7)",  // Darker red
+      "rgba(97, 205, 220, 0.7)",   // Darker blue
+      "rgba(161, 139, 189, 0.7)",  // Darker purple
+    ],
+    [
+      "rgba(245, 111, 102, 0.9)",  // Almost solid red
+      "rgba(97, 205, 220, 0.9)",   // Almost solid blue
+      "rgba(161, 139, 189, 0.9)",  // Almost solid purple
+    ],
+  ];
+
+  // Funkcija za generisanje boja
+  const generateColors = (brojAktivnosti) => {
+    const backgroundColors = [];
+    const borderColors = [];
+
+    // Prolazimo kroz aktivnosti i dodajemo boje na osnovu indeksa
+    for (let i = 0; i < brojAktivnosti; i++) {
+      const cycleIndex = Math.floor(i / 3) % baseColors.length;
+      const colorSet = baseColors[cycleIndex];
+
+      backgroundColors.push(colorSet[i % 3]);
+      borderColors.push(colorSet[i % 3].replace('0.5', '1').replace('0.7', '1').replace('0.9', '1'));
+    }
+
+    return { backgroundColors, borderColors };
+  };
+
+  const { backgroundColors, borderColors } = generateColors(aktivnosti.length);
+
   const data = {
-    labels: ["Interne aktivnosti", "Eksterne aktivnosti", "Kulturna stanica"],
+    labels: aktivnosti.map((a)=> a.vrstaNaziv),
     datasets: [
       {
         label: `Broj događaja u ${currentYear}. godinu`,
         data: aktivnosti.map((a) => a.brojDogadjaja),
-        backgroundColor: [
-          "rgba(245, 111, 102, 0.5)",
-          "rgba(97, 205, 220, 0.5)",
-          "rgba(161, 139, 189, 0.5)",
-        ],
-        borderColor: [
-          "rgba(245, 111, 102, 1)",
-          "rgba(97, 205, 220, 1)",
-          "rgba(161, 139, 189, 1)",
-        ],
+        backgroundColor: backgroundColors,
+        borderColor: borderColors,
         borderWidth: 1,
       },
     ],
@@ -56,5 +85,6 @@ export const AdminGodisnjeAktivnosti = ({ aktivnosti }) => {
     </>
   );
 };
+
 
 export default AdminGodisnjeAktivnosti;

@@ -4,9 +4,11 @@ import { Bar } from "react-chartjs-2";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHttpProtected from "../../hooks/useHttpProtected";
 import useToast from "../../hooks/useToast";
+import { Card } from "react-bootstrap";
 
-export const AdminMesecnePoseteCoworking = ({ mestoPoseteId }) => {
+export const AdminMesecnePoseteCoworking = ({ mestoPoseteId, backgroundColor, borderColor }) => {
   const [mesecnePosete, setMesecnePosete] = useState([]);
+  console.log("Posete: ", mesecnePosete);
 
   const httpProtected = useHttpProtected();
   const navigate = useNavigate();
@@ -92,36 +94,14 @@ export const AdminMesecnePoseteCoworking = ({ mestoPoseteId }) => {
     }
   };
 
-  const modifyNazivMesta = (nazivMesta) => {
-    if (nazivMesta === "Coworking prostor") {
-      return "Coworking prostora";
-    } else if (nazivMesta === "Omladinski klub") {
-      return "Omladinskom klubu";
-    }
-    return nazivMesta;
-  };
-
-  const modifyNaziv = (nazivMesta) => {
-    if (nazivMesta === "Coworking prostor") {
-      return "Coworking prostoru";
-    } else if (nazivMesta === "Omladinski klub") {
-      return "Omladinskom klubu";
-    }
-    return nazivMesta;
-  };
-
   const data = {
     labels: latestMonthsData.map((item) => monthNames[item.mesec - 1]),
     datasets: [
       {
-        label: `Broj poseta ${
-          mesecnePosete.length > 0
-            ? modifyNazivMesta(mesecnePosete[0].nazivMesta)
-            : ""
-        } za ${currentYear}. godinu`,
+        label: `Mesečni broj poseta u ${currentYear}. godinu`,
         data: latestMonthsData.map((item) => item.mesecniBroj),
-        backgroundColor: getBackgroundColor(mestoPoseteId),
-        borderColor: getBorderColor(mestoPoseteId),
+        backgroundColor: backgroundColor,
+        borderColor: borderColor,
         borderWidth: 1,
       },
     ],
@@ -132,11 +112,7 @@ export const AdminMesecnePoseteCoworking = ({ mestoPoseteId }) => {
       title: {
         display: true,
         position: "top",
-        text: `Mesečni broj poseta u ${
-          mesecnePosete.length > 0
-            ? modifyNaziv(mesecnePosete[0].nazivMesta)
-            : ""
-        }`,
+        text: `${mesecnePosete.length > 0 ? mesecnePosete[0].nazivMesta : ""}`,
         font: {
           size: 20,
         },
@@ -153,9 +129,18 @@ export const AdminMesecnePoseteCoworking = ({ mestoPoseteId }) => {
     },
   };
 
+  // If there is no data, don't render anything
+  if (mesecnePosete.length === 0) {
+    return null; // This will prevent rendering the Bar chart component entirely
+  }
+
   return (
     <>
-      <Bar data={data} options={options} />
+      <Card className="card-shadow">
+        <Card.Body>
+          <Bar data={data} options={options} />
+        </Card.Body>
+      </Card>
     </>
   );
 };
