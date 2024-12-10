@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import useHttpProtected from "../../../hooks/useHttpProtected";
+import useToast from "../../../hooks/useToast";
 
 export const PrigradskaNaseljaContext = createContext();
 
@@ -7,6 +8,7 @@ const PrigradskaNaseljaContextProvider = ({ children, navigate, location }) => {
   const [prigradskaNaselja, setPrigradskaNaselja] = useState([]);
 
   const httpProtected = useHttpProtected();
+  const { handleShowToast } = useToast();
 
   useEffect(() => {
     let isMounted = true;
@@ -31,8 +33,13 @@ const PrigradskaNaseljaContextProvider = ({ children, navigate, location }) => {
         setPrigradskaNaselja(data);
       }
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching prigradska naselja: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
@@ -46,8 +53,19 @@ const PrigradskaNaseljaContextProvider = ({ children, navigate, location }) => {
       });
       getNaselje(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom dodavanja prigradskog naselja: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o prigradskom naselju su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom kreiranja prigradskog naselja. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -63,8 +81,19 @@ const PrigradskaNaseljaContextProvider = ({ children, navigate, location }) => {
       });
       getNaselje(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching prigradska naselja: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o prigradskom naselju su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom izmene prigradskog naselja. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -80,8 +109,19 @@ const PrigradskaNaseljaContextProvider = ({ children, navigate, location }) => {
       });
       getNaselje(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching prigradska naselja: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Nevalidan ID za brisanje prigradskog naselja. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom brisanja prigradskog naselja. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {

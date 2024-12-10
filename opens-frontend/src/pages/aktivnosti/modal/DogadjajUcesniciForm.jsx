@@ -10,6 +10,7 @@ import Pagination from "../../Pagination";
 import { DogadjajContext } from "../DogadjajContext";
 import DeleteUcesnikForm from "./DeleteUcesnikForm";
 import EditUcesnikForm from "./EditUcesnikFrom";
+import useToast from "../../../hooks/useToast";
 
 const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   const { getUcesnici } = useContext(DogadjajContext);
@@ -21,6 +22,7 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { handleShowToast } = useToast();
 
   const [ucesnici, setUcesnici] = useState([]);
 
@@ -127,12 +129,21 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
             setLogos(logoiData.data);
           }
         } catch (error) {
-          if (error.name !== "CanceledError") {
-            console.error("Greška prilikom fetching podataka: ", error);
-            navigate("/logovanje", {
-              state: { from: location },
-              replace: true,
-            });
+          if (
+            error.response &&
+            error.response.status === 400 &&
+            error.response.data === "File size exceeds limit!"
+          ) {
+            throw new Error("File size exceeds limit!");
+          }
+          if (error.response?.status >= 500) {
+            handleShowToast(
+              "Greška",
+              "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+              "danger"
+            );
+          } else if (error.name !== "CanceledError") {
+            navigate("/logovanje", { state: { from: location }, replace: true });
           }
         }
       };

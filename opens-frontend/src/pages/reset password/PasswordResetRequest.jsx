@@ -3,21 +3,23 @@ import { useState } from "react";
 import { Button, Card, Form, Toast } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { opensBojaImage } from "../../assets";
+import useToast from "../../hooks/useToast";
 
 const PasswordResetRequest = () => {
   const [email, setEmail] = useState("");
 
   let navigate = useNavigate();
+  const { handleShowToast } = useToast();
 
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastVariant, setToastVariant] = useState("");
+  // const [showToast, setShowToast] = useState(false);
+  // const [toastMessage, setToastMessage] = useState("");
+  // const [toastVariant, setToastVariant] = useState("");
 
-  const handleShowToast = (message, variant) => {
-    setToastMessage(message);
-    setToastVariant(variant);
-    setShowToast(true);
-  };
+  // const handleShowToast = (message, variant) => {
+  //   setToastMessage(message);
+  //   setToastVariant(variant);
+  //   setShowToast(true);
+  // };
 
   const handleRequest = async () => {
     try {
@@ -30,19 +32,19 @@ const PasswordResetRequest = () => {
           },
         }
       );
-      handleShowToast("Email za resetovanje lozinke je poslat", "success");
+      handleShowToast("","Email za resetovanje lozinke je poslat", "success");
       setTimeout(() => {
         navigate("/text-page");
       }, 4000);
     } catch (error) {
       if (!error?.response) {
-        handleShowToast("Nema odgovora sa servera", "danger");
+        handleShowToast("Greška", "Nema odgovora sa servera", "danger");
       } else if (error.response?.status === 404) {
         console.error("Error requesting password reset:", error);
-        handleShowToast("Došlo je do greške prilikom slanja emaila", "error");
+        handleShowToast("Greška", "Došlo je do greške prilikom slanja emaila", "error");
       } else if (error.response) {
         console.error("Error requesting password reset:", error);
-        handleShowToast("Došlo je do greške prilikom slanja emaila", "error");
+        handleShowToast("Greška", "Došlo je do greške prilikom slanja emaila", "error");
       }
     }
   };
@@ -79,7 +81,7 @@ const PasswordResetRequest = () => {
           </Card.Body>
         </Card>
       </div>
-      <Toast
+      {/* <Toast
         show={showToast}
         onClose={() => setShowToast(false)}
         style={{
@@ -99,7 +101,7 @@ const PasswordResetRequest = () => {
           </strong>
         </Toast.Header>
         <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast>
+      </Toast> */}
     </>
   );
 };

@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import useHttpProtected from "../../../hooks/useHttpProtected";
+import useToast from "../../../hooks/useToast";
 
 export const MestoDogadjajaContext = createContext();
 
@@ -7,6 +8,7 @@ const MestoDogadjajaContextProvider = ({ children, navigate, location }) => {
   const [mestaDogadjaja, setMestaDogadjaja] = useState([]);
 
   const httpProtected = useHttpProtected();
+  const { handleShowToast } = useToast();
 
   useEffect(() => {
     let isMounted = true;
@@ -31,8 +33,13 @@ const MestoDogadjajaContextProvider = ({ children, navigate, location }) => {
         setMestaDogadjaja(data);
       }
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching mesta događaja: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
@@ -46,8 +53,19 @@ const MestoDogadjajaContextProvider = ({ children, navigate, location }) => {
       });
       getMesta(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom dodavanja mesta događaja: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o mestu događaja su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom kreiranja mesta događaja. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -63,8 +81,19 @@ const MestoDogadjajaContextProvider = ({ children, navigate, location }) => {
       });
       getMesta(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom izmene mesta događaja: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o mestu događaja su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom izmene mesta događaja. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -80,8 +109,19 @@ const MestoDogadjajaContextProvider = ({ children, navigate, location }) => {
       });
       getMesta(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom brisanja mesta događaja: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Nevalidan ID za brisanje mesta događaja. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom brisanja mesta događaja. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {

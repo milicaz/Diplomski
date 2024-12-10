@@ -3,8 +3,12 @@ import { Button, Card, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { opensBojaImage } from "../assets";
 import useHttpProtected from "../hooks/useHttpProtected";
+import useToast from "../hooks/useToast";
 
 const Ucesnici = () => {
+
+  const { handleShowToast } = useToast();
+
   const [validated, setValidated] = useState(false);
   const [ucesnik, setUcesnik] = useState({
     ime: "",
@@ -51,8 +55,13 @@ const Ucesnici = () => {
           setDogadjaji(filteredDogadjaji);
         }
       } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error("An error occurred while fetching dogadjaji: ", error);
+        if (error.response?.status >= 500) {
+          handleShowToast(
+            "Greška",
+            "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+            "danger"
+          );
+        } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       }
@@ -106,11 +115,19 @@ const Ucesnici = () => {
           organizacija: "",
         });
       } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error(
-            "Greška prilikom dodavanja učesnika u događaj: ",
-            error
+        if (error.response?.status === 400) {
+          handleShowToast(
+            "Greška",
+            "Podaci o učesniku su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+            "danger"
           );
+        } else if (error.response?.status >= 500) {
+          handleShowToast(
+            "Greška",
+            "Došlo je do greške na serveru prilikom kreiranja učesnika. Molimo pokušajte ponovo kasnije.",
+            "danger"
+          );
+        } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       } finally {

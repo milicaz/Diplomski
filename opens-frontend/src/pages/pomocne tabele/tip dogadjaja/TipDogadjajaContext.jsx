@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import useHttpProtected from "../../../hooks/useHttpProtected";
+import useToast from "../../../hooks/useToast";
 
 export const TipDogadjajaContext = createContext();
 
@@ -7,6 +8,7 @@ const TipDogadjajaContextProvider = ({ children, navigate, location }) => {
   const [tipoviDogadjaja, setTipoviDogadjaja] = useState([]);
 
   const httpProtected = useHttpProtected();
+  const { handleShowToast } = useToast();
 
   useEffect(() => {
     let isMounted = true;
@@ -31,8 +33,13 @@ const TipDogadjajaContextProvider = ({ children, navigate, location }) => {
         setTipoviDogadjaja(data);
       }
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching tipova događaja: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
@@ -46,8 +53,19 @@ const TipDogadjajaContextProvider = ({ children, navigate, location }) => {
       });
       getTipovi(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom dodavanja tipa događaja: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o tipu događaja su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom kreiranja tipa događaja. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -63,8 +81,19 @@ const TipDogadjajaContextProvider = ({ children, navigate, location }) => {
       });
       getTipovi(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom izmene tipa događaja: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o tipu događaja su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom izmene tipa događaja. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -80,8 +109,19 @@ const TipDogadjajaContextProvider = ({ children, navigate, location }) => {
       });
       getTipovi(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom brisanja tipova događaja: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Nevalidan ID za brisanje tipa događaja. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom brisanja tipa događaja. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {

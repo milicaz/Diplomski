@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { httpPublic } from "../../apis/http";
 import useHttpProtected from "../../hooks/useHttpProtected";
+import useToast from "../../hooks/useToast";
 
 export const ZaposleniContext = createContext();
 
@@ -9,6 +10,7 @@ const ZaposleniContextProvider = ({ children, navigate, location }) => {
   const [uloga, setUloga] = useState([]);
 
   const httpProtected = useHttpProtected();
+  const { handleShowToast } = useToast();
 
   useEffect(() => {
     let isMounted = true;
@@ -33,8 +35,13 @@ const ZaposleniContextProvider = ({ children, navigate, location }) => {
         setZap(data);
       }
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching zaposlene: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
@@ -48,8 +55,13 @@ const ZaposleniContextProvider = ({ children, navigate, location }) => {
       });
       setUloga(data);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching uloge: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
@@ -61,14 +73,38 @@ const ZaposleniContextProvider = ({ children, navigate, location }) => {
       const { data } = await httpPublic.post("/signup", zaposleni, {
         signal: controller.signal,
       });
+      handleShowToast(
+        "Registracija uspešna",
+        "Uspešno ste se registrovali zaposlenog",
+        "success"
+      );
       return data;
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom dodavanja zaposlenog: ", error);
-        navigate("/logovanje", { state: { from: location }, replace: true });
+      if (!error.response) {
+        handleShowToast(
+          "Registracija neuspešna",
+          "Greška u mreži. Zahtev nije mogao biti poslat zbog greške u mreži.",
+          "danger"
+        );
+      } else if (error.response?.status === 409) {
+        handleShowToast(
+          "Registracija neuspešna",
+          "Email je već u upotrebi. Molimo Vas da pokušate sa nekim drugim.",
+          "danger"
+        );
+      } else if (error.response.status >= 500) {
+        handleShowToast(
+          "Registracija neuspešna",
+          "Došlo je do problema sa serverom. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else {
+        handleShowToast(
+          "Registracija neuspešna",
+          "Došlo je do neočekivane greške tokom registracije.",
+          "danger"
+        );
       }
-      throw error; // Rethrow the error for handling in the calling function
-      // }
     }
   };
 
@@ -96,8 +132,19 @@ const ZaposleniContextProvider = ({ children, navigate, location }) => {
       );
       getZaposleni(true, controller); // Refresh or fetch data after successful update
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Error updating zaposleni:", error.response || error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o zaposlenom su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom izmene zaposlenog. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -113,8 +160,19 @@ const ZaposleniContextProvider = ({ children, navigate, location }) => {
       });
       getZaposleni(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom brisanja zaposlenog: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Nevalidan ID za brisanje zaposlenog. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom brisanja zaposlenog. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {

@@ -12,6 +12,7 @@ import { DogadjajContext } from "./DogadjajContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import CustomDateRangePicker from "../../utils/CustomDateRangePicker";
 import CreatableSelect from 'react-select/creatable';
+import useToast from "../../hooks/useToast";
 
 const DogadjajList = () => {
   const { sortedDogadjaji } = useContext(DogadjajContext);
@@ -33,6 +34,7 @@ const DogadjajList = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { handleShowToast } = useToast();
 
   const [organizacija, setOrganizacija] = useState({
     naziv: "",
@@ -149,8 +151,20 @@ const DogadjajList = () => {
           setLogos(logoiData.data);
         }
       } catch (error) {
-        if (error.name !== "CanceledError") {
-          console.error("Greška prilikom fetching podataka: ", error);
+        if (
+          error.response &&
+          error.response.status === 400 &&
+          error.response.data === "File size exceeds limit!"
+        ) {
+          throw new Error("File size exceeds limit!");
+        }
+        if (error.response?.status >= 500) {
+          handleShowToast(
+            "Greška",
+            "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+            "danger"
+          );
+        } else if (error.name !== "CanceledError") {
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       }

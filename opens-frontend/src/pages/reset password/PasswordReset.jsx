@@ -4,6 +4,7 @@ import { Button, Card, Form, InputGroup, Toast } from "react-bootstrap";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
 import { opensBojaImage } from "../../assets";
+import useToast from "../../hooks/useToast";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -14,6 +15,7 @@ const PasswordReset = () => {
   const token = query.get("token");
 
   const navigate = useNavigate();
+  const {handleShowToast} = useToast();
 
   const [validated, setValidated] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -21,9 +23,9 @@ const PasswordReset = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastVariant, setToastVariant] = useState("");
+  // const [showToast, setShowToast] = useState(false);
+  // const [toastMessage, setToastMessage] = useState("");
+  // const [toastVariant, setToastVariant] = useState("");
 
   const isValidPassword = (password) => {
     const passwordRegex =
@@ -31,11 +33,11 @@ const PasswordReset = () => {
     return passwordRegex.test(password);
   };
 
-  const handleShowToast = (message, variant) => {
-    setToastMessage(message);
-    setToastVariant(variant);
-    setShowToast(true);
-  };
+  // const handleShowToast = (message, variant) => {
+  //   setToastMessage(message);
+  //   setToastVariant(variant);
+  //   setShowToast(true);
+  // };
 
   const handleReset = async (event) => {
     event.preventDefault();
@@ -49,7 +51,7 @@ const PasswordReset = () => {
     ) {
       setValidated(true);
     } else if (newPassword !== confirmPassword) {
-      handleShowToast("Lozinke se ne podudaraju!", "error");
+      handleShowToast("Greška", "Lozinke se ne podudaraju!", "danger");
       return;
     } else {
       try {
@@ -63,17 +65,18 @@ const PasswordReset = () => {
             },
           }
         );
-        handleShowToast("Lozinka je uspesno promenjena", "success");
+        handleShowToast("", "Lozinka je uspesno promenjena", "success");
         setTimeout(() => {
           navigate("/logovanje");
         }, 4000);
       } catch (error) {
         if (!error.response) {
-          handleShowToast("Nema odgovora sa servera", "danger");
+          handleShowToast("Greška", "Nema odgovora sa servera", "danger");
         } else if (error.response?.status === 401) {
-          handleShowToast("Nevažeći ili istekao token.", "danger");
+          handleShowToast("Greška", "Nevažeći ili istekao token.", "danger");
         } else {
           handleShowToast(
+            "Greška",
             "Došlo je do greške prilikom promene lozinke.",
             "danger"
           );
@@ -150,7 +153,7 @@ const PasswordReset = () => {
           </Card.Body>
         </Card>
       </div>
-      <Toast
+      {/* <Toast
         show={showToast}
         onClose={() => setShowToast(false)}
         style={{
@@ -170,7 +173,7 @@ const PasswordReset = () => {
           </strong>
         </Toast.Header>
         <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast>
+      </Toast> */}
     </>
   );
 };

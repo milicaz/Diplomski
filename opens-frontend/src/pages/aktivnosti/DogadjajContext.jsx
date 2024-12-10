@@ -1,9 +1,11 @@
 import { createContext, useEffect, useState } from "react";
 import useHttpProtected from "../../hooks/useHttpProtected";
+import useToast from "../../hooks/useToast";
 
 export const DogadjajContext = createContext();
 
 const DogadjajContextProvider = ({ children, navigate, location }) => {
+  const { handleShowToast } = useToast();
   const [dogadjaji, setDogadjaji] = useState([]);
   const [organizacijaId, setOrganizacijaId] = useState(null);
   const [currentOrganizacija, setCurrentOrganizacija] = useState({
@@ -57,8 +59,13 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         setDogadjaji(data);
       }
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching događaja: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
@@ -88,8 +95,19 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       setDogadjajId(response.data.id);
       getDogadjaji(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom dodavanja događaja: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o događaju su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom kreiranja događaja. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -105,11 +123,21 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       });
       await getDogadjaji(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom izmene događaja: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o događaju su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom izmene događaja. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
-    } finally {
       controller.abort();
     }
   };
@@ -122,8 +150,19 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       });
       getDogadjaji(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom brisanja događaja: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Nevalidan ID za brisanje događaja. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom brisanja događaja. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -142,8 +181,13 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         setOrganizacije(data);
       }
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching organizacije: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
@@ -157,8 +201,13 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       });
       setCurrentOrganizacija(response.data);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching organizacije po id: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -175,8 +224,19 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       setOrganizacijaId(response.data.id);
       return response.data;
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom dodavanja organizacije: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o organizaciji su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom kreiranja organizacije. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -191,8 +251,19 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         signal: controller.signal,
       });
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom izmene organizacije: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o organizaciji su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom izmene organizacije. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -209,8 +280,13 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         setMestaDogadjaja(data);
       }
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching mesta događaja: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
@@ -225,8 +301,13 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         setTipoviDogadjaja(data);
       }
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching tipova događaja: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
@@ -238,11 +319,15 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       const { data } = await httpProtected.get(`/sviUcesniciDogadjaja/${id}`, {signal: controller.signal});
       return data; // Return the data directly
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching učesnici događaja: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
-      return []; // Return an empty array if there was an error
     } finally {
       controller.abort();
     }
@@ -256,8 +341,19 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       });
       getDogadjaji(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom dodavanja ucesnika na događaj: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o učesniku su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom kreiranja učesnika. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -273,8 +369,19 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       });
       // getUcesnici(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom izmene učesnika: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o učesniku su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom izmene učesnika. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -291,57 +398,25 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       // getDogadjaji(true, controller);
       // getUcesnici(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom brisanja učesnika: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Nevalidan ID za brisanje učesnika. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom brisanja učesnika. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
       controller.abort();
     }
   };
-
-  // const kreirajPDF = async (mesec, godina, id, ime, prezime, headerImageId, footerImageId) => {
-  //   const controller = new AbortController();
-  //   try {
-  //     const response = await httpProtected.get(
-  //       `/dogadjajiView/${mesec}/${godina}/${id}`,
-  //       {
-  //         params: {
-  //           ime: ime,
-  //           prezime: prezime,
-  //           headerImageId: headerImageId,
-  //           footerImageId: footerImageId 
-  //         },
-  //         responseType: "blob",
-  //         signal: controller.signal,
-  //       }
-  //     );
-  //     const blob = new Blob([response.data], { type: "application/pdf" });
-
-  //     const url = window.URL.createObjectURL(blob);
-
-  //     // Create an anchor element
-  //     const link = document.createElement("a");
-  //     link.href = url;
-  //     link.setAttribute("download", "dogadjajireport.pdf");
-
-  //     // Append the link to the body
-  //     document.body.appendChild(link);
-
-  //     // Trigger the download
-  //     link.click();
-
-  //     link.parentNode.removeChild(link);
-  //     window.URL.revokeObjectURL(url);
-  //   } catch (error) {
-  //     if (error.name !== "CanceledError") {
-  //       console.error("Error downloading PDF:", error);
-  //       navigate("/logovanje", { state: { from: location }, replace: true });
-  //     }
-  //   } finally {
-  //     controller.abort();
-  //   }
-  // };
 
   const kreirajPDF = async (mesec, godina, id, ime, prezime, headerImageId, footerImageId) => {
     const controller = new AbortController();

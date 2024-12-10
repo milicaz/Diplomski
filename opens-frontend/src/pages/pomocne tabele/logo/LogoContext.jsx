@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import useHttpProtected from "../../../hooks/useHttpProtected";
+import useToast from "../../../hooks/useToast";
 
 export const LogoContext = createContext();
 
@@ -7,6 +8,7 @@ const LogoContextProvider = ({ children, navigate, location }) => {
   const [base64, setBase64] = useState([]);
 
   const httpProtected = useHttpProtected();
+  const { handleShowToast } = useToast();
 
   useEffect(() => {
     let isMounted = true;
@@ -36,8 +38,13 @@ const LogoContextProvider = ({ children, navigate, location }) => {
       ) {
         throw new Error("File size exceeds limit!");
       }
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom fetching logoa: ", error);
+      if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
@@ -56,8 +63,19 @@ const LogoContextProvider = ({ children, navigate, location }) => {
         signal: controller.signal,
       });
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("An error occurred while fetching logos: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Podaci o logo-u su neispravni. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom logo-a. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
@@ -73,8 +91,19 @@ const LogoContextProvider = ({ children, navigate, location }) => {
       });
       await getImage(true, controller);
     } catch (error) {
-      if (error.name !== "CanceledError") {
-        console.error("Greška prilikom brisanja logoa: ", error);
+      if (error.response?.status === 400) {
+        handleShowToast(
+          "Greška",
+          "Nevalidan ID za brisanje logo-a. Molimo proverite zahtev i pokušajte ponovo.",
+          "danger"
+        );
+      } else if (error.response?.status >= 500) {
+        handleShowToast(
+          "Greška",
+          "Došlo je do greške na serveru prilikom brisanja logo-a. Molimo pokušajte ponovo kasnije.",
+          "danger"
+        );
+      } else if (error.name !== "CanceledError") {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     } finally {
