@@ -91,4 +91,57 @@ public class DogadjajServiceImpl implements DogadjajService {
 		return dogadjajRepo.findActiveById(id);
 	}
 
+	@Override
+	public String updateDogadjaj(Long id, Dogadjaj dogadjaj) {
+		// Retrieve related entities
+		Optional<MestoDogadjaja> mestoDogadjajaOpt = mestoDogadjajaRepo.findById(dogadjaj.getMesto().getId());
+		Optional<TipDogadjaja> tipDogadjajaOpt = tipDogadjajaRepo.findById(dogadjaj.getVrsta().getId());
+		Optional<Organizacija> organizacijaOpt = organizacijaRepo.findById(dogadjaj.getOrganizacija().getId());
+
+		// Ensure the entities exist
+		if (!mestoDogadjajaOpt.isPresent() || !tipDogadjajaOpt.isPresent() || !organizacijaOpt.isPresent()) {
+			return ("One or more related entities not found");
+		}
+
+		MestoDogadjaja updateMesto = mestoDogadjajaOpt.get();
+		TipDogadjaja updateTip = tipDogadjajaOpt.get();
+		Organizacija updateOrganizacija = organizacijaOpt.get();
+
+		updateMesto.setNazivSale(dogadjaj.getMesto().getNazivSale());
+
+		updateTip.setNaziv(dogadjaj.getVrsta().getNaziv());
+
+		// Update fields of the Organizacija
+		updateOrganizacija.setNaziv(dogadjaj.getOrganizacija().getNaziv());
+		updateOrganizacija.setOdgovornaOsoba(dogadjaj.getOrganizacija().getOdgovornaOsoba());
+		updateOrganizacija.setBrojTelefona(dogadjaj.getOrganizacija().getBrojTelefona());
+		updateOrganizacija.setEmail(dogadjaj.getOrganizacija().getEmail());
+		updateOrganizacija.setDelatnost(dogadjaj.getOrganizacija().getDelatnost());
+		updateOrganizacija.setOpis(dogadjaj.getOrganizacija().getOpis());
+		updateOrganizacija.setLink(dogadjaj.getOrganizacija().getLink());
+
+		// Save the updated Organizacija (if needed)
+		organizacijaRepo.save(updateOrganizacija);
+
+		// Get the existing Dogadjaj to update
+		Optional<Dogadjaj> upDogadjaj = dogadjajRepo.findById(id);
+		if (!upDogadjaj.isPresent()) {
+			return ("Dogadjaj not found");
+		}
+
+		Dogadjaj updateDogadjaj = upDogadjaj.get();
+		updateDogadjaj.setNaziv(dogadjaj.getNaziv());
+		updateDogadjaj.setDatum(dogadjaj.getDatum());
+		updateDogadjaj.setPocetakDogadjaja(dogadjaj.getPocetakDogadjaja());
+		updateDogadjaj.setKrajDogadjaja(dogadjaj.getKrajDogadjaja());
+		updateDogadjaj.setMesto(updateMesto);
+		updateDogadjaj.setVrsta(updateTip);
+		updateDogadjaj.setOrganizacija(updateOrganizacija);
+
+		// Save the updated Dogadjaj
+		dogadjajRepo.save(updateDogadjaj);
+		
+		return ("Dogadjaj is updated!");
+	}
+
 }

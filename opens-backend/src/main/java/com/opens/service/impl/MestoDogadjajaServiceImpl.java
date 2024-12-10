@@ -12,7 +12,7 @@ import com.opens.service.MestoDogadjajaService;
 
 @Service
 public class MestoDogadjajaServiceImpl implements MestoDogadjajaService {
-	
+
 	@Autowired
 	private MestoDogadjajaRepository mestoDogadjajaRepo;
 
@@ -35,26 +35,30 @@ public class MestoDogadjajaServiceImpl implements MestoDogadjajaService {
 	public String deleteMesto(Long id) {
 		Optional<MestoDogadjaja> optionalMesto = mestoDogadjajaRepo.findById(id);
 
-        if (!optionalMesto.isPresent()) {
-        	return "Mesto događaja nije pronađeno!";
-        }
+		if (!optionalMesto.isPresent()) {
+			return "Mesto događaja nije pronađeno!";
+		}
 
-        MestoDogadjaja mesto = optionalMesto.get();
-        mesto.setDeleted(true);
-        mestoDogadjajaRepo.save(mesto);
+		MestoDogadjaja mesto = optionalMesto.get();
+		mesto.setDeleted(true);
+		mestoDogadjajaRepo.save(mesto);
 		return "Mesto događaja je obrisano!";
 	}
 
 	@Override
 	public MestoDogadjaja updateMesto(Long id, MestoDogadjaja mesto) {
-		
+
 		Optional<MestoDogadjaja> updateMesto = mestoDogadjajaRepo.findById(id);
-		
-		MestoDogadjaja upMesto = updateMesto.get();
-		upMesto.setNazivSale(mesto.getNazivSale());
-		mestoDogadjajaRepo.save(upMesto);
-		
-		return upMesto;
+
+		if (updateMesto.isPresent()) {
+			MestoDogadjaja upMesto = updateMesto.get();
+			upMesto.setNazivSale(mesto.getNazivSale());
+			mestoDogadjajaRepo.save(upMesto);
+
+			return upMesto;
+		}
+
+		return null;
 	}
 
 	@Override

@@ -71,7 +71,7 @@ const LogoContextProvider = ({ children, navigate, location }) => {
       await httpProtected.delete(`/logoi/${id}`, {
         signal: controller.signal,
       });
-      getImage(true, controller);
+      await getImage(true, controller);
     } catch (error) {
       if (error.name !== "CanceledError") {
         console.error("Greška prilikom brisanja logoa: ", error);

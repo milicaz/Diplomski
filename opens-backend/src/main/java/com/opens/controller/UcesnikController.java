@@ -28,23 +28,49 @@ public class UcesnikController {
 
 	@GetMapping("/sviUcesniciDogadjaja/{id}")
 	public ResponseEntity<List<Ucesnik>> getAll(@PathVariable Long id) {
-		return new ResponseEntity<>(ucesnikService.sviUcesniciDogadjaja(id), HttpStatus.OK);
+		List<Ucesnik> ucesnici = ucesnikService.sviUcesniciDogadjaja(id);
+		
+		if(ucesnici.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<>(ucesnici, HttpStatus.OK);
 	}
 
 	@PostMapping("/ucesniciDogadjaja/{id}")
-	public String createUcesnikForDogadjaj(@RequestBody Ucesnik ucesnik, @PathVariable(name = "id") Long id) {
-		return ucesnikService.addUcesnik(ucesnik, id);
+	public ResponseEntity<String> createUcesnikForDogadjaj(@RequestBody Ucesnik ucesnik, @PathVariable(name = "id") Long id) {
+		try {
+			String uc = ucesnikService.addUcesnik(ucesnik, id);
+			if(uc == "Ucesnik je sacuvan!") {
+				return new ResponseEntity<>(HttpStatus.CREATED);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return new ResponseEntity<>(HttpStatus.OK);
+		
 	}
 	
 	@PutMapping("/ucesnik/update/{id}")
-	public Ucesnik updateUcesnik(@PathVariable Long id, @RequestBody Ucesnik ucesnik) {
-		System.out.println("Ucesnik: " + ucesnik.toString());
-		return ucesnikService.updateUcesnik(id, ucesnik);
+	public ResponseEntity<Ucesnik> updateUcesnik(@PathVariable Long id, @RequestBody Ucesnik ucesnik) {
+		Ucesnik updateUcesnik = ucesnikService.updateUcesnik(id, ucesnik);
+		
+		if(updateUcesnik == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(updateUcesnik, HttpStatus.OK);
+		}
 	}
 	
 	@DeleteMapping("/ucesnik/delete/{id}")
-	public String deleteUcesnik(@PathVariable Long id) {
-		return ucesnikService.deleteUcesnik(id);
+	public ResponseEntity<String> deleteUcesnik(@PathVariable Long id) {
+		try {
+			ucesnikService.deleteUcesnik(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
 	}
 
 }

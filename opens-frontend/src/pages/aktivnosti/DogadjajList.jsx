@@ -860,7 +860,7 @@ const DogadjajList = () => {
                 name="naziv"
                 value={dogadjaj.naziv}
                 onChange={handleChangeDogadjaj}
-                style={{ width: "80%", maxWidth: "90%" }}
+                // style={{ width: "80%", maxWidth: "90%" }}
                 type="text"
                 placeholder="Naziv"
                 required
@@ -872,7 +872,7 @@ const DogadjajList = () => {
                 name="datum"
                 value={dogadjaj.datum}
                 onChange={handleChangeDogadjaj}
-                style={{ width: "80%", maxWidth: "90%" }}
+                // style={{ width: "80%", maxWidth: "90%" }}
                 type="date"
                 placeholder="Datum"
                 required
@@ -884,7 +884,7 @@ const DogadjajList = () => {
                 name="pocetakDogadjaja"
                 value={dogadjaj.pocetakDogadjaja}
                 onChange={handleChangeDogadjaj}
-                style={{ width: "80%", maxWidth: "90%" }}
+                // style={{ width: "80%", maxWidth: "90%" }}
                 type="time"
                 placeholder="Početak događaja"
                 required
@@ -896,7 +896,7 @@ const DogadjajList = () => {
                 name="krajDogadjaja"
                 value={dogadjaj.krajDogadjaja}
                 onChange={handleChangeDogadjaj}
-                style={{ width: "80%", maxWidth: "90%" }}
+                // style={{ width: "80%", maxWidth: "90%" }}
                 type="time"
                 placeholder="Kraj događaja"
                 required
@@ -909,7 +909,7 @@ const DogadjajList = () => {
                 name="mestoDogadjajaId"
                 value={dogadjaj.mestoDogadjajaId}
                 onChange={handleChangeDogadjaj}
-                style={{ width: "80%", maxWidth: "90%" }}
+                // style={{ width: "80%", maxWidth: "90%" }}
               >
                 <option value="">Izaberite salu</option>
                 {mestaDogadjaja.map((item, index) => (
@@ -926,7 +926,7 @@ const DogadjajList = () => {
                 name="vrstaDogadjajaId"
                 value={dogadjaj.vrstaDogadjajaId}
                 onChange={handleChangeDogadjaj}
-                style={{ width: "80%", maxWidth: "90%" }}
+                // style={{ width: "80%", maxWidth: "90%" }}
               >
                 <option value="">Izaberite vrstu događaja</option>
                 {tipoviDogadjaja.map((item, index) => (
@@ -961,7 +961,7 @@ const DogadjajList = () => {
                   name="naziv"
                   value={organizacijaEdit.naziv}
                   onChange={handleChangeEditOrganziacija}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Naziv"
                   required
@@ -973,7 +973,7 @@ const DogadjajList = () => {
                   name="odgovornaOsoba"
                   value={organizacijaEdit.odgovornaOsoba}
                   onChange={handleChangeEditOrganziacija}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Odgovorna osoba"
                   required
@@ -985,7 +985,7 @@ const DogadjajList = () => {
                   name="brojTelefona"
                   value={organizacijaEdit.brojTelefona}
                   onChange={handleChangeEditOrganziacija}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Broj telefon"
                   required
@@ -997,7 +997,7 @@ const DogadjajList = () => {
                   name="email"
                   value={organizacijaEdit.email}
                   onChange={handleChangeEditOrganziacija}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="E-mail"
                   required
@@ -1006,10 +1006,12 @@ const DogadjajList = () => {
               <br />
               <Form.Group>
                 <Form.Control
+                  as="textarea"  // This makes it a textarea
+                  rows={4}  // You can adjust the number of rows to control the height of the textarea
                   name="delatnost"
                   value={organizacijaEdit.delatnost}
                   onChange={handleChangeEditOrganziacija}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Delatnost"
                   required
@@ -1018,10 +1020,12 @@ const DogadjajList = () => {
               <br />
               <Form.Group>
                 <Form.Control
+                  as="textarea"  // This makes it a textarea
+                  rows={4}  // You can adjust the number of rows to control the height of the textarea
                   name="opis"
                   value={organizacijaEdit.opis}
                   onChange={handleChangeEditOrganziacija}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Opis"
                   required
@@ -1033,7 +1037,7 @@ const DogadjajList = () => {
                   name="link"
                   value={organizacijaEdit.link}
                   onChange={handleChangeEditOrganziacija}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Link"
                   required
@@ -1063,7 +1067,7 @@ const DogadjajList = () => {
                   name="ime"
                   value={ucesnik.ime}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Ime"
                   required
@@ -1075,7 +1079,7 @@ const DogadjajList = () => {
                   name="prezime"
                   value={ucesnik.prezime}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Prezime"
                   required
@@ -1084,7 +1088,7 @@ const DogadjajList = () => {
               <br />
               <Form.Group>
                 <Form.Control
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   as="select"
                   name="rod"
                   value={ucesnik.rod}
@@ -1105,7 +1109,7 @@ const DogadjajList = () => {
                   name="godine"
                   value={ucesnik.godine}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="number"
                   placeholder="Godina rođenja"
                   required
@@ -1117,7 +1121,7 @@ const DogadjajList = () => {
                   name="mestoBoravista"
                   value={ucesnik.mestoBoravista}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Mesto boravišta"
                   required
@@ -1129,7 +1133,7 @@ const DogadjajList = () => {
                   name="brojTelefona"
                   value={ucesnik.brojTelefona}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Broj telefona"
                   required
@@ -1141,7 +1145,7 @@ const DogadjajList = () => {
                   name="email"
                   value={ucesnik.email}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="E-mail"
                   required
@@ -1153,7 +1157,7 @@ const DogadjajList = () => {
                   name="organizacija"
                   value={ucesnik.organizacija}
                   onChange={handleChangeUcesnik}
-                  style={{ width: "80%", maxWidth: "90%" }}
+                  // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Organizacija"
                   required
@@ -1275,7 +1279,7 @@ const DogadjajList = () => {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showFooter} onHide={handleCloseFooter} centered>
+      <Modal show={showFooter} onHide={handleCloseFooter} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>Izaberite footer logo</Modal.Title>
         </Modal.Header>

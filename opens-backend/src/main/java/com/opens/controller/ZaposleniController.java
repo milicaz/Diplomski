@@ -1,5 +1,6 @@
 package com.opens.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,21 +28,35 @@ public class ZaposleniController {
 
 	@GetMapping("/zaposleni")
 	public ResponseEntity<List<Zaposleni>> getAll() {
-
-		return new ResponseEntity<>(zaposleniService.findAllActive(), HttpStatus.OK);
+		List<Zaposleni> zaposleni = new ArrayList<>();
+		zaposleni = zaposleniService.findAllActive();
+		
+		if(zaposleni.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<>(zaposleni, HttpStatus.OK);
 	}
 
 	@PutMapping("/zaposleni/{id}")
 	public ResponseEntity<Zaposleni> updateZaposleni(@PathVariable Long id, @RequestBody Zaposleni zaposleni) {
-
-		return new ResponseEntity<>(zaposleniService.updateZaposleni(id, zaposleni), HttpStatus.OK);
+		Zaposleni updateZaposleni = zaposleniService.updateZaposleni(id, zaposleni);
+		
+		if(updateZaposleni == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(updateZaposleni, HttpStatus.OK);
+		}
 	}
 
 	// Logicko brisanje
 	@DeleteMapping("/zaposleni/delete/{id}")
 	public ResponseEntity<String> logicalDelete(@PathVariable Long id) {
-
-		return new ResponseEntity<>(zaposleniService.deleteZaposleni(id), HttpStatus.OK);
+		try {
+			zaposleniService.deleteZaposleni(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

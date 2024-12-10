@@ -12,6 +12,8 @@ public interface DogadjajService {
 	public List<Dogadjaj> findAllActive();
 
 	public Dogadjaj findActiveById(Long id);
+	
+	public String updateDogadjaj(Long id, Dogadjaj dogadjaj);
 
 	public Dogadjaj addDogadjaj(DogadjajDTO dogadjajDTO);
 

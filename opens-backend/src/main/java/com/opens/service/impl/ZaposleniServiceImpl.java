@@ -16,10 +16,10 @@ import com.opens.service.ZaposleniService;
 
 @Service
 public class ZaposleniServiceImpl implements ZaposleniService {
-	
+
 	@Autowired
 	private ZaposleniRepository zaposleniRepo;
-	
+
 	@Autowired
 	private UlogaRepository ulogaRepo;
 
@@ -50,49 +50,52 @@ public class ZaposleniServiceImpl implements ZaposleniService {
 	@Override
 	public Zaposleni updateZaposleni(Long id, Zaposleni zaposleni) {
 		Optional<Zaposleni> updateZaposleni = zaposleniRepo.findById(id);
-		
-		Zaposleni upZaposleni = updateZaposleni.get();
-		upZaposleni.setEmail(zaposleni.getEmail());
-		upZaposleni.setIme(zaposleni.getIme());
-		upZaposleni.setPrezime(zaposleni.getPrezime());
-		upZaposleni.setRod(zaposleni.getRod());
-		upZaposleni.setGodine(zaposleni.getGodine());
-		upZaposleni.setMestoBoravista(zaposleni.getMestoBoravista());
-		upZaposleni.setBrojTelefona(zaposleni.getBrojTelefona());
+
+		if (updateZaposleni.isPresent()) {
+			Zaposleni upZaposleni = updateZaposleni.get();
+			upZaposleni.setEmail(zaposleni.getEmail());
+			upZaposleni.setIme(zaposleni.getIme());
+			upZaposleni.setPrezime(zaposleni.getPrezime());
+			upZaposleni.setRod(zaposleni.getRod());
+			upZaposleni.setGodine(zaposleni.getGodine());
+			upZaposleni.setMestoBoravista(zaposleni.getMestoBoravista());
+			upZaposleni.setBrojTelefona(zaposleni.getBrojTelefona());
 //		upZaposleni.setUloge(zaposleni.getUloge());
-		if (zaposleni.getUloge() != null) {
-	        // Assuming you have a method to fetch Uloga by name
-	        Set<Uloga> roles = new HashSet<>();
-	        for (Uloga uloga : zaposleni.getUloge()) {
-	            Uloga existingRole = ulogaRepo.findByNaziv(uloga.getNaziv()).get();
-	            if (existingRole != null) {
-	                roles.add(existingRole);
-	            } else {
+			if (zaposleni.getUloge() != null) {
+				// Assuming you have a method to fetch Uloga by name
+				Set<Uloga> roles = new HashSet<>();
+				for (Uloga uloga : zaposleni.getUloge()) {
+					Uloga existingRole = ulogaRepo.findByNaziv(uloga.getNaziv()).get();
+					if (existingRole != null) {
+						roles.add(existingRole);
+					} else {
 //	                return ResponseEntity()<>(HttpStatus.BAD_REQUEST);
-	            	return null;
-	            }
-	        }
-	        upZaposleni.setUloge(roles);
-	    }
-		
-		zaposleniRepo.save(upZaposleni);
-		return upZaposleni;
+						return null;
+					}
+				}
+				upZaposleni.setUloge(roles);
+			}
+
+			zaposleniRepo.save(upZaposleni);
+			return upZaposleni;
+		}
+
+		return null;
 	}
 
 	@Override
 	public String deleteZaposleni(Long id) {
 		Optional<Zaposleni> optionalZaposleni = zaposleniRepo.findById(id);
 
-        if (!optionalZaposleni.isPresent()) {
+		if (!optionalZaposleni.isPresent()) {
 //            return new ResponseEntity<>("Zaposleni not found", HttpStatus.NOT_FOUND);
-        	return "Zaposleni nije pronađen!";
-        }
+			return "Zaposleni nije pronađen!";
+		}
 
-        Zaposleni zaposleni = optionalZaposleni.get();
-        zaposleni.setDeleted(true);
-        zaposleniRepo.save(zaposleni);
+		Zaposleni zaposleni = optionalZaposleni.get();
+		zaposleni.setDeleted(true);
+		zaposleniRepo.save(zaposleni);
 		return "Zaposleni je obrisan!";
 	}
-
 
 }

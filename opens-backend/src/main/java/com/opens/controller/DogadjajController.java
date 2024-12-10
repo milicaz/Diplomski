@@ -1,10 +1,7 @@
 package com.opens.controller;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,203 +18,61 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.opens.dto.DogadjajDTO;
 import com.opens.model.Dogadjaj;
-import com.opens.model.MestoDogadjaja;
-import com.opens.model.Organizacija;
-import com.opens.model.PrigradskaNaselja;
-import com.opens.model.TipDogadjaja;
-import com.opens.model.Ucesnik;
-import com.opens.repository.DogadjajRepository;
-import com.opens.repository.MestoDogadjajaRepository;
-import com.opens.repository.OrganizacijaRepository;
-import com.opens.repository.PrigradskaNaseljaRepository;
-import com.opens.repository.TipDogadjajaRepository;
-import com.opens.repository.UcesnikRepository;
 import com.opens.service.DogadjajService;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class DogadjajController {
-
-	@Autowired
-	private DogadjajRepository dogadjajRepo;
-
-	@Autowired
-	private MestoDogadjajaRepository mestoDogadjajaRepo;
-
-	@Autowired
-	private TipDogadjajaRepository tipDogadjajaRepo;
-
-	@Autowired
-	private OrganizacijaRepository organizacijaRepo;
-
-	@Autowired
-	private UcesnikRepository ucesniciRepo;
-
-	@Autowired
-	private PrigradskaNaseljaRepository pnRepo;
 	
 	@Autowired
 	private DogadjajService dogadjajService;
 
 	@GetMapping("/dogadjaji")
 	public ResponseEntity<List<Dogadjaj>> getAll() {
-		return new ResponseEntity<>(dogadjajService.findAllActive(), HttpStatus.OK);
+		List<Dogadjaj> dogadjaji = new ArrayList<>();
+		dogadjaji = dogadjajService.findAllActive();
+		
+		if(dogadjaji.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		
+		return new ResponseEntity<>(dogadjaji, HttpStatus.OK);
 	}
-	
-//	@GetMapping("/dogadjaj/{id}")
-//	public ResponseEntity<Dogadjaj> findOne(@PathVariable Long id){
-//		
-//	}
 
 	@PostMapping("/dogadjaji")
 	public ResponseEntity<Dogadjaj> save(@RequestBody DogadjajDTO dogadjajDTO) {
-		return new ResponseEntity<>(dogadjajService.addDogadjaj(dogadjajDTO), HttpStatus.OK);
+		try {
+			Dogadjaj dogadjaj = dogadjajService.addDogadjaj(dogadjajDTO);
+			return new ResponseEntity<>(dogadjaj, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-
-//	@PutMapping("/dogadjaji/{id}")
-//	public ResponseEntity<String> updateDogadjaj(@PathVariable Long id, @RequestBody DogadjajDTO dogadjajDTO) {
-//		Optional<MestoDogadjaja> mestoDogadjaja = mestoDogadjajaRepo.findById(dogadjajDTO.getMestoDogadjajaId());
-//		Optional<TipDogadjaja> tipDogadjaja = tipDogadjajaRepo.findById(dogadjajDTO.getVrstaDogadjajaId());
-//		Optional<Organizacija> organizacija = organizacijaRepo.findById(dogadjajDTO.getOrganizacijaId());
-//
-//		Optional<Dogadjaj> upDogadjaj = dogadjajRepo.findById(id);
-//
-//		MestoDogadjaja updateMesto = mestoDogadjaja.get();
-//
-//		TipDogadjaja updateTip = tipDogadjaja.get();
-//
-//		Organizacija updateOrganizacija = organizacija.get();
-//
-////		Set<Ucesnik> updateUcesnici = new HashSet<>();
-//
-//		Dogadjaj updateDogadjaj = upDogadjaj.get();
-//		updateDogadjaj.setNaziv(dogadjajDTO.getNaziv());
-//		updateDogadjaj.setDatum(dogadjajDTO.getDatum());
-//		updateDogadjaj.setPocetakDogadjaja(dogadjajDTO.getPocetakDogadjaja());
-//		updateDogadjaj.setKrajDogadjaja(dogadjajDTO.getKrajDogadjaja());
-//		
-//		updateDogadjaj.setMesto(updateMesto);
-//		updateDogadjaj.setVrsta(updateTip);
-//		updateDogadjaj.setOrganizacija(updateOrganizacija);
-////		updateDogadjaj.setUcesnici(dogadjajDTO.getUcesnici());
-////
-////		List<Ucesnik> postojeciUcesnici = new ArrayList<>();
-////		postojeciUcesnici = ucesniciRepo.findAll();
-////
-////		Set<Dogadjaj> dogadjaji = new HashSet<>();
-////		dogadjaji.add(updateDogadjaj);
-////
-////		List<PrigradskaNaselja> pn = new ArrayList<>();
-////		pn = pnRepo.findAll();
-//
-////		for (Ucesnik ucesnik : dogadjajDTO.getUcesnici()) {
-////			if (postojeciUcesnici != null && !postojeciUcesnici.isEmpty()) {
-////				for (Ucesnik uc : postojeciUcesnici) {
-////					if (uc.getId() == ucesnik.getId()) {
-////						Optional<Ucesnik> ucesnici = ucesniciRepo.findById(ucesnik.getId());
-////						
-////							Ucesnik postojeciUcesnik = ucesnici.get();
-////							postojeciUcesnik.setDogadjaji(dogadjaji);
-////							postojeciUcesnik.setIme(ucesnik.getIme());
-////							postojeciUcesnik.setPrezime(ucesnik.getPrezime());
-////							postojeciUcesnik.setBrojTelefona(ucesnik.getBrojTelefona());
-////							postojeciUcesnik.setEmail(ucesnik.getEmail());
-////							postojeciUcesnik.setGodine(ucesnik.getGodine());
-////							postojeciUcesnik.setMestoBoravista(ucesnik.getMestoBoravista());
-////							postojeciUcesnik.setOrganizacija(ucesnik.getOrganizacija());
-////							postojeciUcesnik.setRod(ucesnik.getRod());
-////							for (PrigradskaNaselja naselje : pn) {
-////								if (postojeciUcesnik.getMestoBoravista().equals(naselje.getNaziv())) {
-////									postojeciUcesnik.setPrigradskoNaselje(true);
-////								}
-////							}
-////							ucesniciRepo.save(postojeciUcesnik);
-////					}else {
-////						for (PrigradskaNaselja naselje : pn) {
-////							if (ucesnik.getMestoBoravista().equals(naselje.getNaziv())) {
-////								ucesnik.setPrigradskoNaselje(true);
-////							}
-////						}
-////						ucesnik.setDogadjaji(dogadjaji);
-////						updateUcesnici.add(ucesnik);
-////						
-////					}
-////				}
-////			}else {
-////						for (PrigradskaNaselja naselje : pn) {
-////							if (ucesnik.getMestoBoravista().equals(naselje.getNaziv())) {
-////								ucesnik.setPrigradskoNaselje(true);
-////							}
-////						}
-////						ucesnik.setDogadjaji(dogadjaji);
-////						updateUcesnici.add(ucesnik);
-////						
-////					}
-////			ucesniciRepo.saveAll(updateUcesnici);
-////		}
-//
-//		dogadjajRepo.save(updateDogadjaj);
-//
-//		return new ResponseEntity<>("Dogadjaj je izmenjen!", HttpStatus.OK);
-//	}
 	
 	@PutMapping("/dogadjaji/{id}")
 	public ResponseEntity<String> updateDogadjaj(@PathVariable Long id, @RequestBody Dogadjaj dogadjaj) {
-	    // Retrieve related entities
-	    Optional<MestoDogadjaja> mestoDogadjajaOpt = mestoDogadjajaRepo.findById(dogadjaj.getMesto().getId());
-	    Optional<TipDogadjaja> tipDogadjajaOpt = tipDogadjajaRepo.findById(dogadjaj.getVrsta().getId());
-	    Optional<Organizacija> organizacijaOpt = organizacijaRepo.findById(dogadjaj.getOrganizacija().getId());
-
-	    // Ensure the entities exist
-	    if (!mestoDogadjajaOpt.isPresent() || !tipDogadjajaOpt.isPresent() || !organizacijaOpt.isPresent()) {
-	        return new ResponseEntity<>("One or more related entities not found", HttpStatus.BAD_REQUEST);
-	    }
-
-	    MestoDogadjaja updateMesto = mestoDogadjajaOpt.get();
-	    TipDogadjaja updateTip = tipDogadjajaOpt.get();
-	    Organizacija updateOrganizacija = organizacijaOpt.get();
-	    
-	    updateMesto.setNazivSale(dogadjaj.getMesto().getNazivSale());
-	    
-	    updateTip.setNaziv(dogadjaj.getVrsta().getNaziv());
-
-	    // Update fields of the Organizacija
-	    updateOrganizacija.setNaziv(dogadjaj.getOrganizacija().getNaziv());
-	    updateOrganizacija.setOdgovornaOsoba(dogadjaj.getOrganizacija().getOdgovornaOsoba());
-	    updateOrganizacija.setBrojTelefona(dogadjaj.getOrganizacija().getBrojTelefona());
-	    updateOrganizacija.setEmail(dogadjaj.getOrganizacija().getEmail());
-	    updateOrganizacija.setDelatnost(dogadjaj.getOrganizacija().getDelatnost());
-	    updateOrganizacija.setOpis(dogadjaj.getOrganizacija().getOpis());
-	    updateOrganizacija.setLink(dogadjaj.getOrganizacija().getLink());
-
-	    // Save the updated Organizacija (if needed)
-	    organizacijaRepo.save(updateOrganizacija);
-
-	    // Get the existing Dogadjaj to update
-	    Optional<Dogadjaj> upDogadjaj = dogadjajRepo.findById(id);
-	    if (!upDogadjaj.isPresent()) {
-	        return new ResponseEntity<>("Dogadjaj not found", HttpStatus.NOT_FOUND);
-	    }
-
-	    Dogadjaj updateDogadjaj = upDogadjaj.get();
-	    updateDogadjaj.setNaziv(dogadjaj.getNaziv());
-	    updateDogadjaj.setDatum(dogadjaj.getDatum());
-	    updateDogadjaj.setPocetakDogadjaja(dogadjaj.getPocetakDogadjaja());
-	    updateDogadjaj.setKrajDogadjaja(dogadjaj.getKrajDogadjaja());
-	    updateDogadjaj.setMesto(updateMesto);
-	    updateDogadjaj.setVrsta(updateTip);
-	    updateDogadjaj.setOrganizacija(updateOrganizacija);
-
-	    // Save the updated Dogadjaj
-	    dogadjajRepo.save(updateDogadjaj);
-
-	    return new ResponseEntity<>("Dogadjaj is updated!", HttpStatus.OK);
+		String updateDogadjaj = dogadjajService.updateDogadjaj(id, dogadjaj);
+		if(updateDogadjaj == "One or more related entities not found") {
+			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+		} else if (updateDogadjaj == "Dogadjaj not found") {
+			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+		} else if (updateDogadjaj == "Dogadjaj is updated!") {
+			return new ResponseEntity<String>(HttpStatus.CREATED);
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
+	
 	@DeleteMapping("/dogadjaj/delete/{id}")
-	public String deleteDogadjaj(@PathVariable Long id) {
-		return dogadjajService.deleteDogadjaj(id);
+	public ResponseEntity<String> deleteDogadjaj(@PathVariable Long id) {
+		try {
+			dogadjajService.deleteDogadjaj(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

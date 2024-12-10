@@ -37,7 +37,10 @@ const Logo = ({ logo }) => {
         <Modal.Footer>
           <Button
             className="btn btn-danger"
-            onClick={() => deleteLogo(logo.id)}
+            onClick={() => {
+              deleteLogo(logo.id)
+              handleCloseDelete()
+            }}
           >
             Obriši
           </Button>

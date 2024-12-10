@@ -44,10 +44,14 @@ public class TipDogadjajaServiceImpl implements TipDogadjajaService {
 	public TipDogadjaja updateTip(Long id, TipDogadjaja tip) {
 		Optional<TipDogadjaja> upTip = tipRepo.findById(id);
 
-		TipDogadjaja updateTip = upTip.get();
-		updateTip.setNaziv(tip.getNaziv());
-		tipRepo.save(updateTip);
-		return updateTip;
+		if (upTip.isPresent()) {
+			TipDogadjaja updateTip = upTip.get();
+			updateTip.setNaziv(tip.getNaziv());
+			tipRepo.save(updateTip);
+			return updateTip;
+		}
+
+		return null;
 	}
 
 	@Override

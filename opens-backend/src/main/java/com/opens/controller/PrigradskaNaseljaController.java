@@ -1,5 +1,6 @@
 package com.opens.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,27 +30,46 @@ public class PrigradskaNaseljaController {
 
 	@GetMapping("/prigradskaNaselja")
 	public ResponseEntity<List<PrigradskaNaselja>> getAll() {
-		return new ResponseEntity<>(naseljeService.findAllActive(), HttpStatus.OK);
+		List<PrigradskaNaselja> prigradskaNaselja = new ArrayList<>();
+		prigradskaNaselja = naseljeService.findAllActive();
+		
+		if(prigradskaNaselja.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		
+		return new ResponseEntity<>(prigradskaNaselja, HttpStatus.OK);
 	}
 
 	@PostMapping("/prigradskaNaselja")
 	public ResponseEntity<PrigradskaNaselja> save(@RequestBody PrigradskaNaselja prigradskaNaselja) {
-		PrigradskaNaselja naselje = naseljeService.addNaselje(prigradskaNaselja);
-
-		return new ResponseEntity<>(naselje, HttpStatus.OK);
+		try {
+			PrigradskaNaselja naselje = naseljeService.addNaselje(prigradskaNaselja);
+			return new ResponseEntity<>(naselje, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@PutMapping("/prigradskaNaselja/{id}")
 	public ResponseEntity<PrigradskaNaselja> updateNaselje(@PathVariable Long id,
 			@RequestBody PrigradskaNaselja naselje) {
-
-		return new ResponseEntity<>(naseljeService.updateNaselje(id, naselje), HttpStatus.OK);
+		PrigradskaNaselja updateNaselje = naseljeService.updateNaselje(id, naselje);
+		
+		if(updateNaselje == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(updateNaselje, HttpStatus.OK);
+		}
 	}
 
 	@DeleteMapping("/prigradskaNaselja/{id}")
 	public ResponseEntity<String> deleteNaselje(@PathVariable Long id) {
-//		prigradskaNaseljaRepo.deleteById(id);
-		return new ResponseEntity<>(naseljeService.deleteNaselje(id), HttpStatus.OK);
+		try {
+			naseljeService.deleteNaselje(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

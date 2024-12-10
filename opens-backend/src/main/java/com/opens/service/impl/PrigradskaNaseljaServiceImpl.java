@@ -12,7 +12,7 @@ import com.opens.service.PrigradskaNaseljaService;
 
 @Service
 public class PrigradskaNaseljaServiceImpl implements PrigradskaNaseljaService {
-	
+
 	@Autowired
 	private PrigradskaNaseljaRepository prigradskaNaseljaRepo;
 
@@ -31,24 +31,29 @@ public class PrigradskaNaseljaServiceImpl implements PrigradskaNaseljaService {
 	@Override
 	public PrigradskaNaselja updateNaselje(Long id, PrigradskaNaselja naselje) {
 		Optional<PrigradskaNaselja> upNaselje = prigradskaNaseljaRepo.findById(id);
-		PrigradskaNaselja updateNaselje = upNaselje.get();
+
+		if (upNaselje.isPresent()) {
+			PrigradskaNaselja updateNaselje = upNaselje.get();
+
+			updateNaselje.setNaziv(naselje.getNaziv());
+			prigradskaNaseljaRepo.save(updateNaselje);
+			return updateNaselje;
+		}
 		
-		updateNaselje.setNaziv(naselje.getNaziv());
-		prigradskaNaseljaRepo.save(updateNaselje);
-		return updateNaselje;
+		return null;
 	}
 
 	@Override
 	public String deleteNaselje(Long id) {
 		Optional<PrigradskaNaselja> optionalNaselje = prigradskaNaseljaRepo.findById(id);
 
-        if (!optionalNaselje.isPresent()) {
-        	return "Prigradsko naselje nije pronađeno!";
-        }
+		if (!optionalNaselje.isPresent()) {
+			return "Prigradsko naselje nije pronađeno!";
+		}
 
-        PrigradskaNaselja naselje = optionalNaselje.get();
-        naselje.setDeleted(true);
-        prigradskaNaseljaRepo.save(naselje);
+		PrigradskaNaselja naselje = optionalNaselje.get();
+		naselje.setDeleted(true);
+		prigradskaNaseljaRepo.save(naselje);
 		return "Zaposleni je obrisan!";
 	}
 

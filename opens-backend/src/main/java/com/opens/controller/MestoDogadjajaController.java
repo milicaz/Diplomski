@@ -1,5 +1,6 @@
 package com.opens.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,29 +29,56 @@ public class MestoDogadjajaController {
 
 	@GetMapping("/mestaDogadjaja")
 	public ResponseEntity<List<MestoDogadjaja>> getAll() {
-		return new ResponseEntity<>(mestoService.findAllActive(), HttpStatus.OK);
+		List<MestoDogadjaja> mestaDogadjaja = new ArrayList<>();
+		mestaDogadjaja = mestoService.findAllActive();
+		
+		if(mestaDogadjaja.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		
+		return new ResponseEntity<>(mestaDogadjaja, HttpStatus.OK);
 	}
 
 	@GetMapping("/mestoDogadjaja/{nazivSale}")
 	public ResponseEntity<Long> getMesto(@PathVariable String nazivSale) {
 		MestoDogadjaja mesto = mestoService.findByNazivSale(nazivSale);
+		
+		if(mesto == null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 		return new ResponseEntity<>(mesto.getId(), HttpStatus.OK);
 	}
 
 	@PostMapping("/mestaDogadjaja")
 	public ResponseEntity<MestoDogadjaja> save(@RequestBody MestoDogadjaja mestoDogadjaja) {
-
-		return new ResponseEntity<>(mestoService.addMesto(mestoDogadjaja), HttpStatus.OK);
+		try {
+			MestoDogadjaja md = mestoService.addMesto(mestoDogadjaja);
+			return new ResponseEntity<>(md, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@PutMapping("/mestaDogadjaja/{id}")
 	public ResponseEntity<MestoDogadjaja> updateMesto(@PathVariable Long id, @RequestBody MestoDogadjaja mesto) {
-		return new ResponseEntity<>(mestoService.updateMesto(id, mesto), HttpStatus.OK);
+		MestoDogadjaja updateMesto = mestoService.updateMesto(id, mesto);
+		
+		if(updateMesto == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+		
+			return new ResponseEntity<>(updateMesto, HttpStatus.OK);
+		}
 	}
 
 	@DeleteMapping("/mestaDogadjaja/{id}")
 	public ResponseEntity<String> deleteMesto(@PathVariable Long id) {
-		return new ResponseEntity<>(mestoService.deleteMesto(id), HttpStatus.OK);
+		try {
+			mestoService.deleteMesto(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

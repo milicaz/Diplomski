@@ -1,5 +1,6 @@
 package com.opens.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,12 @@ public class UlogaController {
 
 	@GetMapping("/uloge")
 	public ResponseEntity<List<Uloga>> getUloge() {
-
-		return new ResponseEntity<>(ulogaService.findAll(), HttpStatus.OK);
+		List<Uloga> uloge = new ArrayList<>();
+		uloge = ulogaService.findAll();
+		
+		if(uloge.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} 
+		return new ResponseEntity<>(uloge, HttpStatus.OK);
 	}
 }

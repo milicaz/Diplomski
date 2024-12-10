@@ -1,5 +1,6 @@
 package com.opens.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,33 +29,56 @@ public class TipDogadjajaController {
 
 	@GetMapping("/tipoviDogadjaja")
 	public ResponseEntity<List<TipDogadjaja>> getAll() {
+		List<TipDogadjaja> tipovi = new ArrayList<>();
+		tipovi = tipService.findAllActive();
+		
+		if(tipovi.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 
-		return new ResponseEntity<>(tipService.findAllActive(), HttpStatus.OK);
+		return new ResponseEntity<>(tipovi, HttpStatus.OK);
 	}
 
 	@GetMapping("/tipoviDogadjaja/{naziv}")
 	public ResponseEntity<Long> getOneByNaziv(@PathVariable String naziv) {
 		TipDogadjaja tip = tipService.findByNaziv(naziv);
+		
+		if(tip == null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 
 		return new ResponseEntity<>(tip.getId(), HttpStatus.OK);
 	}
 
 	@PostMapping("/tipoviDogadjaja")
 	public ResponseEntity<TipDogadjaja> save(@RequestBody TipDogadjaja tipDogadjaja) {
-//		TipDogadjaja tip = tipService.addTip(tipDogadjaja);
-
-		return new ResponseEntity<>(tipService.addTip(tipDogadjaja), HttpStatus.OK);
+		try {
+			TipDogadjaja tip = tipService.addTip(tipDogadjaja);
+			return new ResponseEntity<>(tip, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@PutMapping("/tipoviDogadjaja/{id}")
 	public ResponseEntity<TipDogadjaja> updateTip(@PathVariable Long id, @RequestBody TipDogadjaja tip) {
-
-		return new ResponseEntity<>(tipService.updateTip(id, tip), HttpStatus.OK);
+		TipDogadjaja updateTip = tipService.updateTip(id, tip);
+		
+		if(updateTip == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(updateTip, HttpStatus.OK);
+		}
 	}
 
 	@DeleteMapping("/tipoviDogadjaja/{id}")
 	public ResponseEntity<String> deleteTip(@PathVariable Long id) {
-		return new ResponseEntity<>(tipService.deleteTip(id), HttpStatus.OK);
+		try {
+			tipService.deleteTip(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }
