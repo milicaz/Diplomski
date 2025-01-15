@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { httpPublic } from "../../apis/http";
 import useHttpProtected from "../../hooks/useHttpProtected";
 import useToast from "../../hooks/useToast";
+import axios from "axios";
 
 export const ZaposleniContext = createContext();
 
@@ -67,6 +68,47 @@ const ZaposleniContextProvider = ({ children, navigate, location }) => {
     }
   };
 
+  // const registracija = async (zaposleni) => {
+  //   const controller = new AbortController();
+  //   try {
+  //     const { data } = await httpPublic.post("/signup", zaposleni, {
+  //       signal: controller.signal,
+  //     });
+  //     handleShowToast(
+  //       "Registracija uspešna",
+  //       "Uspešno ste se registrovali zaposlenog",
+  //       "success"
+  //     );
+  //     return data;
+  //   } catch (error) {
+  //     if (!error.response) {
+  //       handleShowToast(
+  //         "Registracija neuspešna",
+  //         "Greška u mreži. Zahtev nije mogao biti poslat zbog greške u mreži.",
+  //         "danger"
+  //       );
+  //     } else if (error.response?.status === 409) {
+  //       handleShowToast(
+  //         "Registracija neuspešna",
+  //         "Email je već u upotrebi. Molimo Vas da pokušate sa nekim drugim.",
+  //         "danger"
+  //       );
+  //     } else if (error.response.status >= 500) {
+  //       handleShowToast(
+  //         "Registracija neuspešna",
+  //         "Došlo je do problema sa serverom. Molimo Vas da pokušate ponovo kasnije.",
+  //         "danger"
+  //       );
+  //     } else {
+  //       handleShowToast(
+  //         "Registracija neuspešna",
+  //         "Došlo je do neočekivane greške tokom registracije.",
+  //         "danger"
+  //       );
+  //     }
+  //   }
+  // };
+
   const registracija = async (zaposleni) => {
     const controller = new AbortController();
     try {
@@ -78,35 +120,39 @@ const ZaposleniContextProvider = ({ children, navigate, location }) => {
         "Uspešno ste se registrovali zaposlenog",
         "success"
       );
+      console.log("DAta je: " + JSON.stringify(data))
       return data;
     } catch (error) {
-      if (!error.response) {
-        handleShowToast(
-          "Registracija neuspešna",
-          "Greška u mreži. Zahtev nije mogao biti poslat zbog greške u mreži.",
-          "danger"
-        );
-      } else if (error.response?.status === 409) {
-        handleShowToast(
-          "Registracija neuspešna",
-          "Email je već u upotrebi. Molimo Vas da pokušate sa nekim drugim.",
-          "danger"
-        );
-      } else if (error.response.status >= 500) {
-        handleShowToast(
-          "Registracija neuspešna",
-          "Došlo je do problema sa serverom. Molimo Vas da pokušate ponovo kasnije.",
-          "danger"
-        );
+      console.error("Greška tokom registracije:", error);  // Ispisivanje cele greške u konzolu
+  
+      if (error.response) {
+        // Ako server odgovara sa greškom, proveravamo status
+        const statusCode = error.response.status;
+        const errorData = error.response.data;
+        
+        if (statusCode === 409) {
+          // E-mail je već u upotrebi
+          handleShowToast("Greška", "E-mail je već u upotrebi", "danger");
+        } else {
+          // Ostale greške sa servera
+          handleShowToast("Greška", "Registracija zaposlenog nije uspela!", "danger");
+        }
+        console.log("Detalji greške sa servera:", errorData);  // Logovanje odgovora
+      } else if (error.request) {
+        // Ako nema odgovora od servera
+        console.log("Nema odgovora sa servera:", error.request);
+        handleShowToast("Greška", "Nema odgovora sa servera", "danger");
       } else {
-        handleShowToast(
-          "Registracija neuspešna",
-          "Došlo je do neočekivane greške tokom registracije.",
-          "danger"
-        );
+        // Ako je greška u samom kodu (npr. greška u Axios-u)
+        console.log("Došlo je do greške:", error.message);
+        handleShowToast("Greška", "Došlo je do greške pri slanju zahteva", "danger");
       }
     }
   };
+  
+  
+  
+  
 
   const editZaposleni = async (id, zaposleni) => {
     const controller = new AbortController();

@@ -11,20 +11,10 @@ const PasswordResetRequest = () => {
   let navigate = useNavigate();
   const { handleShowToast } = useToast();
 
-  // const [showToast, setShowToast] = useState(false);
-  // const [toastMessage, setToastMessage] = useState("");
-  // const [toastVariant, setToastVariant] = useState("");
-
-  // const handleShowToast = (message, variant) => {
-  //   setToastMessage(message);
-  //   setToastVariant(variant);
-  //   setShowToast(true);
-  // };
-
   const handleRequest = async () => {
     try {
       await axios.post(
-        "http://localhost:8080/api/auth/password-reset/request",
+        "http://localhost:8080/api/auth/password-reset/requestZaposleni",
         null,
         {
           params: {

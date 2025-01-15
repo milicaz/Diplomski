@@ -38,6 +38,20 @@ public class PasswordResetController {
 					.body("Desila se greska prilikom slanja email");
 		}
 	}
+	
+	@PostMapping("/requestZaposleni")
+	public ResponseEntity<String> requestPasswordResetZaposleni(@RequestParam String email)
+			throws UnsupportedEncodingException, MessagingException {
+		try {
+			passwordResetService.createPasswordResetTokenForZaposleni(email);
+			return ResponseEntity.ok("Email za resetovanje lozinke je poslat");
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (MessagingException | UnsupportedEncodingException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Desila se greska prilikom slanja email");
+		}
+	}
 
 	@PutMapping("/reset")
 	public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
