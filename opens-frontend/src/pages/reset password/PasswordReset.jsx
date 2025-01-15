@@ -15,7 +15,7 @@ const PasswordReset = () => {
   const token = query.get("token");
 
   const navigate = useNavigate();
-  const {handleShowToast} = useToast();
+  const { handleShowToast } = useToast();
 
   const [validated, setValidated] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -23,21 +23,11 @@ const PasswordReset = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // const [showToast, setShowToast] = useState(false);
-  // const [toastMessage, setToastMessage] = useState("");
-  // const [toastVariant, setToastVariant] = useState("");
-
   const isValidPassword = (password) => {
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(password);
   };
-
-  // const handleShowToast = (message, variant) => {
-  //   setToastMessage(message);
-  //   setToastVariant(variant);
-  //   setShowToast(true);
-  // };
 
   const handleReset = async (event) => {
     event.preventDefault();
@@ -106,7 +96,11 @@ const PasswordReset = () => {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
-                      isInvalid={validated && newPassword.length === 0}
+                      isInvalid={
+                        validated &&
+                        (!isValidPassword(newPassword) ||
+                          newPassword.length === 0)
+                      }
                     />
                     <InputGroup.Text
                       style={{ cursor: "pointer" }}
@@ -121,7 +115,7 @@ const PasswordReset = () => {
                   </InputGroup>
                 </Form.Group>
                 <Form.Group className="mb-3">
-                  <Form.Label>Lozinka:</Form.Label>
+                  <Form.Label>Ponovite lozinku:</Form.Label>
                   <InputGroup>
                     <Form.Control
                       type={showConfirm ? "text" : "password"}
@@ -129,7 +123,11 @@ const PasswordReset = () => {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
-                      isInvalid={validated && confirmPassword.length === 0}
+                      isInvalid={
+                        validated &&
+                        (!isValidPassword(confirmPassword) ||
+                          confirmPassword.length === 0)
+                      }
                     />
                     <InputGroup.Text
                       style={{ cursor: "pointer" }}
@@ -153,27 +151,6 @@ const PasswordReset = () => {
           </Card.Body>
         </Card>
       </div>
-      {/* <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        style={{
-          position: "fixed",
-          bottom: 20,
-          left: 20,
-          minWidth: 300,
-          backgroundColor: toastVariant === "success" ? "#a3c57b" : "#f56f66",
-          color: "white",
-        }}
-        delay={3000}
-        autohide
-      >
-        <Toast.Header>
-          <strong className="me-auto">
-            {toastVariant === "success" ? "" : "Greška"}
-          </strong>
-        </Toast.Header>
-        <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast> */}
     </>
   );
 };

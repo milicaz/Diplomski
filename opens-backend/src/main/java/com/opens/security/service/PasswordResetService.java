@@ -75,6 +75,29 @@ public class PasswordResetService {
 		resetToken.setExpirationDate(LocalDateTime.now().plusHours(1));
 		tokenRepo.save(resetToken);
 	}
+	
+	public void createPasswordResetTokenForZaposleni(String email) throws MessagingException, UnsupportedEncodingException {
+		// Find Zaposleni by email
+		Optional<Zaposleni> optionalZaposleni = zaposleniRepo.findByEmail(email);
+		Zaposleni zaposleni = optionalZaposleni.orElse(null);
+		System.out.println("Zaposleni email je: " + zaposleni);
+		
+		if (zaposleni == null) {
+			throw new EntityNotFoundException("Email nije pronadjen medju zaposlenima");
+		}
+		String token;
+		PasswordResetToken resetToken = new PasswordResetToken();
+		
+		if (zaposleni != null) {
+			token = UUID.randomUUID().toString();
+			resetToken.setToken(token);
+			resetToken.setZaposleni(zaposleni);
+			sendResetTokenEmailZaposleni(email, token);
+		}
+		
+		resetToken.setExpirationDate(LocalDateTime.now().plusHours(1));
+		tokenRepo.save(resetToken);
+	}
 
 	private void sendResetTokenEmail(String email, String token) throws MessagingException, UnsupportedEncodingException {
 //		SimpleMailMessage message = new SimpleMailMessage();

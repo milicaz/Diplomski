@@ -94,7 +94,8 @@ public class AuthController {
 		if (zaposleniService.existsByEmail(zaposleniDTO.getEmail())
 				|| posetilacService.existsByEmail(zaposleniDTO.getEmail())) {
 			logger.warn("USER_REGISTRATION_FAIL - Email " + zaposleniDTO.getEmail() + " is already in use");
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Email is already in use!");
+//			return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Email is already in use!");
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(new MessageResponse("Email je u upotrebi!"));
 		}
 		authService.registerZaposleni(zaposleniDTO);
 		return ResponseEntity.ok(new MessageResponse("Zaposleni je uspešno registrovan!"));
