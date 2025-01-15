@@ -18,13 +18,9 @@ public interface ZaposleniRepository extends JpaRepository<Zaposleni, Long> {
 
     @Query("SELECT e FROM Zaposleni e WHERE e.id = :id AND e.deleted = false")
     Zaposleni findActiveById(@Param("id") Long id);
-	
-//	Optional<Zaposleni> findByEmail(String email);
     
     @Query("SELECT e FROM Zaposleni e WHERE e.email = :email AND e.deleted = false")
     Optional<Zaposleni> findByEmail(@Param("email") String email);
-	
-//	Boolean existsByEmail(String email);
     
     @Query("SELECT COUNT(e) > 0 FROM Zaposleni e WHERE e.email = :email AND e.deleted = false")
     Boolean existsByEmail(@Param("email") String email);
