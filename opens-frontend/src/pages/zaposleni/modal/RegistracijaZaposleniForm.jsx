@@ -20,10 +20,6 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
   const [showPassword, setShowPassword] = useState(false);
   const { handleShowToast } = useToast();
 
-  // const [showToast, setShowToast] = useState(false);
-  // const [toastMessage, setToastMessage] = useState("");
-  // const [toastVariant, setToastVariant] = useState("");
-
   const rodMapping = {
     MUSKO: "muško",
     ZENSKO: "žensko",
@@ -67,61 +63,6 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
     return passwordPattern.test(password);
   };
 
-  // const handleShowToast = (message, variant) => {
-  //   setToastMessage(message);
-  //   setToastVariant(variant);
-  //   setShowToast(true);
-  // };
-
-  // const handleRegistracija = async (event) => {
-  //   event.preventDefault();
-
-  //   const form = event.currentTarget;
-
-  //   if (
-  //     form.checkValidity() === false ||
-  //     !isValidEmail(email) ||
-  //     !isValidPassword(password)
-  //   ) {
-  //     setValidated(true);
-  //   } else {
-  //     try {
-  //       const zaposleniDTO = {
-  //         email,
-  //         password,
-  //         ime,
-  //         prezime,
-  //         rod,
-  //         godine,
-  //         mestoBoravista,
-  //         brojTelefon,
-  //         uloge: Array.from(uloge), // Convert Set to Array assuming DTO structure
-  //       };
-  //       console.log(zaposleniDTO);
-  //       await registracija(zaposleniDTO);
-  //       handleShowToast("", "Uspešno ste se registrovali zaposlenog!", "success");
-  //       setEmail("");
-  //       setPassword("");
-  //       setIme("");
-  //       setPrezime("");
-  //       setRod("");
-  //       setGodine("");
-  //       setMestoBoravista("");
-  //       setBrojTelefon("");
-  //       setUloge(new Set());
-  //       handleClose();
-  //     } catch (error) {
-  //       if (!error.response) {
-  //         handleShowToast("Greška", "Nema odgovora sa servera", "danger");
-  //       } else if (error.response?.status === 409) {
-  //         handleShowToast("Greška", "E-mail je već u upotrebi", "danger");
-  //       } else {
-  //         handleShowToast("Greška", "Registracija zaposlenog nije uspela!", "danger");
-  //       }
-  //     }
-  //   }
-  // };
-
   const handleRegistracija = async (event) => {
     event.preventDefault();
   
@@ -152,9 +93,6 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
         console.log("Response je: " + JSON.stringify(response))
   
         if (response !== undefined && (response.message = "Zaposleni je uspešno registrovan!")) {
-          // Uspešna registracija
-          // handleShowToast("", "Uspešno ste se registrovali zaposlenog!", "success");
-          // Resetovanje input polja
           setEmail("");
           setPassword("");
           setIme("");
@@ -169,32 +107,6 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
           // console.error("Neočekivani odgovor sa servera:", response);
           // handleShowToast("Greška", "Registracija zaposlenog nije uspela!", "danger");
         }
-      // } 
-      // catch (error) {
-      //   console.error("Greška tokom registracije:", error);
-  
-      //   if (!error.response) {
-      //     handleShowToast("Greška", "Nema odgovora sa servera", "danger");
-      //   } else if (error.response.status === 409) {
-      //     handleShowToast("Greška", "E-mail je već u upotrebi", "danger");
-      //   } else {
-      //     handleShowToast("Greška", "Registracija zaposlenog nije uspela!", "danger");
-      //   }
-      // }
-      // catch (error) {
-      //   console.error("Greška tokom registracije:", error); // Logujte ceo objekat
-      //   console.log("Error response je: " + error.response)
-      //   if (error.response) {
-      //     console.log("Error response:", error.response); // Ispišite response ako postoji
-      //     if (error.response.status === 409) {
-      //       handleShowToast("Greška", "E-mail je već u upotrebi", "danger");
-      //     } else {
-      //       handleShowToast("Greška", "Registracija zaposlenog nije uspela!", "danger");
-      //     }
-      //   } else {
-      //     handleShowToast("Greška", "Nema odgovora sa servera", "danger");
-      //   }
-      // }
     }
   };
 
@@ -341,27 +253,6 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
           </Button>
         </div>
       </Form>
-      {/* <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        style={{
-          position: "fixed",
-          bottom: 20,
-          left: 20,
-          minWidth: 300,
-          backgroundColor: toastVariant === "success" ? "#a3c57b" : "#f56f66",
-          color: "white",
-        }}
-        delay={3000}
-        autohide
-      >
-        <Toast.Header>
-          <strong className="me-auto">
-            {toastVariant === "success" ? "" : "Greška"}
-          </strong>
-        </Toast.Header>
-        <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast> */}
     </>
   );
 };

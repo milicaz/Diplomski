@@ -119,12 +119,12 @@ const EditUcesnikForm = ({ currentUcesnik, onUcesnikEdited }) => {
               value={ucesnik.brojTelefona}
               onChange={handleChange}
               placeholder="Broj telefona *"
-              required
-              isInvalid={validated && !ucesnik.brojTelefona}
+              // required
+              // isInvalid={validated && !ucesnik.brojTelefona}
             />
-            <Form.Control.Feedback type="invalid">
+            {/* <Form.Control.Feedback type="invalid">
               Unesite broj telefona učesnika.
-            </Form.Control.Feedback>
+            </Form.Control.Feedback> */}
         </Form.Group>
         <Form.Group className="mb-3">
             <Form.Control
@@ -133,12 +133,12 @@ const EditUcesnikForm = ({ currentUcesnik, onUcesnikEdited }) => {
               value={ucesnik.email}
               onChange={handleChange}
               placeholder="Email *"
-              required
-              isInvalid={validated && !ucesnik.email}
+              // required
+              // isInvalid={validated && !ucesnik.email}
             />
-            <Form.Control.Feedback type="invalid">
+            {/* <Form.Control.Feedback type="invalid">
               Unesite email učesnika.
-            </Form.Control.Feedback>
+            </Form.Control.Feedback> */}
         </Form.Group>
         <Form.Group className="mb-3">
             <Form.Control
