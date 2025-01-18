@@ -135,7 +135,11 @@ export default function ProfileEdit({ navigation }) {
       if (result.assets && result.assets.length > 0) {
         const base64Image = await FileSystem.readAsStringAsync(result.assets[0].uri, { encoding: FileSystem.EncodingType.Base64 });
         const mimeType = result.assets[0].mimeType;
-        setProfileImage(`data:${mimeType}; base64, ${base64Image} `);
+        console.log("tip slike: ");
+        console.log(mimeType);
+        //setProfileImage(`data:${mimeType}; base64, ${base64Image} `);
+        setProfileImage(`data:${mimeType};base64,${base64Image}`);
+        //setProfileImage(result.assets[0].uri);
       }
     }
   };
@@ -184,9 +188,8 @@ export default function ProfileEdit({ navigation }) {
 
     if (valid) {
       try {
-        const profileImageData = profileImage.substring("data:image/png;base64,".length);
+        const profileImageData = profileImage.replace(/^data:image\/[a-z]+;base64,/, '');
         const updatedProfile = { ime, prezime, email, godine: parseInt(godine), mestoBoravista, brojTelefona, profileImage: profileImageData };
-        console.log(updatedProfile);
         await httpCommon.put(`posetioci/${user.id}`, updatedProfile);
         navigation.navigate("Profile");
       } catch (error) {
