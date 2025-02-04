@@ -67,11 +67,16 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
     event.preventDefault();
   
     const form = event.currentTarget;
+
+    const godinaValidna =
+    /^\d{4}$/.test(godine) &&
+    Number(godine) >= 1930
   
     if (
       form.checkValidity() === false ||
       !isValidEmail(email) ||
-      !isValidPassword(password)
+      !isValidPassword(password) ||
+      !godinaValidna
     ) {
       setValidated(true);
     } else {
@@ -215,9 +220,13 @@ const RegistracijaZaposleniForm = ({ handleClose }) => {
           <Form.Control
             value={godine}
             onChange={(e) => setGodine(e.target.value)}
-            type="text"
+            type="number"
             placeholder="Godina rođenja *"
             required
+            isInvalid={
+              validated &&
+              (!/^\d{4}$/.test(godine) || godine < 1930)
+            }
           />
           <Form.Control.Feedback type="invalid">
             Godina rođenja je obavezna.

@@ -121,7 +121,11 @@ const EditZaposleniForm = ({ currentZaposleni, onZaposleniEdit }) => {
 
     const form = event.currentTarget;
 
-    if (form.checkValidity() === false || !isValidEmail(zaposleni.email)) {
+    const godinaValidna =
+    /^\d{4}$/.test(zaposleni.godine) &&
+    Number(zaposleni.godine) >= 1930
+
+    if (form.checkValidity() === false || !isValidEmail(zaposleni.email) || !godinaValidna) {
       setValidated(true);
     } else {
       try {
@@ -207,12 +211,16 @@ const EditZaposleniForm = ({ currentZaposleni, onZaposleniEdit }) => {
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Control
-            type="text"
+            type="number"
             name="godine"
             value={zaposleni.godine}
             onChange={handleChange}
             placeholder="Godina rođenja *"
             required
+            isInvalid={
+              validated &&
+              (!/^\d{4}$/.test(zaposleni.godine) || Number(zaposleni.godine) < 1930)
+            }
           />
           <Form.Control.Feedback type="invalid">
             Godina rođenja je obavezna.

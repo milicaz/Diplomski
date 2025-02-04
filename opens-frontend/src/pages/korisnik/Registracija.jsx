@@ -49,10 +49,15 @@ const Registracija = () => {
 
     const form = e.currentTarget;
 
+    const godinaValidna =
+    /^\d{4}$/.test(godine) &&
+    Number(godine) >= 1930
+
     if (
       form.checkValidity() === false ||
       !isValidEmail(email) ||
-      !isValidPassword(password)
+      !isValidPassword(password) ||
+      !godinaValidna
     ) {
       setValidated(true);
     } else {
@@ -157,7 +162,9 @@ const Registracija = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        isInvalid={validated && password.length === 0}
+                        isInvalid={
+                          validated && 
+                          (!isValidPassword(password) || password.length === 0)}
                       />
                       <InputGroup.Text
                         style={{ cursor: "pointer" }}
@@ -166,7 +173,8 @@ const Registracija = () => {
                         {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
                       </InputGroup.Text>
                       <Form.Control.Feedback type="invalid">
-                        Lozinka je obavezna.
+                        Lozinka mora imati najmanje 8 karaktera, jedno veliko slovo, jedan
+                        broj i jedan specijalni karakter!
                       </Form.Control.Feedback>
                     </InputGroup>
                   </Form.Group>
@@ -234,9 +242,13 @@ const Registracija = () => {
                     <Form.Control
                       value={godine}
                       onChange={(e) => setGodine(e.target.value)}
-                      type="text"
+                      type="number"
                       placeholder="Unesite godinu rođenja *"
                       required
+                      isInvalid={
+                        validated &&
+                        (!/^\d{4}$/.test(godine) || godine < 1930)
+                      }
                     />
                     <Form.Control.Feedback type="invalid">
                       Godinu rođenja je obavezna.

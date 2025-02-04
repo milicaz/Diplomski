@@ -107,7 +107,7 @@ const EditUcesnikForm = ({ currentUcesnik, onUcesnikEdited }) => {
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Control
-          type="text"
+          type="number"
           name="godine"
           value={ucesnik.godine}
           onChange={handleChange}
@@ -142,7 +142,7 @@ const EditUcesnikForm = ({ currentUcesnik, onUcesnikEdited }) => {
           name="brojTelefona"
           value={ucesnik.brojTelefona}
           onChange={handleChange}
-          placeholder="Broj telefona *"
+          placeholder="Broj telefona"
           // required
           // isInvalid={validated && !ucesnik.brojTelefona}
         />
@@ -156,7 +156,7 @@ const EditUcesnikForm = ({ currentUcesnik, onUcesnikEdited }) => {
           name="email"
           value={ucesnik.email}
           onChange={handleChange}
-          placeholder="Email *"
+          placeholder="Email"
           // required
           // isInvalid={validated && !ucesnik.email}
         />

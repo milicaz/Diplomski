@@ -148,7 +148,7 @@ const EditDogadjajForm = ({ editDogadjaj, onDogadjajEdited }) => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control
-                type="text"
+                type="date"
                 name="datum"
                 value={dogadjaj.datum}
                 onChange={handleChangeDogadjaj}
@@ -162,7 +162,7 @@ const EditDogadjajForm = ({ editDogadjaj, onDogadjajEdited }) => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control
-                type="text"
+                type="time"
                 name="pocetakDogadjaja"
                 value={dogadjaj.pocetakDogadjaja}
                 onChange={handleChangeDogadjaj}
@@ -176,7 +176,7 @@ const EditDogadjajForm = ({ editDogadjaj, onDogadjajEdited }) => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control
-                type="text"
+                type="time"
                 name="krajDogadjaja"
                 value={dogadjaj.krajDogadjaja}
                 onChange={handleChangeDogadjaj}
