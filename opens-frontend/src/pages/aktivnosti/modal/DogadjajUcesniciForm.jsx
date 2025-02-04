@@ -361,7 +361,9 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
               <th>Redni broj</th>
               <th>Ime</th>
               <th>Prezime</th>
+              <th>Rod</th>
               <th>Godine</th>
+              <th>Mesto boravišta</th>
               <th>Telefon</th>
               <th>Email</th>
               <th>Akcije</th>
@@ -375,7 +377,9 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                   <td>{(currentPage - 1) * limit + index + 1}</td>
                   <td>{ucesnik.ime}</td>
                   <td>{ucesnik.prezime}</td>
+                  <td>{rodMapping[ucesnik.rod] || ucesnik.rod}</td>
                   <td>{ucesnik.godine}</td>
+                  <td>{ucesnik.mestoBoravista}</td>
                   <td>{ucesnik.brojTelefona}</td>
                   <td>{ucesnik.email}</td>
                   <td>
