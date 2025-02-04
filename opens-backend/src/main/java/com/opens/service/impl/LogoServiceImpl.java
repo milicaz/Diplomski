@@ -25,6 +25,15 @@ public class LogoServiceImpl implements LogoService {
 
 	@Override
 	public Logo addLogo(MultipartFile file) throws IOException {
+		
+		// Lista dozvoljenih MIME tipova za slike
+	    List<String> allowedMimeTypes = List.of("image/jpeg", "image/png", "image/gif", "image/webp");
+
+	    // Proveravamo da li fajl ima dozvoljeni tip
+	    if (!allowedMimeTypes.contains(file.getContentType())) {
+	        throw new IllegalArgumentException("Invalid file type. Only image files are allowed.");
+	    }
+		
 		Logo logo = new Logo();
 		logo.setName(file.getOriginalFilename());
 		logo.setType(file.getContentType());

@@ -9,7 +9,20 @@ const AddLogoForm = ({ onLogoAdded }) => {
   const { handleShowToast } = useToast();
 
   const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+    // setFile(event.target.files[0]);
+
+    const selectedFile = event.target.files[0];
+
+  // Lista dozvoljenih tipova slika
+  const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+
+  if (selectedFile && !allowedTypes.includes(selectedFile.type)) {
+    handleShowToast("Greška", "Nevažeći tip datoteke. Dozvoljene su samo slike.", "error");
+    setFile(null); // Resetujemo odabir
+    return;
+  }
+
+  setFile(selectedFile);
   };
 
   const handleUpload = async (event) => {
