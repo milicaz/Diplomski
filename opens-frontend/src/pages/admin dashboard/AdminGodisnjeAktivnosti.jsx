@@ -7,19 +7,19 @@ export const AdminGodisnjeAktivnosti = ({ aktivnosti }) => {
 
   const baseColors = [
     [
-      "rgba(245, 111, 102, 0.5)",  // Light red
-      "rgba(97, 205, 220, 0.5)",   // Light blue
-      "rgba(161, 139, 189, 0.5)",  // Light purple
+      "rgba(245, 111, 102, 0.5)", // Light red
+      "rgba(97, 205, 220, 0.5)", // Light blue
+      "rgba(161, 139, 189, 0.5)", // Light purple
     ],
     [
-      "rgba(245, 111, 102, 0.7)",  // Darker red
-      "rgba(97, 205, 220, 0.7)",   // Darker blue
-      "rgba(161, 139, 189, 0.7)",  // Darker purple
+      "rgba(245, 111, 102, 0.7)", // Darker red
+      "rgba(97, 205, 220, 0.7)", // Darker blue
+      "rgba(161, 139, 189, 0.7)", // Darker purple
     ],
     [
-      "rgba(245, 111, 102, 0.9)",  // Almost solid red
-      "rgba(97, 205, 220, 0.9)",   // Almost solid blue
-      "rgba(161, 139, 189, 0.9)",  // Almost solid purple
+      "rgba(245, 111, 102, 0.9)", // Almost solid red
+      "rgba(97, 205, 220, 0.9)", // Almost solid blue
+      "rgba(161, 139, 189, 0.9)", // Almost solid purple
     ],
   ];
 
@@ -34,16 +34,45 @@ export const AdminGodisnjeAktivnosti = ({ aktivnosti }) => {
       const colorSet = baseColors[cycleIndex];
 
       backgroundColors.push(colorSet[i % 3]);
-      borderColors.push(colorSet[i % 3].replace('0.5', '1').replace('0.7', '1').replace('0.9', '1'));
+      borderColors.push(
+        colorSet[i % 3]
+          .replace("0.5", "1")
+          .replace("0.7", "1")
+          .replace("0.9", "1")
+      );
     }
 
     return { backgroundColors, borderColors };
   };
 
+  if (aktivnosti.length === 0) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <h5
+          style={{
+            fontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+            fontSize: "20px",
+            fontWeight: "bold",
+            textAlign: "center",
+          }}
+        >
+          Nema podataka za aktivnosti u {currentYear}. godini
+        </h5>
+      </div>
+    );
+  }
+
   const { backgroundColors, borderColors } = generateColors(aktivnosti.length);
 
   const data = {
-    labels: aktivnosti.map((a)=> a.vrstaNaziv),
+    labels: aktivnosti.map((a) => a.vrstaNaziv),
     datasets: [
       {
         label: `Broj događaja u ${currentYear}. godinu`,
@@ -85,6 +114,5 @@ export const AdminGodisnjeAktivnosti = ({ aktivnosti }) => {
     </>
   );
 };
-
 
 export default AdminGodisnjeAktivnosti;

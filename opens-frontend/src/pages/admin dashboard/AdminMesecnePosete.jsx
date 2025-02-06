@@ -71,28 +71,6 @@ export const AdminMesecnePoseteCoworking = ({ mestoPoseteId, backgroundColor, bo
   const latestMonthsData =
     filteredData.length > 5 ? filteredData.slice(-5) : filteredData;
 
-  const getBackgroundColor = (mestoPoseteId) => {
-    switch (mestoPoseteId) {
-      case 1:
-        return ["rgba(163, 197, 123, 0.5)"];
-      case 2:
-        return ["rgba(251, 181, 55, 0.5)"];
-      default:
-        return ["rgba(163, 197, 123, 0.5)"];
-    }
-  };
-
-  const getBorderColor = (mestoPoseteId) => {
-    switch (mestoPoseteId) {
-      case 1:
-        return ["rgba(163, 197, 123, 1)"];
-      case 2:
-        return ["rgba(251, 181, 55, 1)"];
-      default:
-        return ["rgba(163, 197, 123, 1)"];
-    }
-  };
-
   const data = {
     labels: latestMonthsData.map((item) => monthNames[item.mesec - 1]),
     datasets: [
@@ -111,7 +89,7 @@ export const AdminMesecnePoseteCoworking = ({ mestoPoseteId, backgroundColor, bo
       title: {
         display: true,
         position: "top",
-        text: `${mesecnePosete.length > 0 ? mesecnePosete[0].nazivMesta : ""}`,
+        text: `${mesecnePosete.length > 0 ? mesecnePosete[0].nazivMesta : "Nema mesečnih poseta za prikaz"}`,
         font: {
           size: 20,
         },
@@ -127,11 +105,6 @@ export const AdminMesecnePoseteCoworking = ({ mestoPoseteId, backgroundColor, bo
       },
     },
   };
-
-  // If there is no data, don't render anything
-  if (mesecnePosete.length === 0) {
-    return null; // This will prevent rendering the Bar chart component entirely
-  }
 
   return (
     <>
