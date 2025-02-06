@@ -62,6 +62,9 @@ public class Dogadjaj {
 
 	@Column(nullable = false)
 	private boolean deleted = false;
+	
+	@Column(name = "opis_dogadjaja", columnDefinition = "TEXT", nullable = true)
+	private String opisDogadjaja;
 
 	public Dogadjaj() {
 		super();
@@ -158,5 +161,15 @@ public class Dogadjaj {
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
+
+	public String getOpisDogadjaja() {
+		return opisDogadjaja;
+	}
+
+	public void setOpisDogadjaja(String opisDogadjaja) {
+		this.opisDogadjaja = opisDogadjaja;
+	}
+	
+	
 
 }

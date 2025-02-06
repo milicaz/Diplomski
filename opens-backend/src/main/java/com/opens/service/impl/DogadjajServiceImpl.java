@@ -58,6 +58,7 @@ public class DogadjajServiceImpl implements DogadjajService {
 		dogadjaj.setMesto(mestoDogadjaja.get());
 		dogadjaj.setVrsta(tipDogadjaja.get());
 		dogadjaj.setOrganizacija(organizacija.get());
+		dogadjaj.setOpisDogadjaja(dogadjajDTO.getOpisDogadjaja());
 		dogadjajRepo.save(dogadjaj);
 
 		return dogadjaj;
@@ -137,6 +138,7 @@ public class DogadjajServiceImpl implements DogadjajService {
 		updateDogadjaj.setMesto(updateMesto);
 		updateDogadjaj.setVrsta(updateTip);
 		updateDogadjaj.setOrganizacija(updateOrganizacija);
+		updateDogadjaj.setOpisDogadjaja(dogadjaj.getOpisDogadjaja());
 
 		// Save the updated Dogadjaj
 		dogadjajRepo.save(updateDogadjaj);

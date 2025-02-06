@@ -58,18 +58,18 @@ const Dogadjaj = ({ dogadjaj }) => {
   };
 
   const handleCloseUcesnici = () => {
-    setShowUcesnici(false)
-  }
+    setShowUcesnici(false);
+  };
 
   const [showDetails, setShowDetails] = useState(false);
 
   const handleShowDetails = () => {
-    setShowDetails(true)
-  }
+    setShowDetails(true);
+  };
 
   const handleCloseDetails = () => {
-    setShowDetails(false)
-  }
+    setShowDetails(false);
+  };
 
   const handleChangeUcesnik = (event) => {
     const { name, value } = event.target;
@@ -91,20 +91,19 @@ const Dogadjaj = ({ dogadjaj }) => {
     });
   };
 
-  const [showEditDogadjaj, setShowEditDogadjaj] = useState(false)
-  const handleShowEditDogadjaj = () => setShowEditDogadjaj(true)
-  const handleCloseEditDogadjaj = () => setShowEditDogadjaj(false)
+  const [showEditDogadjaj, setShowEditDogadjaj] = useState(false);
+  const handleShowEditDogadjaj = () => setShowEditDogadjaj(true);
+  const handleCloseEditDogadjaj = () => setShowEditDogadjaj(false);
 
   const handleDogadjajEdit = () => {
     try {
       // console.log("Current  before update:", currentUcesnik);
       // Ensure the modal closes after the update
       setShowEditDogadjaj(false); // You may need to handle async issues here
-
-  } catch (error) {
+    } catch (error) {
       console.error("Error updating advent: ", error);
-  }
-  }
+    }
+  };
 
   const formatTimeRange = (start, end) => {
     const startTime = new Date(`1970-01-01T${start}`).toLocaleTimeString(
@@ -131,6 +130,11 @@ const Dogadjaj = ({ dogadjaj }) => {
       <td>{dogadjaj.organizacija.naziv}</td>
       {/* DODATO NOVO POLJE U TABELI */}
       <td>{dogadjaj.organizacija.odgovornaOsoba}</td>
+      <td>
+        {dogadjaj.opisDogadjaja?.length > 200
+          ? `${dogadjaj.opisDogadjaja.slice(0, 200)}...`
+          : dogadjaj.opisDogadjaja}
+      </td>
       {/* <td>
         <button
           className="btn text-warning btn-act"
@@ -144,10 +148,18 @@ const Dogadjaj = ({ dogadjaj }) => {
       </td> */}
       <td>
         <div className="button-row">
-          <button className="btn text-warning btn-act" title="Detalji" onClick={handleShowDetails}>
+          <button
+            className="btn text-warning btn-act"
+            title="Detalji"
+            onClick={handleShowDetails}
+          >
             <FcViewDetails />
           </button>
-          <button className="btn text-success btn-act" title="Učesnici događaja" onClick={handleShowUcesnici}> 
+          <button
+            className="btn text-success btn-act"
+            title="Učesnici događaja"
+            onClick={handleShowUcesnici}
+          >
             <FaUsers />
           </button>
           {/* <button
@@ -159,10 +171,18 @@ const Dogadjaj = ({ dogadjaj }) => {
           </button> */}
         </div>
         <div className="button-row">
-          <button className="btn text-warning btn-act" title="Izmena" onClick={handleShowEditDogadjaj}>
+          <button
+            className="btn text-warning btn-act"
+            title="Izmena"
+            onClick={handleShowEditDogadjaj}
+          >
             <MdEdit />
           </button>
-          <button className="btn text-danger btn-act" title="Brisanje" onClick={handleShowDelete}>
+          <button
+            className="btn text-danger btn-act"
+            title="Brisanje"
+            onClick={handleShowDelete}
+          >
             <MdDelete />
           </button>
         </div>
@@ -315,25 +335,33 @@ const Dogadjaj = ({ dogadjaj }) => {
       {/* DogadjajDetails Modal */}
       <Modal show={showDetails} onHide={handleCloseDetails} size="lg" centered>
         <Modal.Header closeButton>
-        {/* <Modal.Title>
+          {/* <Modal.Title>
       {dogadjaj ? `Učesnici događaja: ${dogadjaj.naziv}` : 'Učesnici događaja'}
     </Modal.Title> */}
         </Modal.Header>
         <Modal.Body>
-          <DetailDogadjajForm currentDogadjaj={dogadjaj} 
-          />
+          <DetailDogadjajForm currentDogadjaj={dogadjaj} />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseDetails}>Zatvori</Button>
+          <Button variant="secondary" onClick={handleCloseDetails}>
+            Zatvori
+          </Button>
         </Modal.Footer>
       </Modal>
 
       {/* DogadjajUcesnici Modal */}
-      <Modal show={showUcesnici} onHide={handleCloseUcesnici} fullscreen centered >
+      <Modal
+        show={showUcesnici}
+        onHide={handleCloseUcesnici}
+        fullscreen
+        centered
+      >
         <Modal.Header closeButton>
-        <Modal.Title>
-          {dogadjaj ? `Učesnici događaja: ${dogadjaj.naziv}` : 'Učesnici događaja'}
-        </Modal.Title>
+          <Modal.Title>
+            {dogadjaj
+              ? `Učesnici događaja: ${dogadjaj.naziv}`
+              : "Učesnici događaja"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <DogadjajUcesniciForm currentDogadjaj={dogadjaj} />
@@ -343,12 +371,17 @@ const Dogadjaj = ({ dogadjaj }) => {
         </Modal.Footer> */}
       </Modal>
 
-      <Modal show={showEditDogadjaj} onHide={handleCloseEditDogadjaj} size="lg" centered>
-        <Modal.Header closeButton>
-        </Modal.Header>
+      <Modal
+        show={showEditDogadjaj}
+        onHide={handleCloseEditDogadjaj}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton></Modal.Header>
         <Modal.Body>
-          <EditDogadjajForm editDogadjaj={dogadjaj} 
-           onDogadjajEdited = {handleDogadjajEdit}
+          <EditDogadjajForm
+            editDogadjaj={dogadjaj}
+            onDogadjajEdited={handleDogadjajEdit}
           />
         </Modal.Body>
       </Modal>
