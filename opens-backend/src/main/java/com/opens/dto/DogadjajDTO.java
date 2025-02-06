@@ -7,7 +7,7 @@ import java.util.Set;
 import com.opens.model.Ucesnik;
 
 public class DogadjajDTO {
-	
+
 	private String naziv;
 	private LocalDate datum;
 	private LocalTime pocetakDogadjaja;
@@ -16,7 +16,8 @@ public class DogadjajDTO {
 	private Long vrstaDogadjajaId;
 	private Long organizacijaId;
 	private Set<Ucesnik> ucesnici;
-	
+	private String opisDogadjaja;
+
 	public DogadjajDTO() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -86,8 +87,12 @@ public class DogadjajDTO {
 		this.ucesnici = ucesnici;
 	}
 
-	
-	
-	
-	
+	public String getOpisDogadjaja() {
+		return opisDogadjaja;
+	}
+
+	public void setOpisDogadjaja(String opisDogadjaja) {
+		this.opisDogadjaja = opisDogadjaja;
+	}
+
 }

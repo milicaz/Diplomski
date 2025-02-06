@@ -14,6 +14,7 @@ const EditDogadjajForm = ({ editDogadjaj, onDogadjajEdited }) => {
     datum: editDogadjaj.datum,
     pocetakDogadjaja: editDogadjaj.pocetakDogadjaja,
     krajDogadjaja: editDogadjaj.krajDogadjaja,
+    opisDogadjaja: editDogadjaj.opisDogadjaja || ''
   });
 
   const [mesto, setMesto] = useState({
@@ -225,6 +226,17 @@ const EditDogadjajForm = ({ editDogadjaj, onDogadjajEdited }) => {
               <Form.Control.Feedback type="invalid">
                 Please select a tip.
               </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Control
+                as="textarea" // This makes it a textarea
+                rows={7} // You can adjust the number of rows to control the height of the textarea
+                type="text"
+                name="opisDogadjaja"
+                value={dogadjaj.opisDogadjaja}
+                onChange={handleChangeDogadjaj}
+                placeholder="Opis događaja"
+              />
             </Form.Group>
           </Col>
 

@@ -840,6 +840,7 @@ const DogadjajList = () => {
             <th>Organizacija</th>
             {/* DODATO NOVO POLJE */}
             <th>Odgovorna osoba</th>
+            <th>Opis događaja</th>
             {/*  */}
             <th>Akcije</th>
           </tr>

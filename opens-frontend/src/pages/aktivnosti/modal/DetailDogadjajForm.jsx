@@ -14,6 +14,7 @@ const DetailDogadjajForm = ({currentDogadjaj}) => {
                     <p><b>Vreme:</b> {currentDogadjaj.pocetakDogadjaja} - {currentDogadjaj.krajDogadjaja}</p>
                     <p><b>Mesto:</b> {currentDogadjaj.mesto.nazivSale}</p>
                     <p><b>Vrsta:</b> {currentDogadjaj.vrsta.naziv}</p>
+                    <p><b>Opis događaja:</b> {currentDogadjaj.opisDogadjaja}</p>
                 </Form.Group>
                 </Col>
 
