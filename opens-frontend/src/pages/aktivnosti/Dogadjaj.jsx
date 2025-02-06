@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
-import { MdDelete, MdEdit, MdPeople } from "react-icons/md";
-import { DogadjajContext } from "./DogadjajContext";
-import DeleteDogadjajForm from "./modal/DeleteDogadjajForm";
 import { FaUsers } from "react-icons/fa";
 import { FcViewDetails } from "react-icons/fc";
+import { MdDelete, MdEdit } from "react-icons/md";
+import { DogadjajContext } from "./DogadjajContext";
+import DeleteDogadjajForm from "./modal/DeleteDogadjajForm";
 import DetailDogadjajForm from "./modal/DetailDogadjajForm";
 import DogadjajUcesniciForm from "./modal/DogadjajUcesniciForm";
 import EditDogadjajForm from "./modal/EditDogadjajForm";

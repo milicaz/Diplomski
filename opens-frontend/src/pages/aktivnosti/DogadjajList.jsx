@@ -1,18 +1,26 @@
 import { LocalDate, LocalTime } from "@js-joda/core";
 import { useContext, useEffect, useState } from "react";
-import { Button, Col, Form, Image, Modal, Row } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  Image,
+  Modal,
+  Row,
+} from "react-bootstrap";
 import { FaRegFilePdf } from "react-icons/fa";
 import { FaSquarePlus } from "react-icons/fa6";
 import { RiFileExcel2Fill } from "react-icons/ri";
+import { useLocation, useNavigate } from "react-router-dom";
+import CreatableSelect from "react-select/creatable";
 import { ucesniciImage } from "../../assets";
 import useHttpProtected from "../../hooks/useHttpProtected";
+import useToast from "../../hooks/useToast";
+import CustomDateRangePicker from "../../utils/CustomDateRangePicker";
 import Pagination from "../Pagination";
 import Dogadjaj from "./Dogadjaj";
 import { DogadjajContext } from "./DogadjajContext";
-import { useLocation, useNavigate } from "react-router-dom";
-import CustomDateRangePicker from "../../utils/CustomDateRangePicker";
-import CreatableSelect from "react-select/creatable";
-import useToast from "../../hooks/useToast";
 
 const DogadjajList = () => {
   const { sortedDogadjaji } = useContext(DogadjajContext);
@@ -651,9 +659,7 @@ const DogadjajList = () => {
 
   const handleChoose = (event) => {
     event.preventDefault(); // Call preventDefault on the current event
-
     handleCloseFooter();
-
     // Pass the event object to handlePDF
     handlePDF(event);
   };
@@ -662,8 +668,12 @@ const DogadjajList = () => {
     event.preventDefault(); // Call preventDefault on the event
 
     // Ensure valid inputs
-    if (!mesec || !godina || !vrsta || !ime || !prezime) {
-      console.error("Please fill all required fields.");
+    if (!headerImageId || !footerImageId) {
+      handleShowToast(
+        "Greška",
+        "Molimo izaberite logoe za header i footer.",
+        "danger"
+      );
       return;
     }
 
@@ -679,8 +689,16 @@ const DogadjajList = () => {
     );
   };
 
-  const handleExcel = (event) => {
-    event.preventDefault();
+  const handleExcel = async () => {
+    if (!mesec || !godina || !vrsta || !ime || !prezime) {
+      handleShowToast(
+        "Greška",
+        "Prvo morate izabrati mesec i godinu, kao i vrstu događaja za koji želite da generišete EXCEL izveštaj. Takođe unesite ime i prezime osobe koja generiše izveštaj",
+        "danger"
+      );
+      return;
+    }
+
     const response = kreirajExcel(
       mesec,
       godina,
@@ -745,7 +763,17 @@ const DogadjajList = () => {
               <Button
                 className="mx-1"
                 variant="danger"
-                onClick={handleShowHeader}
+                onClick={() => {
+                  if (!mesec || !godina || !vrsta || !ime || !prezime) {
+                    handleShowToast(
+                      "Greška",
+                      "Prvo morate izabrati mesec i godinu, kao i vrstu događaja za koji želite da generišete PDF izveštaj. Takođe unesite ime i prezime osobe koja generiše izveštaj",
+                      "danger"
+                    );
+                  } else {
+                    handleShowHeader();
+                  }
+                }}
               >
                 <FaRegFilePdf size={20} /> PDF
               </Button>
@@ -1446,7 +1474,67 @@ const DogadjajList = () => {
           <>
             <Form>
               <Row>
-                <Col>
+                {firstHalf.length > 0 || secondHalf.length > 0 ? (
+                  <>
+                    <Col>
+                      {firstHalf.map((logo) => (
+                        <Row key={logo.id} className="mb-2">
+                          <Col className="mb-4">
+                            <Form.Check
+                              type="radio"
+                              name="logoGroup"
+                              id={`logo-${logo.id}`}
+                              label={`${logo.name}`}
+                              value={logo.id}
+                              onChange={() => handleSelectHeader(logo.id)}
+                            />
+                            <Image
+                              src={`data:image/${logo.type};base64,${logo.picByte}`}
+                              alt={`Logo ${logo.id}`}
+                              thumbnail
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Col>
+                    <Col>
+                      {secondHalf.map((logo) => (
+                        <Row key={logo.id} className="mb-2">
+                          <Col className="mb-4">
+                            <Form.Check
+                              type="radio"
+                              name="logoGroup"
+                              id={`logo-${logo.id}`}
+                              label={`${logo.name}`}
+                              value={logo.id}
+                              onChange={() => handleSelectHeader(logo.id)}
+                            />
+                            <Image
+                              src={`data:image/${logo.type};base64,${logo.picByte}`}
+                              alt={`Logo ${logo.id}`}
+                              thumbnail
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Col>
+                  </>
+                ) : (
+                  <Container
+                    className="d-flex justify-content-center align-items-center mt-3"
+                    style={{ height: "100v" }}
+                  >
+                    <Row>
+                      <Col>
+                        <h6>
+                          Nema logoa za prikazivanje. Možete dodati logoe u
+                          okviru Šifrarnik/Logoi.
+                        </h6>
+                      </Col>
+                    </Row>
+                  </Container>
+                )}
+                {/* <Col>
                   {firstHalf.map((logo) => (
                     <Row key={logo.id} className="mb-2">
                       <Col className="mb-4">
@@ -1487,7 +1575,7 @@ const DogadjajList = () => {
                       </Col>
                     </Row>
                   ))}
-                </Col>
+                </Col> */}
               </Row>
             </Form>
           </>
@@ -1510,7 +1598,67 @@ const DogadjajList = () => {
           <>
             <Form>
               <Row>
-                <Col>
+                {firstHalf.length > 0 || secondHalf.length > 0 ? (
+                  <>
+                    <Col>
+                      {firstHalf.map((logo) => (
+                        <Row key={logo.id} className="mb-2">
+                          <Col className="mb-4">
+                            <Form.Check
+                              type="radio"
+                              name="logoGroup"
+                              id={`logo-${logo.id}`}
+                              label={`${logo.name}`}
+                              value={logo.id}
+                              onChange={() => handleSelectFooter(logo.id)}
+                            />
+                            <Image
+                              src={`data:image/${logo.type};base64,${logo.picByte}`}
+                              alt={`Logo ${logo.id}`}
+                              thumbnail
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Col>
+                    <Col>
+                      {secondHalf.map((logo) => (
+                        <Row key={logo.id} className="mb-2">
+                          <Col className="mb-4">
+                            <Form.Check
+                              type="radio"
+                              name="logoGroup"
+                              id={`logo-${logo.id}`}
+                              label={`${logo.name}`}
+                              value={logo.id}
+                              onChange={() => handleSelectFooter(logo.id)}
+                            />
+                            <Image
+                              src={`data:image/${logo.type};base64,${logo.picByte}`}
+                              alt={`Logo ${logo.id}`}
+                              thumbnail
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Col>
+                  </>
+                ) : (
+                  <Container
+                    className="d-flex justify-content-center align-items-center mt-3"
+                    style={{ height: "100v" }}
+                  >
+                    <Row>
+                      <Col>
+                        <h6>
+                          Nema logoa za prikazivanje. Možete dodati logoe u
+                          okviru Šifrarnik/Logoi.
+                        </h6>
+                      </Col>
+                    </Row>
+                  </Container>
+                )}
+                {/* <Col>
                   {firstHalf.map((logo) => (
                     <Row key={logo.id} className="mb-2">
                       <Col className="mb-4">
@@ -1551,7 +1699,7 @@ const DogadjajList = () => {
                       </Col>
                     </Row>
                   ))}
-                </Col>
+                </Col> */}
               </Row>
             </Form>
           </>

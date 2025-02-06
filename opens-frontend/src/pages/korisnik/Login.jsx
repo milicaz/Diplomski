@@ -33,11 +33,15 @@ const Login = () => {
       );
 
       if (isMounted) {
-        const formattedOptions = posetiociData.data.map((option) => ({
-          value: option.email,
-          label: `${option.ime} ${option.prezime} (${option.email})`,
-          data: option,
-        }));
+        const formattedOptions =
+          posetiociData.data.length > 0
+            ? posetiociData.data.map((option) => ({
+                value: option.email,
+                label: `${option.ime} ${option.prezime} (${option.email})`,
+                data: option,
+              }))
+            : [];
+
         setOptions(formattedOptions);
         setMestaPosete(mestaPoseteData.data);
         setOprema(opremaData.data);
@@ -50,7 +54,8 @@ const Login = () => {
           "danger"
         );
       } else if (error.name !== "CanceledError") {
-        navigate("/logovanje", { state: { from: location }, replace: true });
+        console.error("Greška prilikom pribavljanja podataka:", error);
+        //navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
   };
@@ -123,15 +128,13 @@ const Login = () => {
         mestoPoseteID: mestoPoseteId,
         oprema: selectedOprema.map((oprema) => ({ id: oprema.value })),
       };
-      console.log("Saljem: ", posetaData);
       await addPosetu(posetaData);
       setPosetilac(null);
       setMestaPoseteId(null);
       setSelectedOprema([]);
-    } catch (error) {
-      console.error("Greska tokom kreiranja posete:", error);
+    } catch (error) {      
       handleShowToast(
-        "",
+        "Greška",
         `Greška tokom kreiranja posete za posetioca: ${posetilac.value}`,
         "danger"
       );
