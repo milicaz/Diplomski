@@ -287,7 +287,7 @@
 															<textElement textAlignment="Center" verticalAlignment="Middle">
 																<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 															</textElement>
-															<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+															<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
 														</textField>
 													</jr:detailCell>
 												</jr:column>

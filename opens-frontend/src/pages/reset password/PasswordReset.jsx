@@ -5,6 +5,7 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
 import { opensBojaImage } from "../../assets";
 import useToast from "../../hooks/useToast";
+import { httpPublic } from "../../apis/http";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -45,8 +46,8 @@ const PasswordReset = () => {
       return;
     } else {
       try {
-        await axios.put(
-          "http://localhost:8080/api/auth/password-reset/reset",
+        await httpPublic.put(
+          "/password-reset/reset",
           null,
           {
             params: {

@@ -8,7 +8,6 @@ import { Card } from "react-bootstrap";
 
 export const AdminMesecnePoseteCoworking = ({ mestoPoseteId, backgroundColor, borderColor }) => {
   const [mesecnePosete, setMesecnePosete] = useState([]);
-  console.log("Posete: ", mesecnePosete);
 
   const httpProtected = useHttpProtected();
   const navigate = useNavigate();

@@ -57,6 +57,9 @@
 		<field name="telefon" class="java.lang.String"/>
 		<field name="email" class="java.lang.String"/>
 		<field name="uc_organizacija" class="java.lang.String"/>
+		<variable name="total" class="java.lang.Long" calculation="Count">
+			<variableExpression><![CDATA[$F{id}]]></variableExpression>
+		</variable>
 	</subDataset>
 	<parameter name="dogadjaj" class="java.lang.String"/>
 	<parameter name="organizator" class="java.lang.String"/>
@@ -171,7 +174,7 @@
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>

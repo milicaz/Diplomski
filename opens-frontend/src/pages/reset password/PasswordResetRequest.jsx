@@ -4,6 +4,7 @@ import { Button, Card, Form, Toast } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { opensBojaImage } from "../../assets";
 import useToast from "../../hooks/useToast";
+import { httpPublic } from "../../apis/http";
 
 const PasswordResetRequest = () => {
   const [email, setEmail] = useState("");
@@ -13,8 +14,8 @@ const PasswordResetRequest = () => {
 
   const handleRequest = async () => {
     try {
-      await axios.post(
-        "http://localhost:8080/api/auth/password-reset/requestZaposleni",
+      await httpPublic.post(
+        "/password-reset/requestZaposleni",
         null,
         {
           params: {
@@ -71,27 +72,6 @@ const PasswordResetRequest = () => {
           </Card.Body>
         </Card>
       </div>
-      {/* <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        style={{
-          position: "fixed",
-          bottom: 20,
-          left: 20,
-          minWidth: 300,
-          backgroundColor: toastVariant === "success" ? "#a3c57b" : "#f56f66",
-          color: "white",
-        }}
-        delay={3000}
-        autohide
-      >
-        <Toast.Header>
-          <strong className="me-auto">
-            {toastVariant === "success" ? "" : "Greška"}
-          </strong>
-        </Toast.Header>
-        <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast> */}
     </>
   );
 };

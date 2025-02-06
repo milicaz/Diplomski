@@ -48,6 +48,8 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     organizacija: "",
   });
 
+  const [validated, setValidated] = useState(false);
+
   const r = [
     { id: 1, naziv: "ZENSKO" },
     { id: 2, naziv: "MUSKO" },
@@ -114,7 +116,8 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   useEffect(() => {
     const fetchUcesnici = async () => {
       const fetchedUcesnici = await getUcesnici(id);
-      setUcesnici(fetchedUcesnici); // Set the participants data after it's fetched
+      // setUcesnici(fetchedUcesnici); // Set the participants data after it's fetched
+      setUcesnici(fetchedUcesnici || []); // Ensure it's always an array
       let isMounted = true;
       const controller = new AbortController();
 
@@ -143,7 +146,10 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
               "danger"
             );
           } else if (error.name !== "CanceledError") {
-            navigate("/logovanje", { state: { from: location }, replace: true });
+            navigate("/logovanje", {
+              state: { from: location },
+              replace: true,
+            });
           }
         }
       };
@@ -165,6 +171,28 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
 
   const handleDodajUcesnika = (event) => {
     event.preventDefault();
+
+    const isValid =
+      ucesnik.ime &&
+      ucesnik.prezime &&
+      ucesnik.rod &&
+      ucesnik.godine &&
+      ucesnik.mestoBoravista &&
+      ucesnik.organizacija &&
+      // Validacija godine
+      /^\d{4}$/.test(ucesnik.godine) && // Proverava da li godine imaju tačno 4 cifre
+      ucesnik.godine >= 1930; // Proverava da li su godine veće ili jednake 1930
+
+    // Ako validacija nije prošla, postavite validated na true i prekinite
+    if (!isValid) {
+      console.log("Usao je u isValid u handleDodajUcesnika");
+      setValidated(true);
+      return;
+    }
+
+    // Ako je validacija prošla, postavite validated na false
+    setValidated(false);
+
     dodajUcesnika(ucesnik, currentDogadjaj.id);
 
     // Update the `ucesnici` state manually by adding the new participant
@@ -185,23 +213,8 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     });
 
     // fetchUcesnici();
+    setValidated(false)
   };
-
-  //   const handleUcesnikEdit = async () => {
-  //     try {
-  //         // Update the local state after edit
-  //         setUcesnici((prevUcesnici) =>
-  //             prevUcesnici.map((participant) =>
-  //                 participant.id === currentUcesnik.id ? currentUcesnik : participant
-  //             )
-  //         );
-
-  //         // Close the modal after editing
-  //         setShowEdit(false);
-  //     } catch (error) {
-  //         console.error("Error updating participant: ", error);
-  //     }
-  // };
 
   const handleUcesnikEdit = async () => {
     try {
@@ -348,7 +361,9 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
               <th>Redni broj</th>
               <th>Ime</th>
               <th>Prezime</th>
+              <th>Rod</th>
               <th>Godine</th>
+              <th>Mesto boravišta</th>
               <th>Telefon</th>
               <th>Email</th>
               <th>Akcije</th>
@@ -362,7 +377,9 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                   <td>{(currentPage - 1) * limit + index + 1}</td>
                   <td>{ucesnik.ime}</td>
                   <td>{ucesnik.prezime}</td>
+                  <td>{rodMapping[ucesnik.rod] || ucesnik.rod}</td>
                   <td>{ucesnik.godine}</td>
+                  <td>{ucesnik.mestoBoravista}</td>
                   <td>{ucesnik.brojTelefona}</td>
                   <td>{ucesnik.email}</td>
                   <td>
@@ -534,9 +551,9 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
         <Modal.Header closeButton>
           <Modal.Title>Dodaj učesnika</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <div>
-            <Form>
+        <div>
+          <Form noValidate validated={validated} onSubmit={handleDodajUcesnika}>
+            <Modal.Body>
               <Form.Group className="mb-3">
                 <Form.Control
                   name="ime"
@@ -545,7 +562,11 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                   type="text"
                   placeholder="Ime *"
                   required
+                  isInvalid={validated && !ucesnik.ime}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Control
@@ -555,7 +576,11 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                   type="text"
                   placeholder="Prezime *"
                   required
+                  isInvalid={validated && !ucesnik.prezime}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Control
@@ -564,6 +589,7 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                   value={ucesnik.rod}
                   onChange={handleChangeUcesnik}
                   required
+                  isInvalid={validated && !ucesnik.rod}
                 >
                   <option value="">Izaberite rod *</option>
                   {Object.entries(rodMapping).map(([key, value]) => (
@@ -572,6 +598,9 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                     </option>
                   ))}
                 </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Control
@@ -581,7 +610,12 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                   type="number"
                   placeholder="Godina rođenja *"
                   required
+                  isInvalid={validated && (!/^\d{4}$/.test(ucesnik.godine) || ucesnik.godine < 1930)}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Godina mora biti u formatu četiri cifre i veća ili jednaka
+                  1930.
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Control
@@ -591,7 +625,11 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                   type="text"
                   placeholder="Mesto boravišta *"
                   required
+                  isInvalid={validated && !ucesnik.mestoBoravista}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Control
@@ -619,19 +657,23 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                   type="text"
                   placeholder="Organizacija *"
                   required
+                  isInvalid={validated && !ucesnik.organizacija}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
-            </Form>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={handleDodajUcesnika} variant="success">
-            Dodaj učesnika
-          </Button>
-          <Button onClick={handleCloseUcesnik} variant="danger">
-            Završi
-          </Button>
-        </Modal.Footer>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="success" type="submit">
+                Dodaj učesnika
+              </Button>
+              <Button onClick={handleCloseUcesnik} variant="danger">
+                Završi
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </div>
       </Modal>
 
       <Modal

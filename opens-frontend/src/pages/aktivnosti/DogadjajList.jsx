@@ -11,7 +11,7 @@ import Dogadjaj from "./Dogadjaj";
 import { DogadjajContext } from "./DogadjajContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import CustomDateRangePicker from "../../utils/CustomDateRangePicker";
-import CreatableSelect from 'react-select/creatable';
+import CreatableSelect from "react-select/creatable";
 import useToast from "../../hooks/useToast";
 
 const DogadjajList = () => {
@@ -50,6 +50,7 @@ const DogadjajList = () => {
   const [existingOrganizacije, setExistingOrganizacije] = useState([]);
   const [isExisting, setIsExisting] = useState(false); // New state to track if the organization is existing
   // //
+  const [validated, setValidated] = useState(false);
 
   const [dogadjaj, setDogadjaj] = useState({
     naziv: "",
@@ -274,6 +275,7 @@ const DogadjajList = () => {
 
   const [showOrganizacija, setShowOrganizacija] = useState(false);
   const handleShowOrganizacija = () => {
+    setValidated(false);
     setShowOrganizacija(true);
   };
 
@@ -391,17 +393,68 @@ const DogadjajList = () => {
 
   const handleDalje = (event) => {
     event.preventDefault();
+    const isValid =
+      organizacija.naziv &&
+      organizacija.odgovornaOsoba &&
+      organizacija.email &&
+      organizacija.opis;
+
+    if (!isValid) {
+      setValidated(true);
+      return;
+    }
+
+    setValidated(false);
 
     if (isExisting) {
-      // If the organization is already existing, just proceed with the existing organization
       console.log("Using existing organization:", organizacija);
-      handleCloseOrganizacija(); // Close modal
-      handleShowDogadjaj(); // Proceed to the next modal/step
+      handleCloseOrganizacija();
+      handleShowDogadjaj();
     } else {
-      // If it's a new organization, add it to the database
-      addOrganizacija(organizacija); // Replace with your actual add organization function
-      handleCloseOrganizacija(); // Close modal
-      handleShowDogadjaj(); // Proceed to the next modal/step
+      addOrganizacija(organizacija);
+      handleCloseOrganizacija();
+      handleShowDogadjaj();
+    }
+  };
+
+  const handleDaljeEdit = (event) => {
+    console.log("Usao je u handleDaljeEdit");
+    event.preventDefault();
+    const isValid =
+      organizacijaEdit.naziv &&
+      organizacijaEdit.odgovornaOsoba &&
+      organizacijaEdit.email &&
+      organizacijaEdit.opis;
+
+    console.log(
+      "Trenutno stanje organizacija:",
+      JSON.stringify(organizacijaEdit)
+    );
+
+    if (!isValid) {
+      setValidated(true);
+      console.log("Usao je u handleDaljeEdit if isValid");
+      return;
+    }
+
+    setValidated(false);
+    console.log("Validacija uspešna (edit), isExisting:", isExisting);
+
+    if (isExisting) {
+      console.log("Koristi postojeću organizaciju (edit):", organizacijaEdit);
+      handleCloseEditOrganizacija();
+      handleShowDogadjaj();
+    } else {
+      console.log("Dodaje novu organizaciju (edit):", organizacijaEdit);
+      addOrganizacija(organizacijaEdit)
+        .then(() => {
+          console.log("Nova organizacija uspešno dodata (edit)!");
+          handleCloseEditOrganizacija();
+          handleShowDogadjaj();
+        })
+        .catch((error) => {
+          console.error("Greška pri dodavanju organizacije (edit):", error);
+        });
     }
   };
 
@@ -412,6 +465,22 @@ const DogadjajList = () => {
 
   const handleDodaj = (event) => {
     event.preventDefault();
+
+    const isValid =
+      dogadjaj.naziv &&
+      dogadjaj.datum &&
+      dogadjaj.pocetakDogadjaja &&
+      dogadjaj.krajDogadjaja &&
+      dogadjaj.mestoDogadjajaId &&
+      dogadjaj.vrstaDogadjajaId;
+
+    if (!isValid) {
+      setValidated(true);
+      return;
+    }
+
+    setValidated(false);
+
     const currentOrganizacijaId = organizacijaId;
 
     if (!currentOrganizacijaId) {
@@ -459,17 +528,48 @@ const DogadjajList = () => {
     setOrganizacijaEdit({ ...organizacijaEdit, [name]: value });
   };
 
-  const handleNazad = () => {
-    getOrganizacijaById(organizacijaId);
-    handleShowEditOrganizacija();
-    handleCloseDogadjaj();
-  };
+  // const handleNazad = () => {
+  //   getOrganizacijaById(organizacijaId);
+  //   console.log("GetOrganizacijaById je " + getOrganizacijaById(organizacijaId))
+  //   handleShowEditOrganizacija();
+  //   handleCloseDogadjaj();
+  // };
 
-  const handleEditOrganizacija = (event) => {
-    event.preventDefault();
-    editOrganizacija(id, organizacijaEdit);
-    handleCloseEditOrganizacija();
-    handleShowDogadjaj();
+  const handleNazad = async () => {
+    const controller = new AbortController();
+
+    try {
+      // Poziv API-ja direktno unutar handleNazad
+      const response = await httpProtected.get(
+        `/organizacije/${organizacijaId}`,
+        {
+          signal: controller.signal,
+        }
+      );
+
+      const organizacijaData = response.data;
+      console.log("Podaci dobijeni sa servera:", organizacijaData);
+
+      // Postavljanje podataka u stanje
+      setOrganizacijaEdit(organizacijaData);
+      console.log("Organizacija za uređivanje postavljena:", organizacijaData);
+
+      // Prikaz forme za uređivanje organizacije
+      handleShowEditOrganizacija();
+      handleCloseDogadjaj();
+    } catch (error) {
+      // Rukovanje greškama
+      if (error.response?.status >= 500) {
+        console.error(
+          "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva."
+        );
+      } else if (error.name !== "CanceledError") {
+        console.error("Nije uspelo učitavanje organizacije:", error);
+      }
+    } finally {
+      // Otkazivanje zahteva kada je završen
+      controller.abort();
+    }
   };
 
   const handleChangeUcesnik = (event) => {
@@ -479,6 +579,25 @@ const DogadjajList = () => {
 
   const handleDodajUcesnika = (event) => {
     event.preventDefault();
+
+    const isValid =
+      ucesnik.ime &&
+      ucesnik.prezime &&
+      ucesnik.rod &&
+      ucesnik.godine &&
+      ucesnik.mestoBoravista &&
+      ucesnik.organizacija &&
+      // Validacija godine
+      /^\d{4}$/.test(ucesnik.godine) && // Proverava da li godine imaju tačno 4 cifre
+      ucesnik.godine >= 1930; // Proverava da li su godine veće ili jednake 1930
+
+    if (!isValid) {
+      setValidated(true);
+      return;
+    }
+
+    setValidated(false);
+
     dodajUcesnika(ucesnik, idDogadjaja);
     setUcesnik({
       ime: "",
@@ -756,24 +875,34 @@ const DogadjajList = () => {
         <Modal.Header closeButton>
           <Modal.Title>Dodaj organizaciju</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <div>
-          <Form>
+        <div>
+          <Form noValidate validated={validated} onSubmit={handleDalje}>
+            <Modal.Body>
               {/* Creatable Dropdown for organization name */}
               <Form.Group>
                 <Form.Label>Naziv Organizacije</Form.Label>
                 <CreatableSelect
-                  value={{ value: organizacija.naziv, label: organizacija.naziv }} // Set the initial value
+                  value={{
+                    value: organizacija.naziv,
+                    label: organizacija.naziv,
+                  }} // Set the initial value
                   onChange={handleSelectChange}
                   options={options}
                   // placeholder="Naziv organizacije"
+                  required
                   isClearable
                   placeholder="Izaberite ili unesite novu organizaciju"
                   isValidNewOption={(inputValue, selectedOptions) => {
                     // Optionally control when a new option can be created (e.g., disallow empty input)
                     return inputValue.length > 0;
                   }}
+                  className={
+                    validated && !organizacija.naziv ? "is-invalid" : ""
+                  }
                 />
+                {validated && !organizacija.naziv && (
+                  <div className="invalid-feedback">Ovo polje je obavezno!</div>
+                )}
               </Form.Group>
               <br />
               <Form.Group>
@@ -785,7 +914,11 @@ const DogadjajList = () => {
                   type="text"
                   placeholder="Odgovorna osoba"
                   required
+                  isInvalid={validated && !organizacija.odgovornaOsoba}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
               <Form.Group>
@@ -795,8 +928,7 @@ const DogadjajList = () => {
                   onChange={handleChange}
                   // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
-                  placeholder="Broj telefon"
-                  required
+                  placeholder="Broj telefona"
                 />
               </Form.Group>
               <br />
@@ -809,27 +941,30 @@ const DogadjajList = () => {
                   type="text"
                   placeholder="E-mail"
                   required
+                  isInvalid={validated && !organizacija.email}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
               <Form.Group>
                 <Form.Control
-                  as="textarea"  // This makes it a textarea
-                  rows={4}  // You can adjust the number of rows to control the height of the textarea
+                  as="textarea" // This makes it a textarea
+                  rows={4} // You can adjust the number of rows to control the height of the textarea
                   name="delatnost"
                   value={organizacija.delatnost}
                   onChange={handleChange}
                   // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Delatnost"
-                  required
                 />
               </Form.Group>
               <br />
               <Form.Group>
                 <Form.Control
-                  as="textarea"  // This makes it a textarea
-                  rows={4}  // You can adjust the number of rows to control the height of the textarea
+                  as="textarea" // This makes it a textarea
+                  rows={4} // You can adjust the number of rows to control the height of the textarea
                   name="opis"
                   value={organizacija.opis}
                   onChange={handleChange}
@@ -837,7 +972,11 @@ const DogadjajList = () => {
                   type="text"
                   placeholder="Opis"
                   required
+                  isInvalid={validated && !organizacija.opis}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
               <Form.Group>
@@ -848,27 +987,26 @@ const DogadjajList = () => {
                   // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Link"
-                  required
                 />
               </Form.Group>
               <br />
-            </Form>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={handleDalje} variant="success">
-            Dalje
-          </Button>
-          &nbsp;
-        </Modal.Footer>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="success" type="submit">
+                Dalje
+              </Button>
+              &nbsp;
+            </Modal.Footer>
+          </Form>
+        </div>
       </Modal>
 
       <Modal show={showDogadjaj} onHide={handleCloseDogadjaj}>
         <Modal.Header closeButton>
           <Modal.Title>Dodaj događaj</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Form>
+        <Form noValidate validated={validated} onSubmit={handleDodaj}>
+          <Modal.Body>
             <Form.Group>
               <Form.Control
                 name="naziv"
@@ -878,7 +1016,11 @@ const DogadjajList = () => {
                 type="text"
                 placeholder="Naziv"
                 required
+                isInvalid={validated && !dogadjaj.naziv}
               />
+              <Form.Control.Feedback type="invalid">
+                Ovo polje je obavezno!
+              </Form.Control.Feedback>
             </Form.Group>
             <br />
             <Form.Group>
@@ -890,7 +1032,11 @@ const DogadjajList = () => {
                 type="date"
                 placeholder="Datum"
                 required
+                isInvalid={validated && !dogadjaj.datum}
               />
+              <Form.Control.Feedback type="invalid">
+                Ovo polje je obavezno!
+              </Form.Control.Feedback>
             </Form.Group>
             <br />
             <Form.Group>
@@ -902,7 +1048,11 @@ const DogadjajList = () => {
                 type="time"
                 placeholder="Početak događaja"
                 required
+                isInvalid={validated && !dogadjaj.pocetakDogadjaja}
               />
+              <Form.Control.Feedback type="invalid">
+                Ovo polje je obavezno!
+              </Form.Control.Feedback>
             </Form.Group>
             <br />
             <Form.Group>
@@ -914,7 +1064,11 @@ const DogadjajList = () => {
                 type="time"
                 placeholder="Kraj događaja"
                 required
+                isInvalid={validated && !dogadjaj.krajDogadjaja}
               />
+              <Form.Control.Feedback type="invalid">
+                Ovo polje je obavezno!
+              </Form.Control.Feedback>
             </Form.Group>
             <br />
             <Form.Group controlId="dropdown">
@@ -924,6 +1078,8 @@ const DogadjajList = () => {
                 value={dogadjaj.mestoDogadjajaId}
                 onChange={handleChangeDogadjaj}
                 // style={{ width: "80%", maxWidth: "90%" }}
+                required
+                isInvalid={validated && !dogadjaj.mestoDogadjajaId}
               >
                 <option value="">Izaberite salu</option>
                 {mestaDogadjaja.map((item, index) => (
@@ -932,6 +1088,9 @@ const DogadjajList = () => {
                   </option>
                 ))}
               </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                Ovo polje je obavezno!
+              </Form.Control.Feedback>
             </Form.Group>
             <br />
             <Form.Group controlId="dropdown">
@@ -941,6 +1100,8 @@ const DogadjajList = () => {
                 value={dogadjaj.vrstaDogadjajaId}
                 onChange={handleChangeDogadjaj}
                 // style={{ width: "80%", maxWidth: "90%" }}
+                required
+                isInvalid={validated && !dogadjaj.vrstaDogadjajaId}
               >
                 <option value="">Izaberite vrstu događaja</option>
                 {tipoviDogadjaja.map((item, index) => (
@@ -949,27 +1110,30 @@ const DogadjajList = () => {
                   </option>
                 ))}
               </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                Ovo polje je obavezno!
+              </Form.Control.Feedback>
             </Form.Group>
             <br />
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="success" onClick={handleDodaj}>
-            Dodaj
-          </Button>
-          <Button variant="danger" onClick={handleNazad}>
-            Nazad
-          </Button>
-        </Modal.Footer>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="success" type="submit">
+              Dodaj
+            </Button>
+            <Button variant="danger" onClick={handleNazad}>
+              Nazad
+            </Button>
+          </Modal.Footer>
+        </Form>
       </Modal>
 
       <Modal show={showEditOrganizacija} onHide={handleCloseEditOrganizacija}>
         <Modal.Header closeButton>
           <Modal.Title>Dodaj organizaciju</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <div>
-            <Form>
+        <div>
+          <Form noValidate validated={validated} onSubmit={handleDaljeEdit}>
+            <Modal.Body>
               <Form.Group>
                 <Form.Control
                   name="naziv"
@@ -979,7 +1143,11 @@ const DogadjajList = () => {
                   type="text"
                   placeholder="Naziv"
                   required
+                  isInvalid={validated && !organizacijaEdit.naziv}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
               <Form.Group>
@@ -991,7 +1159,11 @@ const DogadjajList = () => {
                   type="text"
                   placeholder="Odgovorna osoba"
                   required
+                  isInvalid={validated && !organizacijaEdit.odgovornaOsoba}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
               <Form.Group>
@@ -1015,13 +1187,17 @@ const DogadjajList = () => {
                   type="text"
                   placeholder="E-mail"
                   required
+                  isInvalid={validated && !organizacijaEdit.email}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
               <Form.Group>
                 <Form.Control
-                  as="textarea"  // This makes it a textarea
-                  rows={4}  // You can adjust the number of rows to control the height of the textarea
+                  as="textarea" // This makes it a textarea
+                  rows={4} // You can adjust the number of rows to control the height of the textarea
                   name="delatnost"
                   value={organizacijaEdit.delatnost}
                   onChange={handleChangeEditOrganziacija}
@@ -1034,8 +1210,8 @@ const DogadjajList = () => {
               <br />
               <Form.Group>
                 <Form.Control
-                  as="textarea"  // This makes it a textarea
-                  rows={4}  // You can adjust the number of rows to control the height of the textarea
+                  as="textarea" // This makes it a textarea
+                  rows={4} // You can adjust the number of rows to control the height of the textarea
                   name="opis"
                   value={organizacijaEdit.opis}
                   onChange={handleChangeEditOrganziacija}
@@ -1043,7 +1219,11 @@ const DogadjajList = () => {
                   type="text"
                   placeholder="Opis"
                   required
+                  isInvalid={validated && !organizacijaEdit.opis}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
               <Form.Group>
@@ -1058,24 +1238,24 @@ const DogadjajList = () => {
                 />
               </Form.Group>
               <br />
-            </Form>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={handleEditOrganizacija} variant="success">
-            Dalje
-          </Button>
-          &nbsp;
-        </Modal.Footer>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="success" type="submit">
+                Dalje
+              </Button>
+              &nbsp;
+            </Modal.Footer>
+          </Form>
+        </div>
       </Modal>
 
       <Modal show={showUcesnik} onHide={handleCloseUcesnik}>
         <Modal.Header closeButton>
           <Modal.Title>Dodaj učesnika</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <div>
-            <Form>
+        <div>
+          <Form noValidate validated={validated} onSubmit={handleDodajUcesnika}>
+            <Modal.Body>
               <Form.Group>
                 <Form.Control
                   name="ime"
@@ -1085,7 +1265,11 @@ const DogadjajList = () => {
                   type="text"
                   placeholder="Ime"
                   required
+                  isInvalid={validated && !ucesnik.ime}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
               <Form.Group>
@@ -1097,7 +1281,11 @@ const DogadjajList = () => {
                   type="text"
                   placeholder="Prezime"
                   required
+                  isInvalid={validated && !ucesnik.prezime}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
               <Form.Group>
@@ -1108,6 +1296,7 @@ const DogadjajList = () => {
                   value={ucesnik.rod}
                   onChange={handleChangeUcesnik}
                   required
+                  isInvalid={validated && !ucesnik.rod}
                 >
                   <option value="">Izaberite rod</option>
                   {Object.entries(rodMapping).map(([key, value]) => (
@@ -1116,6 +1305,9 @@ const DogadjajList = () => {
                     </option>
                   ))}
                 </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
               <Form.Group>
@@ -1127,7 +1319,15 @@ const DogadjajList = () => {
                   type="number"
                   placeholder="Godina rođenja"
                   required
+                  isInvalid={
+                    validated &&
+                    (!/^\d{4}$/.test(ucesnik.godine) || ucesnik.godine < 1930)
+                  }
                 />
+                <Form.Control.Feedback type="invalid">
+                  Godina mora biti u formatu četiri cifre i veća ili jednaka
+                  1930.
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
               <Form.Group>
@@ -1139,7 +1339,11 @@ const DogadjajList = () => {
                   type="text"
                   placeholder="Mesto boravišta"
                   required
+                  isInvalid={validated && !ucesnik.mestoBoravista}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
               <Form.Group>
@@ -1150,7 +1354,7 @@ const DogadjajList = () => {
                   // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="Broj telefona"
-                  required
+                  // required
                 />
               </Form.Group>
               <br />
@@ -1162,7 +1366,7 @@ const DogadjajList = () => {
                   // style={{ width: "80%", maxWidth: "90%" }}
                   type="text"
                   placeholder="E-mail"
-                  required
+                  // required
                 />
               </Form.Group>
               <br />
@@ -1175,22 +1379,26 @@ const DogadjajList = () => {
                   type="text"
                   placeholder="Organizacija"
                   required
+                  isInvalid={validated && !ucesnik.organizacija}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Ovo polje je obavezno!
+                </Form.Control.Feedback>
               </Form.Group>
               <br />
-            </Form>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={handleDodajUcesnika} variant="success">
-            Dodaj učesnika
-          </Button>
-          &nbsp;
-          <Button onClick={handleCloseUcesnik} variant="danger">
-            Završi
-          </Button>
-          &nbsp;
-        </Modal.Footer>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="success" type="submit">
+                Dodaj učesnika
+              </Button>
+              &nbsp;
+              <Button onClick={handleCloseUcesnik} variant="danger">
+                Završi
+              </Button>
+              &nbsp;
+            </Modal.Footer>
+          </Form>
+        </div>
       </Modal>
 
       <Modal

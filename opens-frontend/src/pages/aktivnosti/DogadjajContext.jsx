@@ -199,6 +199,7 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       const response = await httpProtected.get(`/organizacije/${id}`, {
         signal: controller.signal,
       });
+      console.log("Podaci dobijeni sa servera:", response.data);
       setCurrentOrganizacija(response.data);
     } catch (error) {
       if (error.response?.status >= 500) {

@@ -68,47 +68,6 @@ const ZaposleniContextProvider = ({ children, navigate, location }) => {
     }
   };
 
-  // const registracija = async (zaposleni) => {
-  //   const controller = new AbortController();
-  //   try {
-  //     const { data } = await httpPublic.post("/signup", zaposleni, {
-  //       signal: controller.signal,
-  //     });
-  //     handleShowToast(
-  //       "Registracija uspešna",
-  //       "Uspešno ste se registrovali zaposlenog",
-  //       "success"
-  //     );
-  //     return data;
-  //   } catch (error) {
-  //     if (!error.response) {
-  //       handleShowToast(
-  //         "Registracija neuspešna",
-  //         "Greška u mreži. Zahtev nije mogao biti poslat zbog greške u mreži.",
-  //         "danger"
-  //       );
-  //     } else if (error.response?.status === 409) {
-  //       handleShowToast(
-  //         "Registracija neuspešna",
-  //         "Email je već u upotrebi. Molimo Vas da pokušate sa nekim drugim.",
-  //         "danger"
-  //       );
-  //     } else if (error.response.status >= 500) {
-  //       handleShowToast(
-  //         "Registracija neuspešna",
-  //         "Došlo je do problema sa serverom. Molimo Vas da pokušate ponovo kasnije.",
-  //         "danger"
-  //       );
-  //     } else {
-  //       handleShowToast(
-  //         "Registracija neuspešna",
-  //         "Došlo je do neočekivane greške tokom registracije.",
-  //         "danger"
-  //       );
-  //     }
-  //   }
-  // };
-
   const registracija = async (zaposleni) => {
     const controller = new AbortController();
     try {
@@ -148,11 +107,7 @@ const ZaposleniContextProvider = ({ children, navigate, location }) => {
         handleShowToast("Greška", "Došlo je do greške pri slanju zahteva", "danger");
       }
     }
-  };
-  
-  
-  
-  
+  }; 
 
   const editZaposleni = async (id, zaposleni) => {
     const controller = new AbortController();

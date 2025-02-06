@@ -88,6 +88,27 @@ const EditDogadjajForm = ({ editDogadjaj, onDogadjajEdited }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
+
+    const isValid = 
+      organizacija.naziv &&
+      organizacija.odgovornaOsoba &&
+      organizacija.email &&
+      organizacija.opis &&
+      dogadjaj.naziv &&
+      dogadjaj.datum &&
+      dogadjaj.pocetakDogadjaja &&
+      dogadjaj.krajDogadjaja &&
+      mesto.id && // Proverite da li je mesto odabrano
+      vrsta.id; // Proverite da li je vrsta odabrana
+
+    if (!isValid) {
+      console.log("Usao je u isValid u EditDogadjajForm")
+      setValidated(true);
+      return;
+    }
+
+    setValidated(false);
+
     if (form.checkValidity()) {
       console.log("Update dogadjaja je: " + JSON.stringify(updatedDogadjaj));
       console.log("Id Dogadjaj je: " + JSON.stringify(editDogadjaj.id));
@@ -127,7 +148,7 @@ const EditDogadjajForm = ({ editDogadjaj, onDogadjajEdited }) => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control
-                type="text"
+                type="date"
                 name="datum"
                 value={dogadjaj.datum}
                 onChange={handleChangeDogadjaj}
@@ -141,13 +162,13 @@ const EditDogadjajForm = ({ editDogadjaj, onDogadjajEdited }) => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control
-                type="text"
+                type="time"
                 name="pocetakDogadjaja"
                 value={dogadjaj.pocetakDogadjaja}
                 onChange={handleChangeDogadjaj}
                 placeholder="Početak događaja *"
                 required
-                isInvalid={validated && !dogadjaj.naziv}
+                isInvalid={validated && !dogadjaj.pocetakDogadjaja}
               />
               <Form.Control.Feedback type="invalid">
                 Unesite Početak Događaja.
@@ -155,7 +176,7 @@ const EditDogadjajForm = ({ editDogadjaj, onDogadjajEdited }) => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control
-                type="text"
+                type="time"
                 name="krajDogadjaja"
                 value={dogadjaj.krajDogadjaja}
                 onChange={handleChangeDogadjaj}
@@ -251,13 +272,13 @@ const EditDogadjajForm = ({ editDogadjaj, onDogadjajEdited }) => {
                 name="brojTelefona"
                 value={organizacija.brojTelefona}
                 onChange={handleChangeOrganizacija}
-                placeholder="Broj telefona organizacije *"
-                required
-                isInvalid={validated && !organizacija.brojTelefona}
+                placeholder="Broj telefona organizacije"
+                // required
+                // isInvalid={validated && !organizacija.brojTelefona}
               />
-              <Form.Control.Feedback type="invalid">
+              {/* <Form.Control.Feedback type="invalid">
                 Unesite broj telefon organizacije.
-              </Form.Control.Feedback>
+              </Form.Control.Feedback> */}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control
@@ -275,20 +296,24 @@ const EditDogadjajForm = ({ editDogadjaj, onDogadjajEdited }) => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control
+                as="textarea" // This makes it a textarea
+                rows={4} // You can adjust the number of rows to control the height of the textarea
                 type="text"
                 name="delatnost"
                 value={organizacija.delatnost}
                 onChange={handleChangeOrganizacija}
-                placeholder="Delatnost organizacije *"
-                required
-                isInvalid={validated && !organizacija.delatnost}
+                placeholder="Delatnost organizacije"
+                // required
+                // isInvalid={validated && !organizacija.delatnost}
               />
-              <Form.Control.Feedback type="invalid">
+              {/* <Form.Control.Feedback type="invalid">
                 Unesite delatnost organizacije.
-              </Form.Control.Feedback>
+              </Form.Control.Feedback> */}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Control
+                as="textarea" // This makes it a textarea
+                rows={4} // You can adjust the number of rows to control the height of the textarea
                 type="text"
                 name="opis"
                 value={organizacija.opis}
@@ -307,13 +332,13 @@ const EditDogadjajForm = ({ editDogadjaj, onDogadjajEdited }) => {
                 name="link"
                 value={organizacija.link}
                 onChange={handleChangeOrganizacija}
-                placeholder="Link organizacije *"
-                required
-                isInvalid={validated && !organizacija.link}
+                placeholder="Link organizacije"
+                // required
+                // isInvalid={validated && !organizacija.link}
               />
-              <Form.Control.Feedback type="invalid">
+              {/* <Form.Control.Feedback type="invalid">
                 Unesite link organizacije.
-              </Form.Control.Feedback>
+              </Form.Control.Feedback> */}
             </Form.Group>
           </Col>
         </Row>
