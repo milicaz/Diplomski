@@ -56,6 +56,12 @@ const ResetPasswordPage = () => {
     }
   }
 
+  const validatePassword = (password) => {
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password)
+  };
+
   const handleResetPassword = async () => {
     let valid = true;
     const newError = {
@@ -72,10 +78,16 @@ const ResetPasswordPage = () => {
     if (!password) {
       newError.password = t('reset-password-page.error.passwordRequired');
       valid = false;
+    } else if (!validatePassword(password)) {
+      newError.password = t('register-page.error.invalidPassword');
+      valid = false;
     }
 
     if (!confirmPassword) {
       newError.confirmPassword = t('reset-password-page.error.confirmPasswordRequired');
+      valid = false;
+    } else if (!validatePassword(confirmPassword)) {
+      newError.confirmPassword = t('register-page.error.invalidPassword');
       valid = false;
     }
 

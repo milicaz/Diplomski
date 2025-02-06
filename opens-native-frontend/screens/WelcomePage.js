@@ -88,14 +88,14 @@ export default function WelcomePage({ navigation }) {
           />
         </View>
 
-        <View style={styles.languageSwitcher(windowHeight)}>
+        {/* <View style={styles.languageSwitcher(windowHeight)}>
           <TouchableOpacity onPress={() => changeLng('sr')}>
             <Image source={serbianFlag} style={styles.flag} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => changeLng('en')}>
             <Image source={englishFlag} style={styles.flag} />
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         <View style={globalStyles.form(windowHeight)}>
           <View style={[globalStyles.inputContainer, { borderColor: error.email ? COLORS.red : COLORS.black, marginBottom: error.email ? 10 : 20 }]}>
