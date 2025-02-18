@@ -6,7 +6,6 @@ import useHttpProtected from "../hooks/useHttpProtected";
 import useToast from "../hooks/useToast";
 
 const Ucesnici = () => {
-
   const { handleShowToast } = useToast();
 
   const [validated, setValidated] = useState(false);
@@ -157,9 +156,13 @@ const Ucesnici = () => {
                   onChange={handleDogadjajChange}
                   style={{ width: "100%" }}
                   required
-                  disabled={!!selectedDogadjaj} // Disable if a dogadjaj is selected
+                  disabled={!!selectedDogadjaj || dogadjaji.length === 0} // Disable if a dogadjaj is selected
                 >
-                  <option value="">Izaberite događaj</option>
+                  <option value="">
+                    {dogadjaji.length === 0
+                      ? "Nema dostupnih događaja"
+                      : "Izaberite događaj"}
+                  </option>
                   {dogadjaji.map((dogadjaj) => (
                     <option key={dogadjaj.id} value={dogadjaj.id}>
                       {dogadjaj.naziv}
