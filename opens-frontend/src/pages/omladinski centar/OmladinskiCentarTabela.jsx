@@ -7,7 +7,7 @@ import {
   Image,
   Modal,
   Row,
-  Spinner
+  Spinner,
 } from "react-bootstrap";
 import { FaRegFilePdf } from "react-icons/fa";
 import { RiFileExcel2Fill } from "react-icons/ri";
@@ -223,8 +223,8 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
     handleCloseFooter();
     if (downloadType === "pdf") {
       handlePDFDownload();
-    // } else if (downloadType === "excel") {
-    //   handleXLSXDownload();
+      // } else if (downloadType === "excel") {
+      //   handleXLSXDownload();
     }
   };
 
@@ -537,48 +537,66 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
           <>
             <Form>
               <Row>
-                <Col>
-                  {firstHalf.map((logo) => (
-                    <Row key={logo.id} className="mb-2">
-                      <Col className="mb-4">
-                        <Form.Check
-                          type="radio"
-                          name="logoGroup"
-                          id={`logo-${logo.id}`}
-                          label={`${logo.name}`}
-                          value={logo.id}
-                          onChange={() => handleSelectHeader(logo.id)}
-                        />
-                        <Image
-                          src={`data:image/${logo.type};base64,${logo.picByte}`}
-                          alt={`Logo ${logo.id}`}
-                          thumbnail
-                        />
+                {firstHalf.length > 0 || secondHalf.length > 0 ? (
+                  <>
+                    <Col>
+                      {firstHalf.map((logo) => (
+                        <Row key={logo.id} className="mb-2">
+                          <Col className="mb-4">
+                            <Form.Check
+                              type="radio"
+                              name="logoGroup"
+                              id={`logo-${logo.id}`}
+                              label={`${logo.name}`}
+                              value={logo.id}
+                              onChange={() => handleSelectHeader(logo.id)}
+                            />
+                            <Image
+                              src={`data:image/${logo.type};base64,${logo.picByte}`}
+                              alt={`Logo ${logo.id}`}
+                              thumbnail
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Col>
+                    <Col>
+                      {secondHalf.map((logo) => (
+                        <Row key={logo.id} className="mb-2">
+                          <Col className="mb-4">
+                            <Form.Check
+                              type="radio"
+                              name="logoGroup"
+                              id={`logo-${logo.id}`}
+                              label={`${logo.name}`}
+                              value={logo.id}
+                              onChange={() => handleSelectHeader(logo.id)}
+                            />
+                            <Image
+                              src={`data:image/${logo.type};base64,${logo.picByte}`}
+                              alt={`Logo ${logo.id}`}
+                              thumbnail
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Col>
+                  </>
+                ) : (
+                  <Container
+                    className="d-flex justify-content-center align-items-center mt-3"
+                    style={{ height: "100v" }}
+                  >
+                    <Row>
+                      <Col>
+                        <h6>
+                          Nema logoa za prikazivanje. Možete dodati logoe u
+                          okviru Šifrarnik/Logoi.
+                        </h6>
                       </Col>
                     </Row>
-                  ))}
-                </Col>
-                <Col>
-                  {secondHalf.map((logo) => (
-                    <Row key={logo.id} className="mb-2">
-                      <Col className="mb-4">
-                        <Form.Check
-                          type="radio"
-                          name="logoGroup"
-                          id={`logo-${logo.id}`}
-                          label={`${logo.name}`}
-                          value={logo.id}
-                          onChange={() => handleSelectHeader(logo.id)}
-                        />
-                        <Image
-                          src={`data:image/${logo.type};base64,${logo.picByte}`}
-                          alt={`Logo ${logo.id}`}
-                          thumbnail
-                        />
-                      </Col>
-                    </Row>
-                  ))}
-                </Col>
+                  </Container>
+                )}
               </Row>
             </Form>
           </>
@@ -601,48 +619,66 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
           <>
             <Form>
               <Row>
-                <Col>
-                  {firstHalf.map((logo) => (
-                    <Row key={logo.id} className="mb-2">
-                      <Col className="mb-4">
-                        <Form.Check
-                          type="radio"
-                          name="logoGroup"
-                          id={`logo-${logo.id}`}
-                          label={`${logo.name}`}
-                          value={logo.id}
-                          onChange={() => handleSelectFooter(logo.id)}
-                        />
-                        <Image
-                          src={`data:image/${logo.type};base64,${logo.picByte}`}
-                          alt={`Logo ${logo.id}`}
-                          thumbnail
-                        />
+                {firstHalf.length > 0 || secondHalf.length > 0 ? (
+                  <>
+                    <Col>
+                      {firstHalf.map((logo) => (
+                        <Row key={logo.id} className="mb-2">
+                          <Col className="mb-4">
+                            <Form.Check
+                              type="radio"
+                              name="logoGroup"
+                              id={`logo-${logo.id}`}
+                              label={`${logo.name}`}
+                              value={logo.id}
+                              onChange={() => handleSelectFooter(logo.id)}
+                            />
+                            <Image
+                              src={`data:image/${logo.type};base64,${logo.picByte}`}
+                              alt={`Logo ${logo.id}`}
+                              thumbnail
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Col>
+                    <Col>
+                      {secondHalf.map((logo) => (
+                        <Row key={logo.id} className="mb-2">
+                          <Col className="mb-4">
+                            <Form.Check
+                              type="radio"
+                              name="logoGroup"
+                              id={`logo-${logo.id}`}
+                              label={`${logo.name}`}
+                              value={logo.id}
+                              onChange={() => handleSelectFooter(logo.id)}
+                            />
+                            <Image
+                              src={`data:image/${logo.type};base64,${logo.picByte}`}
+                              alt={`Logo ${logo.id}`}
+                              thumbnail
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Col>
+                  </>
+                ) : (
+                  <Container
+                    className="d-flex justify-content-center align-items-center mt-3"
+                    style={{ height: "100v" }}
+                  >
+                    <Row>
+                      <Col>
+                        <h6>
+                          Nema logoa za prikazivanje. Možete dodati logoe u
+                          okviru Šifrarnik/Logoi.
+                        </h6>
                       </Col>
                     </Row>
-                  ))}
-                </Col>
-                <Col>
-                  {secondHalf.map((logo) => (
-                    <Row key={logo.id} className="mb-2">
-                      <Col className="mb-4">
-                        <Form.Check
-                          type="radio"
-                          name="logoGroup"
-                          id={`logo-${logo.id}`}
-                          label={`${logo.name}`}
-                          value={logo.id}
-                          onChange={() => handleSelectFooter(logo.id)}
-                        />
-                        <Image
-                          src={`data:image/${logo.type};base64,${logo.picByte}`}
-                          alt={`Logo ${logo.id}`}
-                          thumbnail
-                        />
-                      </Col>
-                    </Row>
-                  ))}
-                </Col>
+                  </Container>
+                )}
               </Row>
             </Form>
           </>

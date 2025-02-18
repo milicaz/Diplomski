@@ -87,7 +87,7 @@ export const NeodjavljenePoseteTabela = () => {
         >
           <Row>
             <Col>
-              <h4>Nema poseta za prikazivanje.</h4>
+              <h4>Nema neodjavljenih poseta za prikazivanje.</h4>
             </Col>
           </Row>
         </Container>

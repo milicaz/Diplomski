@@ -68,27 +68,29 @@ export const Home = () => {
       : [];
 
   const getPoseteCardColor = (index) => {
-    return index % 2 === 0 ? 'card-shadow bg-c-green' : 'card-shadow bg-c-yellow';
-  }
+    return index % 2 === 0
+      ? "card-shadow bg-c-green"
+      : "card-shadow bg-c-yellow";
+  };
 
   const getAdminMesecnePoseteCardColors = (index) => {
     return index % 2 === 0
-      ? { backgroundColor: 'rgba(163, 197, 123, 0.5)', borderColor: 'rgba(163, 197, 123, 1)' }
-      : { backgroundColor: 'rgba(251, 181, 55, 0.5)', borderColor: 'rgba(251, 181, 55, 1)' };
+      ? {
+          backgroundColor: "rgba(163, 197, 123, 0.5)",
+          borderColor: "rgba(163, 197, 123, 1)",
+        }
+      : {
+          backgroundColor: "rgba(251, 181, 55, 0.5)",
+          borderColor: "rgba(251, 181, 55, 1)",
+        };
   };
 
-  // const getCardColor = (tipDogadjaja) => {
-  //   switch (tipDogadjaja.toLowerCase()) {
-  //     case "interne aktivnosti":
-  //       return "card-shadow bg-c-red";
-  //     case "eksterne aktivnosti":
-  //       return "card-shadow bg-c-blue";
-  //     case "kulturna stanica":
-  //       return "card-shadow bg-c-purple";
-  //   }
-  // };
   const getUcesniciCardColor = (index) => {
-    const colors = ["card-shadow bg-c-red", "card-shadow bg-c-blue", "card-shadow bg-c-purple"];
+    const colors = [
+      "card-shadow bg-c-red",
+      "card-shadow bg-c-blue",
+      "card-shadow bg-c-purple",
+    ];
     return colors[index % 3];
   };
 
@@ -99,75 +101,114 @@ export const Home = () => {
   return (
     <>
       <Row>
-        {posete.map((p, index) => (
-          <Col key={p.mestoPoseteId}>
-            <Card
-              className={ getPoseteCardColor(index)}
-            >
+        {posete.length > 0 ? (
+          posete.map((p, index) => (
+            <Col key={p.mestoPoseteId}>
+              <Card className={getPoseteCardColor(index)}>
+                <Card.Body>
+                  <h6 className="card-naslov">
+                    {capitalizeFirstLetter(p.nazivMesta)}
+                  </h6>
+                  <Row>
+                    <Col>Ukupno poseta</Col>
+                  </Row>
+                  <Row>
+                    <Col
+                      className={
+                        p.brojPoseta.toString().length >= 20
+                          ? "card-smallest-text"
+                          : p.brojPoseta.toString().length > 11
+                          ? "card-smaller-text"
+                          : "card-text"
+                      }
+                    >
+                      {p.brojPoseta}
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))
+        ) : (
+          // Ako nema podataka, prikazuje karticu sa 0
+          <Col>
+            <Card className={getPoseteCardColor(0)}>
               <Card.Body>
-                <h6 className="card-naslov">{capitalizeFirstLetter(p.nazivMesta)}</h6>
+                <h6 className="card-naslov">Posete</h6>
                 <Row>
                   <Col>Ukupno poseta</Col>
                 </Row>
                 <Row>
-                  <Col
-                    className={
-                      p.brojPoseta.toString().length >= 20
-                        ? "card-smallest-text"
-                        : p.brojPoseta.toString().length > 11
-                        ? "card-smaller-text"
-                        : "card-text"
-                    }
-                  >
-                    {p.brojPoseta}
-                  </Col>
+                  <Col className="card-text">0</Col>
                 </Row>
               </Card.Body>
             </Card>
           </Col>
-        ))}
+        )}
 
-        {ucesnici.map((u, index) => (
-          <Col key={u.tipDogadjajaId}>
-            <Card className={getUcesniciCardColor(index)}>
+        {/* Učesnici */}
+        {ucesnici.length > 0 ? (
+          ucesnici.map((u, index) => (
+            <Col key={u.tipDogadjajaId}>
+              <Card className={getUcesniciCardColor(index)}>
+                <Card.Body>
+                  <h6 className="card-naslov">
+                    {capitalizeFirstLetter(u.tipDogadjaja)}
+                  </h6>
+                  <Row>
+                    <Col>Ukupno učesnika</Col>
+                  </Row>
+                  <Row>
+                    <Col
+                      className={
+                        u.brojUcesnika.toString().length >= 20
+                          ? "card-smallest-text"
+                          : u.brojUcesnika.toString().length > 11
+                          ? "card-smaller-text"
+                          : "card-text"
+                      }
+                    >
+                      {u.brojUcesnika}
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))
+        ) : (
+          // Ako nema podataka, prikazuje karticu sa 0
+          <Col>
+            <Card className={getUcesniciCardColor(0)}>
               <Card.Body>
-                <h6 className="card-naslov">
-                  {capitalizeFirstLetter(u.tipDogadjaja)}
-                </h6>
+                <h6 className="card-naslov">Učesnici</h6>
                 <Row>
                   <Col>Ukupno učesnika</Col>
                 </Row>
                 <Row>
-                  <Col
-                    className={
-                      u.brojUcesnika.toString().length >= 20
-                        ? "card-smallest-text"
-                        : u.brojUcesnika.toString().length > 11
-                        ? "card-smaller-text"
-                        : "card-text"
-                    }
-                  >
-                    {u.brojUcesnika}
-                  </Col>
+                  <Col className="card-text">0</Col>
                 </Row>
               </Card.Body>
             </Card>
           </Col>
-        ))}
+        )}
       </Row>
       <Container className="mt-3">
         <Row>
           <Col md={6}>
             {sortedMestaPosete.map((mestoPosete, index) => {
-              const { backgroundColor, borderColor } = getAdminMesecnePoseteCardColors(index);
+              const { backgroundColor, borderColor } =
+                getAdminMesecnePoseteCardColors(index);
               return (
                 <Row className="mb-3" key={mestoPosete.id}>
                   <Col>
-                    <AdminMesecnePosete mestoPoseteId={mestoPosete.id} backgroundColor={backgroundColor}
-                      borderColor={borderColor} />
+                    <AdminMesecnePosete
+                      mestoPoseteId={mestoPosete.id}
+                      backgroundColor={backgroundColor}
+                      borderColor={borderColor}
+                    />
                   </Col>
                 </Row>
-              )
+              );
             })}
           </Col>
           <Col md={6}>
