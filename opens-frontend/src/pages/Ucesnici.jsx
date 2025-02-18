@@ -45,6 +45,10 @@ const Ucesnici = () => {
 
         if (isMounted) {
           const today = new Date().toISOString().split("T")[0];
+
+          // Provera da li je `data` niz, ako nije, postavi ga na prazan niz
+          const dogadjajiList = Array.isArray(data) ? data : [];
+
           const filteredDogadjaji = data.filter((dogadjaj) => {
             const eventDate = new Date(dogadjaj.datum)
               .toISOString()
