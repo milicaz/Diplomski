@@ -322,7 +322,10 @@ const Dogadjaj = ({ dogadjaj }) => {
         <Modal.Footer>
           <Button
             className="btn btn-danger"
-            onClick={() => deleteDogadjaj(dogadjaj.id)}
+            onClick={() => {
+              deleteDogadjaj(dogadjaj.id);
+              handleCloseDelete(); // Dodato da se modal zatvori
+            }}
           >
             Obriši
           </Button>

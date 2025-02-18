@@ -148,7 +148,7 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       await httpProtected.delete(`/dogadjaj/delete/${id}`, {
         signal: controller.signal,
       });
-      getDogadjaji(true, controller);
+      await getDogadjaji(true, controller);
     } catch (error) {
       if (error.response?.status === 400) {
         handleShowToast(
