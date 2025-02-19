@@ -160,9 +160,8 @@
 		<variable name="total_mladi_dr" class="java.lang.Long" calculation="Sum">
 			<variableExpression><![CDATA[$V{total_petnaest_devetnaest_dr} + $V{total_dvadeset_dvadesetpet_dr} + $V{total_dvadesetsest_trideset_dr} + $V{total_tridesetplus_dr}]]></variableExpression>
 		</variable>
-		<variable name="rowCount" class="java.lang.Long" calculation="Sum">
-			<variableExpression><![CDATA[$V{total}]]></variableExpression>
-			<initialValueExpression><![CDATA[0]]></initialValueExpression>
+		<variable name="rowCount" class="java.lang.Integer" calculation="Count">
+			<variableExpression><![CDATA[$F{id}]]></variableExpression>
 		</variable>
 	</subDataset>
 	<parameter name="ime_zaposlenog" class="java.lang.String"/>
@@ -225,7 +224,7 @@
 	<detail>
 		<band height="720" splitType="Stretch">
 			<componentElement>
-				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="-16" width="1639" height="370" uuid="29fb22f2-c71b-4c56-9be6-e4ed4f9e2982">
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="-16" width="1639" height="286" uuid="29fb22f2-c71b-4c56-9be6-e4ed4f9e2982">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -881,7 +880,7 @@
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="380" width="1280" height="220" isPrintWhenDetailOverflows="true" uuid="9fc34072-a728-4c99-974e-9640dc0ac5df">
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="370" width="1280" height="220" uuid="9fc34072-a728-4c99-974e-9640dc0ac5df">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
@@ -1469,6 +1468,9 @@
 					</jr:columnGroup>
 				</jr:table>
 			</componentElement>
+			<break>
+				<reportElement positionType="Float" x="0" y="290" width="1640" height="1" uuid="6e092866-fb8a-4afe-bcd1-3cf6c0a23e05"/>
+			</break>
 		</band>
 	</detail>
 	<columnFooter>
