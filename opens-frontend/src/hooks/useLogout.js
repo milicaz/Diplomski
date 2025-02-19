@@ -5,11 +5,11 @@ const useLogout = () => {
     const { setAuth } = useAuth();
 
     const logout = async () => {
-        setAuth({});
         try {
             await httpPublic.post('/logoutZaposleni', {}, {
                 withCredentials: true,
             });
+            setAuth({});
         } catch (error) {
             console.error(error);
         }

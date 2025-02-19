@@ -394,10 +394,12 @@ const DogadjajList = () => {
   };
 
   // Create options for the Creatable dropdown
-  const options = existingOrganizacije.map((org) => ({
-    value: org.naziv,
-    label: org.naziv,
-  }));
+  const options = Array.isArray(existingOrganizacije)
+    ? existingOrganizacije.map((org) => ({
+        value: org.naziv,
+        label: org.naziv,
+      }))
+    : [];
 
   const handleDalje = (event) => {
     event.preventDefault();

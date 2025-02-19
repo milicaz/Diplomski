@@ -1,12 +1,14 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
 import { Text, View } from "react-native";
 import Toast from "react-native-toast-message";
 import COLORS from "./constants/colors";
-import AuthContextProvider, { AuthContext } from "./contexts/AuthContext";
+import AuthContextProvider from "./contexts/AuthContext";
 import FontContextProvider from "./contexts/FontContext";
+import useAuth from "./hooks/useAuth";
+import useLogout from "./hooks/useLogout";
 import BottomTabNavigation from "./navigations/BottomTabNavigation";
 import {
   Izjava,
@@ -53,10 +55,12 @@ const toastConfig = {
 };
 
 const AppNavigator = () => {
-  const { isAuthenticated, logout } = useContext(AuthContext);
+  //const { isAuthenticated, logout } = useContext(AuthContext);
+  const { isAuthenticated } = useAuth();
+  const logOutUser = useLogout();
 
   const handleLogout = () => {
-    logout();
+    logOutUser();
   };
 
   useEffect(() => {

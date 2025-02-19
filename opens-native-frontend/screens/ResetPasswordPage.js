@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { httpPublic } from '../apis/http';
 import COLORS from '../constants/colors';
-import httpCommon from '../http-common';
 import { globalStyles } from '../utils/styles';
 
 const ResetPasswordPage = () => {
@@ -105,7 +105,7 @@ const ResetPasswordPage = () => {
       }
 
       try {
-        const response = await httpCommon.put(`/auth/password-reset/reset?token=${encodeURIComponent(token)}&newPassword=${encodeURIComponent(password)}`);
+        const response = await httpPublic.put(`/password-reset/reset?token=${encodeURIComponent(token)}&newPassword=${encodeURIComponent(password)}`);
         Toast.show({
           type: 'success',
           text1: t('reset-password-page.success.header'),

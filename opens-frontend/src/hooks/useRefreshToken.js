@@ -6,23 +6,31 @@ const useRefreshToken = () => {
     const { setAuth } = useAuth();
 
     const refresh = async () => {
-        const response = await httpProtected.post('/auth/refreshtokenZaposleni');
-        const decoded = response.data?.accessToken
-            ? jwtDecode(response.data.accessToken)
-            : undefined;
+        try {
+            const response = await httpProtected.post('/auth/refreshtokenZaposleni');
+            const decoded = response.data?.accessToken
+                ? jwtDecode(response.data.accessToken)
+                : undefined;
 
-        const roles = decoded?.roles || [];
-        const email = decoded?.sub || "";
+            const roles = decoded?.roles || [];
+            const email = decoded?.sub || "";
 
-        setAuth(prev => {
-            return {
-                ...prev,
-                email: email,
-                roles: roles,
-                accessToken: response.data.accessToken
-            }
-        });
-        return response.data.accessToken;
+            setAuth(prev => {
+                return {
+                    ...prev,
+                    email: email,
+                    roles: roles,
+                    accessToken: response.data.accessToken
+                }
+            });
+            return response.data.accessToken;
+        } catch (error) {
+            setAuth({
+                email: "",
+                roles: [],
+                accessToken: ""
+            });
+        }
     }
     return refresh;
 }

@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import { httpPublic } from '../apis/http';
 import COLORS from '../constants/colors';
-import httpCommon from '../http-common';
 import { globalStyles } from '../utils/styles';
 
 const RequestPasswordResetPage = () => {
@@ -43,7 +43,7 @@ const RequestPasswordResetPage = () => {
 
     if (valid) {
       try {
-        const response = await httpCommon.post(`/auth/password-reset/request?email=` + encodeURIComponent(email), {});
+        const response = await httpPublic.post(`/password-reset/request?email=` + encodeURIComponent(email), {});
         Toast.show({
           type: 'success',
           text1: t('forgot-password-page.success.header'),

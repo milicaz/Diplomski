@@ -23,7 +23,6 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
   const [organizacije, setOrganizacije] = useState([]);
   const [dogadjaj, setDogadjaj] = useState([]);
 
-
   const httpProtected = useHttpProtected();
 
   useEffect(() => {
@@ -45,7 +44,8 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     };
   }, [organizacijaId, currentOrganizacija, dogadjajId]);
 
-  const sortedDogadjaji = dogadjaji.sort((a, b) => a.id - b.id);
+  const sortedDogadjaji =
+    dogadjaji.length > 0 ? dogadjaji.sort((a, b) => a.id - b.id) : [];
 
   /*
    * METODE ZA DOGADJAJ
@@ -74,7 +74,9 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
   const getDogadjaj = async (id) => {
     const controller = new AbortController();
     try {
-      const { data } = await httpProtected.get(`/dogadjaji/${id}`, {signal: controller.signal});
+      const { data } = await httpProtected.get(`/dogadjaji/${id}`, {
+        signal: controller.signal,
+      });
       setDogadjaj(data);
     } catch (error) {
       if (error.name !== "CanceledError") {
@@ -84,7 +86,7 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     } finally {
       controller.abort();
     }
-  }
+  };
 
   const addDogadjaj = async (addDog) => {
     const controller = new AbortController();
@@ -118,9 +120,13 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
   const updateDogadjaj = async (id, updateDogadjaj) => {
     const controller = new AbortController();
     try {
-      const response = await httpProtected.put(`/dogadjaji/${id}`, updateDogadjaj, {
-        signal: controller.signal,
-      });
+      const response = await httpProtected.put(
+        `/dogadjaji/${id}`,
+        updateDogadjaj,
+        {
+          signal: controller.signal,
+        }
+      );
       await getDogadjaji(true, controller);
     } catch (error) {
       if (error.response?.status === 400) {
@@ -176,8 +182,10 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
 
   const getOrganizacije = async (isMounted, controller) => {
     try {
-      const { data } = await httpProtected.get("/organizacije", {signal: controller.signal});
-      if(isMounted) {
+      const { data } = await httpProtected.get("/organizacije", {
+        signal: controller.signal,
+      });
+      if (isMounted) {
         setOrganizacije(data);
       }
     } catch (error) {
@@ -191,7 +199,7 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         navigate("/logovanje", { state: { from: location }, replace: true });
       }
     }
-  }
+  };
 
   const getOrganizacijaById = async (id) => {
     const controller = new AbortController();
@@ -317,7 +325,9 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
   const getUcesnici = async (id) => {
     const controller = new AbortController();
     try {
-      const { data } = await httpProtected.get(`/sviUcesniciDogadjaja/${id}`, {signal: controller.signal});
+      const { data } = await httpProtected.get(`/sviUcesniciDogadjaja/${id}`, {
+        signal: controller.signal,
+      });
       return data; // Return the data directly
     } catch (error) {
       if (error.response?.status >= 500) {
@@ -332,7 +342,7 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     } finally {
       controller.abort();
     }
-}
+  };
 
   const dodajUcesnika = async (ucesnik, id) => {
     const controller = new AbortController();
@@ -419,7 +429,15 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     }
   };
 
-  const kreirajPDF = async (mesec, godina, id, ime, prezime, headerImageId, footerImageId) => {
+  const kreirajPDF = async (
+    mesec,
+    godina,
+    id,
+    ime,
+    prezime,
+    headerImageId,
+    footerImageId
+  ) => {
     const controller = new AbortController();
     try {
       const response = await httpProtected.get(
@@ -429,25 +447,25 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
             ime: ime,
             prezime: prezime,
             headerImageId: headerImageId, // Can be null or undefined
-            footerImageId: footerImageId   // Can be null or undefined
+            footerImageId: footerImageId, // Can be null or undefined
           },
           responseType: "blob", // Expecting PDF in the response
           signal: controller.signal,
         }
       );
-  
+
       const blob = new Blob([response.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
-  
+
       // Create an anchor element and download the PDF
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", "dogadjajireport.pdf");
-  
+
       // Append the link to the document and trigger the click
       document.body.appendChild(link);
       link.click();
-  
+
       // Clean up
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -461,7 +479,15 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     }
   };
 
-  const kreirajExcel = async (mesec, godina, id, ime, prezime, headerImageId, footerImageId) => {
+  const kreirajExcel = async (
+    mesec,
+    godina,
+    id,
+    ime,
+    prezime,
+    headerImageId,
+    footerImageId
+  ) => {
     const controller = new AbortController();
     try {
       // Call the API to fetch the Excel file
@@ -472,25 +498,27 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
             ime: ime,
             prezime: prezime,
             headerImageId: headerImageId, // Optional: can be null/undefined
-            footerImageId: footerImageId   // Optional: can be null/undefined
+            footerImageId: footerImageId, // Optional: can be null/undefined
           },
           responseType: "blob", // Expecting the response as a Blob (Excel file)
           signal: controller.signal,
         }
       );
-      
-      const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
       const url = window.URL.createObjectURL(blob);
-  
+
       // Create an anchor element to trigger the download
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", "dogadjajireport.xlsx");
-  
+
       // Append the link to the document and trigger the download
       document.body.appendChild(link);
       link.click();
-  
+
       // Clean up
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -507,30 +535,27 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
   const kreirajPdfUcesnici = async (doznaka, headerImageId, footerImageId) => {
     const controller = new AbortController();
     try {
-      const response = await httpProtected.get(
-        `/ucesniciView/${doznaka}`,
-        {
-          params: {
-            headerImageId: headerImageId, // Can be null or undefined
-            footerImageId: footerImageId   // Can be null or undefined
-          },
-          responseType: "blob", // Expecting PDF in the response
-          signal: controller.signal,
-        }
-      );
-  
+      const response = await httpProtected.get(`/ucesniciView/${doznaka}`, {
+        params: {
+          headerImageId: headerImageId, // Can be null or undefined
+          footerImageId: footerImageId, // Can be null or undefined
+        },
+        responseType: "blob", // Expecting PDF in the response
+        signal: controller.signal,
+      });
+
       const blob = new Blob([response.data], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
-  
+
       // Create an anchor element and download the PDF
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", "ucesnici.pdf");
-  
+
       // Append the link to the document and trigger the click
       document.body.appendChild(link);
       link.click();
-  
+
       // Clean up
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -542,9 +567,13 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     } finally {
       controller.abort();
     }
-  }
+  };
 
-  const kreirajExcelUcesnici = async (doznaka, headerImageId, footerImageId) => {
+  const kreirajExcelUcesnici = async (
+    doznaka,
+    headerImageId,
+    footerImageId
+  ) => {
     const controller = new AbortController();
 
     try {
@@ -554,25 +583,27 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         {
           params: {
             headerImageId: headerImageId, // Optional: can be null/undefined
-            footerImageId: footerImageId   // Optional: can be null/undefined
+            footerImageId: footerImageId, // Optional: can be null/undefined
           },
           responseType: "blob", // Expecting the response as a Blob (Excel file)
           signal: controller.signal,
         }
       );
-      
-      const blob = new Blob([response.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
       const url = window.URL.createObjectURL(blob);
-  
+
       // Create an anchor element to trigger the download
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", "ucesnici.xlsx");
-  
+
       // Append the link to the document and trigger the download
       document.body.appendChild(link);
       link.click();
-  
+
       // Clean up
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -584,9 +615,7 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     } finally {
       controller.abort();
     }
-  }
-
-
+  };
 
   return (
     <DogadjajContext.Provider
@@ -613,7 +642,7 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
         kreirajPdfUcesnici,
         deleteUcesnik,
         editUcesnik,
-        updateDogadjaj
+        updateDogadjaj,
       }}
     >
       {children}

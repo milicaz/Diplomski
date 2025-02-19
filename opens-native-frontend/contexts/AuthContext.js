@@ -1,8 +1,8 @@
 import * as SecureStore from 'expo-secure-store';
 import { createContext, useEffect, useState } from 'react';
-import httpCommon from '../http-common';
-import Toast from 'react-native-toast-message';
 import { useTranslation } from 'react-i18next';
+import Toast from 'react-native-toast-message';
+import { httpPublic } from '../apis/http';
 
 const ACCESS_TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
@@ -34,7 +34,7 @@ const AuthContextProvider = ({ children }) => {
 
     const register = async (credentials) => {
         try {
-            const { data } = await httpCommon.post('/auth/signupPosetilac', credentials);
+            const { data } = await httpPublic.post('/signupPosetilac', credentials);
             Toast.show({
                 type: 'success',
                 text1: t('auth-context.register.success.header'),
@@ -79,7 +79,7 @@ const AuthContextProvider = ({ children }) => {
 
     const login = async (credentials) => {
         try {
-            const { data } = await httpCommon.post('/auth/loginPosetilac', credentials);
+            const { data } = await httpPublic.post('/loginPosetilac', credentials);
 
             Toast.show({
                 type: 'success',
@@ -130,38 +130,38 @@ const AuthContextProvider = ({ children }) => {
         }
     }
 
-    const logout = async () => {
-        try {
-            await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
-            await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
-            await SecureStore.deleteItemAsync(USER_KEY);
+    // const logout = async () => {
+    //     try {
+    //         await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
+    //         await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
+    //         await SecureStore.deleteItemAsync(USER_KEY);
 
-            setAuthState({
-                isAuthenticated: false
-            });
-        } catch (error) {
-            console.error('--- AuthContext.js --- Line: 41 --- Logout failed:', error);
-        }
-    }
+    //         setAuthState({
+    //             isAuthenticated: false
+    //         });
+    //     } catch (error) {
+    //         console.error('--- AuthContext.js --- Line: 41 --- Logout failed:', error);
+    //     }
+    // }
 
-    const logOutUser = async (credentials) => {
-        try {
-            await httpCommon.post('/auth/logout', { refreshToken: credentials });
+    // const logOutUser = async (credentials) => {
+    //     try {
+    //         await httpCommon.post('/auth/logout', { refreshToken: credentials });
 
-            await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
-            await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
-            await SecureStore.deleteItemAsync(USER_KEY);
+    //         await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
+    //         await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
+    //         await SecureStore.deleteItemAsync(USER_KEY);
 
-            setAuthState({
-                isAuthenticated: false
-            });
-        } catch (error) {
-            console.error('--- AuthContext.js --- Line: 56 --- Logout user failed:', error);
-        }
-    }
+    //         setAuthState({
+    //             isAuthenticated: false
+    //         });
+    //     } catch (error) {
+    //         console.error('--- AuthContext.js --- Line: 56 --- Logout user failed:', error);
+    //     }
+    // }
 
     return (
-        <AuthContext.Provider value={{ ...authState, register, login, logout, logOutUser }}>
+        <AuthContext.Provider value={{ ...authState, setAuthState, register, login }}>
             {children}
         </AuthContext.Provider>
     )

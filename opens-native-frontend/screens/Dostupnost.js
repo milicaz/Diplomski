@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import COLORS from "../constants/colors";
-import httpCommon from '../http-common';
+import useHttpProtected from '../hooks/useHttpProtected';
 
 export default function Dostupnost() {
     const { t } = useTranslation();
+    const httpProtected = useHttpProtected();
 
     const [spaceCount, setSpaceCount] = useState("")
     const [laptopCount, setLaptopCount] = useState("")
@@ -18,8 +19,8 @@ export default function Dostupnost() {
         const fetchData = async () => {
             try {
                 const requests = [
-                    httpCommon.get('/dostupnostView'),
-                    httpCommon.get('/dostupnostMestoView')
+                    httpProtected.get('/dostupnostView'),
+                    httpProtected.get('/dostupnostMestoView')
                 ];
                 const [uredjajiData, mestaData] = await Promise.all(requests);
 
