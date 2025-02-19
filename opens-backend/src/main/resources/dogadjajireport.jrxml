@@ -160,6 +160,10 @@
 		<variable name="total_mladi_dr" class="java.lang.Long" calculation="Sum">
 			<variableExpression><![CDATA[$V{total_petnaest_devetnaest_dr} + $V{total_dvadeset_dvadesetpet_dr} + $V{total_dvadesetsest_trideset_dr} + $V{total_tridesetplus_dr}]]></variableExpression>
 		</variable>
+		<variable name="rowCount" class="java.lang.Long" calculation="Sum">
+			<variableExpression><![CDATA[$V{total}]]></variableExpression>
+			<initialValueExpression><![CDATA[0]]></initialValueExpression>
+		</variable>
 	</subDataset>
 	<parameter name="ime_zaposlenog" class="java.lang.String"/>
 	<parameter name="prezime_zaposlenog" class="java.lang.String"/>
@@ -306,11 +310,15 @@
 													</jr:columnHeader>
 													<jr:detailCell style="Table_TD" height="30">
 														<textField textAdjust="StretchHeight">
-															<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="100" height="30" uuid="6da5c902-2ec7-40a0-9070-33ea068ae0fd"/>
+															<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="100" height="30" uuid="6da5c902-2ec7-40a0-9070-33ea068ae0fd">
+																<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
+																<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+															</reportElement>
 															<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
 																<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+																<paragraph firstLineIndent="0" leftIndent="0"/>
 															</textElement>
-															<textFieldExpression><![CDATA[$F{naziv_aktivnosti} + "<br>" + $F{datum} + "<br>" + $F{ime_odgovorne_osobe}]]></textFieldExpression>
+															<textFieldExpression><![CDATA[$F{naziv_aktivnosti} + "<br>" + $F{datum} + "<br>" + $F{ime_odgovorne_osobe} + "<br>"]]></textFieldExpression>
 														</textField>
 													</jr:detailCell>
 												</jr:column>
@@ -327,12 +335,17 @@
 														</staticText>
 													</jr:columnHeader>
 													<jr:detailCell style="Table_TD" height="30">
-														<textField textAdjust="StretchHeight">
-															<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="116" height="30" uuid="d3d6b56b-98c8-4303-a0a5-9d40fa1073c1"/>
-															<textElement textAlignment="Center" verticalAlignment="Middle">
+														<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+															<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="116" height="30" uuid="d3d6b56b-98c8-4303-a0a5-9d40fa1073c1">
+																<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
+																<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+																<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+															</reportElement>
+															<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
 																<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
+																<paragraph firstLineIndent="0" leftIndent="-1" rightIndent="-1"/>
 															</textElement>
-															<textFieldExpression><![CDATA[$F{opis_dogadjaja}]]></textFieldExpression>
+															<textFieldExpression><![CDATA[$F{opis_dogadjaja} + "<br>"]]></textFieldExpression>
 														</textField>
 													</jr:detailCell>
 												</jr:column>
@@ -912,7 +925,7 @@
 											<textElement textAlignment="Center" verticalAlignment="Middle">
 												<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 											</textElement>
-											<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
+											<textFieldExpression><![CDATA[$V{rowCount}]]></textFieldExpression>
 										</textField>
 									</jr:detailCell>
 								</jr:column>
