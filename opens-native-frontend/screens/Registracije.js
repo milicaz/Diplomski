@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ScrollView,
@@ -13,12 +13,13 @@ import {
 import { Dropdown } from "react-native-element-dropdown";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import COLORS from "../constants/colors";
-import { AuthContext } from "../contexts/AuthContext";
+import useAuth from "../hooks/useAuth";
 
 
 export default function Registracija() {
   const { t } = useTranslation();
-  const { register } = useContext(AuthContext);
+  //const { register } = useContext(AuthContext);
+  const { register } = useAuth;
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
@@ -323,7 +324,7 @@ export default function Registracija() {
       </View>
     </ScrollView>
   );
-  
+
 }
 
 const styles = StyleSheet.create({
@@ -337,7 +338,8 @@ const styles = StyleSheet.create({
   form: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: "15%"
+    //marginTop: "15%"
+    marginTop: "20%"
   },
   inputContainer: {
     width: '80%',

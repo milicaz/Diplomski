@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
-import httpCommon from '../http-common';
+import useHttpProtected from '../hooks/useHttpProtected';
 import eventEmitter from '../utils/EventEmitter';
 import { globalStyles } from '../utils/styles';
 
@@ -16,6 +16,7 @@ const USER_KEY = 'user';
 
 export default function ProfileEdit({ navigation }) {
   const { t } = useTranslation();
+  const httpProtected = useHttpProtected();
 
   const [user, setUser] = useState(null);
   const [ime, setIme] = useState("");
@@ -40,7 +41,7 @@ export default function ProfileEdit({ navigation }) {
       if (loggedIn && loggedIn.id) {
         try {
           // Fetch user data
-          const response = await httpCommon.get(`posetioci/${loggedIn.id}`);
+          const response = await httpProtected.get(`posetioci/${loggedIn.id}`);
           setUser(response.data);
           setIme(response.data.ime);
           setPrezime(response.data.prezime);
@@ -50,7 +51,7 @@ export default function ProfileEdit({ navigation }) {
           setBrojTelefona(response.data.brojTelefona);
 
           // Fetch profile image
-          const imageResponse = await httpCommon.get(`posetioci/${loggedIn.id}/profilna`, {
+          const imageResponse = await httpProtected.get(`posetioci/${loggedIn.id}/profilna`, {
             responseType: 'arraybuffer',
           });
           const contentType = imageResponse.headers['content-type'] || 'image/jpeg';
@@ -190,10 +191,9 @@ export default function ProfileEdit({ navigation }) {
       try {
         const profileImageData = profileImage.replace(/^data:image\/[a-z]+;base64,/, '');
         const updatedProfile = { ime, prezime, email, godine: parseInt(godine), mestoBoravista, brojTelefona, profileImage: profileImageData };
-        await httpCommon.put(`posetioci/${user.id}`, updatedProfile);
+        await httpProtected.put(`posetioci/${user.id}`, updatedProfile);
         navigation.navigate("Profile");
       } catch (error) {
-        console.error("Profile Edit error: ", error);
         if (error.response && (error.response.status === 401 || error.response.status === 400)) {
           eventEmitter.emit('LOGOUT');
         }

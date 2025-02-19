@@ -49,7 +49,7 @@ const Ucesnici = () => {
           // Provera da li je `data` niz, ako nije, postavi ga na prazan niz
           const dogadjajiList = Array.isArray(data) ? data : [];
 
-          const filteredDogadjaji = data.filter((dogadjaj) => {
+          const filteredDogadjaji = dogadjajiList.filter((dogadjaj) => {
             const eventDate = new Date(dogadjaj.datum)
               .toISOString()
               .split("T")[0]; // Format the event date
@@ -64,7 +64,7 @@ const Ucesnici = () => {
             "Greška pri učitavanju podataka. Došlo je do problema prilikom obrade zahteva. Molimo Vas da pokušate ponovo kasnije.",
             "danger"
           );
-        } else if (error.name !== "CanceledError") {
+        } else if (error.name !== "CanceledError") {          
           navigate("/logovanje", { state: { from: location }, replace: true });
         }
       }

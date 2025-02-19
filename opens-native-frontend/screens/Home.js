@@ -12,11 +12,12 @@ import {
 } from "react-native";
 import Markdown from "react-native-markdown-display";
 import COLORS from "../constants/colors";
-import httpCommon from "../http-common";
+import useHttpProtected from "../hooks/useHttpProtected";
 import eventEmitter from "../utils/EventEmitter";
 
 export default function Home() {
   const { t } = useTranslation();
+  const httpProtected = useHttpProtected();
 
   const [obavestenja, setObavesetenja] = useState([]);
   //const [pinovanaObavestenja, setPinovanaObavestenja] = useState([]);
@@ -32,7 +33,7 @@ export default function Home() {
   }, [obavestenja]);
 
   const fetchObavestenja = async () => {
-    await httpCommon.get("/obavestenja/validna").then(
+    await httpProtected.get("/obavestenja/validna").then(
       (response) => {
         setObavesetenja(response.data);
       },

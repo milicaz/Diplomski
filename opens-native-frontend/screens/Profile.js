@@ -2,13 +2,13 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { useFocusEffect } from '@react-navigation/native'
 import { Buffer } from 'buffer'
 import * as SecureStore from 'expo-secure-store'
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import COLORS from '../constants/colors'
-import { AuthContext } from '../contexts/AuthContext'
-import httpCommon from '../http-common'
+import useHttpProtected from '../hooks/useHttpProtected'
+import useLogout from '../hooks/useLogout'
 import eventEmitter from '../utils/EventEmitter'
 
 const REFRESH_TOKEN_KEY = 'refreshToken';
@@ -22,21 +22,23 @@ export default function Profile({ navigation }) {
 
   const { t } = useTranslation();
   const { height: windowHeight } = useWindowDimensions();
-  const { logOutUser } = useContext(AuthContext);
+  //const { logOutUser } = useContext(AuthContext);
+  const httpProtected = useHttpProtected();
+  const logOutUser = useLogout();
 
   // useFocusEffect hook from @react-navigation/native to refetch the data whenever the screen is focused
   useFocusEffect(
     useCallback(() => {
       const loggedIn = JSON.parse(SecureStore.getItem(USER_KEY));
       fetchUser(loggedIn.id);
-      fetchToken();
+      //fetchToken();
     }, []));
 
   const fetchUser = async (id) => {
     try {
       const requests = [
-        httpCommon.get(`posetioci/${id}`),
-        httpCommon.get(`posetioci/${id}/profilna`, { responseType: 'arraybuffer' })
+        httpProtected.get(`posetioci/${id}`),
+        httpProtected.get(`posetioci/${id}/profilna`, { responseType: 'arraybuffer' })
       ];
 
       const [userData, imageData] = await Promise.all(requests);
@@ -75,22 +77,23 @@ export default function Profile({ navigation }) {
     }
   };
 
-  const fetchToken = async () => {
-    try {
-      const token = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
-      if (token) {
-        setRefreshToken(token);
-      }
-    } catch (error) {
-      console.error('Error fetching refresh token:', error);
-    }
-  };
+  // const fetchToken = async () => {
+  //   try {
+  //     const token = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
+  //     if (token) {
+  //       setRefreshToken(token);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching refresh token:', error);
+  //   }
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer(windowHeight)}>
         <Image source={require("../assets/bg.png")} resizeMode="cover" style={styles.backgroundImage} />
-        <TouchableOpacity style={styles.logoutButton} onPress={() => logOutUser(refreshToken)}>
+        {/* <TouchableOpacity style={styles.logoutButton} onPress={() => logOutUser(refreshToken)}> */}
+        <TouchableOpacity style={styles.logoutButton} onPress={() => logOutUser()}>
           <Text style={styles.logoutButtonText}> Log out </Text>
         </TouchableOpacity>
       </View>

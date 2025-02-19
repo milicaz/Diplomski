@@ -1,23 +1,17 @@
-import { useCallback, useContext, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import englishFlag from '../assets/flags/english.png';
-import serbianFlag from '../assets/flags/serbian.png';
 import COLORS from "../constants/colors";
-import { AuthContext } from "../contexts/AuthContext";
-import i18next from '../services/i18next';
+import useAuth from "../hooks/useAuth";
 import { globalStyles } from "../utils/styles";
-import { useFocusEffect } from "@react-navigation/native";
 
 export default function WelcomePage({ navigation }) {
   const { t } = useTranslation();
-  const { login } = useContext(AuthContext);
+  //const { login } = useContext(AuthContext);
+  const { login } = useAuth();
   const { height: windowHeight } = useWindowDimensions();
-
-  const changeLng = lng => {
-    i18next.changeLanguage(lng);
-  };
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -87,15 +81,6 @@ export default function WelcomePage({ navigation }) {
             style={globalStyles.image(windowHeight)}
           />
         </View>
-
-        {/* <View style={styles.languageSwitcher(windowHeight)}>
-          <TouchableOpacity onPress={() => changeLng('sr')}>
-            <Image source={serbianFlag} style={styles.flag} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => changeLng('en')}>
-            <Image source={englishFlag} style={styles.flag} />
-          </TouchableOpacity>
-        </View> */}
 
         <View style={globalStyles.form(windowHeight)}>
           <View style={[globalStyles.inputContainer, { borderColor: error.email ? COLORS.red : COLORS.black, marginBottom: error.email ? 10 : 20 }]}>

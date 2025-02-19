@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import COLORS from '../constants/colors';
-import httpCommon from '../http-common';
+import useHttpProtected from '../hooks/useHttpProtected';
 import eventEmitter from '../utils/EventEmitter';
 
 const USER_KEY = 'user';
 
 export default function QrCode() {
   const { t } = useTranslation();
+  const httpProtected = useHttpProtected();
 
   const [qrCode, setQrCode] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,7 +27,7 @@ export default function QrCode() {
 
   const fetchQRCode = async (id) => {
     try {
-      const { data } = await httpCommon.get(`posetioci/${id}`);
+      const { data } = await httpProtected.get(`posetioci/${id}`);
       if (data && data.email) {
         setQrCode(data.email);
       }
