@@ -29,6 +29,13 @@ public class ObavestenjaServiceImpl implements ObavestenjaService {
                 .findByPocetakPrikazivanjaLessThanEqualAndKrajPrikazivanjaGreaterThanEqual(today, today);
 		return validObavestenja;
 	}
+	
+	@Override
+	public List<Obavestenja> getAktuelnaObavestenja() {
+		LocalDate today = LocalDate.now();
+		
+		return obavestenjaRepository.findByKrajPrikazivanjaGreaterThanEqual(today);
+	}
 
 	@Override
 	public Obavestenja addObavestenje(Obavestenja obavestenje) {

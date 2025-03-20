@@ -29,7 +29,7 @@ const ObavestenjeContextProvider = ({ children, navigate, location }) => {
 
   const fetchObavestenja = async (isMounted, controller) => {
     try {
-      const { data } = await httpProtected.get("/obavestenja/validna", {
+      const { data } = await httpProtected.get("/obavestenja/aktuelna", {
         signal: controller.signal,
       });
       if (isMounted) {
