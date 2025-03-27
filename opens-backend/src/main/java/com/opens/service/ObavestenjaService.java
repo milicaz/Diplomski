@@ -9,6 +9,8 @@ public interface ObavestenjaService {
 	public List<Obavestenja> findAll();
 	
 	public List<Obavestenja> getValidObavestenja();
+	
+	public List<Obavestenja> getAktuelnaObavestenja();
 
 	public Obavestenja addObavestenje(Obavestenja obavestenje);
 

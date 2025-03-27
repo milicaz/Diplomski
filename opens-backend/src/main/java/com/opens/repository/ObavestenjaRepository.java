@@ -12,5 +12,7 @@ import com.opens.model.Obavestenja;
 public interface ObavestenjaRepository extends JpaRepository<Obavestenja, Long> {
 	
 	List<Obavestenja> findByPocetakPrikazivanjaLessThanEqualAndKrajPrikazivanjaGreaterThanEqual(LocalDate pocetakPrikazivanja, LocalDate krajPrikazivanja);
+	
+	List<Obavestenja> findByKrajPrikazivanjaGreaterThanEqual(LocalDate krajPrikazivanja);
 
 }

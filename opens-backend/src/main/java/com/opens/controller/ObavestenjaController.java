@@ -47,6 +47,13 @@ public class ObavestenjaController {
 		List<Obavestenja> validObavestenja = obavestenjaService.getValidObavestenja();
 		return new ResponseEntity<>(validObavestenja, HttpStatus.OK);
 	}
+	
+	@GetMapping("/obavestenja/aktuelna")
+	@Transactional
+	public ResponseEntity<List<Obavestenja>> getAktuelnaObavestenja() {
+		List<Obavestenja> aktuelnaObavestenja = obavestenjaService.getAktuelnaObavestenja();
+		return new ResponseEntity<>(aktuelnaObavestenja, HttpStatus.OK);
+	}
 
 	@PostMapping("/obavestenja")
 	public ResponseEntity<Obavestenja> createObavestenje(@RequestBody Obavestenja obavestenje) {
