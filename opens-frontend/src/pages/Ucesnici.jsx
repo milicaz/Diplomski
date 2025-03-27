@@ -178,6 +178,7 @@ const Ucesnici = () => {
               {selectedDogadjaj && (
                 <>
                   <Form.Group className="mb-4">
+                    <Form.Label><i>Ime / First name</i></Form.Label>
                     <Form.Control
                       name="ime"
                       type="text"
@@ -191,6 +192,7 @@ const Ucesnici = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-4">
+                  <Form.Label><i>Prezime / Last name</i></Form.Label>
                     <Form.Control
                       name="prezime"
                       type="text"
@@ -204,6 +206,7 @@ const Ucesnici = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-4">
+                  <Form.Label><i>Rod / Gender</i></Form.Label>
                     <Form.Control
                       as="select"
                       name="rod"
@@ -223,6 +226,7 @@ const Ucesnici = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-4">
+                  <Form.Label><i>Godina rođenja / Year of birth</i></Form.Label>
                     <Form.Control
                       name="godine"
                       type="number"
@@ -237,6 +241,7 @@ const Ucesnici = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-4">
+                  <Form.Label><i>Mesto boravišta / Place of residence</i></Form.Label>
                     <Form.Control
                       name="mestoBoravista"
                       type="text"
@@ -250,6 +255,7 @@ const Ucesnici = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-4">
+                  <Form.Label><i>Broj telefona / Phone number</i></Form.Label>
                     <Form.Control
                       name="brojTelefona"
                       type="text"
@@ -259,6 +265,7 @@ const Ucesnici = () => {
                     />
                   </Form.Group>
                   <Form.Group className="mb-4">
+                  <Form.Label><i>E-mail adresa / E-mail address</i></Form.Label>
                     <Form.Control
                       name="email"
                       type="text"
@@ -268,6 +275,7 @@ const Ucesnici = () => {
                     />
                   </Form.Group>
                   <Form.Group className="mb-4">
+                  <Form.Label><i>Organizacija / Organization</i></Form.Label>
                     <Form.Control
                       name="organizacija"
                       type="text"

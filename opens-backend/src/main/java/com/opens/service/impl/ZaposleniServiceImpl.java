@@ -83,19 +83,29 @@ public class ZaposleniServiceImpl implements ZaposleniService {
 		return null;
 	}
 
+//	@Override
+//	public String deleteZaposleni(Long id) {
+//		Optional<Zaposleni> optionalZaposleni = zaposleniRepo.findById(id);
+//
+//		if (!optionalZaposleni.isPresent()) {
+////            return new ResponseEntity<>("Zaposleni not found", HttpStatus.NOT_FOUND);
+//			return "Zaposleni nije pronađen!";
+//		}
+//
+//		Zaposleni zaposleni = optionalZaposleni.get();
+//		zaposleni.setDeleted(true);
+//		zaposleniRepo.save(zaposleni);
+//		return "Zaposleni je obrisan!";
+//	}
+	
 	@Override
 	public String deleteZaposleni(Long id) {
-		Optional<Zaposleni> optionalZaposleni = zaposleniRepo.findById(id);
+	    if (!zaposleniRepo.existsById(id)) {
+	        return "Zaposleni nije pronađen!";
+	    }
 
-		if (!optionalZaposleni.isPresent()) {
-//            return new ResponseEntity<>("Zaposleni not found", HttpStatus.NOT_FOUND);
-			return "Zaposleni nije pronađen!";
-		}
-
-		Zaposleni zaposleni = optionalZaposleni.get();
-		zaposleni.setDeleted(true);
-		zaposleniRepo.save(zaposleni);
-		return "Zaposleni je obrisan!";
+	    zaposleniRepo.deleteById(id);
+	    return "Zaposleni je uspešno obrisan!";
 	}
 
 }
