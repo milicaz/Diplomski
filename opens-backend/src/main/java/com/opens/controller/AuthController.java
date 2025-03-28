@@ -116,7 +116,7 @@ public class AuthController {
 			refreshCookie.setHttpOnly(true);
 //			refreshCookie.setSecure(true);
 			refreshCookie.setPath("/");
-			refreshCookie.setMaxAge(604800);
+			refreshCookie.setMaxAge(691200);
 
 			// Add cookies to the response
 			response.addCookie(refreshCookie);

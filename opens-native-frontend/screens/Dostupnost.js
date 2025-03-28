@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import COLORS from "../constants/colors";
 import useHttpProtected from '../hooks/useHttpProtected';
+import Toast from 'react-native-toast-message';
 
 export default function Dostupnost() {
     const { t } = useTranslation();
@@ -13,6 +14,7 @@ export default function Dostupnost() {
     const [laptopCount, setLaptopCount] = useState("")
     const [mouseCount, setMouseCount] = useState("")
     const [headphoneCount, setHeadphoneCount] = useState("")
+    const [dzojstici, setDzojstici] = useState("")
     const [sonyOccupied, setSonyOccupied] = useState(false)
 
     useEffect(() => {
@@ -20,9 +22,12 @@ export default function Dostupnost() {
             try {
                 const requests = [
                     httpProtected.get('/dostupnostView'),
-                    httpProtected.get('/dostupnostMestoView')
+                    httpProtected.get('/dostupnostMestoView'),
+                    httpProtected.get('/oprema/dzojstik/zauzet')
                 ];
-                const [uredjajiData, mestaData] = await Promise.all(requests);
+                const [uredjajiData, mestaData, dzojstikZauzetData] = await Promise.all(requests);
+
+                setSonyOccupied(dzojstikZauzetData.data);
 
                 uredjajiData.data.forEach(item => {
                     switch (item.naziv_opreme) {
@@ -81,17 +86,31 @@ export default function Dostupnost() {
 
     const getTranslationKey = (count, key) => {
         const language = i18next.language;
+    
         if (language === 'sr') {
-            if (count % 10 === 1 && count % 100 !== 11) {
+            if (count === 0) {
+                return `${key}_negative`;
+            } else if (count % 10 === 1 && count % 100 !== 11) {
                 return `${key}_one`;
-            } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14)) {
+            } else if (
+                count % 10 >= 2 &&
+                count % 10 <= 4 &&
+                (count % 100 < 12 || count % 100 > 14)
+            ) {
                 return `${key}_few`;
             } else {
                 return `${key}_other`;
             }
         } else if (language === 'en') {
-            return count === 1 ? `${key}_one` : `${key}_other`;
+            return count === 0
+                ? `${key}_negative`
+                : count === 1
+                ? `${key}_one`
+                : `${key}_other`;
         }
+    
+        // fallback ako jezik nije podržan
+        return `${key}_other`;
     };
 
     const spaceTranslation = t(getTranslationKey(spaceCount, 'dostupnost-page.text.space'), { count: spaceCount });

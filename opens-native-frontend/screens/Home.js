@@ -70,6 +70,9 @@ export default function Home() {
   const handleShowMore = useCallback((obavestenje) => {
     setSelectedObavestenje(obavestenje);
     setShowModal(true);
+
+    const intervalId = setInterval(fetchData, 3600000); // 1 sat
+        return () => clearInterval(intervalId);
   }, []);
 
   return (

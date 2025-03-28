@@ -18,5 +18,7 @@ public interface OpremaService {
 	public Oprema updatedOprema(Long id, OpremaDTO opremaDTO);
 	
 	public void deleteOprema(Long id);
+	
+	public boolean isAnyDzojstikZauzet();
 
 }

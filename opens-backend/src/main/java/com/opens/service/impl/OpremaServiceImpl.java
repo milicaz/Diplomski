@@ -69,5 +69,10 @@ public class OpremaServiceImpl implements OpremaService {
 	public Boolean existsBySerijskiBroj(String serijskiBroj) {
 		return opremaRepository.existsBySerijskiBrojAndDeletedFalse(serijskiBroj);
 	}
+	
+	@Override
+	public boolean isAnyDzojstikZauzet() {
+	    return opremaRepository.existsAnyZauzetDzoistik();
+	}
 
 }

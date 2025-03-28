@@ -129,9 +129,9 @@
             "mouse_few": "{{count}} slobodna miša",
             "mouse_other": "{{count}} slobodnih miševa",
             "mouse_negative": "Nema slobodnih miševa",
-            "headphone_one": "{{count}} slobodne slušalice",
-            "headphone_few": "{{count}} slobodnih slušalica",
-            "headphone_other": "{{count}} slobodnih slušalica",
+            "headphone_one": "{{count}} par slobodnih slušalica",
+            "headphone_few": "{{count}} para slobodnih slušalica",
+            "headphone_other": "{{count}} parova slobodnih slušalica",
             "headphone_negative": "Nema slobodnih slušalica",
             "sony": "Sony je slobodan",
             "sony_negative": "Sony je zauzet"

@@ -182,13 +182,12 @@ const Ucesnici = () => {
                     <Form.Control
                       name="ime"
                       type="text"
-                      placeholder="Ime *"
                       value={ucesnik.ime}
                       onChange={handleChangeUcesnik}
                       required
                     />
                     <Form.Control.Feedback type="invalid">
-                      Ime je obavezno.
+                      Ime je obavezno. / First name is required.
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-4">
@@ -196,13 +195,12 @@ const Ucesnici = () => {
                     <Form.Control
                       name="prezime"
                       type="text"
-                      placeholder="Prezime *"
                       value={ucesnik.prezime}
                       onChange={handleChangeUcesnik}
                       required
                     />
                     <Form.Control.Feedback type="invalid">
-                      Prezime je obavezno.
+                      Prezime je obavezno. / Last name is required.
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-4">
@@ -214,7 +212,7 @@ const Ucesnici = () => {
                       onChange={handleChangeUcesnik}
                       required
                     >
-                      <option value="">Izaberite rod *</option>
+                      <option value=""></option>
                       {Object.entries(rodMapping).map(([key, value]) => (
                         <option key={key} value={key}>
                           {value}
@@ -222,7 +220,7 @@ const Ucesnici = () => {
                       ))}
                     </Form.Control>
                     <Form.Control.Feedback type="invalid">
-                      Rod je obavezan.
+                      Rod je obavezan. / Gender is required.
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-4">
@@ -230,14 +228,13 @@ const Ucesnici = () => {
                     <Form.Control
                       name="godine"
                       type="number"
-                      placeholder="Godina rođenja *"
                       value={ucesnik.godine}
                       onChange={handleChangeUcesnik}
                       required
                       min={1930}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Godina rođenja je obavezna.
+                      Godina rođenja je obavezna. / Year of birth is required.
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-4">
@@ -245,13 +242,12 @@ const Ucesnici = () => {
                     <Form.Control
                       name="mestoBoravista"
                       type="text"
-                      placeholder="Mesto boravišta *"
                       value={ucesnik.mestoBoravista}
                       onChange={handleChangeUcesnik}
                       required
                     />
                     <Form.Control.Feedback type="invalid">
-                      Mesto boravišta je obavezno.
+                      Mesto boravišta je obavezno. / Place of residence is required.
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-4">
@@ -259,7 +255,6 @@ const Ucesnici = () => {
                     <Form.Control
                       name="brojTelefona"
                       type="text"
-                      placeholder="Broj telefona"
                       value={ucesnik.brojTelefona}
                       onChange={handleChangeUcesnik}
                     />
@@ -269,7 +264,6 @@ const Ucesnici = () => {
                     <Form.Control
                       name="email"
                       type="text"
-                      placeholder="E-mail"
                       value={ucesnik.email}
                       onChange={handleChangeUcesnik}
                     />
@@ -279,18 +273,17 @@ const Ucesnici = () => {
                     <Form.Control
                       name="organizacija"
                       type="text"
-                      placeholder="Organizacija *"
                       value={ucesnik.organizacija}
                       onChange={handleChangeUcesnik}
                       required
                     />
                     <Form.Control.Feedback type="invalid">
-                      Organizacija je obavezna.
+                      Organizacija je obavezna. / Organization is required.
                     </Form.Control.Feedback>
                   </Form.Group>
                   <div className="d-grid gap-2 my-4">
                     <Button variant="success" type="submit" size="lg">
-                      Prijavite se na događaj
+                      Prijava / Sign in
                     </Button>
                   </div>
                 </>

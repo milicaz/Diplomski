@@ -12,9 +12,9 @@ const useHttpProtected = () => {
         const requestInterceptor = httpProtected.interceptors.request.use(
             async (config) => {
                 const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN_KEY);
-                console.log('--- useHttpProtected.js --- accessToken:', accessToken);
+                // console.log('--- useHttpProtected.js --- accessToken:', accessToken);
                 if (accessToken) {
-                    console.log('--- useHttpProtected.js --- Postoji accessToken. Saljem protected request sa access tokenom u header-u.');
+                    // console.log('--- useHttpProtected.js --- Postoji accessToken. Saljem protected request sa access tokenom u header-u.');
                     config.headers.Authorization = `Bearer ${accessToken}`;
                 }
                 return config;

@@ -162,7 +162,12 @@ const ResetPasswordPage = () => {
               onChangeText={onChangeToken}
             />
           </View>
-          {error.token ? <Text style={globalStyles.errorText}>{error.token}</Text> : null}
+          {/* {error.token ? <Text style={globalStyles.errorText}>{error.token}</Text> : null} */}
+          {error.token ? (
+              <Text style={[globalStyles.errorText, { marginLeft: 20, marginRight: 20 }]}>
+                {error.token}
+              </Text>
+          ) : null}
           <View style={[globalStyles.inputContainer, { borderColor: error.password ? COLORS.red : COLORS.black, marginBottom: error ? 10 : 20 }]}>
             <TextInput
               style={globalStyles.input}
@@ -175,7 +180,12 @@ const ResetPasswordPage = () => {
               <Icon name={showPassword ? 'visibility-off' : 'visibility'} size={24} color={COLORS.grey} />
             </TouchableOpacity>
           </View>
-          {error.password ? <Text style={globalStyles.errorText}>{error.password}</Text> : null}
+          {/* {error.password ? <Text style={globalStyles.errorText}>{error.password}</Text> : null} */}
+          {error.password ? (
+              <Text style={[globalStyles.errorText, { marginLeft: 20, marginRight: 20 }]}>
+                {error.password}
+              </Text>
+          ) : null}
           <View style={[globalStyles.inputContainer, { borderColor: error.confirmPassword ? COLORS.red : COLORS.black, marginBottom: error ? 10 : 20 }]}>
             <TextInput
               style={globalStyles.input}
@@ -188,7 +198,12 @@ const ResetPasswordPage = () => {
               <Icon name={showConfirmPassword ? 'visibility-off' : 'visibility'} size={24} color={COLORS.grey} />
             </TouchableOpacity>
           </View>
-          {error.confirmPassword ? <Text style={globalStyles.errorText}>{error.confirmPassword}</Text> : null}
+          {/* {error.confirmPassword ? <Text style={globalStyles.errorText}>{error.confirmPassword}</Text> : null} */}
+          {error.confirmPassword ? (
+              <Text style={[globalStyles.errorText, { marginLeft: 20, marginRight: 20 }]}>
+                {error.confirmPassword}
+              </Text>
+          ) : null}
           <View style={globalStyles.buttonContainer}>
             <TouchableOpacity onPress={handleResetPassword} style={globalStyles.button}>
               <Text style={globalStyles.buttonText}>{t('reset-password-page.button.reset')}</Text>

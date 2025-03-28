@@ -94,5 +94,15 @@ public class OpremaController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping("/oprema/dzojstik/zauzet")
+	public ResponseEntity<Boolean> isDzojstikZauzet() {
+		try {
+			boolean zauzet = opremaService.isAnyDzojstikZauzet();
+		    return new ResponseEntity<>(zauzet, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }
