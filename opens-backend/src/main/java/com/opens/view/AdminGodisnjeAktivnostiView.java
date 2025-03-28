@@ -15,6 +15,7 @@ public class AdminGodisnjeAktivnostiView {
 	private Long vrstaId;
 	private Integer godinaDogadjaja;
 	private Long brojDogadjaja;
+	private String nazivTipDogadjaja;
 
 	public Long getVrstaId() {
 		return vrstaId;
@@ -26,6 +27,10 @@ public class AdminGodisnjeAktivnostiView {
 
 	public Long getBrojDogadjaja() {
 		return brojDogadjaja;
+	}
+
+	public String getNazivTipDogadjaja() {
+		return nazivTipDogadjaja;
 	}
 
 }
