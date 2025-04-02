@@ -31,7 +31,9 @@ import com.opens.model.Logo;
 import com.opens.model.TipDogadjaja;
 import com.opens.repository.LogoRepository;
 import com.opens.repository.TipDogadjajaRepository;
+import com.opens.view.DogadjajiTotalView;
 import com.opens.view.DogadjajiView;
+import com.opens.view.repository.DogadjajiTotalViewRepository;
 import com.opens.view.repository.DogadjajiViewRepository;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -60,6 +62,9 @@ public class DogadjajViewController {
 	@Autowired
 	private LogoRepository logoRepository;
 	
+	@Autowired
+	private DogadjajiTotalViewRepository dogTotalRepo;
+	
 	@GetMapping("/dogadjajiView")
 	public ResponseEntity<List<DogadjajiView>> getAll() {
 		List<DogadjajiView> dogadjaji = new ArrayList<>();
@@ -74,21 +79,22 @@ public class DogadjajViewController {
 			@RequestParam(required = false) Long headerImageId, @RequestParam(required = false) Long footerImageId) throws JRException, FileNotFoundException {
 		//, @RequestParam String ime, @RequestParam String prezime
 		
-		TipDogadjaja tip = tipRepo.findOneById(id);
-		
+		TipDogadjaja tip = tipRepo.findOneById(id);		
 		String vrsta = tip.getNaziv();
 		
-		List<DogadjajiView> dogadjajiMesecVrsta = new ArrayList<>();
 		
-		dogadjajiMesecVrsta = dogRepo.findByMesecAndGodinaAndVrsta(mesec, godina, vrsta);
-		
-//		String filePath = "classpath:dogadjajireport.jrxml";
-		
+		List<DogadjajiView> dogadjaji = dogRepo.findByMesecAndGodinaAndVrsta(mesec, godina, vrsta);
 		File file = ResourceUtils.getFile("classpath:dogadjajireport.jrxml");
+		JRBeanCollectionDataSource dogadjajiDataSource = new JRBeanCollectionDataSource(dogadjaji);
+		JRBeanCollectionDataSource dogadjajiDataSourceDva = new JRBeanCollectionDataSource(dogadjaji);
 		
-		JRBeanCollectionDataSource dogadjajiDataSource = new JRBeanCollectionDataSource(dogadjajiMesecVrsta);
+		//subreport
+		List<DogadjajiTotalView> dogadjajiTotal = dogTotalRepo.findByMesecAndGodinaAndVrsta(mesec, godina, vrsta);
+		JRBeanCollectionDataSource dogadjajiUkupnoDataSource = new JRBeanCollectionDataSource(dogadjajiTotal);
 		
-		JRBeanCollectionDataSource dogadjajiDataSourceDva = new JRBeanCollectionDataSource(dogadjajiMesecVrsta);
+		Map<String, Object> dogadjajiUkupnoParameter = new HashMap<>();
+		dogadjajiUkupnoParameter.put("dogadjajiUkupnoDataSet", dogadjajiUkupnoDataSource);
+		dogadjajiUkupnoParameter.put("mesec", mesec);
 		
 		byte[] headerImageByte = null;
 		if (headerImageId != null) {
@@ -114,6 +120,8 @@ public class DogadjajViewController {
 		parameters.put("vrsta", vrsta);
 		parameters.put("dogadjajiDataSet", dogadjajiDataSource);
 		parameters.put("dogadjajiDataSetDva", dogadjajiDataSourceDva);
+		parameters.put("dogadjajiUkupnoParametar", dogadjajiUkupnoParameter);
+		parameters.put("dogadjajiUkupnoReport", getDogadjajiUkupnoReport());
 		
 		try {
 	        if (headerImageByte != null) {
@@ -156,12 +164,16 @@ public class DogadjajViewController {
         String vrsta = tip.getNaziv();
 
         List<DogadjajiView> dogadjajiMesecVrsta = dogRepo.findByMesecAndGodinaAndVrsta(mesec, godina, vrsta);
-
-        // Load the JRXML template for JasperReports
         File file = ResourceUtils.getFile("classpath:dogadjajireport.jrxml");
-
         JRBeanCollectionDataSource dogadjajiDataSource = new JRBeanCollectionDataSource(dogadjajiMesecVrsta);
-        JRBeanCollectionDataSource dogadjajiDataSourceDva = new JRBeanCollectionDataSource(dogadjajiMesecVrsta);
+        
+      //subreport
+      	List<DogadjajiTotalView> dogadjajiTotal = dogTotalRepo.findByMesecAndGodinaAndVrsta(mesec, godina, vrsta);
+      	JRBeanCollectionDataSource dogadjajiUkupnoDataSource = new JRBeanCollectionDataSource(dogadjajiTotal);
+      		
+      	Map<String, Object> dogadjajiUkupnoParameter = new HashMap<>();
+      	dogadjajiUkupnoParameter.put("dogadjajiUkupnoDataSet", dogadjajiUkupnoDataSource);
+      	dogadjajiUkupnoParameter.put("mesec", mesec);
 
         byte[] headerImageByte = null;
         if (headerImageId != null) {
@@ -186,7 +198,8 @@ public class DogadjajViewController {
         parameters.put("godina", godina);
         parameters.put("vrsta", vrsta);
         parameters.put("dogadjajiDataSet", dogadjajiDataSource);
-        parameters.put("dogadjajiDataSetDva", dogadjajiDataSourceDva);
+        parameters.put("dogadjajiUkupnoParametar", dogadjajiUkupnoParameter);
+		parameters.put("dogadjajiUkupnoReport", getDogadjajiUkupnoReport());
 
         // Handling images for header and footer
         try {
@@ -222,6 +235,12 @@ public class DogadjajViewController {
         headers.setContentDispositionFormData("attachment", "dogadjajireport.xlsx");
 
         return new ResponseEntity<>(outputStream.toByteArray(), headers, HttpStatus.OK);
+    }
+    
+    private JasperReport getDogadjajiUkupnoReport() throws FileNotFoundException, JRException {
+    	File file = ResourceUtils.getFile("classpath:dogadjajiUkupnoReport.jrxml");
+    	JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+    	return jasperReport;
     }
 
 }

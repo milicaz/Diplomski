@@ -150,6 +150,4 @@ public class DogadjajiView {
 	public String getOpis_dogadjaja() {
 		return opis_dogadjaja;
 	}
-	
-	
 }
