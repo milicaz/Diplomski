@@ -210,7 +210,7 @@
 	<detail>
 		<band height="720" splitType="Stretch">
 			<componentElement>
-				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="-16" width="1639" height="416" uuid="29fb22f2-c71b-4c56-9be6-e4ed4f9e2982">
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="-16" width="1639" height="366" uuid="29fb22f2-c71b-4c56-9be6-e4ed4f9e2982">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -894,7 +894,7 @@
 				</jr:table>
 			</componentElement>
 			<subreport>
-				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="434" width="1191" height="211" uuid="cc35b15e-9400-44a1-a282-2f8710254e6c">
+				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="350" width="1191" height="230" uuid="cc35b15e-9400-44a1-a282-2f8710254e6c">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<parametersMapExpression><![CDATA[$P{dogadjajiUkupnoParametar}]]></parametersMapExpression>

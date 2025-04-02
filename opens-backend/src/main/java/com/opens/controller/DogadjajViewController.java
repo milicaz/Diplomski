@@ -90,6 +90,7 @@ public class DogadjajViewController {
 		
 		//subreport
 		List<DogadjajiTotalView> dogadjajiTotal = dogTotalRepo.findByMesecAndGodinaAndVrsta(mesec, godina, vrsta);
+		System.out.println("Januar eksterne pdf: " + dogadjajiTotal.toString());
 		JRBeanCollectionDataSource dogadjajiUkupnoDataSource = new JRBeanCollectionDataSource(dogadjajiTotal);
 		
 		Map<String, Object> dogadjajiUkupnoParameter = new HashMap<>();
@@ -164,11 +165,15 @@ public class DogadjajViewController {
         String vrsta = tip.getNaziv();
 
         List<DogadjajiView> dogadjajiMesecVrsta = dogRepo.findByMesecAndGodinaAndVrsta(mesec, godina, vrsta);
+        System.out.println("Januar externe posle file");
         File file = ResourceUtils.getFile("classpath:dogadjajireport.jrxml");
+        System.out.println("Januar externe posle file");
         JRBeanCollectionDataSource dogadjajiDataSource = new JRBeanCollectionDataSource(dogadjajiMesecVrsta);
+        System.out.println("Januar externe pre total");
         
       //subreport
       	List<DogadjajiTotalView> dogadjajiTotal = dogTotalRepo.findByMesecAndGodinaAndVrsta(mesec, godina, vrsta);
+      	System.out.println("Januar eksterne excel: " + dogadjajiTotal.toString());
       	JRBeanCollectionDataSource dogadjajiUkupnoDataSource = new JRBeanCollectionDataSource(dogadjajiTotal);
       		
       	Map<String, Object> dogadjajiUkupnoParameter = new HashMap<>();

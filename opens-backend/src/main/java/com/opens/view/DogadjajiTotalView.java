@@ -112,6 +112,23 @@ public class DogadjajiTotalView {
 	public Long getUkupno_prigradsko_naselje_dr() {
 		return ukupno_prigradsko_naselje_dr;
 	}
+	@Override
+	public String toString() {
+		return "DogadjajiTotalView [id_ukupno=" + id_ukupno + ", mesec=" + mesec + ", godina=" + godina + ", vrsta="
+				+ vrsta + ", ukupno_aktivnosti=" + ukupno_aktivnosti + ", ukupno_sati=" + ukupno_sati + ", ukupno_m="
+				+ ukupno_m + ", ukupno_z=" + ukupno_z + ", ukupno_dr=" + ukupno_dr + ", ukupno_petnaest_devetnaest_m="
+				+ ukupno_petnaest_devetnaest_m + ", ukupno_dvadeset_dvadesetpet_m=" + ukupno_dvadeset_dvadesetpet_m
+				+ ", ukupno_dvadesetsest_trideset_m=" + ukupno_dvadesetsest_trideset_m + ", ukupno_tridesetplus_m="
+				+ ukupno_tridesetplus_m + ", ukupno_petnaest_devetnaest_z=" + ukupno_petnaest_devetnaest_z
+				+ ", ukupno_dvadeset_dvadesetpet_z=" + ukupno_dvadeset_dvadesetpet_z
+				+ ", ukupno_dvadesetsest_trideset_z=" + ukupno_dvadesetsest_trideset_z + ", ukupno_tridesetplus_z="
+				+ ukupno_tridesetplus_z + ", ukupno_petnaest_devetnaest_dr=" + ukupno_petnaest_devetnaest_dr
+				+ ", ukupno_dvadeset_dvadesetpet_dr=" + ukupno_dvadeset_dvadesetpet_dr
+				+ ", ukupno_dvadesetsest_trideset_dr=" + ukupno_dvadesetsest_trideset_dr + ", ukupno_tridesetplus_dr="
+				+ ukupno_tridesetplus_dr + ", ukupno_prigradsko_naselje_m=" + ukupno_prigradsko_naselje_m
+				+ ", ukupno_prigradsko_naselje_z=" + ukupno_prigradsko_naselje_z + ", ukupno_prigradsko_naselje_dr="
+				+ ukupno_prigradsko_naselje_dr + "]";
+	}
 	
     
 }

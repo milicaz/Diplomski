@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DogadjajiUkupnoReport" pageWidth="1191" pageHeight="842" orientation="Landscape" columnWidth="1151" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="348d0ead-7781-4eeb-9e03-322b4a5e31cf">
-	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
@@ -87,7 +79,7 @@
 		<band height="325" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<componentElement>
-				<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="30" width="1150" height="250" uuid="42941c38-0609-44ae-bd80-7fdc7a81f754">
+				<reportElement x="0" y="30" width="1150" height="250" uuid="42941c38-0609-44ae-bd80-7fdc7a81f754">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -118,12 +110,12 @@
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA["Ukupan broj aktivnosti OC OPENS za mesec: " + $F{mesec}+"." + " " + $F{godina}+"."]]></textFieldExpression>
+									<textFieldExpression><![CDATA["Ukupan broj aktivnosti OC OPENS za mesec: " + (new String[]{"Januar", "Februar", "Mart", "April", "Maj", "Jun", "Jul", "Avgust", "Septembar", "Oktobar", "Novembar", "Decembar"})[ ((Long) $F{mesec}).intValue() - 1 ] + " " + $F{godina}]]></textFieldExpression>
 								</textField>
 							</jr:columnHeader>
-							<jr:detailCell style="Table_TD" height="30">
+							<jr:detailCell style="Table_TD" height="70">
 								<textField textAdjust="StretchHeight">
-									<reportElement x="0" y="0" width="80" height="30" uuid="dd9ca31b-c288-4451-b9c3-48e0f17afb67"/>
+									<reportElement x="0" y="0" width="80" height="70" uuid="dd9ca31b-c288-4451-b9c3-48e0f17afb67"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 									</textElement>
@@ -142,9 +134,9 @@
 									<text><![CDATA[Ukupan broj sati zauzeća OC]]></text>
 								</staticText>
 							</jr:columnHeader>
-							<jr:detailCell style="Table_TD" height="30">
+							<jr:detailCell style="Table_TD" height="70">
 								<textField textAdjust="StretchHeight">
-									<reportElement x="0" y="0" width="80" height="30" uuid="76d92f42-ed99-4d38-88fb-ebb049707a37"/>
+									<reportElement x="0" y="0" width="80" height="70" uuid="76d92f42-ed99-4d38-88fb-ebb049707a37"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 									</textElement>
@@ -185,9 +177,9 @@
 											<text><![CDATA[Muško]]></text>
 										</staticText>
 									</jr:columnHeader>
-									<jr:detailCell style="Table_TD" height="30">
+									<jr:detailCell style="Table_TD" height="70">
 										<textField textAdjust="StretchHeight">
-											<reportElement x="0" y="0" width="70" height="30" uuid="b47f5b8d-5476-4928-ab70-61df441a936c"/>
+											<reportElement x="0" y="0" width="70" height="70" uuid="b47f5b8d-5476-4928-ab70-61df441a936c"/>
 											<textElement textAlignment="Center" verticalAlignment="Middle">
 												<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 											</textElement>
@@ -206,9 +198,9 @@
 											<text><![CDATA[Žensko]]></text>
 										</staticText>
 									</jr:columnHeader>
-									<jr:detailCell style="Table_TD" height="30">
+									<jr:detailCell style="Table_TD" height="70">
 										<textField textAdjust="StretchHeight">
-											<reportElement x="0" y="0" width="68" height="30" uuid="a7244d28-a001-449a-aa6a-12e96922b99f"/>
+											<reportElement x="0" y="0" width="68" height="70" uuid="a7244d28-a001-449a-aa6a-12e96922b99f"/>
 											<textElement textAlignment="Center" verticalAlignment="Middle">
 												<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 											</textElement>
@@ -227,9 +219,9 @@
 											<text><![CDATA[Drugo]]></text>
 										</staticText>
 									</jr:columnHeader>
-									<jr:detailCell style="Table_TD" height="30">
+									<jr:detailCell style="Table_TD" height="70">
 										<textField textAdjust="StretchHeight">
-											<reportElement x="0" y="0" width="67" height="30" uuid="acb79f02-ec7a-4ba8-aa82-458391635f71"/>
+											<reportElement x="0" y="0" width="67" height="70" uuid="acb79f02-ec7a-4ba8-aa82-458391635f71"/>
 											<textElement textAlignment="Center" verticalAlignment="Middle">
 												<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 											</textElement>
@@ -247,7 +239,7 @@
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA["Muško: " + $V{total_mladi_m} + " " + "Žensko: " + $V{total_mladi_z} + " " + "Drugo: " + $V{total_mladi_dr}]]></textFieldExpression>
+									<textFieldExpression><![CDATA["Muško: "  + $V{total_mladi_m} + " " + " " + "Žensko: " + $V{total_mladi_z} + " " + " " + "Drugo: " +$V{total_mladi_dr}]]></textFieldExpression>
 								</textField>
 							</jr:columnFooter>
 							<jr:columnGroup width="614" uuid="582b9155-23de-4ed7-b9b9-133905b92b0f">
@@ -283,9 +275,9 @@
 												<text><![CDATA[M]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:detailCell style="Table_TD" height="30">
+										<jr:detailCell style="Table_TD" height="70">
 											<textField textAdjust="StretchHeight">
-												<reportElement x="0" y="0" width="56" height="30" uuid="a9ab0d80-9543-42f0-95d2-ae83e4e0f5d3"/>
+												<reportElement x="0" y="0" width="56" height="70" uuid="a9ab0d80-9543-42f0-95d2-ae83e4e0f5d3"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
@@ -304,9 +296,9 @@
 												<text><![CDATA[Ž]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:detailCell style="Table_TD" height="30">
+										<jr:detailCell style="Table_TD" height="70">
 											<textField textAdjust="StretchHeight">
-												<reportElement x="0" y="0" width="52" height="30" uuid="8d41e74f-0286-4291-8b40-81899eb60094"/>
+												<reportElement x="0" y="0" width="52" height="70" uuid="8d41e74f-0286-4291-8b40-81899eb60094"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
@@ -325,9 +317,9 @@
 												<text><![CDATA[Dr]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:detailCell style="Table_TD" height="30">
+										<jr:detailCell style="Table_TD" height="70">
 											<textField textAdjust="StretchHeight">
-												<reportElement x="0" y="0" width="48" height="30" uuid="e38e17de-4def-4ff9-afac-6c2e3d16ad86"/>
+												<reportElement x="0" y="0" width="48" height="70" uuid="e38e17de-4def-4ff9-afac-6c2e3d16ad86"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
@@ -358,9 +350,9 @@
 												<text><![CDATA[M]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:detailCell style="Table_TD" height="30">
+										<jr:detailCell style="Table_TD" height="70">
 											<textField textAdjust="StretchHeight">
-												<reportElement x="0" y="0" width="56" height="30" uuid="1393ca92-79ae-42de-b3ba-edb09c1659c1"/>
+												<reportElement x="0" y="0" width="56" height="70" uuid="1393ca92-79ae-42de-b3ba-edb09c1659c1"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
@@ -379,9 +371,9 @@
 												<text><![CDATA[Ž]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:detailCell style="Table_TD" height="30">
+										<jr:detailCell style="Table_TD" height="70">
 											<textField textAdjust="StretchHeight">
-												<reportElement x="0" y="0" width="52" height="30" uuid="5700c79a-cb4f-423c-b20e-836aa274cab4"/>
+												<reportElement x="0" y="0" width="52" height="70" uuid="5700c79a-cb4f-423c-b20e-836aa274cab4"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
@@ -400,9 +392,9 @@
 												<text><![CDATA[Dr]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:detailCell style="Table_TD" height="30">
+										<jr:detailCell style="Table_TD" height="70">
 											<textField textAdjust="StretchHeight">
-												<reportElement x="0" y="0" width="47" height="30" uuid="bc29a3d4-4a08-4b7d-804e-bc053e052a57"/>
+												<reportElement x="0" y="0" width="47" height="70" uuid="bc29a3d4-4a08-4b7d-804e-bc053e052a57"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
@@ -433,9 +425,9 @@
 												<text><![CDATA[M]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:detailCell style="Table_TD" height="30">
+										<jr:detailCell style="Table_TD" height="70">
 											<textField textAdjust="StretchHeight">
-												<reportElement x="0" y="0" width="54" height="30" uuid="7b974bc4-839c-49ca-b89d-a69474326c91"/>
+												<reportElement x="0" y="0" width="54" height="70" uuid="7b974bc4-839c-49ca-b89d-a69474326c91"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
@@ -454,9 +446,9 @@
 												<text><![CDATA[Ž]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:detailCell style="Table_TD" height="30">
+										<jr:detailCell style="Table_TD" height="70">
 											<textField textAdjust="StretchHeight">
-												<reportElement x="0" y="0" width="52" height="30" uuid="3123587e-4897-431b-9bc5-a82bf5f2581c"/>
+												<reportElement x="0" y="0" width="52" height="70" uuid="3123587e-4897-431b-9bc5-a82bf5f2581c"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
@@ -475,9 +467,9 @@
 												<text><![CDATA[Dr]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:detailCell style="Table_TD" height="30">
+										<jr:detailCell style="Table_TD" height="70">
 											<textField textAdjust="StretchHeight">
-												<reportElement x="0" y="0" width="47" height="30" uuid="5b2b5982-f7a7-45c2-9d58-c989da8d0e29"/>
+												<reportElement x="0" y="0" width="47" height="70" uuid="5b2b5982-f7a7-45c2-9d58-c989da8d0e29"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
@@ -508,9 +500,9 @@
 												<text><![CDATA[M]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:detailCell style="Table_TD" height="30">
+										<jr:detailCell style="Table_TD" height="70">
 											<textField textAdjust="StretchHeight">
-												<reportElement x="0" y="0" width="53" height="30" uuid="010f6e67-eb5b-49eb-81cb-3e6f2d105200"/>
+												<reportElement x="0" y="0" width="53" height="70" uuid="010f6e67-eb5b-49eb-81cb-3e6f2d105200"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
@@ -529,9 +521,9 @@
 												<text><![CDATA[Ž]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:detailCell style="Table_TD" height="30">
+										<jr:detailCell style="Table_TD" height="70">
 											<textField textAdjust="StretchHeight">
-												<reportElement x="0" y="0" width="51" height="30" uuid="bc41ac0d-3e91-4b22-b570-373f0e8b804a"/>
+												<reportElement x="0" y="0" width="51" height="70" uuid="bc41ac0d-3e91-4b22-b570-373f0e8b804a"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
@@ -550,13 +542,13 @@
 												<text><![CDATA[Dr]]></text>
 											</staticText>
 										</jr:columnHeader>
-										<jr:detailCell style="Table_TD" height="30">
+										<jr:detailCell style="Table_TD" height="70">
 											<textField textAdjust="StretchHeight">
-												<reportElement x="0" y="0" width="46" height="30" uuid="53302ad4-ffa3-43a4-a88e-fad371b8a811"/>
+												<reportElement x="0" y="0" width="46" height="70" uuid="53302ad4-ffa3-43a4-a88e-fad371b8a811"/>
 												<textElement textAlignment="Center" verticalAlignment="Middle">
 													<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 												</textElement>
-												<textFieldExpression><![CDATA[$F{ukupno_tridesetplus_dr}]]></textFieldExpression>
+												<textFieldExpression><![CDATA[$F{ukupno_tridesetplus_z}]]></textFieldExpression>
 											</textField>
 										</jr:detailCell>
 									</jr:column>
@@ -585,9 +577,9 @@
 										<text><![CDATA[Muško]]></text>
 									</staticText>
 								</jr:columnHeader>
-								<jr:detailCell style="Table_TD" height="30">
+								<jr:detailCell style="Table_TD" height="70">
 									<textField textAdjust="StretchHeight">
-										<reportElement x="0" y="0" width="58" height="30" uuid="9db1f7ce-a07b-438f-a55b-80dd5dd1e1a7"/>
+										<reportElement x="0" y="0" width="58" height="70" uuid="9db1f7ce-a07b-438f-a55b-80dd5dd1e1a7"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 										</textElement>
@@ -606,9 +598,9 @@
 										<text><![CDATA[Žensko]]></text>
 									</staticText>
 								</jr:columnHeader>
-								<jr:detailCell style="Table_TD" height="30">
+								<jr:detailCell style="Table_TD" height="70">
 									<textField textAdjust="StretchHeight">
-										<reportElement x="0" y="0" width="57" height="30" uuid="00b465e5-dae1-4207-8fce-3d4bcf011da2"/>
+										<reportElement x="0" y="0" width="57" height="70" uuid="00b465e5-dae1-4207-8fce-3d4bcf011da2"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 										</textElement>
@@ -627,9 +619,9 @@
 										<text><![CDATA[Drugo]]></text>
 									</staticText>
 								</jr:columnHeader>
-								<jr:detailCell style="Table_TD" height="30">
+								<jr:detailCell style="Table_TD" height="70">
 									<textField textAdjust="StretchHeight">
-										<reportElement x="0" y="0" width="56" height="30" uuid="35b3acbd-d542-4b2a-9e28-4800272dca7b"/>
+										<reportElement x="0" y="0" width="56" height="70" uuid="35b3acbd-d542-4b2a-9e28-4800272dca7b"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 										</textElement>
