@@ -1,16 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Col, Form, Image, Modal, Row } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  Image,
+  Modal,
+  Row,
+} from "react-bootstrap";
 import { FaRegFilePdf } from "react-icons/fa";
 import { FaSquarePlus } from "react-icons/fa6";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
 import { httpProtected } from "../../../apis/http";
+import useToast from "../../../hooks/useToast";
 import Pagination from "../../Pagination";
 import { DogadjajContext } from "../DogadjajContext";
 import DeleteUcesnikForm from "./DeleteUcesnikForm";
 import EditUcesnikForm from "./EditUcesnikFrom";
-import useToast from "../../../hooks/useToast";
 
 const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   const { getUcesnici } = useContext(DogadjajContext);
@@ -213,7 +221,7 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     });
 
     // fetchUcesnici();
-    setValidated(false)
+    setValidated(false);
   };
 
   const handleUcesnikEdit = async () => {
@@ -422,48 +430,66 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
           <>
             <Form>
               <Row>
-                <Col>
-                  {firstHalf.map((logo) => (
-                    <Row key={logo.id} className="mb-2">
-                      <Col className="mb-4">
-                        <Form.Check
-                          type="radio"
-                          name="logoGroup"
-                          id={`logo-${logo.id}`}
-                          label={`${logo.name}`}
-                          value={logo.id}
-                          onChange={() => handleSelectHeader(logo.id)}
-                        />
-                        <Image
-                          src={`data:image/${logo.type};base64,${logo.picByte}`}
-                          alt={`Logo ${logo.id}`}
-                          thumbnail
-                        />
+                {firstHalf.length > 0 || secondHalf.length > 0 ? (
+                  <>
+                    <Col>
+                      {firstHalf.map((logo) => (
+                        <Row key={logo.id} className="mb-2">
+                          <Col className="mb-4">
+                            <Form.Check
+                              type="radio"
+                              name="logoGroup"
+                              id={`logo-${logo.id}`}
+                              label={`${logo.name}`}
+                              value={logo.id}
+                              onChange={() => handleSelectHeader(logo.id)}
+                            />
+                            <Image
+                              src={`data:image/${logo.type};base64,${logo.picByte}`}
+                              alt={`Logo ${logo.id}`}
+                              thumbnail
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Col>
+                    <Col>
+                      {secondHalf.map((logo) => (
+                        <Row key={logo.id} className="mb-2">
+                          <Col className="mb-4">
+                            <Form.Check
+                              type="radio"
+                              name="logoGroup"
+                              id={`logo-${logo.id}`}
+                              label={`${logo.name}`}
+                              value={logo.id}
+                              onChange={() => handleSelectHeader(logo.id)}
+                            />
+                            <Image
+                              src={`data:image/${logo.type};base64,${logo.picByte}`}
+                              alt={`Logo ${logo.id}`}
+                              thumbnail
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Col>
+                  </>
+                ) : (
+                  <Container
+                    className="d-flex justify-content-center align-items-center mt-3"
+                    style={{ height: "100v" }}
+                  >
+                    <Row>
+                      <Col>
+                        <h6>
+                          Nema logoa za prikazivanje. Možete dodati logoe u
+                          okviru Šifrarnik/Logoi.
+                        </h6>
                       </Col>
                     </Row>
-                  ))}
-                </Col>
-                <Col>
-                  {secondHalf.map((logo) => (
-                    <Row key={logo.id} className="mb-2">
-                      <Col className="mb-4">
-                        <Form.Check
-                          type="radio"
-                          name="logoGroup"
-                          id={`logo-${logo.id}`}
-                          label={`${logo.name}`}
-                          value={logo.id}
-                          onChange={() => handleSelectHeader(logo.id)}
-                        />
-                        <Image
-                          src={`data:image/${logo.type};base64,${logo.picByte}`}
-                          alt={`Logo ${logo.id}`}
-                          thumbnail
-                        />
-                      </Col>
-                    </Row>
-                  ))}
-                </Col>
+                  </Container>
+                )}
               </Row>
             </Form>
           </>
@@ -486,48 +512,66 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
           <>
             <Form>
               <Row>
-                <Col>
-                  {firstHalf.map((logo) => (
-                    <Row key={logo.id} className="mb-2">
-                      <Col className="mb-4">
-                        <Form.Check
-                          type="radio"
-                          name="logoGroup"
-                          id={`logo-${logo.id}`}
-                          label={`${logo.name}`}
-                          value={logo.id}
-                          onChange={() => handleSelectFooter(logo.id)}
-                        />
-                        <Image
-                          src={`data:image/${logo.type};base64,${logo.picByte}`}
-                          alt={`Logo ${logo.id}`}
-                          thumbnail
-                        />
+                {firstHalf.length > 0 || secondHalf.length > 0 ? (
+                  <>
+                    <Col>
+                      {firstHalf.map((logo) => (
+                        <Row key={logo.id} className="mb-2">
+                          <Col className="mb-4">
+                            <Form.Check
+                              type="radio"
+                              name="logoGroup"
+                              id={`logo-${logo.id}`}
+                              label={`${logo.name}`}
+                              value={logo.id}
+                              onChange={() => handleSelectFooter(logo.id)}
+                            />
+                            <Image
+                              src={`data:image/${logo.type};base64,${logo.picByte}`}
+                              alt={`Logo ${logo.id}`}
+                              thumbnail
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Col>
+                    <Col>
+                      {secondHalf.map((logo) => (
+                        <Row key={logo.id} className="mb-2">
+                          <Col className="mb-4">
+                            <Form.Check
+                              type="radio"
+                              name="logoGroup"
+                              id={`logo-${logo.id}`}
+                              label={`${logo.name}`}
+                              value={logo.id}
+                              onChange={() => handleSelectFooter(logo.id)}
+                            />
+                            <Image
+                              src={`data:image/${logo.type};base64,${logo.picByte}`}
+                              alt={`Logo ${logo.id}`}
+                              thumbnail
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                    </Col>
+                  </>
+                ) : (
+                  <Container
+                    className="d-flex justify-content-center align-items-center mt-3"
+                    style={{ height: "100v" }}
+                  >
+                    <Row>
+                      <Col>
+                        <h6>
+                          Nema logoa za prikazivanje. Možete dodati logoe u
+                          okviru Šifrarnik/Logoi.
+                        </h6>
                       </Col>
                     </Row>
-                  ))}
-                </Col>
-                <Col>
-                  {secondHalf.map((logo) => (
-                    <Row key={logo.id} className="mb-2">
-                      <Col className="mb-4">
-                        <Form.Check
-                          type="radio"
-                          name="logoGroup"
-                          id={`logo-${logo.id}`}
-                          label={`${logo.name}`}
-                          value={logo.id}
-                          onChange={() => handleSelectFooter(logo.id)}
-                        />
-                        <Image
-                          src={`data:image/${logo.type};base64,${logo.picByte}`}
-                          alt={`Logo ${logo.id}`}
-                          thumbnail
-                        />
-                      </Col>
-                    </Row>
-                  ))}
-                </Col>
+                  </Container>
+                )}
               </Row>
             </Form>
           </>
@@ -610,7 +654,10 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                   type="number"
                   placeholder="Godina rođenja *"
                   required
-                  isInvalid={validated && (!/^\d{4}$/.test(ucesnik.godine) || ucesnik.godine < 1930)}
+                  isInvalid={
+                    validated &&
+                    (!/^\d{4}$/.test(ucesnik.godine) || ucesnik.godine < 1930)
+                  }
                 />
                 <Form.Control.Feedback type="invalid">
                   Godina mora biti u formatu četiri cifre i veća ili jednaka

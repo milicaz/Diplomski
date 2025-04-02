@@ -5,6 +5,8 @@ import { Pie } from "react-chartjs-2";
 export const AdminGodisnjeAktivnosti = ({ aktivnosti }) => {
   const currentYear = new Date().getFullYear();
 
+  console.log(aktivnosti);
+
   const baseColors = [
     [
       "rgba(245, 111, 102, 0.5)", // Light red
@@ -72,7 +74,7 @@ export const AdminGodisnjeAktivnosti = ({ aktivnosti }) => {
   const { backgroundColors, borderColors } = generateColors(aktivnosti.length);
 
   const data = {
-    labels: aktivnosti.map((a) => a.vrstaNaziv),
+    labels: aktivnosti.map((a) => a.nazivTipDogadjaja),
     datasets: [
       {
         label: `Broj događaja u ${currentYear}. godinu`,
