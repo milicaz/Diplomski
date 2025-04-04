@@ -8,6 +8,7 @@ import {
   Image,
   Modal,
   Row,
+  Spinner,
 } from "react-bootstrap";
 import { FaRegFilePdf } from "react-icons/fa";
 import { FaSquarePlus } from "react-icons/fa6";
@@ -229,6 +230,9 @@ const DogadjajList = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
+
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
+  const [downloadingExcel, setDownloadingExcel] = useState(false);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -666,7 +670,7 @@ const DogadjajList = () => {
     handlePDF(event);
   };
 
-  const handlePDF = (event) => {
+  const handlePDF = async (event) => {
     event.preventDefault(); // Call preventDefault on the event
 
     // Ensure valid inputs
@@ -679,16 +683,23 @@ const DogadjajList = () => {
       return;
     }
 
-    // Call kreirajPDF with validated parameters
-    kreirajPDF(
-      mesec,
-      godina,
-      vrsta,
-      ime,
-      prezime,
-      headerImageId,
-      footerImageId
-    );
+    setDownloadingPDF(true);
+
+    try {
+      // Call kreirajPDF with validated parameters
+      await kreirajPDF(
+        mesec,
+        godina,
+        vrsta,
+        ime,
+        prezime,
+        headerImageId,
+        footerImageId
+      );
+    } catch (error) {
+    } finally {
+      setDownloadingPDF(false);
+    }
   };
 
   const handleExcel = async () => {
@@ -701,15 +712,22 @@ const DogadjajList = () => {
       return;
     }
 
-    const response = kreirajExcel(
-      mesec,
-      godina,
-      vrsta,
-      ime,
-      prezime,
-      headerImageId,
-      footerImageId
-    );
+    setDownloadingExcel(true);
+
+    try {
+      await kreirajExcel(
+        mesec,
+        godina,
+        vrsta,
+        ime,
+        prezime,
+        headerImageId,
+        footerImageId
+      );
+    } catch (error) {
+    } finally {
+      setDownloadingExcel(false);
+    }
   };
 
   const formatTimeRange = (start, end) => {
@@ -735,7 +753,7 @@ const DogadjajList = () => {
           <Form.Label>Tip događaja za koji se generiše izveštaj:</Form.Label>
           <Form.Control as="select" name="vrsta" onChange={handleChangeVrsta}>
             <option value="">Izaberite vrstu događaja</option>
-            {tipoviDogadjaja.map((item, index) => (
+            {tipoviDogadjaja.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.naziv}
               </option>
@@ -776,11 +794,44 @@ const DogadjajList = () => {
                     handleShowHeader();
                   }
                 }}
+                disabled={downloadingPDF}
               >
-                <FaRegFilePdf size={20} /> PDF
+                {downloadingPDF ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="mx-1"
+                    />
+                    PDF
+                  </>
+                ) : (
+                  <>
+                    <FaRegFilePdf size={20} /> PDF
+                  </>
+                )}
               </Button>
-              <Button className="mx-1" variant="success" onClick={handleExcel}>
-                <RiFileExcel2Fill size={20} /> EXCEL
+              <Button className="mx-1" variant="success" onClick={handleExcel} disabled={downloadingExcel}>
+                {downloadingExcel ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="mx-1"
+                    />
+                    EXCEL
+                  </>
+                ) : (
+                  <>
+                    <RiFileExcel2Fill size={20} /> EXCEL
+                  </>
+                )}
               </Button>
             </Col>
           </Row>

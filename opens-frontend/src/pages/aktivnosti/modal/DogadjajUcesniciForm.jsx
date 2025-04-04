@@ -7,6 +7,7 @@ import {
   Image,
   Modal,
   Row,
+  Spinner,
 } from "react-bootstrap";
 import { FaRegFilePdf } from "react-icons/fa";
 import { FaSquarePlus } from "react-icons/fa6";
@@ -37,7 +38,6 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   const [currentUcesnik, setCurrentUcesnik] = useState(null);
 
   const id = currentDogadjaj.id;
-
   const naziv = currentDogadjaj.naziv;
 
   const [limit, setLimit] = useState(10);
@@ -120,6 +120,9 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   const handleSelectFooter = (logoId) => {
     setFooterImageId(logoId);
   };
+
+  const [downloadingPDF, setDownloadingPDF] = useState(false);
+  const [downloadingExcel, setDownloadingExcel] = useState(false);
 
   useEffect(() => {
     const fetchUcesnici = async () => {
@@ -252,9 +255,15 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     setCurrentPage(page);
   };
 
-  const handleExcel = (event) => {
+  const handleExcel = async (event) => {
     event.preventDefault();
-    const response = kreirajExcelUcesnici(id, headerImageId, footerImageId);
+    setDownloadingExcel(true);
+    try {
+      await kreirajExcelUcesnici(id, naziv, headerImageId, footerImageId);
+    } catch (error) {
+    } finally {
+      setDownloadingExcel(false);
+    }
   };
 
   const halfLength = Math.ceil(logos.length / 2);
@@ -276,17 +285,28 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     handlePDF(event);
   };
 
-  const handlePDF = (event) => {
+  const handlePDF = async (event) => {
     event.preventDefault(); // Call preventDefault on the event
 
-    // // Ensure valid inputs
-    // if (!mesec || !godina || !vrsta || !ime || !prezime) {
-    //   console.error("Please fill all required fields.");
-    //   return;
-    // }
+    // Ensure valid inputs
+    if (!headerImageId || !footerImageId) {
+      handleShowToast(
+        "Greška",
+        "Molimo izaberite logoe za header i footer.",
+        "danger"
+      );
+      return;
+    }
 
-    // Call kreirajPDF with validated parameters
-    kreirajPdfUcesnici(id, headerImageId, footerImageId);
+    setDownloadingPDF(true);
+
+    try {
+      // Call kreirajPDF with validated parameters
+      await kreirajPdfUcesnici(id, naziv, headerImageId, footerImageId);
+    } catch (error) {
+    } finally {
+      setDownloadingPDF(false);
+    }
   };
 
   const handleUcesnikDelete = async () => {
@@ -316,11 +336,49 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                 className="mx-1"
                 variant="danger"
                 onClick={handleShowHeader}
+                disabled={downloadingPDF}
               >
-                <FaRegFilePdf size={20} /> PDF
+                {downloadingPDF ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="mx-1"
+                    />
+                    PDF
+                  </>
+                ) : (
+                  <>
+                    <FaRegFilePdf size={20} /> PDF
+                  </>
+                )}
               </Button>
-              <Button className="mx-1" variant="success" onClick={handleExcel}>
-                <RiFileExcel2Fill size={20} /> EXCEL
+              <Button
+                className="mx-1"
+                variant="success"
+                onClick={handleExcel}
+                disabled={downloadingExcel}
+              >
+                {downloadingExcel ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="mx-1"
+                    />
+                    EXCEL
+                  </>
+                ) : (
+                  <>
+                    <RiFileExcel2Fill size={20} /> EXCEL
+                  </>
+                )}
               </Button>
             </Col>
           </Row>

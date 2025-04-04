@@ -460,7 +460,26 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       // Create an anchor element and download the PDF
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "dogadjajireport.pdf");
+
+      // Mapa meseci
+      const meseci = [
+        "januar",
+        "februar",
+        "mart",
+        "april",
+        "maj",
+        "jun",
+        "jul",
+        "avgust",
+        "septembar",
+        "oktobar",
+        "novembar",
+        "decembar",
+      ];
+
+      const mesecIme = meseci[mesec - 1];
+      const nazivFajla = `Izveštaj o zauzeću prostora OC OPENS za ${mesecIme} ${godina}.pdf`;
+      link.setAttribute("download", nazivFajla);
 
       // Append the link to the document and trigger the click
       document.body.appendChild(link);
@@ -513,7 +532,27 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       // Create an anchor element to trigger the download
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "dogadjajireport.xlsx");
+
+      // Mapa meseci
+      const meseci = [
+        "januar",
+        "februar",
+        "mart",
+        "april",
+        "maj",
+        "jun",
+        "jul",
+        "avgust",
+        "septembar",
+        "oktobar",
+        "novembar",
+        "decembar",
+      ];
+
+      // Formatiranje imena fajla sa mesecem i godinom
+      const mesecIme = meseci[mesec - 1];
+      const nazivFajla = `Izveštaj o zauzeću prostora OC OPENS za ${mesecIme} ${godina}.xlsx`;
+      link.setAttribute("download", nazivFajla);
 
       // Append the link to the document and trigger the download
       document.body.appendChild(link);
@@ -532,7 +571,7 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
     }
   };
 
-  const kreirajPdfUcesnici = async (doznaka, headerImageId, footerImageId) => {
+  const kreirajPdfUcesnici = async (doznaka, naziv, headerImageId, footerImageId) => {
     const controller = new AbortController();
     try {
       const response = await httpProtected.get(`/ucesniciView/${doznaka}`, {
@@ -550,7 +589,9 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       // Create an anchor element and download the PDF
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "ucesnici.pdf");
+
+      const nazivFajla = `Učesnici događaja:${naziv}.pdf`;
+      link.setAttribute("download", nazivFajla);
 
       // Append the link to the document and trigger the click
       document.body.appendChild(link);
@@ -571,6 +612,7 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
 
   const kreirajExcelUcesnici = async (
     doznaka,
+    naziv,
     headerImageId,
     footerImageId
   ) => {
@@ -598,7 +640,9 @@ const DogadjajContextProvider = ({ children, navigate, location }) => {
       // Create an anchor element to trigger the download
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "ucesnici.xlsx");
+
+      const nazivFajla = `Učesnici događaja:${naziv}.xlsx`;
+      link.setAttribute("download", nazivFajla);
 
       // Append the link to the document and trigger the download
       document.body.appendChild(link);

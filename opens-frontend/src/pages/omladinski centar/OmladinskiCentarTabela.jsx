@@ -262,12 +262,26 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
       const link = document.createElement("a");
       link.href = url;
 
-      link.setAttribute(
-        "download",
-        `${mestoPoseteNaziv} - evidencija direktnih posetilaca-` +
-          formattedDate +
-          ".pdf"
-      );
+      // Mapa meseci
+      const meseci = [
+        "januar",
+        "februar",
+        "mart",
+        "april",
+        "maj",
+        "jun",
+        "jul",
+        "avgust",
+        "septembar",
+        "oktobar",
+        "novembar",
+        "decembar",
+      ];
+
+      const mesecIme = meseci[mesec - 1];
+      const nazivFajla = `${mestoPoseteNaziv} - evidencija direktnih posetilaca za ${mesecIme} ${godina}.pdf`;
+
+      link.setAttribute("download", nazivFajla);
       document.body.appendChild(link);
       link.click();
 
@@ -330,12 +344,27 @@ export const OmladinskiCentarTabela = ({ mestoPoseteId, mestoPoseteNaziv }) => {
         const link = document.createElement("a");
         link.href = url;
 
-        link.setAttribute(
-          "download",
-          `${mestoPoseteNaziv} - evidencija direktnih posetilaca-` +
-            formattedDate +
-            ".xlsx"
-        );
+        // Mapa meseci
+        const meseci = [
+          "januar",
+          "februar",
+          "mart",
+          "april",
+          "maj",
+          "jun",
+          "jul",
+          "avgust",
+          "septembar",
+          "oktobar",
+          "novembar",
+          "decembar",
+        ];
+
+        const mesecIme = meseci[mesec - 1];
+        const nazivFajla = `${mestoPoseteNaziv} - evidencija direktnih posetilaca za ${mesecIme} ${godina}.xlsx`;
+
+        link.setAttribute("download", nazivFajla);
+
         document.body.appendChild(link);
         link.click();
 

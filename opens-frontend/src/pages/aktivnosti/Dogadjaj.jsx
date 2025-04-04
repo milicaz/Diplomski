@@ -121,7 +121,7 @@ const Dogadjaj = ({ dogadjaj }) => {
     <>
       <td>{dogadjaj.id}</td>
       <td>{dogadjaj.naziv}</td>
-      <td>{dogadjaj.datum}</td>
+      <td>{new Date(dogadjaj.datum).toLocaleDateString("sr-SR")}</td>
       <td>
         {formatTimeRange(dogadjaj.pocetakDogadjaja, dogadjaj.krajDogadjaja)}
       </td>
