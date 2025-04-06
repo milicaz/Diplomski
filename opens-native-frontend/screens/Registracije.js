@@ -19,7 +19,7 @@ import useAuth from "../hooks/useAuth";
 export default function Registracija() {
   const { t } = useTranslation();
   //const { register } = useContext(AuthContext);
-  const { register } = useAuth;
+  const { register } = useAuth();
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
