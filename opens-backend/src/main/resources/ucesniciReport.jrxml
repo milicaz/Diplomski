@@ -169,7 +169,7 @@
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table_TD" height="30">
-								<textField textAdjust="StretchHeight">
+								<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="90" height="30" uuid="b3727a06-82e6-4ad6-b977-bef6448fd911"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
@@ -190,7 +190,7 @@
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table_TD" height="30">
-								<textField textAdjust="StretchHeight">
+								<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="130" height="30" uuid="c7d93d29-5bd2-48bd-8d6d-476752ba8ff1"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
@@ -211,12 +211,12 @@
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table_TD" height="30">
-								<textField textAdjust="StretchHeight">
+								<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="90" height="30" uuid="366ab128-120a-4db7-885e-e869ba9f1a69"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{pol}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{pol}.equals("MUSKO") ? "muško" : ($F{pol}.equals("ZENSKO") ? "žensko" : "drugo")]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
@@ -232,7 +232,7 @@
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table_TD" height="30">
-								<textField textAdjust="StretchHeight">
+								<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="90" height="30" uuid="08eac831-7eff-45fa-b171-83636938b952"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
@@ -253,7 +253,7 @@
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table_TD" height="30">
-								<textField textAdjust="StretchHeight">
+								<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="126" height="30" uuid="e9e52230-aa18-45b2-8f37-197d503b455c"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
@@ -274,7 +274,7 @@
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table_TD" height="30">
-								<textField textAdjust="StretchHeight">
+								<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="114" height="30" uuid="29eb32bf-7baf-45fd-980a-48af11ef8aad"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
@@ -295,7 +295,7 @@
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table_TD" height="30">
-								<textField textAdjust="StretchHeight">
+								<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="130" height="30" uuid="b410239a-402b-4f90-903d-8095c0df99cd"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
@@ -316,7 +316,7 @@
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table_TD" height="30">
-								<textField textAdjust="StretchHeight">
+								<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="124" height="30" uuid="506bf610-846e-4d6a-b6c9-7c561569eed7"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
@@ -337,12 +337,11 @@
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table_TD" height="30">
-								<textField textAdjust="StretchHeight">
+								<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 									<reportElement positionType="Float" stretchType="ContainerHeight" x="0" y="0" width="124" height="30" uuid="172e5d85-c89f-40a6-bd88-0a0caa3faf3b"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Calibri" size="12" pdfEncoding="Cp1250" isPdfEmbedded="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
