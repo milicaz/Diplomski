@@ -123,7 +123,7 @@ const DogadjajiTrenutno = () => {
           {dogadjaji.length === 0 ? (
             <tbody>
             <tr>
-              <td colSpan="4" className="nema-unetih">
+              <td colSpan="7" className="nema-unetih">
                 Trenutno ne postoji nijedan događaj.
               </td>
             </tr>
