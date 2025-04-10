@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -21,6 +22,7 @@ public class ProfilnaSlika {
 	@Column(name = "tip_slike")
 	private String tipSlike;
 	@Basic(fetch = FetchType.LAZY)
+	@Lob
 	@Column(name = "profilna_slika")
 	private byte[] profilnaSlika;
 	@OneToOne

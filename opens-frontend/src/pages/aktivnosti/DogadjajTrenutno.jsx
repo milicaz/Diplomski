@@ -120,6 +120,15 @@ const DogadjajiTrenutno = () => {
               <th>Organizacija</th>
             </tr>
           </thead>
+          {dogadjaji.length === 0 ? (
+            <tbody>
+            <tr>
+              <td colSpan="4" className="nema-unetih">
+                Trenutno ne postoji nijedan događaj.
+              </td>
+            </tr>
+          </tbody>
+          ) : (
           <tbody>
             {dogadjaji.map((dogadjaj) => (
               <tr key={dogadjaj.id}>
@@ -138,6 +147,7 @@ const DogadjajiTrenutno = () => {
               </tr>
             ))}
           </tbody>
+          )}
         </table>
         <Pagination
           pages={totalPagesNumber}
