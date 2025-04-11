@@ -1,5 +1,7 @@
 package com.opens.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,6 +26,7 @@ public class ProfilnaSlika {
 	@Basic(fetch = FetchType.LAZY)
 	@Lob
 	@Column(name = "profilna_slika")
+//	@JsonIgnore
 	private byte[] profilnaSlika;
 	@OneToOne
 	@JoinColumn(name = "posetilac_id")

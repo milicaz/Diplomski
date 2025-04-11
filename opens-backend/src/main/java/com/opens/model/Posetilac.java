@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -25,7 +26,7 @@ public class Posetilac extends Korisnik {
 	@JoinColumn(name = "uloga_id")
 	private Uloga uloga;
 
-	@OneToOne(mappedBy = "posetilac", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(mappedBy = "posetilac", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private ProfilnaSlika profilnaSlika;
 

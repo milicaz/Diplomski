@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { useFocusEffect } from '@react-navigation/native'
 import { Buffer } from 'buffer'
 import * as SecureStore from 'expo-secure-store'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -26,7 +26,7 @@ export default function Profile({ navigation }) {
   const httpProtected = useHttpProtected();
   const logOutUser = useLogout();
 
-  // useFocusEffect hook from @react-navigation/native to refetch the data whenever the screen is focused
+  //useFocusEffect hook from @react-navigation/native to refetch the data whenever the screen is focused
   useFocusEffect(
     useCallback(() => {
       const loggedIn = JSON.parse(SecureStore.getItem(USER_KEY));
@@ -77,16 +77,16 @@ export default function Profile({ navigation }) {
     }
   };
 
-  // const fetchToken = async () => {
-  //   try {
-  //     const token = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
-  //     if (token) {
-  //       setRefreshToken(token);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching refresh token:', error);
-  //   }
-  // };
+  const fetchToken = async () => {
+    try {
+      const token = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
+      if (token) {
+        setRefreshToken(token);
+      }
+    } catch (error) {
+      console.error('Error fetching refresh token:', error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>

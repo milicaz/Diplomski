@@ -21,6 +21,7 @@ import com.opens.model.Posetilac;
 import com.opens.model.ProfilnaSlika;
 import com.opens.repository.PosetilacRepository;
 import com.opens.repository.ProfilnaSlikaRepository;
+import com.opens.service.PosetilacService;
 
 @RestController
 @RequestMapping("/api")
@@ -32,6 +33,9 @@ public class PosetilacController {
 	
 	@Autowired
 	private ProfilnaSlikaRepository profilnaSlikaRepository;
+	
+	@Autowired
+	private PosetilacService posetilacService;
 
 	@GetMapping("/posetioci")
 	public ResponseEntity<List<Posetilac>> getAllPosetioci() {
@@ -63,7 +67,8 @@ public class PosetilacController {
 	@GetMapping("/posetioci/{id}/profilna")
 	public ResponseEntity<byte[]> getProfilna(@PathVariable Long id) {
 		
-		ProfilnaSlika profilna = profilnaSlikaRepository.findByPosetilacId(id);
+		ProfilnaSlika profilna = posetilacService.getProfilnaSlikaByPosetilacId(id)
+;
 	    if (profilna == null || profilna.getProfilnaSlika() == null) {
 	        return ResponseEntity.notFound().build();
 	    }
@@ -90,7 +95,8 @@ public class PosetilacController {
 			
 			posetilacRepository.save(_posetilac);
 			
-			ProfilnaSlika profilna = profilnaSlikaRepository.findByPosetilacId(id);
+			ProfilnaSlika profilna = posetilacService.getProfilnaSlikaByPosetilacId(id)
+;
 			profilna.setProfilnaSlika(posetilac.getProfileImage());
 			
 			profilnaSlikaRepository.save(profilna);
