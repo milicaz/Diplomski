@@ -12,7 +12,7 @@ const useLogout = () => {
     const logout = async () => {
         try {
             const token = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
-            console.log("refresh token: ", token);
+            // console.log("refresh token: ", token);
             if (token) {
                 await httpPublic.post('/logout', { refreshToken: token });
                 await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);

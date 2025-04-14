@@ -45,29 +45,20 @@ public class PasswordResetService {
 	@Autowired
 	private Environment environment;
 
+	//Za posetioca
 	public void createPasswordResetTokenForUser(String email) throws MessagingException, UnsupportedEncodingException {
 
-		// Find Zaposleni by email
-		Optional<Zaposleni> optionalZaposleni = zaposleniRepo.findByEmail(email);
-		Zaposleni zaposleni = optionalZaposleni.orElse(null);
-		System.out.println("Zaposleni email je: " + zaposleni);
-
-		// Find Posetilac by email
 		Optional<Posetilac> optionalPosetilac = posetilacRepo.findByEmail(email);
 		Posetilac posetilac = optionalPosetilac.orElse(null);
 
-		if (zaposleni == null && posetilac == null) {
+		if (posetilac == null) {
 			throw new EntityNotFoundException("Email nije pronadjen ni medju zaposlenim ni medju poseticima");
 		}
 		String token;
 		PasswordResetToken resetToken = new PasswordResetToken();
-		if (zaposleni != null) {
-			token = UUID.randomUUID().toString();
-			resetToken.setToken(token);
-			resetToken.setZaposleni(zaposleni);
-			sendResetTokenEmailZaposleni(email, token);
-		} else {
-			token = UUID.randomUUID().toString();
+		if (posetilac != null) {
+//			token = UUID.randomUUID().toString();
+			token = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
 			resetToken.setToken(token);
 			resetToken.setPosetilac(posetilac);
 			sendResetTokenEmail(email, token);
@@ -100,15 +91,7 @@ public class PasswordResetService {
 	}
 
 	private void sendResetTokenEmail(String email, String token) throws MessagingException, UnsupportedEncodingException {
-//		SimpleMailMessage message = new SimpleMailMessage();
-//		message.setTo(email);
-//		message.setSubject("Password Reset Request");
-//        message.setText("To reset your password, please click the link below:\n" +
-//                        "http://localhost:3000/ResetPassword?token=" + token);
-//		message.setText("Token:\n" + token);
-//
-//		mailSender.send(message);
-		
+
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
 		String htmlContent = "<html><body>"
@@ -140,15 +123,6 @@ public class PasswordResetService {
 	}
 
 	private void sendResetTokenEmailZaposleni(String email, String token) throws MessagingException, UnsupportedEncodingException {
-//		SimpleMailMessage message = new SimpleMailMessage();
-//		message.setTo(email);
-//		message.setSubject("Password Reset Request");
-//		message.setText("To reset your password, please click the link below:\n"
-//				+ "http://localhost:3000/ResetPassword?token=" + token);
-//        message.setText("Token:\n" +
-//                  token);
-
-//		mailSender.send(message);
 		
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);

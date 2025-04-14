@@ -112,22 +112,46 @@ export default function Registracija() {
     }
   };
 
+  // onChangeBrojTelefona = (newPhoneCode, newPhoneNumber) => {
+  //   setPhoneCode(newPhoneCode);
+  //   const cleanedPhoneNumber = newPhoneNumber.startsWith("0")
+  //     ? newPhoneNumber.slice(1)
+  //     : newPhoneNumber;
+  //   setPhoneNumber(cleanedPhoneNumber);
+  //   const combinedPhoneNumber = phoneCode + phoneNumber;
+  //   setBrojTelefona(combinedPhoneNumber);
+
+  //   if (error.brojTelefona) {
+  //     setError((prevError) => ({
+  //       ...prevError,
+  //       brojTelefona: '',
+  //     }));
+  //   }
+  // }
+
   onChangeBrojTelefona = (newPhoneCode, newPhoneNumber) => {
-    setPhoneCode(newPhoneCode);
+    const formattedPhoneCode = newPhoneCode.startsWith('+')
+      ? newPhoneCode
+      : '+' + newPhoneCode;
+  
+    setPhoneCode(formattedPhoneCode);
+  
     const cleanedPhoneNumber = newPhoneNumber.startsWith("0")
       ? newPhoneNumber.slice(1)
       : newPhoneNumber;
+  
     setPhoneNumber(cleanedPhoneNumber);
-    const combinedPhoneNumber = phoneCode + phoneNumber;
+  
+    const combinedPhoneNumber = formattedPhoneCode + cleanedPhoneNumber;
     setBrojTelefona(combinedPhoneNumber);
-
+  
     if (error.brojTelefona) {
       setError((prevError) => ({
         ...prevError,
         brojTelefona: '',
       }));
     }
-  }
+  };
 
   const onCheckBoxChange = (newValue) => {
     setIsChecked(newValue);
