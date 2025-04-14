@@ -2,27 +2,24 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { useFocusEffect } from '@react-navigation/native'
 import { Buffer } from 'buffer'
 import * as SecureStore from 'expo-secure-store'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import COLORS from '../constants/colors'
 import useHttpProtected from '../hooks/useHttpProtected'
 import useLogout from '../hooks/useLogout'
 import eventEmitter from '../utils/EventEmitter'
 
-const REFRESH_TOKEN_KEY = 'refreshToken';
 const USER_KEY = 'user';
 
 export default function Profile({ navigation }) {
 
   const [user, setUser] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
-  const [refreshToken, setRefreshToken] = useState('');
-
+  
   const { t } = useTranslation();
   const { height: windowHeight } = useWindowDimensions();
-  //const { logOutUser } = useContext(AuthContext);
   const httpProtected = useHttpProtected();
   const logOutUser = useLogout();
 
@@ -31,19 +28,14 @@ export default function Profile({ navigation }) {
     useCallback(() => {
       const loggedIn = JSON.parse(SecureStore.getItem(USER_KEY));
       fetchUser(loggedIn.id);
-      //fetchToken();
     }, []));
 
   const fetchUser = async (id) => {
     try {
-      const requests = [
-        httpProtected.get(`posetioci/${id}`),
-        httpProtected.get(`posetioci/${id}/profilna`, { responseType: 'arraybuffer' })
-      ];
-
-      const [userData, imageData] = await Promise.all(requests);
-
+      const userData = await httpProtected.get(`posetioci/${id}`);
       setUser(userData.data);
+
+      const imageData = await httpProtected.get(`posetioci/${id}/profilna`, { responseType: 'arraybuffer' });
 
       const contentType = imageData.headers['content-type'] || 'image/jpeg';
       const base64Image = Buffer.from(imageData.data, 'binary').toString('base64');
@@ -77,22 +69,10 @@ export default function Profile({ navigation }) {
     }
   };
 
-  const fetchToken = async () => {
-    try {
-      const token = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
-      if (token) {
-        setRefreshToken(token);
-      }
-    } catch (error) {
-      console.error('Error fetching refresh token:', error);
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer(windowHeight)}>
         <Image source={require("../assets/bg.png")} resizeMode="cover" style={styles.backgroundImage} />
-        {/* <TouchableOpacity style={styles.logoutButton} onPress={() => logOutUser(refreshToken)}> */}
         <TouchableOpacity style={styles.logoutButton} onPress={() => logOutUser()}>
           <Text style={styles.logoutButtonText}> Log out </Text>
         </TouchableOpacity>
@@ -101,7 +81,8 @@ export default function Profile({ navigation }) {
         {profileImage ? (
           <Image source={{ uri: profileImage }} style={styles.profileImage} />
         ) : (
-          <Text>Loading image...</Text>
+          // <Text> {t('profile-page.text.image')}</Text>
+          <ActivityIndicator size="large" color={COLORS.yellow} />
         )}
         <Text style={styles.profileName}> {user && user.ime} {user && user.prezime} </Text>
         <Text style={styles.profileEmail}> {user && user.email} </Text>

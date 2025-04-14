@@ -18,7 +18,6 @@ import useAuth from "../hooks/useAuth";
 
 export default function Registracija() {
   const { t } = useTranslation();
-  //const { register } = useContext(AuthContext);
   const { register } = useAuth();
   const navigation = useNavigation();
 
@@ -205,7 +204,8 @@ export default function Registracija() {
       newError.brojTelefona = t('register-page.error.phoneRequired');
       valid = false;
     } else {
-      const phoneRegex = /^\+?[0-9]{2,3}[0-9]{8,9}$/; // Adjust regex as needed
+      //const phoneRegex = /^\+?[0-9]{2,3}[0-9]{8,9}$/; // Adjust regex as needed
+      const phoneRegex = /^\+(\d{2,3})(\d{6,10})$/;
       if (!phoneRegex.test(phoneCode + phoneNumber)) {
         newError.brojTelefona = t('register-page.error.invalidPhone');
         valid = false;

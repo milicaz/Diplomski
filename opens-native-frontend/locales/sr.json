@@ -92,6 +92,7 @@
     },
     "qr-page": {
         "text": {
+            "image": "Učitavanje slike...",
             "explanation": "Ovaj QR kod Vam omogućava lakšu prijavu posete u Omladinskom centru OPENS.",
             "instruction": "Skenirajte QR kod kada posećujete OPENS."
         }

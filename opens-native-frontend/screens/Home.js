@@ -20,12 +20,13 @@ export default function Home() {
   const httpProtected = useHttpProtected();
 
   const [obavestenja, setObavesetenja] = useState([]);
-  //const [pinovanaObavestenja, setPinovanaObavestenja] = useState([]);
   const [selectedObavestenje, setSelectedObavestenje] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     fetchObavestenja();
+    const intervalId = setInterval(fetchObavestenja, 3600000); // 1 sat
+    return () => clearInterval(intervalId);
   }, []);
 
   const sortiranaObavestenja = useMemo(() => {
@@ -70,9 +71,6 @@ export default function Home() {
   const handleShowMore = useCallback((obavestenje) => {
     setSelectedObavestenje(obavestenje);
     setShowModal(true);
-
-    const intervalId = setInterval(fetchData, 3600000); // 1 sat
-        return () => clearInterval(intervalId);
   }, []);
 
   return (

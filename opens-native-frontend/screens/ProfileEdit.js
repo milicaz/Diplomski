@@ -136,11 +136,7 @@ export default function ProfileEdit({ navigation }) {
       if (result.assets && result.assets.length > 0) {
         const base64Image = await FileSystem.readAsStringAsync(result.assets[0].uri, { encoding: FileSystem.EncodingType.Base64 });
         const mimeType = result.assets[0].mimeType;
-        console.log("tip slike: ");
-        console.log(mimeType);
-        //setProfileImage(`data:${mimeType}; base64, ${base64Image} `);
         setProfileImage(`data:${mimeType};base64,${base64Image}`);
-        //setProfileImage(result.assets[0].uri);
       }
     }
   };
@@ -179,7 +175,8 @@ export default function ProfileEdit({ navigation }) {
       newError.brojTelefona = t('register-page.error.phoneRequired');
       valid = false;
     } else {
-      const phoneRegex = /^\+?[0-9]{2,3}[0-9]{8,9}$/; // Adjust regex as needed
+      //const phoneRegex = /^\+?[0-9]{2,3}[0-9]{8,9}$/; // Adjust regex as needed
+      const phoneRegex = /^\+(\d{2,3})(\d{6,10})$/;
       if (!phoneRegex.test(brojTelefona)) {
         newError.brojTelefona = t('register-page.error.invalidPhone');
         valid = false;
@@ -218,7 +215,7 @@ export default function ProfileEdit({ navigation }) {
 
         <View style={styles.inputGroup}>
           <Text style={styles.labelText}>{t('profile-edit-page.text.name')}</Text>
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { borderColor: error.ime ? COLORS.red : COLORS.black }]}>
             <TextInput style={styles.input} value={ime} onChangeText={onChangeIme} editable={true} />
           </View>
         </View>
@@ -226,7 +223,7 @@ export default function ProfileEdit({ navigation }) {
 
         <View style={styles.inputGroup}>
           <Text style={styles.labelText}>{t('profile-edit-page.text.surname')}</Text>
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { borderColor: error.prezime ? COLORS.red : COLORS.black }]}>
             <TextInput style={styles.input} value={prezime} onChangeText={onChangePrezime} editable={true} />
           </View>
         </View>
@@ -241,7 +238,7 @@ export default function ProfileEdit({ navigation }) {
 
         <View style={styles.inputGroup}>
           <Text style={styles.labelText}>{t('profile-edit-page.text.placeOfResidence')}</Text>
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { borderColor: error.mestoBoravista ? COLORS.red : COLORS.black }]}>
             <TextInput style={styles.input} value={mestoBoravista} onChangeText={onChangeMestoBoravista} editable={true} />
           </View>
         </View>
@@ -249,15 +246,15 @@ export default function ProfileEdit({ navigation }) {
 
         <View style={styles.inputGroup}>
           <Text style={styles.labelText}>{t('profile-edit-page.text.phone')}</Text>
-          <View style={styles.inputContainer}>
-            <TextInput keyboardType='numeric' style={styles.input} value={brojTelefona} onChangeText={onChangeBrojTelefona} editable={true} />
+          <View style={[styles.inputContainer, { borderColor: error.brojTelefona ? COLORS.red : COLORS.black }]}>
+            <TextInput style={styles.input} value={brojTelefona} onChangeText={onChangeBrojTelefona} editable={true} />
           </View>
         </View>
         {error.brojTelefona ? <Text style={globalStyles.errorText}>{error.brojTelefona}</Text> : null}
 
         <View style={styles.inputGroup}>
           <Text style={styles.labelText}>{t('profile-edit-page.text.yearOfBirth')}</Text>
-          <View style={styles.inputContainer}>
+          <View style={[styles.inputContainer, { borderColor: error.godine ? COLORS.red : COLORS.black }]}>
             <TextInput keyboardType='numeric' style={styles.input} value={godine.toString()} onChangeText={onChangeGodine} editable={true} />
           </View>
         </View>
