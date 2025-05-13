@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "opens-native-frontend",
-    "slug": "opens-native-frontend",
+    "name": "OPENS",
+    "slug": "OPENS",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/adaptive-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -15,16 +15,23 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "icon": {
+        "dark": "./assets/ios_icons/dark.png",
+        "light": "./assets/ios_icons/light.png",
+        "tinted": "./assets/ios_icons/tinted.png"
+      }
     },
     "android": {
+      "package": "com.opens",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/adaptive-icon.png"
     }
   }
 }
