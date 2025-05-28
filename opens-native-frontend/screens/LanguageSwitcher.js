@@ -1,8 +1,8 @@
-import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import englishFlag from "../assets/flags/english.png";
 import serbianFlag from "../assets/flags/serbian.png";
 import i18next from "../services/i18next";
+import { scaleSize } from "../utils/responsive";
 
 export default function LanguageSwitcher() {
   // Funkcija za promenu jezika
@@ -25,17 +25,17 @@ export default function LanguageSwitcher() {
 const styles = StyleSheet.create({
   languageSwitcherContainer: {
     position: "absolute",
-    top: 40,
-    left: 20,
+    top: scaleSize(10),
+    left: scaleSize(20),
     flexDirection: "row",
     backgroundColor: "rgba(236, 234, 234, 0.5)",
-    padding: 10,
-    borderRadius: 5,
+    padding: scaleSize(10),
+    borderRadius: scaleSize(5),
   },
   flag: {
-    width: 30,
-    height: 20,
-    marginLeft: 5,
-    marginRight: 5,
+    width: scaleSize(30),
+    height: scaleSize(20),
+    marginLeft: scaleSize(5),
+    marginRight: scaleSize(5),
   },
 });

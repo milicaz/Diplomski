@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.opens.dto.LoginDTO;
 import com.opens.dto.PosetilacDTO;
@@ -131,8 +132,6 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
 		}
 	}
-	
-	
 
 	@PostMapping("/logoutZaposleni")
 	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
@@ -181,7 +180,7 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No refresh token found.");
 		}
 	}
-	
+
 	@PostMapping("/refreshtokenZaposleni")
 	public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
 		String requestRefreshToken = extractCookie(request, "refreshToken");
@@ -202,7 +201,8 @@ public class AuthController {
 				if (verifiedToken != null && verifiedToken.getZaposleni() != null) {
 					String email = verifiedToken.getZaposleni().getEmail();
 					List<GrantedAuthority> authorities = verifiedToken.getZaposleni().getUloge().stream()
-							.map(uloga -> new SimpleGrantedAuthority(uloga.getNaziv().name())).collect(Collectors.toList());
+							.map(uloga -> new SimpleGrantedAuthority(uloga.getNaziv().name()))
+							.collect(Collectors.toList());
 					ZaposleniDetailsImpl zaposleniDetails = new ZaposleniDetailsImpl(
 							verifiedToken.getZaposleni().getId(), email, verifiedToken.getZaposleni().getPassword(),
 							authorities // Set appropriate authorities if needed
@@ -386,11 +386,15 @@ public class AuthController {
 				return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
 			} else {
 				System.out.println("Usao je u else kad refresh token ne postoji");
-				throw new TokenRefreshException(requestRefreshToken, "Refresh token has expired!");
+				// throw new TokenRefreshException(requestRefreshToken, "Refresh token has
+				// expired!");
+				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token has expired!");
 			}
 		} else {
 			System.out.println("Usao je u else kad refresh token ne postoji u bazi ");
-			throw new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!");
+			// throw new TokenRefreshException(requestRefreshToken, "Refresh token is not in
+			// database!");
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token is not in database!");
 		}
 	}
 

@@ -1,15 +1,24 @@
 import { useTranslation } from "react-i18next";
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text } from "react-native";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+} from "react-native";
 import COLORS from "../constants/colors";
+import { getFontSize, scaleSize } from "../utils/responsive";
 
 export default function Izjava() {
   const { t } = useTranslation();
 
   return (
     <ScrollView style={{ backgroundColor: COLORS.white }}>
-      <Image source={require('../assets/images/opens2.png')} style={styles.topImage} />
+      <Image
+        source={require("../assets/images/opens2.png")}
+        style={styles.topImage}
+      />
       <SafeAreaView style={styles.container}>
-
         <Text style={styles.title}>{t("consent.title")}</Text>
         <Text style={styles.paragraph}>
           {t("consent.firstParagraph")}
@@ -32,45 +41,47 @@ export default function Izjava() {
           {t("statementOfConsent.fifthParagraph")}
           {t("statementOfConsent.sixthParagraph")}
         </Text>
-        <Image source={require('../assets/footer.png')} style={styles.bottomImage} />
+        <Image
+          source={require("../assets/footer.png")}
+          style={styles.bottomImage}
+        />
       </SafeAreaView>
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: COLORS.white,
-    marginLeft: 5,
-    marginRight: 5
+    marginLeft: scaleSize(5),
+    marginRight: scaleSize(5),
   },
   topImage: {
-    width: '100%',
-    height: 200,
-    marginBottom: 20,
-    // resizeMode: 'contain'
+    width: "100%",
+    height: scaleSize(200),
+    marginBottom: scaleSize(20),
   },
   title: {
     fontFamily: "Montserrat-Bold",
-    fontSize: 30,
+    fontSize: getFontSize(25),
     color: COLORS.black,
-    marginVertical: 10,
+    marginVertical: scaleSize(10),
   },
   paragraph: {
     fontFamily: "Montserrat-Regular",
-    fontSize: 20,
+    fontSize: getFontSize(16),
     color: COLORS.black,
-    marginLeft: 20,
-    marginRight: 20,
-    textAlign: 'justify',
-    textAlignLast: 'left'
+    marginLeft: scaleSize(20),
+    marginRight: scaleSize(20),
+    textAlign: "justify",
+    textAlignLast: "left",
   },
   bottomImage: {
-    width: '100%',
-    height: 100,
-    marginTop: 20,
-    resizeMode: 'contain'
+    width: "100%",
+    height: scaleSize(100),
+    marginTop: scaleSize(20),
+    resizeMode: "contain",
   },
 });

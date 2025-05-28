@@ -9,6 +9,7 @@ import AuthContextProvider from "./contexts/AuthContext";
 import FontContextProvider from "./contexts/FontContext";
 import useAuth from "./hooks/useAuth";
 import useLogout from "./hooks/useLogout";
+import useSessionExpired from "./hooks/useSessionExpired";
 import BottomTabNavigation from "./navigations/BottomTabNavigation";
 import {
   Izjava,
@@ -55,13 +56,17 @@ const toastConfig = {
 };
 
 const AppNavigator = () => {
-  //const { isAuthenticated, logout } = useContext(AuthContext);
   const { isAuthenticated } = useAuth();
   const logOutUser = useLogout();
+  const sessionExpired = useSessionExpired();
 
   const handleLogout = () => {
     logOutUser();
   };
+
+  const handleSessionExpired = () => {
+    sessionExpired();
+  }
 
   useEffect(() => {
     eventEmitter.on("LOGOUT", () => {
@@ -70,6 +75,16 @@ const AppNavigator = () => {
 
     return () => {
       eventEmitter.off("LOGOUT", handleLogout);
+    };
+  }, []);
+
+  useEffect(() => {
+    eventEmitter.on('SESSION_EXPIRED', () => {
+      handleSessionExpired();
+    });
+
+    return () => {
+      eventEmitter.off('SESSION_EXPIRED', handleSessionExpired);
     };
   }, []);
 

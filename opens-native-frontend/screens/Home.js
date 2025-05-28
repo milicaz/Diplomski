@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -14,6 +14,7 @@ import Markdown from "react-native-markdown-display";
 import COLORS from "../constants/colors";
 import useHttpProtected from "../hooks/useHttpProtected";
 import eventEmitter from "../utils/EventEmitter";
+import { getFontSize, scaleSize } from "../utils/responsive";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -141,37 +142,38 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: scaleSize(20),
     backgroundColor: COLORS.white,
     position: "relative",
   },
   scrollViewContent: {
     flexGrow: 1,
-    paddingTop: 20,
-    paddingBottom: 70,
+    paddingTop: scaleSize(20),
+    paddingBottom: scaleSize(70),
+    justifyContent: "center",
   },
   card: {
-    marginBottom: 10,
-    padding: 15,
+    marginBottom: scaleSize(10),
+    padding: scaleSize(15),
     backgroundColor: COLORS.white,
-    borderRadius: 5,
+    borderRadius: scaleSize(5),
     shadowColor: COLORS.black,
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: scaleSize(1),
     },
     shadowOpacity: 0.2,
-    shadowRadius: 1.41,
+    shadowRadius: scaleSize(1.41),
     elevation: 2, // For Android shadow
   },
   cardTitle: {
-    fontSize: 20,
+    fontSize: getFontSize(16),
     fontFamily: "Montserrat-SemiBold",
-    marginBottom: 15,
+    marginBottom: scaleSize(15),
     color: COLORS.purple,
   },
   cardText: {
-    fontSize: 16,
+    fontSize: getFontSize(12),
     fontFamily: "Montserrat-Regular",
     color: COLORS.black,
     textAlign: "justify",
@@ -181,15 +183,15 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   showMoreButton: {
-    width: 110,
-    height: 35,
+    width: scaleSize(110),
+    height: scaleSize(35),
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: COLORS.blue,
-    marginTop: 10,
+    marginTop: scaleSize(10),
   },
   showMoreButtonText: {
-    fontSize: 14,
+    fontSize: getFontSize(12),
     fontFamily: "Montserrat-SemiBold",
     color: COLORS.white,
   },
@@ -198,38 +200,33 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: COLORS.white,
-    padding: 20,
-  },
-  scrollViewContent: {
-    flexGrow: 1,
-    justifyContent: "center",
-    paddingBottom: 20,
+    padding: scaleSize(20),
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: getFontSize(16),
     fontFamily: "Montserrat-SemiBold",
-    marginBottom: 15,
+    marginBottom: scaleSize(15),
     color: COLORS.purple,
   },
   markdown: {
     text: {
-      fontSize: 16,
+      fontSize: getFontSize(12),
       color: COLORS.black,
       fontFamily: "Montserrat-Regular",
       textAlign: "justify",
     },
     heading1: {
-      fontSize: 24,
+      fontSize: getFontSize(24),
       fontFamily: "Montserrat-Bold",
-      marginBottom: 10,
+      marginBottom: scaleSize(10),
     },
     heading2: {
-      fontSize: 20,
+      fontSize: getFontSize(20),
       fontFamily: "Montserrat-Bold",
-      marginBottom: 8,
+      marginBottom: scaleSize(8),
     },
     paragraph: {
-      marginBottom: 10,
+      marginBottom: scaleSize(10),
       textAlign: "justify",
     },
     strong: {
@@ -239,7 +236,7 @@ const styles = StyleSheet.create({
       fontFamily: "Montserrat-Italic",
     },
     list_item: {
-      marginBottom: 5,
+      marginBottom: scaleSize(5),
     },
   },
   modalCloseContainer: {
@@ -247,15 +244,15 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalCloseButton: {
-    width: 90,
-    height: 35,
+    width: scaleSize(90),
+    height: scaleSize(35),
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: COLORS.blue,
-    marginTop: 20,
+    marginTop: scaleSize(20),
   },
   modalCloseButtonText: {
-    fontSize: 14,
+    fontSize: getFontSize(12),
     fontFamily: "Montserrat-SemiBold",
     color: COLORS.white,
   },

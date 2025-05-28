@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Version;
 
 @Entity(name = "refreshtoken")
 public class RefreshToken {
@@ -17,20 +18,23 @@ public class RefreshToken {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(nullable = false, unique = true)
 	private String token;
-	
+
 	@Column(nullable = false)
 	private Instant expiryDate;
-	
+
 	@OneToOne
 	@JoinColumn(name = "zaposleni_id", referencedColumnName = "id")
 	private Zaposleni zaposleni;
-	
+
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "posetilac_id", referencedColumnName = "id")
 	private Posetilac posetilac;
+
+	@Version
+	private Long version;
 
 	public Long getId() {
 		return id;
@@ -71,8 +75,13 @@ public class RefreshToken {
 	public void setPosetilac(Posetilac posetilac) {
 		this.posetilac = posetilac;
 	}
-	
-	
-	
-	
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
 }

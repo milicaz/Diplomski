@@ -1,13 +1,14 @@
-import * as SecureStore from 'expo-secure-store';
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
-import COLORS from '../constants/colors';
-import useHttpProtected from '../hooks/useHttpProtected';
-import eventEmitter from '../utils/EventEmitter';
+import * as SecureStore from "expo-secure-store";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import QRCode from "react-native-qrcode-svg";
+import COLORS from "../constants/colors";
+import useHttpProtected from "../hooks/useHttpProtected";
+import eventEmitter from "../utils/EventEmitter";
+import { getFontSize, scaleSize } from "../utils/responsive";
 
-const USER_KEY = 'user';
+const USER_KEY = "user";
 
 export default function QrCode() {
   const { t } = useTranslation();
@@ -20,7 +21,13 @@ export default function QrCode() {
   useEffect(() => {
     const loggedIn = JSON.parse(SecureStore.getItem(USER_KEY));
     fetchQRCode(loggedIn.id);
-    const colors = [COLORS.purple, COLORS.blue, COLORS.red, COLORS.yellow, COLORS.green];
+    const colors = [
+      COLORS.purple,
+      COLORS.blue,
+      COLORS.red,
+      COLORS.yellow,
+      COLORS.green,
+    ];
     const randomIndex = Math.floor(Math.random() * colors.length);
     setQrCodeColor(colors[randomIndex]);
   }, []);
@@ -34,31 +41,31 @@ export default function QrCode() {
     } catch (error) {
       if (error.response) {
         if (error.response.status === 401 || error.response.status === 400) {
-          eventEmitter.emit('LOGOUT');
+          eventEmitter.emit("LOGOUT");
           Toast.show({
-            type: 'error',
-            text1: t('http-common.error.session.header'),
-            text2: t('http-common.error.session.text'),
+            type: "error",
+            text1: t("http-common.error.session.header"),
+            text2: t("http-common.error.session.text"),
           });
         }
       } else if (error.request) {
         Toast.show({
-          type: 'error',
-          text1: t('http-common.error.network.header'),
-          text2: t('http-common.error.network.text'),
+          type: "error",
+          text1: t("http-common.error.network.header"),
+          text2: t("http-common.error.network.text"),
         });
       } else {
         Toast.show({
-          type: 'error',
-          text1: t('http-common.error.server.header'),
-          text2: t('http-common.error.server.text'),
-          duration: 7000
+          type: "error",
+          text1: t("http-common.error.server.header"),
+          text2: t("http-common.error.server.text"),
+          duration: 7000,
         });
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -67,19 +74,22 @@ export default function QrCode() {
       ) : (
         <View style={styles.content}>
           <Text style={styles.explanationText}>
-            {t('qr-page.text.explanation')}
+            {t("qr-page.text.explanation")}
           </Text>
           <QRCode
             value={qrCode}
-            size={300}
+            // size={300}
+            size={scaleSize(250)}
             color={qrCodeColor}
             backgroundColor={COLORS.white}
           />
-          <Text style={styles.instructionText}>{t('qr-page.text.instruction')}</Text>
+          <Text style={styles.instructionText}>
+            {t("qr-page.text.instruction")}
+          </Text>
         </View>
       )}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -87,28 +97,28 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.white
+    backgroundColor: COLORS.white,
   },
   content: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   explanationText: {
-    marginBottom: 20,
-    textAlign: 'center',
-    fontSize: 16,
-    fontFamily: 'Montserrat-SemiBold',
-    fontWeight: '500',
+    marginBottom: scaleSize(20),
+    textAlign: "center",
+    fontSize: getFontSize(12),
+    fontFamily: "Montserrat-SemiBold",
+    fontWeight: "500",
     color: COLORS.black,
-    lineHeight: 24,
+    lineHeight: scaleSize(24),
   },
   instructionText: {
-    marginTop: 30,
-    textAlign: 'center',
-    fontSize: 18,
-    fontFamily: 'Montserrat-SemiBold',
-    fontWeight: '600',
+    marginTop: scaleSize(30),
+    textAlign: "center",
+    fontSize: getFontSize(14),
+    fontFamily: "Montserrat-SemiBold",
+    fontWeight: "600",
     color: COLORS.black,
-    lineHeight: 26,
-  }
+    lineHeight: scaleSize(26),
+  },
 });

@@ -12,7 +12,6 @@ const useLogout = () => {
     const logout = async () => {
         try {
             const token = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
-            // console.log("refresh token: ", token);
             if (token) {
                 await httpPublic.post('/logout', { refreshToken: token });
                 await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
@@ -23,7 +22,7 @@ const useLogout = () => {
                 isAuthenticated: false
             });
         } catch (error) {
-            console.error('--- AuthContext.js --- Line: 56 --- Logout user failed:', error);
+            console.error('--- useLogout.js --- Line: 25 --- Logout user failed:', error);
         }
     }
 

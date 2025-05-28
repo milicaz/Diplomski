@@ -2,6 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 import { httpPublic } from '../apis/http';
 import eventEmitter from "../utils/EventEmitter";
 
+const ACCESS_TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
 
 const useRefreshToken = () => {
@@ -9,21 +10,27 @@ const useRefreshToken = () => {
         try {
             const refreshToken = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
             if (!refreshToken) {
-                eventEmitter.emit('LOGOUT');
+                eventEmitter.emit('SESSION_EXPIRED'); // Emitovanje događaja za istečenu sesiju
                 return Promise.reject('Refresh token is missing');
             }
 
             const response = await httpPublic.post('/refreshtoken', { refreshToken });
             const newAccessToken = response.data.accessToken;
             const newRefreshToken = response.data.refreshToken;
-            // console.log("--- useRefreshToken.js --- Line: 54 --- New access token: ", newAccessToken);
-            // console.log("--- useRefreshToken.js --- Line: 55 --- New refresh token: ", newRefreshToken);
+            console.log("---------------------------------------------------------------------");
+            console.log("--- useRefreshToken.js --- Line: 21 --- NOVI ACCESS token: ", newAccessToken);
+            console.log("--- useRefreshToken.js --- Line: 22 --- NOVI REFRESH token: ", newRefreshToken);
+            console.log("---------------------------------------------------------------------");
             await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, newAccessToken);
             await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, newRefreshToken);
-            // console.log("--- useRefreshToken.js --- Line: 58 --- Access token refreshed successfully");
             return newAccessToken;
         } catch (error) {
-            eventEmitter.emit('LOGOUT');
+            if(error.response?.status === 401) {
+                await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
+                await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
+                eventEmitter.emit('SESSION_EXPIRED'); // Emitovanje događaja za istečenu sesiju
+            }
+            // eventEmitter.emit('LOGOUT');
             return Promise.reject(error);
         }
     };

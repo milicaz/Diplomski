@@ -1,14 +1,10 @@
 package com.opens.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,17 +14,13 @@ public class Posetilac extends Korisnik {
 	@Column(name = "password")
 	private String password;
 
-//	@Lob
-//	@Column(name = "profile_image", length = Integer.MAX_VALUE)
-//	private byte[] profileImage;
-
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "uloga_id")
 	private Uloga uloga;
 
-	@OneToOne(mappedBy = "posetilac", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JsonIgnore
-	private ProfilnaSlika profilnaSlika;
+//	@OneToOne(mappedBy = "posetilac", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//	@JsonIgnore
+//	private ProfilnaSlika profilnaSlika;
 
 	public Posetilac() {
 		super();
@@ -49,14 +41,6 @@ public class Posetilac extends Korisnik {
 		this.password = password;
 	}
 
-//	public byte[] getProfileImage() {
-//		return profileImage;
-//	}
-//
-//	public void setProfileImage(byte[] profileImage) {
-//		this.profileImage = profileImage;
-//	}
-
 	public Uloga getUloga() {
 		return uloga;
 	}
@@ -65,12 +49,12 @@ public class Posetilac extends Korisnik {
 		this.uloga = uloga;
 	}
 
-	public ProfilnaSlika getProfilnaSlika() {
-		return profilnaSlika;
-	}
-
-	public void setProfilnaSlika(ProfilnaSlika profilnaSlika) {
-		this.profilnaSlika = profilnaSlika;
-	}
+//	public ProfilnaSlika getProfilnaSlika() {
+//		return profilnaSlika;
+//	}
+//
+//	public void setProfilnaSlika(ProfilnaSlika profilnaSlika) {
+//		this.profilnaSlika = profilnaSlika;
+//	}
 
 }
