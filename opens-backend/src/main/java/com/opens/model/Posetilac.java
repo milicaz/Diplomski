@@ -18,12 +18,10 @@ public class Posetilac extends Korisnik {
 	@JoinColumn(name = "uloga_id")
 	private Uloga uloga;
 
-//	@OneToOne(mappedBy = "posetilac", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//	@JsonIgnore
-//	private ProfilnaSlika profilnaSlika;
+	@Column(nullable = false)
+	private boolean deleted = false;
 
 	public Posetilac() {
-		super();
 	}
 
 	public Posetilac(String ime, String prezime, Rod rod, Integer godine, String mestoBoravista, String brojTelefona,
@@ -49,12 +47,12 @@ public class Posetilac extends Korisnik {
 		this.uloga = uloga;
 	}
 
-//	public ProfilnaSlika getProfilnaSlika() {
-//		return profilnaSlika;
-//	}
-//
-//	public void setProfilnaSlika(ProfilnaSlika profilnaSlika) {
-//		this.profilnaSlika = profilnaSlika;
-//	}
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
 
 }

@@ -23,6 +23,7 @@ import {
 import { i18next } from "./services/i18next";
 import eventEmitter from "./utils/EventEmitter";
 import LoadingWrapper from "./utils/LoadingWrapper";
+import { PaperProvider } from "react-native-paper";
 
 const Stack = createNativeStackNavigator();
 

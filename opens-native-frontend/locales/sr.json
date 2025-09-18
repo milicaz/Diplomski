@@ -99,8 +99,25 @@
     },
     "profile-page": {
         "text": {
+            "confirm": "Potvrdi",
+            "cancel": "Odustani",
+            "logout": "Izlogujte se",
+            "delete-account": "Obrišite nalog",
+            "image": "Učitavanje slike...",
             "edit-profile": "Izmenite profil",
-            "info": "Informacije"
+            "info": "Informacije",
+            "logout-confirmation": "Da li ste sigurni da želite da se odjavite?",
+            "delete-account-confirmation": "Da li ste sigurni da želite da obrišete nalog?"
+        },
+        "deletation": {
+            "success": {
+                "header": "Uspešno obrisano",
+                "text": "Uspešno ste obrisali svoj nalog."
+            },
+            "failed": {
+                "header": "Neuspešno brisanje",
+                "text": "Niste uspeli da obrišete svoj nalog."
+            }
         }
     },
     "profile-edit-page": {

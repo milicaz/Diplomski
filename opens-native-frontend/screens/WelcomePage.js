@@ -1,24 +1,27 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Image,
-  ScrollView,
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   useWindowDimensions,
   View,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { RFValue } from "react-native-responsive-fontsize";
+import { scale, verticalScale } from "react-native-size-matters";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import COLORS from "../constants/colors";
 import useAuth from "../hooks/useAuth";
 import { globalStyles } from "../utils/styles";
-import { getFontSize, scaleSize } from "../utils/responsive";
 
 export default function WelcomePage({ navigation }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { login } = useAuth();
   const { height: windowHeight } = useWindowDimensions();
 
@@ -56,6 +59,24 @@ export default function WelcomePage({ navigation }) {
     }, [])
   );
 
+  useEffect(() => {
+    // Kada se promeni jezik, re-izračunaj tekst greške
+    setError((prevError) => ({
+      email: prevError.email
+        ? !email
+          ? t("welcome-page.error.emailRequired")
+          : !validateEmail(email)
+          ? t("welcome-page.error.invalidEmail")
+          : ""
+        : "",
+      password: prevError.password
+        ? !password
+          ? t("welcome-page.error.passwordRequired")
+          : ""
+        : "",
+    }));
+  }, [i18n.language]);
+
   const handleLogin = async () => {
     let valid = true;
     const newError = { email: "", password: "" };
@@ -82,98 +103,125 @@ export default function WelcomePage({ navigation }) {
   };
 
   return (
-    <ScrollView style={globalStyles.scrollView}>
-      <View style={globalStyles.container}>
-        <View>
-          <Image
-            source={require("../assets/images/opens2.png")}
-            style={globalStyles.image(windowHeight)}
-          />
-        </View>
+    <KeyboardAwareScrollView
+      style={{ flex: 1, backgroundColor: COLORS.white }}
+      contentContainerStyle={{ flexGrow: 1 }}
+      enableOnAndroid={true}
+      extraScrollHeight={20}
+      keyboardShouldPersistTaps="handled"
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={globalStyles.container}>
+          <View>
+            <Image
+              source={require("../assets/images/opens2.png")}
+              style={globalStyles.image(windowHeight)}
+            />
+          </View>
 
-        <View style={globalStyles.form(windowHeight)}>
-          <View
-            style={[
-              globalStyles.inputContainer,
-              {
-                borderColor: error.email ? COLORS.red : COLORS.black,
-                marginBottom: error.email ? 10 : 20,
-              },
-            ]}
-          >
-            <TextInput
-              value={email}
-              onChangeText={onChangeEmail}
-              style={globalStyles.input}
-              placeholder={t("welcome-page.input.email")}
-            />
-          </View>
-          {error.email ? (
-            <Text style={globalStyles.errorText}>{error.email}</Text>
-          ) : null}
-          <View
-            style={[
-              globalStyles.inputContainer,
-              {
-                borderColor: error.password ? COLORS.red : COLORS.black,
-                marginBottom: error.password ? 10 : 20,
-              },
-            ]}
-          >
-            <TextInput
-              value={password}
-              onChangeText={onChangePassword}
-              secureTextEntry={!showPassword}
-              style={globalStyles.input}
-              placeholder={t("welcome-page.input.password")}
-            />
-            <TouchableOpacity
-              onPress={toggleShowPassword}
-              style={globalStyles.visibilityToggle}
+          <View style={globalStyles.form(windowHeight)}>
+            <View
+              style={[
+                globalStyles.inputContainer,
+                {
+                  borderColor: error.email ? COLORS.red : COLORS.black,
+                  marginBottom: error.email ? 10 : 20,
+                },
+              ]}
             >
-              <Icon
-                name={showPassword ? "visibility-off" : "visibility"}
-                size={24}
-                color={COLORS.grey}
+              <TextInput
+                value={email}
+                onChangeText={onChangeEmail}
+                style={globalStyles.input}
+                placeholder={t("welcome-page.input.email")}
+                placeholderTextColor="#999"
               />
-            </TouchableOpacity>
-          </View>
-          {error.password ? (
-            <Text style={globalStyles.errorText}>{error.password}</Text>
-          ) : null}
-          <View style={globalStyles.buttonContainer}>
-            <TouchableOpacity onPress={handleLogin} style={globalStyles.button}>
-              <Text style={globalStyles.buttonText}>
-                {t("welcome-page.text.login")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.forgotPasswordContainer}>
-            <TouchableOpacity>
+            </View>
+            {error.email ? (
               <Text
-                style={styles.forgotPasswordText}
-                onPress={() => navigation.navigate("ForgotPassword")}
+                style={[
+                  globalStyles.errorText,
+                  { width: "80%", textAlign: "left" },
+                ]}
               >
-                {t("welcome-page.text.forgot-password")}
+                {error.email}
               </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.registerContainer}>
-            <Text style={styles.registerText}>
-              {t("welcome-page.text.no-account")}
-            </Text>
-            <TouchableOpacity>
+            ) : null}
+            <View
+              style={[
+                globalStyles.inputContainer,
+                {
+                  borderColor: error.password ? COLORS.red : COLORS.black,
+                  marginBottom: error.password ? 10 : 20,
+                },
+              ]}
+            >
+              <TextInput
+                value={password}
+                onChangeText={onChangePassword}
+                secureTextEntry={!showPassword}
+                style={globalStyles.input}
+                placeholder={t("welcome-page.input.password")}
+                placeholderTextColor="#999"
+              />
+              <TouchableOpacity
+                onPress={toggleShowPassword}
+                style={globalStyles.visibilityToggle}
+              >
+                <Icon
+                  name={showPassword ? "visibility-off" : "visibility"}
+                  size={24}
+                  color={COLORS.grey}
+                />
+              </TouchableOpacity>
+            </View>
+            {error.password ? (
               <Text
-                style={styles.registerLink}
-                onPress={() => navigation.navigate("Registracija")}
+                style={[
+                  globalStyles.errorText,
+                  { width: "80%", textAlign: "left" },
+                ]}
               >
-                {t("welcome-page.text.register")}
+                {error.password}
               </Text>
-            </TouchableOpacity>
+            ) : null}
+            <View style={globalStyles.buttonContainer}>
+              <TouchableOpacity
+                onPress={handleLogin}
+                style={globalStyles.button}
+              >
+                <Text style={globalStyles.buttonText}>
+                  {t("welcome-page.text.login")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.forgotPasswordContainer}>
+              <TouchableOpacity>
+                <Text
+                  style={styles.forgotPasswordText}
+                  onPress={() => navigation.navigate("ForgotPassword")}
+                >
+                  {t("welcome-page.text.forgot-password")}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.registerContainer}>
+              <Text style={styles.registerText}>
+                {t("welcome-page.text.no-account")}
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  style={styles.registerLink}
+                  onPress={() => navigation.navigate("Registracija")}
+                >
+                  {t("welcome-page.text.register")}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -184,7 +232,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   forgotPasswordText: {
-    fontSize: getFontSize(12),
+    fontSize: RFValue(15),
     fontFamily: "Montserrat-Regular",
   },
   registerContainer: {
@@ -192,15 +240,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: scaleSize(6),
+    marginTop: verticalScale(6),
   },
   registerText: {
-    fontSize: getFontSize(12),
+    fontSize: RFValue(15),
     fontFamily: "Montserrat-Regular",
   },
   registerLink: {
-    fontSize: getFontSize(12),
+    fontSize: RFValue(15),
     fontFamily: "Montserrat-Bold",
-    marginLeft: scaleSize(8),
+    marginLeft: scale(8),
   },
 });

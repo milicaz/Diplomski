@@ -1,5 +1,4 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React from 'react';
 import { Image, Platform } from 'react-native';
 import COLORS from '../constants/colors';
 import Dostupnost from '../screens/Dostupnost';

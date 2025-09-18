@@ -7,24 +7,71 @@ import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Image,
+  Modal,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { moderateScale, scale, verticalScale } from "react-native-size-matters";
+import Toast from "react-native-toast-message";
 import COLORS from "../constants/colors";
 import useHttpProtected from "../hooks/useHttpProtected";
 import useLogout from "../hooks/useLogout";
 import eventEmitter from "../utils/EventEmitter";
-import { getFontSize, scaleSize } from "../utils/responsive";
+
+const ConfirmModal = ({ visible, onClose, title, message, onConfirm }) => {
+  const { t } = useTranslation();
+
+  return (
+    <Modal
+      transparent
+      visible={visible}
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <View style={styles.confirmOverlay}>
+        <View style={styles.confirmBox}>
+          <Text style={styles.confirmTitle}>{title}</Text>
+          <Text style={styles.confirmMessage}>{message}</Text>
+
+          <View style={styles.confirmActions}>
+            <TouchableOpacity style={styles.cancelBtn} onPress={onClose}>
+              <Text style={styles.cancelText}>{t("profile-page.text.cancel")}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.confirmBtn}
+              onPress={() => {
+                onConfirm();
+                onClose();
+              }}
+            >
+              <Text style={styles.confirmText}>{t("profile-page.text.confirm")}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
 
 const USER_KEY = "user";
 
 export default function Profile({ navigation }) {
   const [user, setUser] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [confirmConfig, setConfirmConfig] = useState({
+    title: "",
+    message: "",
+    onConfirm: () => { },
+  });
 
   const { t } = useTranslation();
   const { height: windowHeight } = useWindowDimensions();
@@ -82,7 +129,32 @@ export default function Profile({ navigation }) {
     }
   };
 
+  const deleteAccount = async () => {
+    try {
+      await httpProtected.delete(`posetioci/${user.id}`);
+      Toast.show({
+        type: 'success',
+        text1: t('profile-page.deletation.success.header'),
+        text2: t('profile-page.deletation.success.text'),
+        duration: 4000,
+      });
+      logOutUser();
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: t('profile-page.deletation.success.header'),
+        text2: t('profile-page.deletation.success.text'),
+      });
+    }
+  };
+
+  const openConfirm = (title, message, action) => {
+    setConfirmConfig({ title, message, onConfirm: action });
+    setConfirmVisible(true);
+  };
+
   return (
+
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer(windowHeight)}>
         <Image
@@ -90,13 +162,77 @@ export default function Profile({ navigation }) {
           resizeMode="cover"
           style={styles.backgroundImage}
         />
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.logoutButton}
           onPress={() => logOutUser()}
         >
           <Text style={styles.logoutButtonText}> Log out </Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity
+          style={styles.moreButton}
+          onPress={() => setMenuVisible(true)}
+        >
+          <MaterialIcons name="more-vert" size={28} color={COLORS.black} />
         </TouchableOpacity>
       </View>
+
+      {/* Modal meni */}
+      <Modal
+        visible={menuVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setMenuVisible(false)}
+      >
+        {/* Poluprovidna pozadina */}
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setMenuVisible(false)}
+        />
+        {/* Kartica sa opcijama */}
+        <View style={styles.menuContainer}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => {
+              setMenuVisible(false);
+              openConfirm(
+                t("profile-page.text.logout"),
+                t("profile-page.text.logout-confirmation"),
+                logOutUser
+              );
+            }}
+          >
+            <MaterialIcons name="logout" size={20} color={COLORS.black} />
+            <Text style={styles.menuItemText}>{t("profile-page.text.logout")}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => {
+              setMenuVisible(false);
+              openConfirm(
+                t("profile-page.text.delete-account"),
+                t("profile-page.text.delete-account-confirmation"),
+                deleteAccount
+              );
+            }}
+          >
+            <MaterialIcons name="delete" size={20} color={COLORS.red} />
+            <Text style={[styles.menuItemText, { color: COLORS.red }]}>
+              {t("profile-page.text.delete-account")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      {/* Confirm modal */}
+      <ConfirmModal
+        visible={confirmVisible}
+        onClose={() => setConfirmVisible(false)}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        onConfirm={confirmConfig.onConfirm}
+      />
+
       <View style={styles.profileContainer}>
         {profileImage ? (
           <Image source={{ uri: profileImage }} style={styles.profileImage} />
@@ -161,61 +297,61 @@ const styles = StyleSheet.create({
     left: 0,
   },
   logoutButton: {
-    position: "absolute",
-    top: scaleSize(10),
-    right: scaleSize(20),
-    width: scaleSize(110),
-    height: scaleSize(40),
-    alignItems: "center",
-    justifyContent: "center",
+    position: 'absolute',
+    top: verticalScale(30), // Isto visina kao za languageSwitcherContainer
+    right: scale(10), // Udaljenost od desne ivice ekrana
+    width: scale(110), // Širina dugmeta
+    height: scale(40), // Visina dugmeta
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: COLORS.red,
-    marginHorizontal: scaleSize(20),
+    marginHorizontal: scale(20),
   },
   logoutButtonText: {
-    fontSize: getFontSize(13),
+    fontSize: RFValue(15),
     fontFamily: "Montserrat-Bold",
     color: COLORS.white,
   },
   profileContainer: {
     alignItems: "center",
-    marginBottom: scaleSize(10),
+    marginBottom: scale(10),
   },
   profileImage: {
-    height: scaleSize(155),
-    width: scaleSize(155),
+    height: scale(150),
+    width: scale(150),
     borderColor: COLORS.yellow,
     borderWidth: 2,
-    marginTop: scaleSize(-90),
+    marginTop: scale(-80),
   },
   profileName: {
-    fontSize: getFontSize(22),
+    fontSize: RFValue(22),
     fontFamily: "Montserrat-Bold",
     color: COLORS.yellow,
   },
   profileEmail: {
-    fontSize: getFontSize(15),
+    fontSize: RFValue(15),
     fontFamily: "Montserrat-Medium",
     color: COLORS.yellow,
   },
   editButtonContainer: {
     alignItems: "center",
-    marginBottom: scaleSize(10),
+    marginBottom: scale(10),
   },
   editButton: {
-    width: scaleSize(160),
-    height: scaleSize(40),
+    width: scale(160),
+    height: scale(40),
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: COLORS.blue,
-    marginHorizontal: scaleSize(20),
+    marginHorizontal: scale(20),
   },
   editButtonText: {
-    fontSize: getFontSize(13),
+    fontSize: RFValue(15),
     fontFamily: "Montserrat-Bold",
     color: COLORS.white,
   },
   infoContainer: {
-    marginLeft: scaleSize(20),
+    marginLeft: scale(20),
   },
   infoTitleContainer: {
     borderBottomColor: COLORS.black,
@@ -223,19 +359,108 @@ const styles = StyleSheet.create({
     width: "90%",
   },
   infoTitle: {
-    fontSize: getFontSize(22),
+    fontSize: RFValue(22),
     color: COLORS.yellow,
     fontFamily: "Montserrat-Bold",
   },
   infoItem: {
     flexDirection: "row",
-    marginVertical: scaleSize(6),
+    marginVertical: scale(6),
     alignItems: "center",
   },
   infoText: {
-    fontSize: getFontSize(15),
+    fontSize: RFValue(15),
     color: COLORS.yellow,
     fontFamily: "Montserrat-Medium",
-    marginLeft: scaleSize(4),
+    marginLeft: scale(4),
+  },
+
+  moreButton: {
+    position: "absolute",
+    top: verticalScale(30),
+    right: scale(20),
+    padding: moderateScale(8),
+    borderRadius: scale(20),
+    backgroundColor: COLORS.blue,
+    elevation: 3,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.3)",
+  },
+  menuContainer: {
+    position: "absolute",
+    top: verticalScale(60),
+    right: scale(20),
+    backgroundColor: COLORS.white,
+    //borderRadius: scale(8),
+    elevation: 5,
+    paddingVertical: verticalScale(8),
+    width: scale(180),
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: scale(16),
+  },
+  menuItemText: {
+    marginLeft: scale(10),
+    fontSize: RFValue(16),
+    fontFamily: "Montserrat-Medium",
+    color: COLORS.black,
+  },
+
+  // Confirm modal
+  confirmOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  confirmBox: {
+    backgroundColor: COLORS.white,
+    padding: moderateScale(20),
+    width: "80%",
+    alignItems: "center",
+  },
+  confirmTitle: {
+    fontSize: RFValue(18),
+    fontFamily: "Montserrat-Bold",
+    marginBottom: verticalScale(10),
+    color: COLORS.black,
+  },
+  confirmMessage: {
+    fontSize: RFValue(15),
+    fontFamily: "Montserrat-Medium",
+    color: COLORS.gray,
+    textAlign: "center",
+    marginBottom: verticalScale(20),
+  },
+  confirmActions: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    width: "100%",
+  },
+  cancelBtn: {
+    padding: moderateScale(10),
+    marginRight: scale(15),
+  },
+  cancelText: {
+    fontSize: RFValue(16),
+    fontFamily: "Montserrat-Medium",
+    color: COLORS.gray,
+  },
+  confirmBtn: {
+    backgroundColor: COLORS.blue,
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(10),
+    // borderRadius: scale(6),
+  },
+  confirmText: {
+    color: COLORS.white,
+    fontWeight: "600",
+    fontFamily: "Montserrat-Medium",
+    fontSize: RFValue(16),
   },
 });

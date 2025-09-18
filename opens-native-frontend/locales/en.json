@@ -98,9 +98,25 @@
     },
     "profile-page": {
         "text": {
+            "confirm": "Confirm",
+            "cancel": "Cancel",
+            "logout": "Log out",
+            "delete-account": "Delete account",
             "image": "Loading image...",
             "edit-profile": "Edit profile",
-            "info": "Information"
+            "info": "Information",
+            "logout-confirmation": "Are you sure you want to log out?",
+            "delete-account-confirmation": "Are you sure you want to delete your account?"
+        },
+        "deletation": {
+            "success": {
+                "header": "Successfully deleted",
+                "text": "You have successfully deleted your account."
+            },
+            "failed": {
+                "header": "Failed to delete",
+                "text": "You could not delete your account."
+            }
         }
     },
     "profile-edit-page": {

@@ -1,27 +1,39 @@
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Image,
-  ScrollView,
+  Keyboard,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   useWindowDimensions,
   View,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-toast-message";
 import { httpPublic } from "../apis/http";
 import COLORS from "../constants/colors";
 import { globalStyles } from "../utils/styles";
 
 const RequestPasswordResetPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { height: windowHeight } = useWindowDimensions();
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (error) {
+      if (!email) {
+        setError(t("welcome-page.error.emailRequired"));
+      } else if (!validateEmail(email)) {
+        setError(t("welcome-page.error.invalidEmail"));
+      }
+    }
+  }, [i18n.language]);
 
   onChangeEmail = (email) => {
     setEmail(email);
@@ -101,45 +113,63 @@ const RequestPasswordResetPage = () => {
   };
 
   return (
-    <ScrollView style={globalStyles.scrollView}>
-      <View style={globalStyles.container}>
-        <View>
-          <Image
-            source={require("../assets/images/opens2.png")}
-            style={globalStyles.image(windowHeight)}
-          />
-        </View>
-        <View style={globalStyles.form(windowHeight)}>
-          <View
-            style={[
-              globalStyles.inputContainer,
-              {
-                borderColor: error ? COLORS.red : COLORS.black,
-                marginBottom: error ? 10 : 20,
-              },
-            ]}
-          >
-            <TextInput
-              style={globalStyles.input}
-              placeholder={t("forgot-password-page.input.emailField")}
-              value={email}
-              onChangeText={onChangeEmail}
+    <KeyboardAwareScrollView
+      style={{ flex: 1, backgroundColor: COLORS.white }}
+      contentContainerStyle={{ flexGrow: 1 }}
+      enableOnAndroid={true}
+      extraScrollHeight={20}
+      keyboardShouldPersistTaps="handled"
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={globalStyles.container}>
+          <View>
+            <Image
+              source={require("../assets/images/opens2.png")}
+              style={globalStyles.image(windowHeight)}
             />
           </View>
-          {error ? <Text style={globalStyles.errorText}>{error}</Text> : null}
-          <View style={globalStyles.buttonContainer}>
-            <TouchableOpacity
-              onPress={handleRequestPasswordReset}
-              style={globalStyles.button}
+          <View style={globalStyles.form(windowHeight)}>
+            <View
+              style={[
+                globalStyles.inputContainer,
+                {
+                  borderColor: error ? COLORS.red : COLORS.black,
+                  marginBottom: error ? 10 : 20,
+                },
+              ]}
             >
-              <Text style={globalStyles.buttonText}>
-                {t("forgot-password-page.button.request")}
+              <TextInput
+                style={globalStyles.input}
+                placeholder={t("forgot-password-page.input.emailField")}
+                placeholderTextColor="#999"
+                value={email}
+                onChangeText={onChangeEmail}
+              />
+            </View>
+            {error ? (
+              <Text
+                style={[
+                  globalStyles.errorText,
+                  { width: "80%", textAlign: "left" },
+                ]}
+              >
+                {error}
               </Text>
-            </TouchableOpacity>
+            ) : null}
+            <View style={globalStyles.buttonContainer}>
+              <TouchableOpacity
+                onPress={handleRequestPasswordReset}
+                style={globalStyles.button}
+              >
+                <Text style={globalStyles.buttonText}>
+                  {t("forgot-password-page.button.request")}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAwareScrollView>
   );
 };
 

@@ -1,9 +1,12 @@
 import { StyleSheet } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
+import { scale, verticalScale } from "react-native-size-matters";
 import COLORS from "../constants/colors";
-import { getFontSize, scaleSize } from "./responsive";
+//import { getFontSize, scaleSize } from "./responsive";
 
 export const globalStyles = StyleSheet.create({
   scrollView: {
+    flex: 1,
     backgroundColor: COLORS.white,
   },
   container: {
@@ -24,41 +27,44 @@ export const globalStyles = StyleSheet.create({
   }),
   inputContainer: {
     width: "80%",
-    borderWidth: scaleSize(1),
-    height: scaleSize(50),
+    // borderWidth: scaleSize(1),
+    borderWidth: scale(1),
+    // height: scaleSize(50),
+    height: verticalScale(45),
     justifyContent: "center",
-    paddingHorizontal: scaleSize(20),
+    // paddingHorizontal: scaleSize(20),
+    paddingHorizontal: scale(10),
   },
   input: {
-    height: scaleSize(50),
+    height: verticalScale(45),
     color: COLORS.black,
     fontFamily: "Montserrat-Regular",
-    fontSize: getFontSize(12),
+    fontSize: RFValue(12),
   },
   errorText: {
     color: COLORS.red,
     fontFamily: "Montserrat-SemiBold",
-    fontSize: getFontSize(12),
-    marginBottom: scaleSize(10),
+    fontSize: RFValue(12),
+    marginBottom: verticalScale(8),
   },
   visibilityToggle: {
     position: "absolute",
-    right: scaleSize(10),
+    right: scale(10),
   },
   buttonContainer: {
     width: "80%",
-    margin: scaleSize(10),
+    margin: scale(10),
   },
   button: {
     borderColor: COLORS.blue,
-    borderWidth: scaleSize(2),
+    borderWidth: scale(2),
     backgroundColor: COLORS.blue,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: scaleSize(13),
+    paddingVertical: verticalScale(12),
   },
   buttonText: {
-    fontSize: getFontSize(15),
+    fontSize: RFValue(15),
     fontFamily: "Montserrat-Bold",
     color: COLORS.white,
   },

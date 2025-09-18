@@ -1,11 +1,10 @@
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { moderateScale, scale, verticalScale } from "react-native-size-matters";
 import englishFlag from "../assets/flags/english.png";
 import serbianFlag from "../assets/flags/serbian.png";
 import i18next from "../services/i18next";
-import { scaleSize } from "../utils/responsive";
 
 export default function LanguageSwitcher() {
-  // Funkcija za promenu jezika
   const changeLng = (lng) => {
     i18next.changeLanguage(lng);
   };
@@ -24,18 +23,18 @@ export default function LanguageSwitcher() {
 
 const styles = StyleSheet.create({
   languageSwitcherContainer: {
-    position: "absolute",
-    top: scaleSize(10),
-    left: scaleSize(20),
-    flexDirection: "row",
-    backgroundColor: "rgba(236, 234, 234, 0.5)",
-    padding: scaleSize(10),
-    borderRadius: scaleSize(5),
+    position: 'absolute',
+    top: verticalScale(30), // Podesiti visinu na kojoj želite da se nalazi
+    left: scale(10), // Udaljenost od leve ivice ekrana
+    flexDirection: 'row',
+    backgroundColor: 'rgba(236, 234, 234, 0.5)',
+    padding: scale(10),
+    borderRadius: moderateScale(5),
   },
   flag: {
-    width: scaleSize(30),
-    height: scaleSize(20),
-    marginLeft: scaleSize(5),
-    marginRight: scaleSize(5),
+    width: scale(30),
+    height: scale(20),
+    marginLeft: scale(5),
+    marginRight: scale(5),
   },
 });

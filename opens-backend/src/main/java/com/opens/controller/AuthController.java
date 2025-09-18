@@ -296,6 +296,42 @@ public class AuthController {
 		}
 
 	}
+	
+//	@PostMapping("/loginPosetilac")
+//	public ResponseEntity<?> loginPosetilac(@Validated @RequestBody LoginDTO loginDTO) {
+//
+//		try {
+//			Authentication authentication = authenticationManager
+//				.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
+//
+//			SecurityContextHolder.getContext().setAuthentication(authentication);
+//			PosetilacDetailsImpl posetilacDetails = (PosetilacDetailsImpl) authentication.getPrincipal();
+//
+//			String jwt = jwtUtils.generateJwtToken(posetilacDetails);
+//			RefreshToken refreshToken = refreshTokenService.createRefreshToken(posetilacDetails.getEmail());
+//
+//			String roleToCheck = "ROLE_POSETILAC";
+//
+//			boolean hasRole = posetilacDetails.getAuthorities().stream()
+//				.map(GrantedAuthority::getAuthority)
+//				.anyMatch(role -> role.equals(roleToCheck));
+//
+//			if (hasRole) {
+//				logger.info("USER_LOGIN_SUCCESS - User with role '{}' logged in successfully", roleToCheck);
+//				return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), posetilacDetails.getId(),
+//						posetilacDetails.getEmail(), roleToCheck));
+//			} else {
+//				logger.info("USER_LOGIN_FAILURE - User with role '{}' not found", roleToCheck);
+//				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//						.body("User with role '" + roleToCheck + "' not found.");
+//			}
+//
+//		} catch (BadCredentialsException | UsernameNotFoundException ex) {
+//			logger.warn("LOGIN_FAILED - Neuspešna prijava za korisnika '{}': {}", loginDTO.getEmail(), ex.getMessage());
+//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Pogrešan email, lozinka ili je nalog obrisan.");
+//		}
+//	}
+
 
 	@PostMapping("/logout")
 	public ResponseEntity<?> logout(@Validated @RequestBody TokenRefreshRequest request) {

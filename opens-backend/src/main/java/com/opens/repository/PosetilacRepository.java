@@ -12,11 +12,12 @@ import com.opens.model.Posetilac;
 @Repository
 public interface PosetilacRepository extends JpaRepository<Posetilac, Long> {
 
+	@Query("SELECT p FROM Posetilac p WHERE p.deleted = false")
 	Optional<Posetilac> findByEmail(String email);
 
 	Boolean existsByEmail(String email);
 
-	@Query("SELECT p FROM Posetilac p WHERE NOT EXISTS (" + "SELECT 1 FROM Poseta pos WHERE pos.posetilac = p "
+	@Query("SELECT p FROM Posetilac p WHERE p.deleted = false AND NOT EXISTS (" + "SELECT 1 FROM Poseta pos WHERE pos.posetilac = p "
 			+ "AND pos.datumPosete = CURRENT_DATE "
 			+ "AND (pos.vremeOdjave IS NULL OR pos.vremeOdjave > CURRENT_TIME))")
 	List<Posetilac> findPosetiociBezPosete();

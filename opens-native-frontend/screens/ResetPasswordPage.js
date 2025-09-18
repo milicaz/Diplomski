@@ -3,13 +3,16 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Image,
-  ScrollView,
+  Keyboard,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   useWindowDimensions,
   View,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { verticalScale } from "react-native-size-matters";
 import Toast from "react-native-toast-message";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { httpPublic } from "../apis/http";
@@ -17,7 +20,7 @@ import COLORS from "../constants/colors";
 import { globalStyles } from "../utils/styles";
 
 const ResetPasswordPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { height: windowHeight } = useWindowDimensions();
   const navigation = useNavigation();
 
@@ -41,6 +44,30 @@ const ResetPasswordPage = () => {
   };
 
   useEffect(() => {}, [token]);
+
+  useEffect(() => {
+    setError((prevError) => ({
+      token: prevError.token
+        ? !token
+          ? t("reset-password-page.error.tokenRequired")
+          : ""
+        : "",
+      password: prevError.password
+        ? !password
+          ? t("reset-password-page.error.passwordRequired")
+          : !validatePassword(password)
+          ? t("register-page.error.invalidPassword")
+          : ""
+        : "",
+      confirmPassword: prevError.confirmPassword
+        ? !confirmPassword
+          ? t("reset-password-page.error.confirmPasswordRequired")
+          : !validatePassword(confirmPassword)
+          ? t("register-page.error.invalidPassword")
+          : ""
+        : "",
+    }));
+  }, [i18n.language]);
 
   const onChangeToken = (token) => {
     setToken(token);
@@ -161,131 +188,156 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <ScrollView style={globalStyles.scrollView}>
-      <View style={globalStyles.container}>
-        <View>
-          <Image
-            source={require("../assets/images/opens2.png")}
-            style={globalStyles.image(windowHeight)}
-          />
-        </View>
-        <View style={globalStyles.form(windowHeight)}>
-          <View
-            style={[
-              globalStyles.inputContainer,
-              {
-                borderColor: error.token ? COLORS.red : COLORS.black,
-                marginBottom: error ? 10 : 20,
-              },
-            ]}
-          >
-            <TextInput
-              style={globalStyles.input}
-              placeholder={t("reset-password-page.input.token")}
-              value={token}
-              onChangeText={onChangeToken}
+    <KeyboardAwareScrollView
+      style={{ flex: 1, backgroundColor: COLORS.white }}
+      contentContainerStyle={{ flexGrow: 1 }}
+      enableOnAndroid={true}
+      extraScrollHeight={20}
+      keyboardShouldPersistTaps="handled"
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={globalStyles.container}>
+          <View>
+            <Image
+              source={require("../assets/images/opens2.png")}
+              style={globalStyles.image(windowHeight)}
             />
           </View>
-          {/* {error.token ? <Text style={globalStyles.errorText}>{error.token}</Text> : null} */}
-          {error.token ? (
-            <Text
-              style={[
-                globalStyles.errorText,
-                { marginLeft: 20, marginRight: 20 },
-              ]}
-            >
-              {error.token}
-            </Text>
-          ) : null}
           <View
             style={[
-              globalStyles.inputContainer,
+              globalStyles.form(windowHeight),
               {
-                borderColor: error.password ? COLORS.red : COLORS.black,
-                marginBottom: error ? 10 : 20,
+                marginTop:
+                  error.token || error.password || error.confirmPassword
+                    ? 60
+                    : 0,
               },
             ]}
           >
-            <TextInput
-              style={globalStyles.input}
-              placeholder={t("reset-password-page.input.newPassword")}
-              secureTextEntry={!showPassword}
-              value={password}
-              onChangeText={onChangePassword}
-            />
-            <TouchableOpacity
-              onPress={toggleShowPassword}
-              style={globalStyles.visibilityToggle}
+            <View
+              style={[
+                globalStyles.inputContainer,
+                {
+                  borderColor: error.token ? COLORS.red : COLORS.black,
+                  marginBottom: error ? 10 : 20,
+                },
+              ]}
             >
-              <Icon
-                name={showPassword ? "visibility-off" : "visibility"}
-                size={24}
-                color={COLORS.grey}
+              <TextInput
+                style={globalStyles.input}
+                placeholder={t("reset-password-page.input.token")}
+                placeholderTextColor="#999"
+                value={token}
+                onChangeText={onChangeToken}
               />
-            </TouchableOpacity>
-          </View>
-          {/* {error.password ? <Text style={globalStyles.errorText}>{error.password}</Text> : null} */}
-          {error.password ? (
-            <Text
-              style={[
-                globalStyles.errorText,
-                { marginLeft: 20, marginRight: 20 },
-              ]}
-            >
-              {error.password}
-            </Text>
-          ) : null}
-          <View
-            style={[
-              globalStyles.inputContainer,
-              {
-                borderColor: error.confirmPassword ? COLORS.red : COLORS.black,
-                marginBottom: error ? 10 : 20,
-              },
-            ]}
-          >
-            <TextInput
-              style={globalStyles.input}
-              placeholder={t("reset-password-page.input.confirmPassword")}
-              secureTextEntry={!showConfirmPassword}
-              value={confirmPassword}
-              onChangeText={onChangeConfirmPassword}
-            />
-            <TouchableOpacity
-              onPress={toggleShowConfirmPassword}
-              style={globalStyles.visibilityToggle}
-            >
-              <Icon
-                name={showConfirmPassword ? "visibility-off" : "visibility"}
-                size={24}
-                color={COLORS.grey}
-              />
-            </TouchableOpacity>
-          </View>
-          {/* {error.confirmPassword ? <Text style={globalStyles.errorText}>{error.confirmPassword}</Text> : null} */}
-          {error.confirmPassword ? (
-            <Text
-              style={[
-                globalStyles.errorText,
-                { marginLeft: 20, marginRight: 20 },
-              ]}
-            >
-              {error.confirmPassword}
-            </Text>
-          ) : null}
-          <View style={globalStyles.buttonContainer}>
-            <TouchableOpacity
-              onPress={handleResetPassword}
-              style={globalStyles.button}
-            >
-              <Text style={globalStyles.buttonText}>
-                {t("reset-password-page.button.reset")}
+            </View>
+            {error.token ? (
+              <Text
+                style={[
+                  globalStyles.errorText,
+                  { width: "80%", textAlign: "left" },
+                ]}
+              >
+                {error.token}
               </Text>
-            </TouchableOpacity>
+            ) : null}
+            <View
+              style={[
+                globalStyles.inputContainer,
+                {
+                  borderColor: error.password ? COLORS.red : COLORS.black,
+                  marginBottom: error ? 10 : 20,
+                },
+              ]}
+            >
+              <TextInput
+                style={globalStyles.input}
+                placeholder={t("reset-password-page.input.newPassword")}
+                placeholderTextColor="#999"
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={onChangePassword}
+              />
+              <TouchableOpacity
+                onPress={toggleShowPassword}
+                style={globalStyles.visibilityToggle}
+              >
+                <Icon
+                  name={showPassword ? "visibility-off" : "visibility"}
+                  size={24}
+                  color={COLORS.grey}
+                />
+              </TouchableOpacity>
+            </View>
+            {error.password ? (
+              <Text
+                style={[
+                  globalStyles.errorText,
+                  { width: "80%", textAlign: "left" },
+                ]}
+              >
+                {error.password}
+              </Text>
+            ) : null}
+            <View
+              style={[
+                globalStyles.inputContainer,
+                {
+                  borderColor: error.confirmPassword
+                    ? COLORS.red
+                    : COLORS.black,
+                  marginBottom: error ? 10 : 20,
+                },
+              ]}
+            >
+              <TextInput
+                style={globalStyles.input}
+                placeholder={t("reset-password-page.input.confirmPassword")}
+                placeholderTextColor="#999"
+                secureTextEntry={!showConfirmPassword}
+                value={confirmPassword}
+                onChangeText={onChangeConfirmPassword}
+              />
+              <TouchableOpacity
+                onPress={toggleShowConfirmPassword}
+                style={globalStyles.visibilityToggle}
+              >
+                <Icon
+                  name={showConfirmPassword ? "visibility-off" : "visibility"}
+                  size={24}
+                  color={COLORS.grey}
+                />
+              </TouchableOpacity>
+            </View>
+            {error.confirmPassword ? (
+              <Text
+                style={[
+                  globalStyles.errorText,
+                  { width: "80%", textAlign: "left" },
+                ]}
+              >
+                {error.confirmPassword}
+              </Text>
+            ) : null}
+            <View
+              style={[
+                globalStyles.buttonContainer,
+                { marginBottom: verticalScale(30) },
+              ]}
+            >
+              <TouchableOpacity
+                onPress={handleResetPassword}
+                style={globalStyles.button}
+              >
+                <Text style={globalStyles.buttonText}>
+                  {t("reset-password-page.button.reset")}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAwareScrollView>
   );
 };
 

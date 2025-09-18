@@ -6,8 +6,9 @@ import {
   StyleSheet,
   Text,
 } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
+import { scale, verticalScale } from "react-native-size-matters";
 import COLORS from "../constants/colors";
-import { getFontSize, scaleSize } from "../utils/responsive";
 
 export default function Izjava() {
   const { t } = useTranslation();
@@ -55,33 +56,33 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: COLORS.white,
-    marginLeft: scaleSize(5),
-    marginRight: scaleSize(5),
+    marginLeft: scale(5),
+    marginRight: scale(5),
   },
   topImage: {
     width: "100%",
-    height: scaleSize(200),
-    marginBottom: scaleSize(20),
+    height: verticalScale(200),
+    marginBottom: scale(20),
   },
   title: {
     fontFamily: "Montserrat-Bold",
-    fontSize: getFontSize(25),
+    fontSize: RFValue(20),
     color: COLORS.black,
-    marginVertical: scaleSize(10),
+    //marginVertical: scale(10),
   },
   paragraph: {
     fontFamily: "Montserrat-Regular",
-    fontSize: getFontSize(16),
+    fontSize: RFValue(16),
     color: COLORS.black,
-    marginLeft: scaleSize(20),
-    marginRight: scaleSize(20),
+    marginLeft: scale(10),
+    marginRight: scale(10),
     textAlign: "justify",
     textAlignLast: "left",
   },
   bottomImage: {
     width: "100%",
-    height: scaleSize(100),
-    marginTop: scaleSize(20),
+    height: verticalScale(100),
+    marginTop: scale(20),
     resizeMode: "contain",
   },
 });

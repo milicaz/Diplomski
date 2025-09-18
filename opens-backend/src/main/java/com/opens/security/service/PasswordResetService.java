@@ -57,7 +57,6 @@ public class PasswordResetService {
 		String token;
 		PasswordResetToken resetToken = new PasswordResetToken();
 		if (posetilac != null) {
-//			token = UUID.randomUUID().toString();
 			token = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
 			resetToken.setToken(token);
 			resetToken.setPosetilac(posetilac);

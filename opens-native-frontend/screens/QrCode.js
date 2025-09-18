@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
+import { RFValue } from "react-native-responsive-fontsize";
+import { scale, verticalScale } from "react-native-size-matters";
 import COLORS from "../constants/colors";
 import useHttpProtected from "../hooks/useHttpProtected";
 import eventEmitter from "../utils/EventEmitter";
-import { getFontSize, scaleSize } from "../utils/responsive";
 
 const USER_KEY = "user";
 
@@ -79,7 +80,7 @@ export default function QrCode() {
           <QRCode
             value={qrCode}
             // size={300}
-            size={scaleSize(250)}
+            size={scale(250)}
             color={qrCodeColor}
             backgroundColor={COLORS.white}
           />
@@ -104,21 +105,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   explanationText: {
-    marginBottom: scaleSize(20),
+    marginBottom: scale(20),
     textAlign: "center",
-    fontSize: getFontSize(12),
+    fontSize: RFValue(14),
     fontFamily: "Montserrat-SemiBold",
     fontWeight: "500",
     color: COLORS.black,
-    lineHeight: scaleSize(24),
+    lineHeight: verticalScale(24),
   },
   instructionText: {
-    marginTop: scaleSize(30),
+    marginTop: scale(30),
     textAlign: "center",
-    fontSize: getFontSize(14),
+    fontSize: RFValue(16),
     fontFamily: "Montserrat-SemiBold",
     fontWeight: "600",
     color: COLORS.black,
-    lineHeight: scaleSize(26),
+    lineHeight: verticalScale(26),
   },
 });

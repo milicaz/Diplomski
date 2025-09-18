@@ -22,6 +22,10 @@ public class PosetilacDetailsServiceImpl implements UserDetailsService {
 		Posetilac posetilac = posetilacRepo.findByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException("Korisnik čiji je email: " + email + " nije pronađen."));
 		
+		if (posetilac.isDeleted()) {
+	        throw new UsernameNotFoundException("Korisnički nalog je obrisan.");
+	    }
+		
 		return PosetilacDetailsImpl.build(posetilac);
 	}
 
