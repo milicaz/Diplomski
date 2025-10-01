@@ -10,4 +10,5 @@ public interface PosetilacService  {
 	Optional<Posetilac> findByEmail(String email);
 	Boolean existsByEmail(String email);
 	ProfilnaSlika getProfilnaSlikaByPosetilacId(Long id);
+	boolean existsActiveByEmail(String email);
 }

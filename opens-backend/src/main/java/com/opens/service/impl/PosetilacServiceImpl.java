@@ -40,5 +40,10 @@ public class PosetilacServiceImpl implements PosetilacService {
 		return profilnaSlikaRepository.findByPosetilacId(id)
 ;
 	}
+	
+	@Override
+    public boolean existsActiveByEmail(String email) {
+        return posetilacRepo.existsByEmailAndDeletedFalse(email);
+    }
 
 }

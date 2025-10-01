@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,38 +98,106 @@ public class AuthServiceImpl implements AuthService {
 
 	}
 
+//	@Override
+//	public void registerPosetilac(PosetilacDTO posetilacDTO) {
+//		Uloga uloga = ulogaRepo.findOneByNaziv(EUloge.ROLE_POSETILAC);
+//
+//		Posetilac posetilac = new Posetilac();
+//		posetilac.setEmail(posetilacDTO.getEmail());
+//		posetilac.setPassword(encoder.encode(posetilacDTO.getPassword()));
+//		posetilac.setIme(posetilacDTO.getIme());
+//		posetilac.setPrezime(posetilacDTO.getPrezime());
+//		posetilac.setRod(posetilacDTO.getRod());
+//		posetilac.setGodine(posetilacDTO.getGodine());
+//		posetilac.setMestoBoravista(posetilacDTO.getMestoBoravista());
+//		posetilac.setBrojTelefona(posetilacDTO.getBrojTelefona());
+//		posetilac.setUloga(uloga);
+//
+//		posetilacRepo.save(posetilac);
+//
+//		try {
+//			ProfilnaSlika profilnaSlika = new ProfilnaSlika();
+//
+//			Path imagePath = Paths.get(ResourceUtils.getURL("classpath:images/profile.png").toURI());
+//			String imageName = imagePath.getFileName().toString();
+//			profilnaSlika.setTipSlike(getFileExtension(imageName));
+//			profilnaSlika.setProfilnaSlika(Files.readAllBytes(imagePath));
+//
+//			profilnaSlika.setPosetilac(posetilac);
+//
+//			profilnaSlikaRepository.save(profilnaSlika);
+//		} catch (Exception e) {
+//		}
+//	}
+//
+//	private String getFileExtension(String fileName) {
+//		int lastIndexOfDot = fileName.lastIndexOf('.');
+//		if (lastIndexOfDot > 0 && lastIndexOfDot < fileName.length() - 1) {
+//			return fileName.substring(lastIndexOfDot + 1).toLowerCase();
+//		}
+//		return "";
+//	}
+	
 	@Override
 	public void registerPosetilac(PosetilacDTO posetilacDTO) {
-		Uloga uloga = ulogaRepo.findOneByNaziv(EUloge.ROLE_POSETILAC);
+		 Uloga uloga = ulogaRepo.findOneByNaziv(EUloge.ROLE_POSETILAC);
 
-		Posetilac posetilac = new Posetilac();
-		posetilac.setEmail(posetilacDTO.getEmail());
-		posetilac.setPassword(encoder.encode(posetilacDTO.getPassword()));
-		posetilac.setIme(posetilacDTO.getIme());
-		posetilac.setPrezime(posetilacDTO.getPrezime());
-		posetilac.setRod(posetilacDTO.getRod());
-		posetilac.setGodine(posetilacDTO.getGodine());
-		posetilac.setMestoBoravista(posetilacDTO.getMestoBoravista());
-		posetilac.setBrojTelefona(posetilacDTO.getBrojTelefona());
-		posetilac.setUloga(uloga);
+		    Optional<Posetilac> existingOpt = posetilacRepo.findAnyByEmail(posetilacDTO.getEmail());
+		    Posetilac posetilac;
 
-		posetilacRepo.save(posetilac);
+		    if (existingOpt.isPresent()) {
+		        Posetilac existing = existingOpt.get();
+		        if (existing.isDeleted()) {
+		            // reaktivacija naloga
+		            existing.setDeleted(false);
+		            existing.setPassword(encoder.encode(posetilacDTO.getPassword()));
+		            existing.setIme(posetilacDTO.getIme());
+		            existing.setPrezime(posetilacDTO.getPrezime());
+		            existing.setRod(posetilacDTO.getRod());
+		            existing.setGodine(posetilacDTO.getGodine());
+		            existing.setMestoBoravista(posetilacDTO.getMestoBoravista());
+		            existing.setBrojTelefona(posetilacDTO.getBrojTelefona());
+		            existing.setUloga(uloga);
 
-		try {
-			ProfilnaSlika profilnaSlika = new ProfilnaSlika();
+		            posetilac = posetilacRepo.save(existing);
+		        } else {
+		            // već postoji aktivan
+		            throw new RuntimeException("Korisnik sa email adresom " + posetilacDTO.getEmail() + " već postoji.");
+		        }
+		    } else {
+		        // novi posetilac
+		        posetilac = new Posetilac();
+		        posetilac.setEmail(posetilacDTO.getEmail());
+		        posetilac.setPassword(encoder.encode(posetilacDTO.getPassword()));
+		        posetilac.setIme(posetilacDTO.getIme());
+		        posetilac.setPrezime(posetilacDTO.getPrezime());
+		        posetilac.setRod(posetilacDTO.getRod());
+		        posetilac.setGodine(posetilacDTO.getGodine());
+		        posetilac.setMestoBoravista(posetilacDTO.getMestoBoravista());
+		        posetilac.setBrojTelefona(posetilacDTO.getBrojTelefona());
+		        posetilac.setUloga(uloga);
+		        posetilac.setDeleted(false);
 
-			Path imagePath = Paths.get(ResourceUtils.getURL("classpath:images/profile.png").toURI());
-			String imageName = imagePath.getFileName().toString();
-			profilnaSlika.setTipSlike(getFileExtension(imageName));
-			profilnaSlika.setProfilnaSlika(Files.readAllBytes(imagePath));
+		        posetilac = posetilacRepo.save(posetilac);
+		    }
 
-			profilnaSlika.setPosetilac(posetilac);
+	    // postavljanje default profilne slike (ako nema)
+	    try {
+	        ProfilnaSlika existing = profilnaSlikaRepository.findByPosetilacId(posetilac.getId());
+	        if (existing == null) {
+	            ProfilnaSlika profilnaSlika = new ProfilnaSlika();
 
-			profilnaSlikaRepository.save(profilnaSlika);
-		} catch (Exception e) {
-		}
+	            Path imagePath = Paths.get(ResourceUtils.getURL("classpath:images/profile.png").toURI());
+	            String imageName = imagePath.getFileName().toString();
+	            profilnaSlika.setTipSlike(getFileExtension(imageName));
+	            profilnaSlika.setProfilnaSlika(Files.readAllBytes(imagePath));
+	            profilnaSlika.setPosetilac(posetilac);
+
+	            profilnaSlikaRepository.save(profilnaSlika);
+	        } } catch (Exception e) {
+	    }
 	}
-
+	
 	private String getFileExtension(String fileName) {
 		int lastIndexOfDot = fileName.lastIndexOf('.');
 		if (lastIndexOfDot > 0 && lastIndexOfDot < fileName.length() - 1) {

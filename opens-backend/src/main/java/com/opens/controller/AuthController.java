@@ -257,7 +257,7 @@ public class AuthController {
 	 */
 	@PostMapping("/signupPosetilac")
 	public ResponseEntity<?> registerPosetilac(@Validated @RequestBody PosetilacDTO posetilacDTO) {
-		if (posetilacService.existsByEmail(posetilacDTO.getEmail())
+		if (posetilacService.existsActiveByEmail(posetilacDTO.getEmail())
 				|| zaposleniService.existsByEmail(posetilacDTO.getEmail())) {
 			logger.warn("USER_REGISTRATION_FAIL - Email " + posetilacDTO.getEmail() + " is already in use");
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Email is already in use!");
