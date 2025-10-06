@@ -207,10 +207,19 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     dodajUcesnika(ucesnik, currentDogadjaj.id);
 
     // Update the `ucesnici` state manually by adding the new participant
+    // setUcesnici((prevUcesnici) => [
+    //   ...prevUcesnici,
+    //   { ...ucesnik, id: prevUcesnici.length + 1 }, // Add a new id for the added participant (or get it from the response)
+    // ]);
+
     setUcesnici((prevUcesnici) => [
-      ...prevUcesnici,
-      { ...ucesnik, id: prevUcesnici.length + 1 }, // Add a new id for the added participant (or get it from the response)
-    ]);
+  ...prevUcesnici,
+  { 
+    ...ucesnik, 
+    id: prevUcesnici.length + 1, 
+    mestoBoravista: ucesnik.mestoBoravista.toUpperCase() // 👈 ovde dodaj
+  },
+]);
 
     setUcesnik({
       ime: "",

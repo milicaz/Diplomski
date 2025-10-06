@@ -33,7 +33,7 @@ public class UcesnikServiceImpl implements UcesnikService {
 	public String addUcesnik(Ucesnik ucesnik, Long id) {
 		// TODO Auto-generated method stub
 		Ucesnik uc = new Ucesnik(ucesnik.getIme(), ucesnik.getPrezime(), ucesnik.getRod(), ucesnik.getGodine(),
-				ucesnik.getMestoBoravista(), ucesnik.getBrojTelefona(), ucesnik.getEmail(), ucesnik.getOrganizacija(),
+				ucesnik.getMestoBoravista().toUpperCase(), ucesnik.getBrojTelefona(), ucesnik.getEmail(), ucesnik.getOrganizacija(),
 				ucesnik.isPrigradskoNaselje());
 
 		Dogadjaj dogadjaj = dogadjajRepo.getReferenceById(id);
@@ -48,7 +48,7 @@ public class UcesnikServiceImpl implements UcesnikService {
 			System.out.println("Mesto boravista je: " + ucesnik.getMestoBoravista());
 			System.out.println("Naselje je: " + n.getNaziv());
 			System.out.println("Boolean je: " + ucesnik.getMestoBoravista().equals(n.getNaziv()));
-			if (ucesnik.getMestoBoravista().equals(n.getNaziv())) {
+			if (ucesnik.getMestoBoravista().toUpperCase().equals(n.getNaziv())) {
 				uc.setPrigradskoNaselje(true);
 				break;
 			} else {
@@ -107,7 +107,7 @@ public class UcesnikServiceImpl implements UcesnikService {
 			upUcesnik.setPrezime(ucesnik.getPrezime());
 			upUcesnik.setRod(ucesnik.getRod());
 			upUcesnik.setGodine(ucesnik.getGodine());
-			upUcesnik.setMestoBoravista(ucesnik.getMestoBoravista());
+			upUcesnik.setMestoBoravista(ucesnik.getMestoBoravista().toUpperCase());
 			upUcesnik.setBrojTelefona(ucesnik.getBrojTelefona());
 			upUcesnik.setEmail(ucesnik.getEmail());
 			upUcesnik.setOrganizacija(ucesnik.getOrganizacija());

@@ -25,7 +25,12 @@ public class PrigradskaNaseljaServiceImpl implements PrigradskaNaseljaService {
 	@Override
 	public PrigradskaNaselja addNaselje(PrigradskaNaselja naselje) {
 		// TODO Auto-generated method stub
-		return prigradskaNaseljaRepo.save(naselje);
+		PrigradskaNaselja updateNaselje = new PrigradskaNaselja();
+		
+		updateNaselje.setId(naselje.getId());
+		updateNaselje.setNaziv(naselje.getNaziv().toUpperCase());
+		
+		return prigradskaNaseljaRepo.save(updateNaselje);
 	}
 
 	@Override
@@ -35,7 +40,7 @@ public class PrigradskaNaseljaServiceImpl implements PrigradskaNaseljaService {
 		if (upNaselje.isPresent()) {
 			PrigradskaNaselja updateNaselje = upNaselje.get();
 
-			updateNaselje.setNaziv(naselje.getNaziv());
+			updateNaselje.setNaziv(naselje.getNaziv().toUpperCase());
 			prigradskaNaseljaRepo.save(updateNaselje);
 			return updateNaselje;
 		}
