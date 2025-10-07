@@ -814,7 +814,12 @@ const DogadjajList = () => {
                   </>
                 )}
               </Button>
-              <Button className="mx-1" variant="success" onClick={handleExcel} disabled={downloadingExcel}>
+              <Button
+                className="mx-1"
+                variant="success"
+                onClick={handleExcel}
+                disabled={downloadingExcel}
+              >
                 {downloadingExcel ? (
                   <>
                     <Spinner
@@ -963,7 +968,7 @@ const DogadjajList = () => {
               {/* Creatable Dropdown for organization name */}
               <Form.Group>
                 <Form.Label>Naziv Organizacije</Form.Label>
-                <CreatableSelect
+                {/* <CreatableSelect
                   value={{
                     value: organizacija.naziv,
                     label: organizacija.naziv,
@@ -981,6 +986,24 @@ const DogadjajList = () => {
                   className={
                     validated && !organizacija.naziv ? "is-invalid" : ""
                   }
+                /> */}
+                <CreatableSelect
+                  value={{
+                    value: organizacija.naziv,
+                    label: organizacija.naziv,
+                  }}
+                  onChange={handleSelectChange}
+                  onCreateOption={(inputValue) => {
+                    setOrganizacija({
+                      ...organizacija,
+                      naziv: inputValue,
+                    });
+                    setOrganizacijaId(null);
+                    setIsExisting(false);
+                  }}
+                  options={options}
+                  isClearable
+                  placeholder="Izaberite ili unesite novu organizaciju"
                 />
                 {validated && !organizacija.naziv && (
                   <div className="invalid-feedback">Ovo polje je obavezno!</div>
