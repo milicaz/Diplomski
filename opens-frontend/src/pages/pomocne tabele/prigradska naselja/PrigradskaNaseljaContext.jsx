@@ -22,7 +22,10 @@ const PrigradskaNaseljaContextProvider = ({ children, navigate, location }) => {
     };
   }, []);
 
-  const sortedPrigradskaNaselja = prigradskaNaselja.sort((a, b) => a.id - b.id);
+  const sortedPrigradskaNaselja =
+    prigradskaNaselja.length > 0
+      ? prigradskaNaselja.sort((a, b) => a.id - b.id)
+      : [];
 
   const getNaselje = async (isMounted, controller) => {
     try {

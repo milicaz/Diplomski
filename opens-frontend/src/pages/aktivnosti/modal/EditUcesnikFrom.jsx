@@ -4,11 +4,6 @@ import { useContext, useState } from "react";
 
 const EditUcesnikForm = ({ currentUcesnik, onUcesnikEdited }) => {
   const { editUcesnik } = useContext(DogadjajContext);
-
-  // if (!currentUcesnik) {
-  //     return <div>Loading...</div>;  // Show loading message or nothing if no data
-  // }
-
   const [validated, setValidated] = useState(false);
 
   const [ucesnik, setUcesnik] = useState({
@@ -53,8 +48,6 @@ const EditUcesnikForm = ({ currentUcesnik, onUcesnikEdited }) => {
 
     const form = event.currentTarget;
     if (form.checkValidity()) {
-      console.log("Ucesni u editu: " + JSON.stringify(ucesnik));
-      console.log("Id u editu " + currentUcesnik.id);
       await editUcesnik(currentUcesnik.id, ucesnik); // Make sure to use currentUcesnik.id here
       onUcesnikEdited();
     }

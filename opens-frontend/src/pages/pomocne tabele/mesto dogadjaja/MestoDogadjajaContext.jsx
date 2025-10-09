@@ -22,7 +22,8 @@ const MestoDogadjajaContextProvider = ({ children, navigate, location }) => {
     };
   }, []);
 
-  const sortedMestaDogadjaja = mestaDogadjaja.sort((a, b) => a.id - b.id);
+  const sortedMestaDogadjaja =
+    mestaDogadjaja.length > 0 ? mestaDogadjaja.sort((a, b) => a.id - b.id) : [];
 
   const getMesta = async (isMounted, controller) => {
     try {

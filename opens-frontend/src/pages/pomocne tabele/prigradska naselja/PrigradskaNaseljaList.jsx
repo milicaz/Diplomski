@@ -28,6 +28,8 @@ const PrigradskaNaseljaList = () => {
     sortedPrigradskaNaselja.length / naseljaPerPage
   );
 
+  const shouldShowPagination = sortedPrigradskaNaselja.length >= 10;
+
   const onInputChange = (e) => {
     setNaseljaPerPage(e.target.value);
   };
@@ -43,26 +45,28 @@ const PrigradskaNaseljaList = () => {
       <div className="table-title">
         <div className="row">
           <div className="col-sm-6">
-            <div className="row align-items-center mb-3">
-              <div className="col-auto pe-0">
-                <span>Prikaži</span>
+            {sortedPrigradskaNaselja && shouldShowPagination && (
+              <div className="row align-items-center mb-3">
+                <div className="col-auto pe-0">
+                  <span>Prikaži</span>
+                </div>
+                <div className="col-auto">
+                  <Form.Select
+                    name="naseljaPerPage"
+                    value={naseljaPerPage}
+                    onChange={(e) => onInputChange(e)}
+                    style={{ width: "100%" }}
+                  >
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                  </Form.Select>
+                </div>
+                <div className="col-auto ps-0">
+                  <span>unosa</span>
+                </div>
               </div>
-              <div className="col-auto">
-                <Form.Select
-                  name="naseljaPerPage"
-                  value={naseljaPerPage}
-                  onChange={(e) => onInputChange(e)}
-                  style={{ width: "100%" }}
-                >
-                  <option value="10">10</option>
-                  <option value="15">15</option>
-                  <option value="20">20</option>
-                </Form.Select>
-              </div>
-              <div className="col-auto ps-0">
-                <span>unosa</span>
-              </div>
-            </div>
+            )}
           </div>
           <div className="col-sm-6">
             <Button
@@ -83,22 +87,34 @@ const PrigradskaNaseljaList = () => {
             <th>Akcije</th>
           </tr>
         </thead>
-        <tbody>
-          {currentNaselja.map((prigradskoNaselje) => (
-            <tr key={prigradskoNaselje.id}>
-              <PrigradskaNaselja prigradskoNaselje={prigradskoNaselje} />
+        {sortedPrigradskaNaselja.length === 0 ? (
+          <tbody>
+            <tr>
+              <td colSpan="2" className="nema-unetih">
+                Nema stavki za prikazivanje.
+              </td>
             </tr>
-          ))}
-        </tbody>
+          </tbody>
+        ) : (
+          <tbody>
+            {currentNaselja.map((prigradskoNaselje) => (
+              <tr key={prigradskoNaselje.id}>
+                <PrigradskaNaselja prigradskoNaselje={prigradskoNaselje} />
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
 
-      <Pagination
-        pages={totalPagesNumber}
-        setCurrentPage={setCurrentPage}
-        array={sortedPrigradskaNaselja}
-        limit={naseljaPerPage}
-        maxVisibleButtons={3}
-      />
+      {sortedPrigradskaNaselja && shouldShowPagination && (
+        <Pagination
+          pages={totalPagesNumber}
+          setCurrentPage={setCurrentPage}
+          array={sortedPrigradskaNaselja}
+          limit={naseljaPerPage}
+          maxVisibleButtons={3}
+        />
+      )}
 
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>

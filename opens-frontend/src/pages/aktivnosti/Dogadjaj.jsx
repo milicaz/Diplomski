@@ -97,7 +97,6 @@ const Dogadjaj = ({ dogadjaj }) => {
 
   const handleDogadjajEdit = () => {
     try {
-      // console.log("Current  before update:", currentUcesnik);
       // Ensure the modal closes after the update
       setShowEditDogadjaj(false); // You may need to handle async issues here
     } catch (error) {
@@ -119,7 +118,6 @@ const Dogadjaj = ({ dogadjaj }) => {
 
   return (
     <>
-      <td>{dogadjaj.id}</td>
       <td>{dogadjaj.naziv}</td>
       <td>{new Date(dogadjaj.datum).toLocaleDateString("sr-SR")}</td>
       <td>

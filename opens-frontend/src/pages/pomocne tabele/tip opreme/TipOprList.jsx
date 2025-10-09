@@ -82,7 +82,6 @@ const TipOprList = () => {
           <tbody>
             <tr>
               <td colSpan="2" className="nema-unetih">
-                {" "}
                 Nema stavki za prikazivanje.
               </td>
             </tr>

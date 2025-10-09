@@ -132,7 +132,7 @@ const Login = () => {
       setPosetilac(null);
       setMestaPoseteId(null);
       setSelectedOprema([]);
-    } catch (error) {      
+    } catch (error) {
       handleShowToast(
         "Greška",
         `Greška tokom kreiranja posete za posetioca: ${posetilac.value}`,
@@ -152,7 +152,7 @@ const Login = () => {
           placeholder={"Posetilac"}
           isSearchable
         />
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <span className="mx-3">Mesto posete:</span>
           {mestaPosete.map((mesto) => (
             <Form.Check
@@ -166,6 +166,28 @@ const Login = () => {
               checked={mestoPoseteId === mesto.id}
             />
           ))}
+        </div> */}
+        {/* Provera za mesta posete */}
+        <div className="mb-3">
+          {mestaPosete.length === 0 ? (
+            <p>Trenutno nema upisanih mesta posete.</p>
+          ) : (
+            <>
+              <span className="mx-3">Mesto posete:</span>
+              {mestaPosete.map((mesto) => (
+                <Form.Check
+                  inline
+                  key={mesto.id}
+                  label={`${mesto.nazivMesta}`}
+                  name="mestoPoseteID"
+                  type="radio"
+                  value={mesto.id}
+                  onChange={() => setMestaPoseteId(mesto.id)}
+                  checked={mestoPoseteId === mesto.id}
+                />
+              ))}
+            </>
+          )}
         </div>
         <Select
           className="mb-3"
@@ -181,11 +203,17 @@ const Login = () => {
               : []
           }
           placeholder={"Oprema"}
+          noOptionsMessage={() => "Nema dostupne opreme"}
           isMulti
           isSearchable
         />
         <div className="d-grid gap-2 mt-3">
-          <Button variant="success" type="submit" size="lg">
+          <Button
+            variant="success"
+            type="submit"
+            size="lg"
+            disabled={mestaPosete.length === 0}
+          >
             Check-in
           </Button>
         </div>

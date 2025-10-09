@@ -193,7 +193,6 @@ export const QRCheckIn = () => {
 
     try {
       if (status === "not-checked-in") {
-        console.log("Usao sam u ADD POSETE - CHECK IN");
         const posetaData = {
           posetilacEmail: posetilac,
           mestoPoseteID: mestoPoseteId,
@@ -253,7 +252,7 @@ export const QRCheckIn = () => {
         />
         {status === "not-checked-in" && (
           <>
-            <div className="mb-3">
+            {/* <div className="mb-3">
               <span className="mx-3">Mesto posete:</span>
               {mestaPosete.map((mesto) => (
                 <Form.Check
@@ -267,6 +266,28 @@ export const QRCheckIn = () => {
                   checked={mestoPoseteId === mesto.id}
                 />
               ))}
+            </div> */}
+            {/* Provera za mesta posete */}
+            <div className="mb-3">
+              {mestaPosete.length === 0 ? (
+                <p>Trenutno nema upisanih mesta posete.</p>
+              ) : (
+                <>
+                  <span className="mx-3">Mesto posete:</span>
+                  {mestaPosete.map((mesto) => (
+                    <Form.Check
+                      inline
+                      key={mesto.id}
+                      label={`${mesto.nazivMesta}`}
+                      name="mestoPoseteID"
+                      type="radio"
+                      value={mesto.id}
+                      onChange={() => setMestaPoseteId(mesto.id)}
+                      checked={mestoPoseteId === mesto.id}
+                    />
+                  ))}
+                </>
+              )}
             </div>
             <Select
               className="mb-3"
@@ -285,11 +306,12 @@ export const QRCheckIn = () => {
                   : []
               }
               placeholder={"Oprema"}
+              noOptionsMessage={() => "Nema dostupne opreme"}
               isMulti
               isSearchable
             />
             <div className="d-grid gap-2 mt-3">
-              <Button variant="success" type="submit" size="lg">
+              <Button variant="success" type="submit" size="lg" disabled={mestaPosete.length === 0}>
                 Check-in
               </Button>
             </div>

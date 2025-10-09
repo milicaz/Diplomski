@@ -751,14 +751,20 @@ const DogadjajList = () => {
         </Col>
         <Col md={3}>
           <Form.Label>Tip događaja za koji se generiše izveštaj:</Form.Label>
-          <Form.Control as="select" name="vrsta" onChange={handleChangeVrsta}>
-            <option value="">Izaberite vrstu događaja</option>
-            {tipoviDogadjaja.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.naziv}
-              </option>
-            ))}
-          </Form.Control>
+          {tipoviDogadjaja.length === 0 ? (
+            <Form.Control as="select" disabled>
+              <option>Nema dostupnih tipova događaja</option>
+            </Form.Control>
+          ) : (
+            <Form.Control as="select" name="vrsta" onChange={handleChangeVrsta}>
+              <option value="">Izaberite vrstu događaja</option>
+              {tipoviDogadjaja.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.naziv}
+                </option>
+              ))}
+            </Form.Control>
+          )}
         </Col>
         <Col md={6}>
           <Form.Label>Osoba koja generiše izveštaj:</Form.Label>
@@ -903,48 +909,47 @@ const DogadjajList = () => {
               Dodaj novi događaj
             </Button>
           </div>
-          {/* <div className="col-sm-6">
-            <Button
-              onClick={handleShowOrganizacija}
-              className="btn btn-success"
-            >
-              <FaSquarePlus size={20} className="mx-1" />
-              Dodaj novi događaj
-            </Button>
-          </div> */}
         </div>
       </div>
       <table className="table table-striped table-hover image-table">
         <thead>
           <tr>
-            <th>Id</th>
+            <th>ID</th>
             <th>Naziv</th>
             <th>Datum</th>
             <th>Vreme događaja</th>
             <th>Mesto</th>
             <th>Vrsta</th>
             <th>Organizacija</th>
-            {/* DODATO NOVO POLJE */}
             <th>Odgovorna osoba</th>
             <th>Opis događaja</th>
-            {/*  */}
             <th>Akcije</th>
           </tr>
         </thead>
-        <tbody>
-          {/* {currentDogadjaji.map((dogadjaj) => (
+        {sortedDogadjaji.length === 0 ? (
+          <tbody>
+            <tr>
+              <td colSpan="10" className="nema-unetih">
+                Nema stavki za prikazivanje.
+              </td>
+            </tr>
+          </tbody>
+        ) : (
+          <tbody>
+            {/* {currentDogadjaji.map((dogadjaj) => (
             <tr key={dogadjaj.id}>
               <Dogadjaj dogadjaj={dogadjaj} />
             </tr>
           ))} */}
-          {/* IZMENJENO ZBOG SEARCHBAR */}
-          {currentPageDogadjaji.map((dogadjaj) => (
-            <tr key={dogadjaj.id}>
-              <Dogadjaj dogadjaj={dogadjaj} />
-            </tr>
-          ))}
-          {/*  */}
-        </tbody>
+            {/* IZMENJENO ZBOG SEARCHBAR */}
+            {currentPageDogadjaji.map((dogadjaj, index) => (
+              <tr key={dogadjaj.id}>
+                <td>{(currentPage - 1) * limit + index + 1}</td>
+                <Dogadjaj dogadjaj={dogadjaj} />
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
 
       {totalPagesNumber > 0 && (
@@ -958,6 +963,7 @@ const DogadjajList = () => {
         />
       )}
 
+      {/* MODALNI DIJALOG ZA DODAVANJE ORGANIZACIJE */}
       <Modal show={showOrganizacija} onHide={handleCloseOrganizacija}>
         <Modal.Header closeButton>
           <Modal.Title>Dodaj organizaciju</Modal.Title>
@@ -967,7 +973,7 @@ const DogadjajList = () => {
             <Modal.Body>
               {/* Creatable Dropdown for organization name */}
               <Form.Group>
-                <Form.Label>Naziv Organizacije</Form.Label>
+                <Form.Label>Naziv organizacije</Form.Label>
                 {/* <CreatableSelect
                   value={{
                     value: organizacija.naziv,
@@ -1004,6 +1010,7 @@ const DogadjajList = () => {
                   options={options}
                   isClearable
                   placeholder="Izaberite ili unesite novu organizaciju"
+                  noOptionsMessage={() => "Nema unetih organizacija"}
                 />
                 {validated && !organizacija.naziv && (
                   <div className="invalid-feedback">Ovo polje je obavezno!</div>
@@ -1106,6 +1113,7 @@ const DogadjajList = () => {
         </div>
       </Modal>
 
+      {/* MODALNI DIJALOG ZA DODAVANJE DOGADJAJA */}
       <Modal show={showDogadjaj} onHide={handleCloseDogadjaj}>
         <Modal.Header closeButton>
           <Modal.Title>Dodaj događaj</Modal.Title>
@@ -1177,44 +1185,66 @@ const DogadjajList = () => {
             </Form.Group>
             <br />
             <Form.Group controlId="dropdown">
-              <Form.Control
-                as="select"
-                name="mestoDogadjajaId"
-                value={dogadjaj.mestoDogadjajaId}
-                onChange={handleChangeDogadjaj}
-                // style={{ width: "80%", maxWidth: "90%" }}
-                required
-                isInvalid={validated && !dogadjaj.mestoDogadjajaId}
-              >
-                <option value="">Izaberite salu</option>
-                {mestaDogadjaja.map((item, index) => (
-                  <option key={item.id} value={item.id}>
-                    {item.nazivSale}
-                  </option>
-                ))}
-              </Form.Control>
+              {mestaDogadjaja.length === 0 ? (
+                <>
+                  <Form.Control as="select" disabled>
+                    <option>Nema dostupnih sala</option>
+                  </Form.Control>
+                  <Form.Text className="text-danger">
+                    * Nije moguće dodati događaj jer nema dostupnih sala. Prvo
+                    dodajte sale u šifrarniku.
+                  </Form.Text>
+                </>
+              ) : (
+                <Form.Control
+                  as="select"
+                  name="mestoDogadjajaId"
+                  value={dogadjaj.mestoDogadjajaId}
+                  onChange={handleChangeDogadjaj}
+                  required
+                  isInvalid={validated && !dogadjaj.mestoDogadjajaId}
+                >
+                  <option value="">Izaberite salu</option>
+                  {mestaDogadjaja.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.nazivSale}
+                    </option>
+                  ))}
+                </Form.Control>
+              )}
               <Form.Control.Feedback type="invalid">
                 Ovo polje je obavezno!
               </Form.Control.Feedback>
             </Form.Group>
             <br />
             <Form.Group controlId="dropdown">
-              <Form.Control
-                as="select"
-                name="vrstaDogadjajaId"
-                value={dogadjaj.vrstaDogadjajaId}
-                onChange={handleChangeDogadjaj}
-                // style={{ width: "80%", maxWidth: "90%" }}
-                required
-                isInvalid={validated && !dogadjaj.vrstaDogadjajaId}
-              >
-                <option value="">Izaberite vrstu događaja</option>
-                {tipoviDogadjaja.map((item, index) => (
-                  <option key={item.id} value={item.id}>
-                    {item.naziv}
-                  </option>
-                ))}
-              </Form.Control>
+              {tipoviDogadjaja.length === 0 ? (
+                <>
+                  <Form.Control as="select" disabled>
+                    <option>Nema dostupnih tipova događaja</option>
+                  </Form.Control>
+                  <Form.Text className="text-danger">
+                    * Nije moguće dodati događaj jer nema dostupnih tipova
+                    događaja. Prvo dodajte tipove u šifrarniku.
+                  </Form.Text>
+                </>
+              ) : (
+                <Form.Control
+                  as="select"
+                  name="vrstaDogadjajaId"
+                  value={dogadjaj.vrstaDogadjajaId}
+                  onChange={handleChangeDogadjaj}
+                  required
+                  isInvalid={validated && !dogadjaj.vrstaDogadjajaId}
+                >
+                  <option value="">Izaberite vrstu događaja</option>
+                  {tipoviDogadjaja.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.naziv}
+                    </option>
+                  ))}
+                </Form.Control>
+              )}
               <Form.Control.Feedback type="invalid">
                 Ovo polje je obavezno!
               </Form.Control.Feedback>
@@ -1222,7 +1252,13 @@ const DogadjajList = () => {
             <br />
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="success" type="submit">
+            <Button
+              variant="success"
+              type="submit"
+              disabled={
+                mestaDogadjaja.length === 0 || tipoviDogadjaja.length === 0
+              }
+            >
               Dodaj
             </Button>
             <Button variant="danger" onClick={handleNazad}>
@@ -1232,6 +1268,7 @@ const DogadjajList = () => {
         </Form>
       </Modal>
 
+      {/* MODALNI DIJALOG ZA IZMENU ORGANIZACIJE */}
       <Modal show={showEditOrganizacija} onHide={handleCloseEditOrganizacija}>
         <Modal.Header closeButton>
           <Modal.Title>Dodaj organizaciju</Modal.Title>
@@ -1354,6 +1391,7 @@ const DogadjajList = () => {
         </div>
       </Modal>
 
+      {/* MODALNI DIJALOG ZA DODAVANJE UCESNIKA */}
       <Modal show={showUcesnik} onHide={handleCloseUcesnik}>
         <Modal.Header closeButton>
           <Modal.Title>Dodaj učesnika</Modal.Title>
@@ -1506,6 +1544,7 @@ const DogadjajList = () => {
         </div>
       </Modal>
 
+      {/* MODALNI DIJALOG - PITANJE ZA DODAVANJE UCESNIKA */}
       <Modal
         show={showDialogUcesnik}
         onHide={handleCloseDialogUcesnik}
@@ -1542,6 +1581,7 @@ const DogadjajList = () => {
         </Modal.Footer>
       </Modal>
 
+      {/* MODALNI DIJALOG ZA LOGO HEADER */}
       <Modal show={showHeader} onHide={handleCloseHeader} centered size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Izaberite header logo</Modal.Title>
@@ -1610,48 +1650,6 @@ const DogadjajList = () => {
                     </Row>
                   </Container>
                 )}
-                {/* <Col>
-                  {firstHalf.map((logo) => (
-                    <Row key={logo.id} className="mb-2">
-                      <Col className="mb-4">
-                        <Form.Check
-                          type="radio"
-                          name="logoGroup"
-                          id={`logo-${logo.id}`}
-                          label={`${logo.name}`}
-                          value={logo.id}
-                          onChange={() => handleSelectHeader(logo.id)}
-                        />
-                        <Image
-                          src={`data:image/${logo.type};base64,${logo.picByte}`}
-                          alt={`Logo ${logo.id}`}
-                          thumbnail
-                        />
-                      </Col>
-                    </Row>
-                  ))}
-                </Col>
-                <Col>
-                  {secondHalf.map((logo) => (
-                    <Row key={logo.id} className="mb-2">
-                      <Col className="mb-4">
-                        <Form.Check
-                          type="radio"
-                          name="logoGroup"
-                          id={`logo-${logo.id}`}
-                          label={`${logo.name}`}
-                          value={logo.id}
-                          onChange={() => handleSelectHeader(logo.id)}
-                        />
-                        <Image
-                          src={`data:image/${logo.type};base64,${logo.picByte}`}
-                          alt={`Logo ${logo.id}`}
-                          thumbnail
-                        />
-                      </Col>
-                    </Row>
-                  ))}
-                </Col> */}
               </Row>
             </Form>
           </>
@@ -1666,6 +1664,7 @@ const DogadjajList = () => {
         </Modal.Footer>
       </Modal>
 
+      {/* MODALNI DIJALOG ZA LOGO FOOTER */}
       <Modal show={showFooter} onHide={handleCloseFooter} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>Izaberite footer logo</Modal.Title>
@@ -1734,48 +1733,6 @@ const DogadjajList = () => {
                     </Row>
                   </Container>
                 )}
-                {/* <Col>
-                  {firstHalf.map((logo) => (
-                    <Row key={logo.id} className="mb-2">
-                      <Col className="mb-4">
-                        <Form.Check
-                          type="radio"
-                          name="logoGroup"
-                          id={`logo-${logo.id}`}
-                          label={`${logo.name}`}
-                          value={logo.id}
-                          onChange={() => handleSelectFooter(logo.id)}
-                        />
-                        <Image
-                          src={`data:image/${logo.type};base64,${logo.picByte}`}
-                          alt={`Logo ${logo.id}`}
-                          thumbnail
-                        />
-                      </Col>
-                    </Row>
-                  ))}
-                </Col>
-                <Col>
-                  {secondHalf.map((logo) => (
-                    <Row key={logo.id} className="mb-2">
-                      <Col className="mb-4">
-                        <Form.Check
-                          type="radio"
-                          name="logoGroup"
-                          id={`logo-${logo.id}`}
-                          label={`${logo.name}`}
-                          value={logo.id}
-                          onChange={() => handleSelectFooter(logo.id)}
-                        />
-                        <Image
-                          src={`data:image/${logo.type};base64,${logo.picByte}`}
-                          alt={`Logo ${logo.id}`}
-                          thumbnail
-                        />
-                      </Col>
-                    </Row>
-                  ))}
-                </Col> */}
               </Row>
             </Form>
           </>

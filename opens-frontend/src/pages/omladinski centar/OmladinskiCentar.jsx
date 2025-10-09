@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Tab, Tabs } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Col, Container, Row, Tab, Tabs } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import useHttpProtected from "../../hooks/useHttpProtected";
 import OmladinskiCentarTabela from "./OmladinskiCentarTabela";
@@ -54,39 +54,52 @@ export const OmladinskiCentar = () => {
 
   return (
     <>
-      <Tabs defaultActiveKey={1} fill>
-        {mestaPosete.map((mestoPosete, index) => (
-          <Tab
-            eventKey={mestoPosete.id}
-            title={mestoPosete.nazivMesta}
-            key={mestoPosete.id}
-            className={getTabColorClass(index)}
-          >
-            <Tabs defaultActiveKey={1} fill>
-              <Tab
-                eventKey="1"
-                title={`${mestoPosete.nazivMesta} - trenutno`}
-                key="1"
-              >
-                <OmladinskiCentarTrenutno
-                  mestoPoseteId={mestoPosete.id}
-                  mestoPoseteNaziv={mestoPosete.nazivMesta}
-                />
-              </Tab>
-              <Tab
-                eventKey="2"
-                title={`${mestoPosete.nazivMesta} - tabela poseta`}
-                key="2"
-              >
-                <OmladinskiCentarTabela
-                  mestoPoseteId={mestoPosete.id}
-                  mestoPoseteNaziv={mestoPosete.nazivMesta}
-                />
-              </Tab>
-            </Tabs>
-          </Tab>
-        ))}
-      </Tabs>
+      {mestaPosete.length === 0 ? (
+        <Container
+          className="d-flex justify-content-center align-items-center mt-3"
+          style={{ height: "100v" }}
+        >
+          <Row>
+            <Col>
+              <h4>Trenutno nema upisanih mesta posete.</h4>
+            </Col>
+          </Row>
+        </Container>
+      ) : (
+        <Tabs defaultActiveKey={1} fill>
+          {mestaPosete.map((mestoPosete, index) => (
+            <Tab
+              eventKey={mestoPosete.id}
+              title={mestoPosete.nazivMesta}
+              key={mestoPosete.id}
+              className={getTabColorClass(index)}
+            >
+              <Tabs defaultActiveKey={1} fill>
+                <Tab
+                  eventKey="1"
+                  title={`${mestoPosete.nazivMesta} - trenutno`}
+                  key="1"
+                >
+                  <OmladinskiCentarTrenutno
+                    mestoPoseteId={mestoPosete.id}
+                    mestoPoseteNaziv={mestoPosete.nazivMesta}
+                  />
+                </Tab>
+                <Tab
+                  eventKey="2"
+                  title={`${mestoPosete.nazivMesta} - tabela poseta`}
+                  key="2"
+                >
+                  <OmladinskiCentarTabela
+                    mestoPoseteId={mestoPosete.id}
+                    mestoPoseteNaziv={mestoPosete.nazivMesta}
+                  />
+                </Tab>
+              </Tabs>
+            </Tab>
+          ))}
+        </Tabs>
+      )}
     </>
   );
 };

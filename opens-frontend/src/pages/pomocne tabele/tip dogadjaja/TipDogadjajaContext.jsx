@@ -22,7 +22,10 @@ const TipDogadjajaContextProvider = ({ children, navigate, location }) => {
     };
   }, []);
 
-  const sortedTipoviDogadjaja = tipoviDogadjaja.sort((a, b) => a.id - b.id);
+  const sortedTipoviDogadjaja =
+    tipoviDogadjaja.length > 0
+      ? tipoviDogadjaja.sort((a, b) => a.id - b.id)
+      : [];
 
   const getTipovi = async (isMounted, controller) => {
     try {

@@ -208,7 +208,7 @@ export const OmladinskiCentarTrenutno = ({
               <span>Filtiranje prema: </span>
             </div>
             <div className="col">
-              <Form.Select
+              {/* <Form.Select
                 value={selectedTipOpreme}
                 onChange={(e) => setSelectedTipOpreme(e.target.value)}
               >
@@ -218,7 +218,24 @@ export const OmladinskiCentarTrenutno = ({
                     {tip.naziv}
                   </option>
                 ))}
-              </Form.Select>
+              </Form.Select> */}
+              {tipoviOpreme.length === 0 ? (
+                <Form.Select disabled>
+                  <option>Nema dostupnih tipova opreme</option>
+                </Form.Select>
+              ) : (
+                <Form.Select
+                  value={selectedTipOpreme}
+                  onChange={(e) => setSelectedTipOpreme(e.target.value)}
+                >
+                  <option value="">sve</option>
+                  {tipoviOpreme.map((tip) => (
+                    <option key={tip.id} value={tip.naziv}>
+                      {tip.naziv}
+                    </option>
+                  ))}
+                </Form.Select>
+              )}
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Button,
   Col,
@@ -27,8 +27,7 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   const { kreirajPdfUcesnici } = useContext(DogadjajContext);
   const { dodajUcesnika } = useContext(DogadjajContext);
   const { deleteUcesnik } = useContext(DogadjajContext);
-  const { editUcesnik } = useContext(DogadjajContext);
-
+  
   const navigate = useNavigate();
   const location = useLocation();
   const { handleShowToast } = useToast();
@@ -42,6 +41,15 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
 
   const [limit, setLimit] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const indexOfLastUcesnik = currentPage * limit;
+  const indexOfFirstUcesnik = indexOfLastUcesnik - limit;
+  const currentUcesnici = ucesnici.slice(
+    indexOfFirstUcesnik,
+    indexOfLastUcesnik
+  );
+  const totalPagesNumber = Math.ceil(ucesnici.length / limit);
+  const shouldShowPagination = ucesnici.length >= 10;
 
   const [logos, setLogos] = useState([]);
 
@@ -98,9 +106,6 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
 
   const [showEdit, setShowEdit] = useState(false);
   const handleShowEdit = (ucesnik) => {
-    console.log("Id je: " + ucesnik.id); // Log `ucesnik` directly here
-    console.log("Current ucesnik je: ", ucesnik); // Log `ucesnik` directly here
-
     setCurrentUcesnik(ucesnik); // Set the participant data you want to edit
     setShowEdit(true);
   };
@@ -127,7 +132,6 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
   useEffect(() => {
     const fetchUcesnici = async () => {
       const fetchedUcesnici = await getUcesnici(id);
-      // setUcesnici(fetchedUcesnici); // Set the participants data after it's fetched
       setUcesnici(fetchedUcesnici || []); // Ensure it's always an array
       let isMounted = true;
       const controller = new AbortController();
@@ -176,7 +180,6 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     fetchUcesnici(); // Call the async function
 
     if (!showEdit) {
-      console.log("Modal closed, Ucesnici updated:", ucesnici);
     }
   }, [id, showEdit]);
 
@@ -213,13 +216,13 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
     // ]);
 
     setUcesnici((prevUcesnici) => [
-  ...prevUcesnici,
-  { 
-    ...ucesnik, 
-    id: prevUcesnici.length + 1, 
-    mestoBoravista: ucesnik.mestoBoravista.toUpperCase() // 👈 ovde dodaj
-  },
-]);
+      ...prevUcesnici,
+      {
+        ...ucesnik,
+        id: prevUcesnici.length + 1,
+        mestoBoravista: ucesnik.mestoBoravista.toUpperCase(), // 👈 ovde dodaj
+      },
+    ]);
 
     setUcesnik({
       ime: "",
@@ -430,7 +433,7 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
       </div>
 
       <div>
-        <table className="image-table">
+        <table className="table table-striped table-hover image-table">
           <thead>
             <tr>
               <th>Redni broj</th>
@@ -444,10 +447,17 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
               <th>Akcije</th>
             </tr>
           </thead>
-          <tbody>
-            {ucesnici
-              .slice((currentPage - 1) * limit, currentPage * limit)
-              .map((ucesnik, index) => (
+          {ucesnici.length === 0 ? (
+            <tbody>
+              <tr>
+                <td colSpan="9" className="nema-unetih">
+                  Nema učesnika za prikazivanje.
+                </td>
+              </tr>
+            </tbody>
+          ) : (
+            <tbody>
+              {currentUcesnici.map((ucesnik, index) => (
                 <tr key={ucesnik.id}>
                   <td>{(currentPage - 1) * limit + index + 1}</td>
                   <td>{ucesnik.ime}</td>
@@ -477,17 +487,20 @@ const DogadjajUcesniciForm = ({ currentDogadjaj }) => {
                   </td>
                 </tr>
               ))}
-          </tbody>
+            </tbody>
+          )}
         </table>
       </div>
 
-      <Pagination
-        pages={Math.ceil(ucesnici.length / limit)} // Calculate number of pages
-        setCurrentPage={onPageChange}
-        array={ucesnici}
-        limit={limit}
-        maxVisibleButtons={3}
-      />
+      {ucesnici && shouldShowPagination && (
+        <Pagination
+          pages={totalPagesNumber} // Calculate number of pages
+          setCurrentPage={onPageChange}
+          array={ucesnici}
+          limit={limit}
+          maxVisibleButtons={3}
+        />
+      )}
 
       <Modal show={showHeader} onHide={handleCloseHeader} centered size="lg">
         <Modal.Header closeButton>
